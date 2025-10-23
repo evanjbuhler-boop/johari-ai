@@ -151,10 +151,14 @@ Keep responses 3-4 sentences. Show you're truly listening by being specific abou
       }
 
       const data = await response.json();
-      console.log('OpenAI response received');
+      console.log('OpenAI response received:', JSON.stringify(data));
+      console.log('Choices:', data.choices);
+      console.log('Message content:', data.choices?.[0]?.message?.content);
+      
+      const content = data.choices?.[0]?.message?.content || '';
       
       return new Response(
-        JSON.stringify({ content: data.choices[0].message.content }),
+        JSON.stringify({ content }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
