@@ -10,9 +10,10 @@ interface ChatInterfaceProps {
   messages: Message[];
   onSendMessage: (message: string) => void;
   onBack: () => void;
+  isLoading: boolean;
 }
 
-const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack }: ChatInterfaceProps) => {
+const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -116,6 +117,20 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
               </div>
             </div>
           ))}
+          {isLoading && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
+              <div className="max-w-[85%] rounded-2xl px-6 py-4 bg-card text-card-foreground border border-border">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
+                  <span className="text-sm text-muted-foreground">AI is thinking...</span>
+                </div>
+              </div>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -128,8 +143,9 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your response..."
               className="flex-1 h-12 text-base"
+              disabled={isLoading}
             />
-            <Button type="submit" size="lg" disabled={!input.trim()}>
+            <Button type="submit" size="lg" disabled={!input.trim() || isLoading}>
               <Send className="h-5 w-5" />
             </Button>
           </div>

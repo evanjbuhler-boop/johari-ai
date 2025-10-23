@@ -15,6 +15,7 @@ const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [results, setResults] = useState<CheckInResults | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   // Check if user has completed profile before
@@ -29,6 +30,7 @@ const Index = () => {
     const userMessage: Message = { role: 'user', content: message };
     setMessages([userMessage]);
     setState('chat');
+    setIsLoading(true);
 
     try {
       const { data, error } = await supabase.functions.invoke('chat', {
@@ -60,6 +62,8 @@ const Index = () => {
         title: "Using offline mode",
         description: "Connected to local responses.",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,6 +71,7 @@ const Index = () => {
     const userMessage: Message = { role: 'user', content: message };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
+    setIsLoading(true);
 
     try {
       const { data, error } = await supabase.functions.invoke('chat', {
@@ -98,6 +103,8 @@ const Index = () => {
         title: "Using offline mode",
         description: "Connected to local responses.",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -221,6 +228,7 @@ const Index = () => {
         messages={messages}
         onSendMessage={handleSendMessage}
         onBack={handleNewCheckIn}
+        isLoading={isLoading}
       />
     );
   }
