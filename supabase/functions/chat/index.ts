@@ -13,18 +13,47 @@ serve(async (req) => {
 
   try {
     const { messages, type } = await req.json();
+    const useMockAI = Deno.env.get('USE_MOCK_AI') === 'true';
     const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
     
-    if (!anthropicApiKey) {
+    if (!useMockAI && !anthropicApiKey) {
       throw new Error('ANTHROPIC_API_KEY is not configured');
     }
 
-    console.log('Processing chat request, type:', type, 'messages:', messages.length);
+    console.log('Processing chat request, type:', type, 'messages:', messages.length, 'mock mode:', useMockAI);
 
     // For conversation mode
     if (type === 'conversation') {
       const exchangeCount = Math.floor(messages.filter((m: any) => m.role === 'user').length);
       
+      // Mock mode - return realistic responses without calling API
+      if (useMockAI) {
+        const userMessage = messages[messages.length - 1].content.toLowerCase();
+        let mockResponse = '';
+
+        if (exchangeCount === 1) {
+          if (userMessage.includes('stress') || userMessage.includes('anxious') || userMessage.includes('overwhelmed')) {
+            mockResponse = "I hear that you're feeling stressed. That sounds really challenging. Can you tell me more about what's been weighing on you the most?";
+          } else {
+            mockResponse = "Thank you for sharing that with me. I'm here to listen. What aspect of your day has been on your mind the most?";
+          }
+        } else if (exchangeCount === 2) {
+          mockResponse = "I appreciate you opening up about that. How have you been taking care of yourself lately? Have you been getting enough rest?";
+        } else if (exchangeCount === 3) {
+          mockResponse = "That's helpful to know. How about your daily routines - have you been able to maintain healthy eating habits and physical activity?";
+        } else if (exchangeCount === 4) {
+          mockResponse = "I see. And one last question - have there been any particular conflicts or difficult interactions that stood out to you recently?";
+        } else {
+          mockResponse = "Thank you for sharing all of that with me. I have a good understanding now.";
+        }
+
+        console.log('Returning mock response for exchange:', exchangeCount);
+        return new Response(
+          JSON.stringify({ content: mockResponse }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
       let systemPrompt = `You are a compassionate emotional wellness counselor. Have a natural, empathetic conversation with the user about their day and emotional state. 
 
 Current exchange: ${exchangeCount}/5
@@ -39,7 +68,7 @@ Keep responses brief (2-3 sentences) and empathetic. Ask one question at a time.
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
-          'x-api-key': anthropicApiKey,
+          'x-api-key': anthropicApiKey!,
           'anthropic-version': '2023-06-01',
           'content-type': 'application/json',
         },
@@ -68,6 +97,26 @@ Keep responses brief (2-3 sentences) and empathetic. Ask one question at a time.
 
     // For results generation
     if (type === 'results') {
+      // Mock mode - return realistic psychological analysis
+      if (useMockAI) {
+        const mockResults = {
+          reflection: "It sounds like you're navigating a period of transition and growth. The stress you're experiencing seems to stem from balancing multiple responsibilities while trying to maintain your well-being. Your awareness of these challenges is already a positive step forward.",
+          framework: "What you're experiencing aligns with the concept of 'cognitive load' - when our mental capacity is stretched across too many demands simultaneously. This is compounded by what psychologists call 'decision fatigue,' where the quality of our decisions deteriorates after making many decisions throughout the day. Your body and mind are signaling the need for more intentional rest and boundary-setting.",
+          recommendations: {
+            podcast: "Try 'The Happiness Lab' by Dr. Laurie Santos, particularly the episode on managing stress through realistic expectations.",
+            article: "'The Science of Self-Care' on Greater Good Magazine explores evidence-based approaches to maintaining emotional balance.",
+            technique: "Consider the '3-3-3 Rule' for anxiety: Name 3 things you see, 3 sounds you hear, and move 3 parts of your body. This grounds you in the present moment and interrupts the stress cycle."
+          },
+          story: "There's an old story of a farmer whose horse ran away. His neighbor said, 'Such bad luck!' The farmer replied, 'Maybe.' The next day, the horse returned with three wild horses. 'How wonderful!' said the neighbor. 'Maybe,' said the farmer. When his son tried to tame one of the wild horses and broke his leg, the neighbor exclaimed, 'How terrible!' The farmer simply said, 'Maybe.' The next week, officers came to draft young men into the army, but the son was excused because of his broken leg. The neighbor congratulated the farmer on his good fortune, to which the farmer responded, 'Maybe.' \n\nThis story reminds us that we can't always see the full picture of how events will unfold. What feels overwhelming today may lead to unexpected growth tomorrow. The key is maintaining perspective and being gentle with ourselves during uncertain times."
+        };
+
+        console.log('Returning mock results');
+        return new Response(
+          JSON.stringify(mockResults),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
       const systemPrompt = `You are an expert psychological counselor. Based on the conversation, provide:
 
 1. A 2-3 sentence empathetic reflection on what the person shared
@@ -94,7 +143,7 @@ Format your response as JSON with this structure:
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
-          'x-api-key': anthropicApiKey,
+          'x-api-key': anthropicApiKey!,
           'anthropic-version': '2023-06-01',
           'content-type': 'application/json',
         },
