@@ -4,7 +4,7 @@ import ChatInterface from '@/components/ChatInterface';
 import ProfileForm from '@/components/ProfileForm';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import { Message, UserProfile, CheckInResults } from '@/types/checkin';
-import { getMockAIResponse, generateMockResults } from '@/utils/mockAI';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 type AppState = 'landing' | 'chat' | 'profile' | 'results';
@@ -24,79 +24,136 @@ const Index = () => {
     }
   }, []);
 
-  const handleLandingSubmit = (message: string) => {
+  const handleLandingSubmit = async (message: string) => {
     const userMessage: Message = { role: 'user', content: message };
-    const aiResponse: Message = { 
-      role: 'assistant', 
-      content: getMockAIResponse([userMessage]) 
-    };
-    
-    setMessages([userMessage, aiResponse]);
+    setMessages([userMessage]);
     setState('chat');
+
+    try {
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: { messages: [userMessage], type: 'conversation' }
+      });
+
+      if (error) throw error;
+
+      const aiResponse: Message = {
+        role: 'assistant',
+        content: data.content
+      };
+      setMessages([userMessage, aiResponse]);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      toast({
+        title: "Error",
+        description: "Failed to get response. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleSendMessage = (message: string) => {
+  const handleSendMessage = async (message: string) => {
     const userMessage: Message = { role: 'user', content: message };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
 
-    // Simulate AI thinking
-    setTimeout(() => {
-      const aiResponse: Message = { 
-        role: 'assistant', 
-        content: getMockAIResponse(updatedMessages) 
+    try {
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: { messages: updatedMessages, type: 'conversation' }
+      });
+
+      if (error) throw error;
+
+      const aiResponse: Message = {
+        role: 'assistant',
+        content: data.content
       };
       setMessages([...updatedMessages, aiResponse]);
-    }, 1000);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      toast({
+        title: "Error",
+        description: "Failed to get response. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleChatComplete = () => {
+  const handleChatComplete = async () => {
     // If user hasn't filled profile before, show profile form
     if (!profile) {
       setState('profile');
     } else {
-      // Otherwise, go straight to results
-      const mockResults = generateMockResults(messages);
-      setResults(mockResults);
+      // Otherwise, generate results with Claude
+      try {
+        const { data, error } = await supabase.functions.invoke('chat', {
+          body: { messages, type: 'results' }
+        });
+
+        if (error) throw error;
+
+        setResults(data);
+        setState('results');
+        
+        // Save to localStorage
+        const checkInData = {
+          messages,
+          results: data,
+          profile,
+          timestamp: new Date().toISOString(),
+        };
+        localStorage.setItem('lastCheckIn', JSON.stringify(checkInData));
+        
+        toast({
+          title: "Check-in saved",
+          description: "Your emotional check-in has been recorded.",
+        });
+      } catch (error) {
+        console.error('Error generating results:', error);
+        toast({
+          title: "Error",
+          description: "Failed to generate results. Please try again.",
+          variant: "destructive"
+        });
+      }
+    }
+  };
+
+  const handleProfileSubmit = async (userProfile: UserProfile) => {
+    setProfile(userProfile);
+    localStorage.setItem('userProfile', JSON.stringify(userProfile));
+    
+    // Generate results with Claude
+    try {
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: { messages, type: 'results' }
+      });
+
+      if (error) throw error;
+
+      setResults(data);
       setState('results');
       
-      // Save to localStorage (replace with actual API call)
+      // Save to localStorage
       const checkInData = {
         messages,
-        results: mockResults,
-        profile,
+        results: data,
+        profile: userProfile,
         timestamp: new Date().toISOString(),
       };
       localStorage.setItem('lastCheckIn', JSON.stringify(checkInData));
       
       toast({
-        title: "Check-in saved",
-        description: "Your emotional check-in has been recorded.",
+        title: "Profile saved",
+        description: "Your profile has been created successfully.",
+      });
+    } catch (error) {
+      console.error('Error generating results:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate results. Please try again.",
+        variant: "destructive"
       });
     }
-  };
-
-  const handleProfileSubmit = (userProfile: UserProfile) => {
-    setProfile(userProfile);
-    localStorage.setItem('userProfile', JSON.stringify(userProfile));
-    
-    const mockResults = generateMockResults(messages);
-    setResults(mockResults);
-    setState('results');
-    
-    // Save to localStorage (replace with actual API call)
-    const checkInData = {
-      messages,
-      results: mockResults,
-      profile: userProfile,
-      timestamp: new Date().toISOString(),
-    };
-    localStorage.setItem('lastCheckIn', JSON.stringify(checkInData));
-    
-    toast({
-      title: "Profile saved",
-      description: "Your profile has been created successfully.",
-    });
   };
 
   const handleNewCheckIn = () => {
