@@ -33,6 +33,21 @@ export interface UserProfile {
 }
 
 export interface CheckInResults {
+  // Section 1: Empathetic byline with user's exact words
+  userQuote: string;
+  
+  // Section 2: Pattern identification
+  patterns: string[];
+  
+  // Section 3: Applied CBT
+  cbt: {
+    distortion: string;        // Named cognitive distortion
+    userThought: string;        // Quoted thought pattern from user
+    reframe: string;            // Specific reframe
+    practice: string;           // Actionable instruction
+  };
+  
+  // Keep existing fields for backward compatibility
   reflection: string;
   framework: string;
   recommendations: {

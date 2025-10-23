@@ -169,6 +169,18 @@ DO:
       // Mock mode - return realistic psychological analysis
       if (useMockAI) {
         const mockResults = {
+          userQuote: "I'm drowning in everything",
+          patterns: [
+            "Sleep deprivation (4 hours) → heightened emotional reactivity",
+            "Work pressure + exhaustion → snapping at your partner",
+            "Guilt about the conflict → more stress → worse sleep (reinforcing cycle)"
+          ],
+          cbt: {
+            distortion: "Catastrophizing",
+            userThought: "I'm going to fail at work and ruin my relationship",
+            reframe: "You're juggling a lot right now, and one rough week doesn't define your competence or your relationship. Your partner knows you're stressed. Your boss hasn't said you're failing. You're extrapolating from feeling overwhelmed to total collapse, but that's the anxiety talking, not reality.",
+            practice: "Before bed tonight, text your partner one specific thing you appreciate about them. Tomorrow at work, identify one task you can delegate or push to next week. You can't do everything - pick what matters most right now."
+          },
           reflection: "It sounds like you're navigating a period of transition and growth. The stress you're experiencing seems to stem from balancing multiple responsibilities while trying to maintain your well-being. Your awareness of these challenges is already a positive step forward.",
           framework: "What you're experiencing aligns with the concept of 'cognitive load' - when our mental capacity is stretched across too many demands simultaneously. This is compounded by what psychologists call 'decision fatigue,' where the quality of our decisions deteriorates after making many decisions throughout the day. Your body and mind are signaling the need for more intentional rest and boundary-setting.",
           recommendations: {
@@ -186,15 +198,37 @@ DO:
         );
       }
 
-      const systemPrompt = `You are an expert psychological counselor. Based on the conversation, provide:
+      const systemPrompt = `You are an expert psychological counselor. Based on the conversation, provide a personalized analysis using the user's EXACT language.
 
-1. A 2-3 sentence empathetic reflection on what the person shared
-2. A psychological framework or concept that explains what they're experiencing (be specific with the framework name)
-3. Recommendations: a podcast episode, an article, and a coping technique
-4. A relevant story or parable that relates to their situation
+CRITICAL: Use their own words, not therapy-speak. If they said "I'm drowning," use that. If they said "My boss is an asshole," quote it.
 
-Format your response as JSON with this structure:
+Provide:
+1. userQuote: Pull a direct quote (2-15 words) from the user that captures their core struggle. Use EXACTLY what they said.
+
+2. patterns: 3-4 bullet points connecting the dots between factors (sleep → irritability → work conflict). Be specific to their situation, not generic.
+
+3. cbt: Applied CBT analysis with:
+   - distortion: Name ONE specific cognitive distortion (catastrophizing, all-or-nothing thinking, mind reading, overgeneralization, etc.)
+   - userThought: Quote a thought pattern they revealed in the conversation (their EXACT words or close paraphrase)
+   - reframe: Specific reframe using details from their life. Not "think positively" - show them a different lens using their situation
+   - practice: One clear action they can take tonight or tomorrow. Concrete, not vague.
+
+4. Keep legacy fields for compatibility:
+   - reflection: 2-3 sentence empathetic reflection
+   - framework: Psychological concept explaining their experience
+   - recommendations: podcast, article, technique
+   - story: Relevant parable
+
+Format as JSON:
 {
+  "userQuote": "string (their exact words)",
+  "patterns": ["string", "string", "string"],
+  "cbt": {
+    "distortion": "string",
+    "userThought": "string (quoted from conversation)",
+    "reframe": "string (specific to their situation)",
+    "practice": "string (concrete action)"
+  },
   "reflection": "string",
   "framework": "string",
   "recommendations": {
@@ -234,6 +268,18 @@ Format your response as JSON with this structure:
         console.error('OpenAI API error:', response.status, error);
         if (useMockAI) {
           const mockResults = {
+            userQuote: "I'm drowning in everything",
+            patterns: [
+              "Sleep deprivation (4 hours) → heightened emotional reactivity",
+              "Work pressure + exhaustion → snapping at your partner",
+              "Guilt about the conflict → more stress → worse sleep (reinforcing cycle)"
+            ],
+            cbt: {
+              distortion: "Catastrophizing",
+              userThought: "I'm going to fail at work and ruin my relationship",
+              reframe: "You're juggling a lot right now, and one rough week doesn't define your competence or your relationship. Your partner knows you're stressed. Your boss hasn't said you're failing. You're extrapolating from feeling overwhelmed to total collapse, but that's the anxiety talking, not reality.",
+              practice: "Before bed tonight, text your partner one specific thing you appreciate about them. Tomorrow at work, identify one task you can delegate or push to next week. You can't do everything - pick what matters most right now."
+            },
             reflection: "It sounds like you're navigating a period of transition and growth. The stress you're experiencing seems to stem from balancing multiple responsibilities while trying to maintain your well-being. Your awareness of these challenges is already a positive step forward.",
             framework: "What you're experiencing aligns with the concept of 'cognitive load' - when our mental capacity is stretched across too many demands simultaneously. This is compounded by what psychologists call 'decision fatigue,' where the quality of our decisions deteriorates after making many decisions throughout the day. Your body and mind are signaling the need for more intentional rest and boundary-setting.",
             recommendations: {
@@ -271,6 +317,18 @@ Format your response as JSON with this structure:
         console.error('Failed to parse results:', e);
         // Fallback to a basic structure
         results = {
+          userQuote: "I'm struggling with a lot right now",
+          patterns: [
+            "Multiple demands on your energy and attention",
+            "Stress building up without clear release",
+            "Need for more intentional rest and boundaries"
+          ],
+          cbt: {
+            distortion: "All-or-nothing thinking",
+            userThought: "I have to handle everything perfectly or I'm failing",
+            reframe: "You can be doing your best while also struggling. Progress isn't about perfection - it's about taking the next right step, even when you're tired.",
+            practice: "Tonight, write down one thing you did well today, no matter how small. Then pick one thing you can let go of or delegate tomorrow."
+          },
           reflection: resultsText,
           framework: "General stress response theory",
           recommendations: {

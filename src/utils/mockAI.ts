@@ -23,6 +23,18 @@ export const getMockAIResponse = (messages: Message[]): string => {
 
 export const generateMockResults = (messages: Message[]): CheckInResults => {
   return {
+    userQuote: "I'm drowning in everything",
+    patterns: [
+      "Sleep deprivation (4 hours) → heightened emotional reactivity",
+      "Work pressure + exhaustion → snapping at your partner",
+      "Guilt about the conflict → more stress → worse sleep (reinforcing cycle)"
+    ],
+    cbt: {
+      distortion: "Catastrophizing",
+      userThought: "I'm going to fail at work and ruin my relationship",
+      reframe: "You're juggling a lot right now, and one rough week doesn't define your competence or your relationship. Your partner knows you're stressed. Your boss hasn't said you're failing. You're extrapolating from feeling overwhelmed to total collapse, but that's the anxiety talking, not reality.",
+      practice: "Before bed tonight, text your partner one specific thing you appreciate about them. Tomorrow at work, identify one task you can delegate or push to next week. You can't do everything - pick what matters most right now."
+    },
     reflection: "It sounds like you're navigating a period of transition and growth. The stress you're experiencing seems to stem from balancing multiple responsibilities while trying to maintain your well-being. Your awareness of these challenges is already a positive step forward.",
     framework: "What you're experiencing aligns with the concept of 'cognitive load' - when our mental capacity is stretched across too many demands simultaneously. This is compounded by what psychologists call 'decision fatigue,' where the quality of our decisions deteriorates after making many decisions throughout the day. Your body and mind are signaling the need for more intentional rest and boundary-setting.",
     recommendations: {

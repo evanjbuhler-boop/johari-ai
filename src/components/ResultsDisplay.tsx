@@ -26,11 +26,63 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
       <div className="max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6">
         
-        {/* Reflection Section - Warm gradient background */}
-        <Card className="p-8 md:p-10 border-none bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 shadow-lg">
-          <p className="text-xl md:text-2xl leading-relaxed text-foreground font-medium">
-            {results.reflection}
-          </p>
+        {/* Summary Card - Redesigned */}
+        <Card className="p-8 md:p-10 border-none bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 shadow-lg space-y-8">
+          
+          {/* Section 1: User's exact words */}
+          {results.userQuote && (
+            <div className="pb-6 border-b border-border/30">
+              <p className="text-2xl md:text-3xl leading-relaxed text-foreground font-medium italic">
+                "{results.userQuote}"
+              </p>
+            </div>
+          )}
+
+          {/* Section 2: Pattern identification */}
+          {results.patterns && results.patterns.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold text-foreground/90">Here's what I'm seeing:</h3>
+              <ul className="space-y-2">
+                {results.patterns.map((pattern, idx) => (
+                  <li key={idx} className="flex gap-3 text-base leading-relaxed text-foreground/80">
+                    <span className="text-primary mt-1">•</span>
+                    <span>{pattern}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Section 3: Applied CBT */}
+          {results.cbt && (
+            <div className="pt-6 border-t border-border/30 space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground/90 mb-2">
+                  Pattern: {results.cbt.distortion}
+                </h3>
+                <div className="space-y-3">
+                  <div className="bg-background/40 rounded-lg p-4">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Your thought:</p>
+                    <p className="text-base italic text-foreground/80">"{results.cbt.userThought}"</p>
+                  </div>
+                  
+                  <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
+                    <p className="text-sm font-medium text-primary mb-1">Different lens:</p>
+                    <p className="text-base leading-relaxed text-foreground">
+                      {results.cbt.reframe}
+                    </p>
+                  </div>
+                  
+                  <div className="bg-accent/10 rounded-lg p-4 border border-accent/30">
+                    <p className="text-sm font-medium text-accent-foreground mb-1">Try this:</p>
+                    <p className="text-base leading-relaxed text-foreground font-medium">
+                      {results.cbt.practice}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </Card>
 
         {/* Framework Section - What's Happening */}
