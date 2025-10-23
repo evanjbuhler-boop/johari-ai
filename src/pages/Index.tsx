@@ -122,7 +122,7 @@ const Index = () => {
     }
   };
 
-  const handleSendMessage = async (message: string) => {
+  const handleSendMessage = async (message: string, pathSelection?: string) => {
     const userMessage: Message = { role: 'user', content: message };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
@@ -130,7 +130,11 @@ const Index = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('chat', {
-        body: { messages: updatedMessages, type: 'conversation' }
+        body: { 
+          messages: updatedMessages, 
+          type: 'conversation',
+          conversationPath: pathSelection 
+        }
       });
 
       if (error) throw error;

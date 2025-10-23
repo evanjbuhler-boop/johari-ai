@@ -3,6 +3,8 @@ export interface Message {
   content: string;
 }
 
+export type ConversationPath = 'nightly_routine' | 'venting_session' | null;
+
 export interface ValidationData {
   emotions: string[];
   stressLevel: number;

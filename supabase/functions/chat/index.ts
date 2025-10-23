@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, type, mock } = await req.json();
+    const { messages, type, mock, conversationPath } = await req.json();
     const truthy = (v: unknown) => typeof v === 'string' ? ['true','1','yes','y','on'].includes(v.toLowerCase().trim()) : !!v;
     const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(mock);
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
@@ -22,7 +22,7 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not configured');
     }
 
-    console.log('Processing chat request, type:', type, 'messages:', messages.length, 'mock mode:', useMockAI);
+    console.log('Processing chat request, type:', type, 'path:', conversationPath, 'messages:', messages.length, 'mock mode:', useMockAI);
 
     // For conversation mode
     if (type === 'conversation') {
@@ -31,32 +31,53 @@ serve(async (req) => {
       // Mock mode - return realistic responses without calling API
       if (useMockAI) {
         const userMessage = messages[messages.length - 1].content.toLowerCase();
-        const previousMessages = messages.slice(0, -1);
         let mockResponse = '';
 
-        if (exchangeCount === 1) {
-          // Mirror and validate first
-          if (userMessage.includes('stress') || userMessage.includes('anxious') || userMessage.includes('overwhelmed')) {
-            mockResponse = "I'm hearing that stress is really weighing on you right now. That feeling of being anxious and overwhelmed - it's exhausting, isn't it? When did you first notice this intensity building up?";
-          } else if (userMessage.includes('fine')) {
-            mockResponse = "You say 'fine,' but I'm curious about what's beneath that word. Sometimes 'fine' can mean we're managing, but not necessarily thriving. What's been occupying your thoughts lately?";
+        // Check if this is path selection
+        if (userMessage.includes('nightly routine') || userMessage.includes('vent')) {
+          if (userMessage.includes('nightly routine')) {
+            mockResponse = "Great. Let's start with how you're feeling right now. Just one or two words.";
           } else {
-            mockResponse = "I'm picking up on what you're sharing - there's a lot happening for you right now. What part of your day has been sitting heaviest on your mind?";
+            mockResponse = "Go ahead—I'm listening.";
           }
-        } else if (exchangeCount === 2) {
-          const context = userMessage.includes('work') ? 'work pressures' : 'what you are dealing with';
-          mockResponse = `Okay, so you have got that going on. I'm noticing you mentioned earlier about ${context}. How has that been affecting your ability to rest? Are you actually getting restorative sleep, or just time in bed?`;
-        } else if (exchangeCount === 3) {
-          mockResponse = "I hear you on the rest piece. Now I'm wondering - when you think about how you are fueling yourself physically, how does that look? Not just what you are eating, but are you feeling energized or running on empty?";
-        } else if (exchangeCount === 4) {
-          const context = previousMessages.length > 2 ? 'some of the external stuff' : 'your situation';
-          mockResponse = `That makes sense given everything you have shared. One thing I'm curious about - you mentioned ${context}. Have there been any specific interactions or conflicts with people that have stuck with you?`;
+        } else if (exchangeCount === 1) {
+          // First interaction - offer path selection
+          if (userMessage.includes('stress') || userMessage.includes('anxious') || userMessage.includes('overwhelmed')) {
+            mockResponse = "I'm hearing that stress is really weighing on you right now. That feeling of being anxious and overwhelmed - it's exhausting, isn't it?\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
+          } else if (userMessage.includes('fine')) {
+            mockResponse = "You say 'fine,' but I'm curious about what's beneath that word. Sometimes 'fine' can mean we're managing, but not necessarily thriving.\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
+          } else {
+            mockResponse = "I'm picking up on what you're sharing - there's a lot happening for you right now.\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
+          }
+        } else if (conversationPath === 'nightly_routine') {
+          // Structured nightly routine responses
+          if (exchangeCount === 2) {
+            mockResponse = "What's one thing that stood out today—good or hard?";
+          } else if (exchangeCount === 3) {
+            mockResponse = "What about that moment made it stick with you?";
+          } else if (exchangeCount === 4) {
+            mockResponse = "What's on your mind for tomorrow—anything you're worried about?";
+          } else if (exchangeCount === 5) {
+            mockResponse = "What's the part making you most anxious about it?";
+          } else if (exchangeCount === 6) {
+            mockResponse = "How's your body doing—sleep, energy, anything physical?";
+          } else {
+            mockResponse = "Thanks for checking in tonight. I'm going to pull together some thoughts for you.";
+          }
+        } else if (conversationPath === 'venting_session') {
+          // Venting session responses - listen and reflect
+          if (exchangeCount === 2 || exchangeCount === 3) {
+            mockResponse = "I'm here, keep going.";
+          } else if (exchangeCount === 4) {
+            mockResponse = "Okay, so it sounds like you're carrying a lot right now. What's the main thing weighing on you the most?";
+          } else {
+            mockResponse = "I hear you. Thanks for sharing all of that with me.";
+          }
         } else {
-          const context = userMessage.includes('conflict') ? 'those difficult interactions' : 'everything';
-          mockResponse = `I'm getting a fuller picture now of what you are carrying. The way you have described ${context} - that's real, and it's affecting you. Let me reflect back what I'm hearing, and we will find some ways forward.`;
+          mockResponse = "I'm here listening. Tell me more.";
         }
 
-        console.log('Returning mock response for exchange:', exchangeCount);
+        console.log('Returning mock response for exchange:', exchangeCount, 'path:', conversationPath);
         return new Response(
           JSON.stringify({ content: mockResponse }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -68,33 +89,60 @@ serve(async (req) => {
         `${m.role === 'user' ? 'User' : 'You'}: ${m.content}`
       ).join('\n');
 
-      let systemPrompt = `You are a compassionate evening check-in coach. You help people process their day and understand patterns affecting their wellbeing.
+      // Determine conversation mode
+      let systemPrompt = '';
+      
+      if (conversationPath === 'nightly_routine') {
+        // Structured 4-phase routine
+        const userExchanges = messages.filter((m: any) => m.role === 'user').length;
+        const phase = Math.min(4, userExchanges);
+        
+        systemPrompt = `You are guiding a nightly routine check-in. User selected structured routine.
 
-${previousExchanges ? `Previous conversation:\n${previousExchanges}\n\nBuild on what they've shared naturally.` : 'Start with: "How was your day?"'}
+${previousExchanges ? `Previous conversation:\n${previousExchanges}\n` : ''}
 
-INTERACTION STYLE:
-- Detect emotions quickly: anxious, frustrated, sad, exhausted, overwhelmed, content
-- Ask natural follow-up questions based on what they reveal
-- Match their energy: if venting, listen; if asking for advice, give it
-- Be warm but concise - keep responses under 3 sentences unless they ask for detail
+PHASE ${phase} OF 4:
+${phase === 1 ? '1. EMOTION CHECK-IN: Ask "How are you feeling right now? Just one or two words."' : ''}
+${phase === 2 ? '2. DAILY HIGHLIGHT/LOWLIGHT: Ask "What\'s one thing that stood out today—good or hard?" Then follow up with "What about that moment made it stick with you?"' : ''}
+${phase === 3 ? '3. WORRY PROCESSING: Ask "What\'s on your mind for tomorrow—anything you\'re worried about?" Follow up: "What\'s the part making you most anxious?" Then validate: "So it sounds like [X]—does that feel right?"' : ''}
+${phase === 4 ? '4. LIFESTYLE PULSE: Ask "How\'s your body doing—sleep, energy, anything physical?" Connect it: "That might be why you\'re feeling [emotion]—your body is running on fumes."' : ''}
 
-EXTRACT DATA NATURALLY (don't ask like a survey):
-- Sleep quality and hours
-- Exercise or movement
-- Caffeine/alcohol intake
-- Main stress sources
-- Any conflicts or difficult interactions
+STYLE:
+- One question at a time
+- Keep responses 1-2 sentences
+- Validate collaboratively
+- No therapy-speak`;
 
-DON'T:
-- Over-reflect what they said ("I hear you saying...")
-- Ask "How does that make you feel?" repeatedly
-- Be overly therapeutic or validating
+      } else if (conversationPath === 'venting_session') {
+        // Free-form venting mode
+        systemPrompt = `You are listening to someone vent. User selected venting session.
 
-DO:
-- Name the emotion you detect
-- Ask targeted follow-ups
-- Be direct when needed
-- Offer perspective or advice if they ask`;
+${previousExchanges ? `Previous conversation:\n${previousExchanges}\n` : ''}
+
+YOUR ROLE:
+- Let them talk freely
+- Don't interrupt or ask questions initially
+- Track emotions, stressors, and worries mentioned
+- After they finish (or pause), reflect: "So it sounds like you're carrying [summarize]... What's the main thing weighing on you most?"
+
+STYLE:
+- Warm but not effusive
+- Minimal responses until they're done
+- No advice unless asked
+- Reflect back what you heard`;
+
+      } else {
+        // Initial conversation before path selection
+        systemPrompt = `You are a compassionate evening check-in coach. This is the first interaction.
+
+FIRST RESPONSE ONLY:
+1. Give empathetic reflection of what they shared (1-2 sentences)
+2. Then say: "Would you like to:
+→ Do your nightly routine (helps you process and wind down)
+→ Just vent right now (I'm here to listen)"
+
+Keep it conversational and warm but brief.`;
+      }
 
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',

@@ -9,7 +9,7 @@ interface ChatInterfaceProps {
   initialMessage: string;
   onComplete: () => void;
   messages: Message[];
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, pathSelection?: string) => void;
   onBack: () => void;
   isLoading: boolean;
 }
@@ -17,6 +17,8 @@ interface ChatInterfaceProps {
 const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
   const [showEarlyExit, setShowEarlyExit] = useState(false);
+  const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
+  const [showPathSelection, setShowPathSelection] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
   
@@ -29,20 +31,32 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    // Show early exit option after 3 exchanges
-    if (exchangeCount >= 3) {
+    
+    // Show path selection after first AI response (when there are 2 messages total)
+    if (messages.length === 2 && !conversationPath && !showPathSelection) {
+      setShowPathSelection(true);
+    }
+    
+    // Show early exit option after path selected and 3+ exchanges
+    if (conversationPath && exchangeCount >= 3) {
       setShowEarlyExit(true);
     }
-  }, [messages, exchangeCount]);
+  }, [messages, exchangeCount, conversationPath, showPathSelection]);
+
+  const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
+    setConversationPath(path);
+    setShowPathSelection(false);
+    onSendMessage(path === 'nightly_routine' ? 'Do my nightly routine' : 'I just need to vent', path);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
-      onSendMessage(input);
+      onSendMessage(input, conversationPath || undefined);
       setInput('');
       
-      // Auto-complete after 7 user messages (soft limit)
-      if (exchangeCount >= 6) {
+      // Auto-complete after 7 user messages (soft limit) only if path is selected
+      if (conversationPath && exchangeCount >= 6) {
         setTimeout(() => onComplete(), 2000);
       }
     }
@@ -122,6 +136,44 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
               </div>
             </div>
           ))}
+          
+          {/* Path Selection */}
+          {showPathSelection && !conversationPath && !isLoading && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
+              <div className="max-w-[85%] space-y-4">
+                <p className="text-sm text-muted-foreground mb-3">Would you like to:</p>
+                <button
+                  onClick={() => handlePathSelection('nightly_routine')}
+                  className="w-full text-left p-6 rounded-2xl border-2 border-border hover:border-primary transition-all duration-200 bg-card hover:bg-accent group"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                      <CheckCircle className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-base mb-1">Do your nightly routine</h3>
+                      <p className="text-sm text-muted-foreground">Structured check-in to help you process and wind down</p>
+                    </div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => handlePathSelection('venting_session')}
+                  className="w-full text-left p-6 rounded-2xl border-2 border-border hover:border-primary transition-all duration-200 bg-card hover:bg-accent group"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                      <MessageSquare className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-base mb-1">Just vent right now</h3>
+                      <p className="text-sm text-muted-foreground">Talk freely—I'm here to listen</p>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+          
           {isLoading && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
               <div className="max-w-[85%] rounded-2xl px-6 py-4 bg-card text-card-foreground border border-border">
