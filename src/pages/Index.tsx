@@ -3,18 +3,20 @@ import LandingPrompt from '@/components/LandingPrompt';
 import ChatInterface from '@/components/ChatInterface';
 import ProfileForm from '@/components/ProfileForm';
 import ResultsDisplay from '@/components/ResultsDisplay';
-import { Message, UserProfile, CheckInResults } from '@/types/checkin';
+import ValidationScreen from '@/components/ValidationScreen';
+import { Message, UserProfile, CheckInResults, ValidationData } from '@/types/checkin';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { getMockAIResponse, generateMockResults } from '@/utils/mockAI';
 
-type AppState = 'landing' | 'chat' | 'profile' | 'results';
+type AppState = 'landing' | 'chat' | 'validation' | 'profile' | 'results';
 
 const Index = () => {
   const [state, setState] = useState<AppState>('landing');
   const [messages, setMessages] = useState<Message[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [results, setResults] = useState<CheckInResults | null>(null);
+  const [validationData, setValidationData] = useState<ValidationData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -25,6 +27,40 @@ const Index = () => {
       setProfile(JSON.parse(savedProfile));
     }
   }, []);
+
+  // Extract validation data from conversation
+  const extractValidationData = (messages: Message[]): ValidationData => {
+    const conversationText = messages.map(m => m.content).join(' ').toLowerCase();
+    
+    // Simple keyword-based extraction (in production, this would be done by AI)
+    const emotions: string[] = [];
+    if (conversationText.includes('stress') || conversationText.includes('anxious')) emotions.push('Anxious');
+    if (conversationText.includes('overwhelm')) emotions.push('Overwhelmed');
+    if (conversationText.includes('exhaust') || conversationText.includes('tired')) emotions.push('Exhausted');
+    if (conversationText.includes('frustrat')) emotions.push('Frustrated');
+    if (conversationText.includes('sad') || conversationText.includes('down')) emotions.push('Sad');
+    
+    const stressors: string[] = [];
+    if (conversationText.includes('work')) stressors.push('Work');
+    if (conversationText.includes('sleep')) stressors.push('Sleep');
+    if (conversationText.includes('wife') || conversationText.includes('relationship')) stressors.push('Relationships');
+    
+    let stressLevel = 5;
+    if (conversationText.includes('very stress') || conversationText.includes('extremely')) stressLevel = 8;
+    else if (conversationText.includes('a bit') || conversationText.includes('somewhat')) stressLevel = 4;
+    
+    // Extract sleep if mentioned
+    const sleepMatch = conversationText.match(/(\d+)\s*hour/);
+    const sleepHours = sleepMatch ? parseInt(sleepMatch[1]) : undefined;
+    
+    return {
+      emotions: emotions.length > 0 ? emotions : ['Stressed'],
+      stressLevel,
+      mainStressors: stressors.length > 0 ? stressors : ['General stress'],
+      sleepHours,
+      sleepQuality: sleepHours && sleepHours < 6 ? 'poor quality' : undefined,
+    };
+  };
 
   const handleLandingSubmit = async (message: string) => {
     const userMessage: Message = { role: 'user', content: message };
@@ -109,84 +145,55 @@ const Index = () => {
   };
 
   const handleChatComplete = async () => {
+    // Extract validation data from conversation and show validation screen
+    const extracted = extractValidationData(messages);
+    setValidationData(extracted);
+    setState('validation');
+  };
+
+  const handleValidationConfirm = async (data: ValidationData) => {
+    setValidationData(data);
+    
     // If user hasn't filled profile before, show profile form
     if (!profile) {
       setState('profile');
     } else {
-      // Otherwise, generate results with Claude
-      try {
-        const { data, error } = await supabase.functions.invoke('chat', {
-          body: { messages, type: 'results' }
-        });
-
-        if (error) throw error;
-
-        setResults(data);
-        setState('results');
-        
-        // Save to localStorage
-        const checkInData = {
-          messages,
-          results: data,
-          profile,
-          timestamp: new Date().toISOString(),
-        };
-        localStorage.setItem('lastCheckIn', JSON.stringify(checkInData));
-        
-        toast({
-          title: "Check-in saved",
-          description: "Your emotional check-in has been recorded.",
-        });
-      } catch (error) {
-        console.error('Error generating results:', error);
-        // Fallback to mock results
-        const mockResults = generateMockResults(messages);
-        setResults(mockResults);
-        setState('results');
-        
-        const checkInData = {
-          messages,
-          results: mockResults,
-          profile,
-          timestamp: new Date().toISOString(),
-        };
-        localStorage.setItem('lastCheckIn', JSON.stringify(checkInData));
-        
-        toast({
-          title: "Using offline mode",
-          description: "Check-in completed with local responses.",
-        });
-      }
+      // Generate results
+      await generateResults(data);
     }
   };
 
-  const handleProfileSubmit = async (userProfile: UserProfile) => {
-    setProfile(userProfile);
-    localStorage.setItem('userProfile', JSON.stringify(userProfile));
-    
-    // Generate results with Claude
+  const handleValidationAdjust = () => {
+    toast({
+      title: "Make your adjustments",
+      description: "Update any fields that don't feel right.",
+    });
+  };
+
+  const generateResults = async (data: ValidationData) => {
     try {
-      const { data, error } = await supabase.functions.invoke('chat', {
-        body: { messages, type: 'results' }
+      const { data: resultsData, error } = await supabase.functions.invoke('chat', {
+        body: { messages, validationData: data, type: 'results' }
       });
 
       if (error) throw error;
 
-      setResults(data);
+      setResults(resultsData);
       setState('results');
       
       // Save to localStorage
       const checkInData = {
         messages,
-        results: data,
-        profile: userProfile,
+        validationData: data,
+        results: resultsData,
+        profile,
         timestamp: new Date().toISOString(),
       };
       localStorage.setItem('lastCheckIn', JSON.stringify(checkInData));
       
       toast({
-        title: "Profile saved",
-        description: "Your profile has been created successfully.",
+        title: "Check-in saved",
+        description: "Your emotional check-in has been recorded.",
       });
     } catch (error) {
       console.error('Error generating results:', error);
@@ -197,22 +204,34 @@ const Index = () => {
       
       const checkInData = {
         messages,
+        validationData: data,
         results: mockResults,
-        profile: userProfile,
+        profile,
         timestamp: new Date().toISOString(),
       };
       localStorage.setItem('lastCheckIn', JSON.stringify(checkInData));
       
       toast({
         title: "Using offline mode",
-        description: "Profile saved with local responses.",
+        description: "Check-in completed with local responses.",
       });
+    }
+  };
+
+  const handleProfileSubmit = async (userProfile: UserProfile) => {
+    setProfile(userProfile);
+    localStorage.setItem('userProfile', JSON.stringify(userProfile));
+    
+    // Generate results with validation data
+    if (validationData) {
+      await generateResults(validationData);
     }
   };
 
   const handleNewCheckIn = () => {
     setMessages([]);
     setResults(null);
+    setValidationData(null);
     setState('landing');
   };
 
@@ -229,6 +248,16 @@ const Index = () => {
         onSendMessage={handleSendMessage}
         onBack={handleNewCheckIn}
         isLoading={isLoading}
+      />
+    );
+  }
+
+  if (state === 'validation' && validationData) {
+    return (
+      <ValidationScreen
+        initialData={validationData}
+        onConfirm={handleValidationConfirm}
+        onAdjust={handleValidationAdjust}
       />
     );
   }

@@ -3,6 +3,17 @@ export interface Message {
   content: string;
 }
 
+export interface ValidationData {
+  emotions: string[];
+  stressLevel: number;
+  mainStressors: string[];
+  sleepHours?: number;
+  sleepQuality?: string;
+  exercise?: string;
+  caffeineIntake?: string;
+  conflicts?: string;
+}
+
 export interface EmotionalData {
   emotionalState: string;
   stressLevel: number;
