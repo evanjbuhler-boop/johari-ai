@@ -110,8 +110,9 @@ Keep responses 3-4 sentences. Show you're truly listening by being specific abou
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-5-2025-08-07',
-          max_completion_tokens: 300,
+          model: 'gpt-4o-mini',
+          max_tokens: 300,
+          temperature: 0.7,
           messages: [
             { role: 'system', content: systemPrompt },
             ...messages
@@ -155,7 +156,14 @@ Keep responses 3-4 sentences. Show you're truly listening by being specific abou
       console.log('Choices:', data.choices);
       console.log('Message content:', data.choices?.[0]?.message?.content);
       
-      const content = data.choices?.[0]?.message?.content || '';
+      let content = data.choices?.[0]?.message?.content as string | undefined;
+      if (!content || !content.trim()) {
+        const lastUser = [...messages].reverse().find((m: any) => m.role === 'user')?.content ?? '';
+        content = lastUser
+          ? `I hear you. It sounds like ${lastUser.slice(0, 120)}... Can you tell me a bit more about what's feeling heaviest right now?`
+          : "I'm here. Can you share a bit more about what's on your mind?";
+        console.warn('Assistant content was empty. Returning safe fallback instead of empty string.');
+      }
       
       return new Response(
         JSON.stringify({ content }),
@@ -215,8 +223,9 @@ Format your response as JSON with this structure:
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-5-2025-08-07',
-          max_completion_tokens: 2000,
+          model: 'gpt-4o-mini',
+          max_tokens: 2000,
+          temperature: 0.7,
           messages: [
             { role: 'system', content: systemPrompt },
             {
