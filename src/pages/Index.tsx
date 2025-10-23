@@ -37,9 +37,14 @@ const Index = () => {
 
       if (error) throw error;
 
+      const content = typeof data?.content === 'string' ? data.content.trim() : '';
+      if (!content) {
+        throw new Error('Empty AI response');
+      }
+
       const aiResponse: Message = {
         role: 'assistant',
-        content: data.content
+        content,
       };
       setMessages([userMessage, aiResponse]);
     } catch (error) {
@@ -70,9 +75,14 @@ const Index = () => {
 
       if (error) throw error;
 
+      const content = typeof data?.content === 'string' ? data.content.trim() : '';
+      if (!content) {
+        throw new Error('Empty AI response');
+      }
+
       const aiResponse: Message = {
         role: 'assistant',
-        content: data.content
+        content,
       };
       setMessages([...updatedMessages, aiResponse]);
     } catch (error) {
