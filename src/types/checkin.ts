@@ -12,6 +12,14 @@ export interface ValidationData {
   exercise?: string;
   caffeineIntake?: string;
   conflicts?: string;
+  
+  // New structured validation fields
+  contributingFactors: string[];
+  customFactor?: string;
+  patternAccuracy: 'yes' | 'partial' | 'no' | null;
+  patternFeedback?: string;
+  desiredSupport: string[];
+  aiGeneratedPattern?: string;
 }
 
 export interface EmotionalData {

@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
-import { X, Plus, ChevronDown, ChevronUp } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { X, Plus } from 'lucide-react';
 import { ValidationData } from '@/types/checkin';
 import {
   Select,
@@ -26,17 +29,30 @@ const EMOTION_OPTIONS = [
   'Content', 'Worried', 'Defeated', 'Energized'
 ];
 
-const STRESSOR_OPTIONS = [
-  'Work', 'Relationships', 'Sleep', 'Health', 'Money',
-  'Identity', 'Family', 'Future uncertainty', 'Loneliness',
-  'Performance pressure', 'Time management', 'Social media'
+const CONTRIBUTING_FACTORS = [
+  { id: 'work', label: 'Work pressure or upcoming difficult conversations' },
+  { id: 'sleep', label: 'Sleep issues (poor quality or insufficient hours)' },
+  { id: 'caffeine', label: 'High caffeine, alcohol, or substance changes' },
+  { id: 'relationships', label: 'Relationship conflicts or tensions' },
+  { id: 'physical', label: 'Physical symptoms (pain, tension, fatigue)' },
+  { id: 'life-changes', label: 'Recent life changes or transitions' },
+  { id: 'financial', label: 'Financial stress' },
+  { id: 'isolation', label: 'Feeling isolated or lacking support' }
+];
+
+const SUPPORT_OPTIONS = [
+  { id: 'immediate-tools', label: 'Immediate tools to manage anxiety or stress' },
+  { id: 'sleep-strategies', label: 'Better sleep strategies' },
+  { id: 'communication', label: 'Communication techniques for difficult conversations' },
+  { id: 'physical', label: 'Exercise or physical wellness guidance' },
+  { id: 'long-term', label: 'Long-term stress management' },
+  { id: 'talk', label: 'I just needed to talk this through' }
 ];
 
 const ValidationScreen = ({ initialData, onConfirm, onAdjust }: ValidationScreenProps) => {
   const [data, setData] = useState<ValidationData>(initialData);
-  const [showDetails, setShowDetails] = useState(false);
   const [newEmotion, setNewEmotion] = useState('');
-  const [newStressor, setNewStressor] = useState('');
+  const [showCustomFactor, setShowCustomFactor] = useState(false);
 
   const removeEmotion = (emotion: string) => {
     setData(prev => ({
@@ -55,21 +71,22 @@ const ValidationScreen = ({ initialData, onConfirm, onAdjust }: ValidationScreen
     }
   };
 
-  const removeStressor = (stressor: string) => {
+  const toggleContributingFactor = (factorId: string) => {
     setData(prev => ({
       ...prev,
-      mainStressors: prev.mainStressors.filter(s => s !== stressor)
+      contributingFactors: prev.contributingFactors.includes(factorId)
+        ? prev.contributingFactors.filter(f => f !== factorId)
+        : [...prev.contributingFactors, factorId]
     }));
   };
 
-  const addStressor = (stressor: string) => {
-    if (stressor && !data.mainStressors.includes(stressor)) {
-      setData(prev => ({
-        ...prev,
-        mainStressors: [...prev.mainStressors, stressor]
-      }));
-      setNewStressor('');
-    }
+  const toggleSupportOption = (optionId: string) => {
+    setData(prev => ({
+      ...prev,
+      desiredSupport: prev.desiredSupport.includes(optionId)
+        ? prev.desiredSupport.filter(s => s !== optionId)
+        : [...prev.desiredSupport, optionId]
+    }));
   };
 
   const getStressColor = (level: number) => {
@@ -77,6 +94,10 @@ const ValidationScreen = ({ initialData, onConfirm, onAdjust }: ValidationScreen
     if (level <= 6) return 'from-yellow-500/20 to-yellow-600/20';
     return 'from-red-500/20 to-red-600/20';
   };
+
+  const isComplete = data.emotions.length > 0 && 
+                     data.patternAccuracy !== null &&
+                     (data.patternAccuracy === 'yes' || (data.patternFeedback && data.patternFeedback.trim().length > 0));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background p-4 md:p-8">
@@ -92,35 +113,39 @@ const ValidationScreen = ({ initialData, onConfirm, onAdjust }: ValidationScreen
           </p>
         </div>
 
-        {/* Emotional State */}
+        {/* SECTION 1: EMOTIONS & STRESS */}
         <Card className="p-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
           <h2 className="text-xl font-semibold text-foreground mb-4">
             It sounds like you're feeling:
           </h2>
+          
+          {/* Emotion Pills */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {data.emotions.map((emotion) => (
+            {data.emotions.map(emotion => (
               <Badge 
                 key={emotion}
                 variant="secondary"
-                className="px-4 py-2 text-sm flex items-center gap-2 hover:bg-secondary/80 transition-colors"
+                className="px-3 py-2 text-sm flex items-center gap-2 hover:bg-secondary/80 transition-colors"
               >
                 {emotion}
                 <button
                   onClick={() => removeEmotion(emotion)}
-                  className="hover:text-destructive transition-colors"
+                  className="hover:bg-background/50 rounded-full p-0.5 transition-colors"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="h-3 w-3" />
                 </button>
               </Badge>
             ))}
           </div>
-          <div className="flex gap-2">
+
+          {/* Add Emotion */}
+          <div className="mb-6">
             <Select value={newEmotion} onValueChange={addEmotion}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full md:w-64">
                 <SelectValue placeholder="+ Add another feeling" />
               </SelectTrigger>
               <SelectContent>
-                {EMOTION_OPTIONS.filter(e => !data.emotions.includes(e)).map((emotion) => (
+                {EMOTION_OPTIONS.filter(e => !data.emotions.includes(e)).map(emotion => (
                   <SelectItem key={emotion} value={emotion}>
                     {emotion}
                   </SelectItem>
@@ -128,155 +153,167 @@ const ValidationScreen = ({ initialData, onConfirm, onAdjust }: ValidationScreen
               </SelectContent>
             </Select>
           </div>
-        </Card>
 
-        {/* Stress Level */}
-        <Card className={`p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100 bg-gradient-to-br ${getStressColor(data.stressLevel)}`}>
-          <h2 className="text-xl font-semibold text-foreground mb-4">
-            Your stress level feels around:
-          </h2>
+          {/* Stress Slider */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-              <span>Low</span>
-              <span className="text-xl font-bold text-foreground">{data.stressLevel}</span>
-              <span>High</span>
+            <p className="text-base text-foreground/80">Your stress level feels around:</p>
+            <div className={`bg-gradient-to-r ${getStressColor(data.stressLevel)} rounded-lg p-6 space-y-4`}>
+              <Slider
+                value={[data.stressLevel]}
+                onValueChange={([value]) => setData(prev => ({ ...prev, stressLevel: value }))}
+                min={1}
+                max={10}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm font-medium">
+                <span className="text-muted-foreground">Low (1)</span>
+                <span className="text-2xl font-bold text-foreground">{data.stressLevel}</span>
+                <span className="text-muted-foreground">High (10)</span>
+              </div>
             </div>
-            <Slider
-              value={[data.stressLevel]}
-              onValueChange={([value]) => setData(prev => ({ ...prev, stressLevel: value }))}
-              max={10}
-              min={1}
-              step={1}
-              className="w-full"
-            />
           </div>
         </Card>
 
-        {/* Main Stressors */}
-        <Card className="p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
+        {/* SECTION 2: CONTRIBUTING FACTORS */}
+        <Card className="p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100">
           <h2 className="text-xl font-semibold text-foreground mb-4">
-            These seem to be weighing on you:
+            Here's what seems to be contributing:
           </h2>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {data.mainStressors.map((stressor) => (
-              <Badge 
-                key={stressor}
-                variant="outline"
-                className="px-4 py-2 text-sm flex items-center gap-2 hover:bg-accent/10 transition-colors"
-              >
-                {stressor}
-                <button
-                  onClick={() => removeStressor(stressor)}
-                  className="hover:text-destructive transition-colors"
+          
+          <div className="space-y-3 mb-4">
+            {CONTRIBUTING_FACTORS.map(factor => (
+              <div key={factor.id} className="flex items-start gap-3">
+                <Checkbox
+                  id={factor.id}
+                  checked={data.contributingFactors.includes(factor.id)}
+                  onCheckedChange={() => toggleContributingFactor(factor.id)}
+                  className="mt-1"
+                />
+                <Label 
+                  htmlFor={factor.id}
+                  className="text-base leading-relaxed cursor-pointer flex-1"
                 >
-                  <X className="w-3 h-3" />
-                </button>
-              </Badge>
+                  {factor.label}
+                </Label>
+              </div>
             ))}
           </div>
-          <div className="flex gap-2">
-            <Select value={newStressor} onValueChange={addStressor}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="+ Add stressor" />
-              </SelectTrigger>
-              <SelectContent>
-                {STRESSOR_OPTIONS.filter(s => !data.mainStressors.includes(s)).map((stressor) => (
-                  <SelectItem key={stressor} value={stressor}>
-                    {stressor}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </Card>
 
-        {/* Quick Data Points - Collapsible */}
-        <Card className="p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
-          <button
-            onClick={() => setShowDetails(!showDetails)}
-            className="w-full flex items-center justify-between"
-          >
-            <h2 className="text-xl font-semibold text-foreground">
-              A few other things I noticed
-            </h2>
-            {showDetails ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          </button>
-          
-          {showDetails && (
-            <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-              <div className="flex items-center justify-between">
-                <span className="text-foreground/80">Sleep:</span>
-                <Input
-                  value={data.sleepHours ? `${data.sleepHours} hours, ${data.sleepQuality}` : 'Not mentioned'}
-                  onChange={(e) => {
-                    const match = e.target.value.match(/(\d+)/);
-                    if (match) {
-                      setData(prev => ({ ...prev, sleepHours: parseInt(match[1]) }));
-                    }
-                  }}
-                  className="w-48 text-right"
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-foreground/80">Exercise:</span>
-                <Input
-                  value={data.exercise || 'Not mentioned'}
-                  onChange={(e) => setData(prev => ({ ...prev, exercise: e.target.value }))}
-                  className="w-48 text-right"
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-foreground/80">Caffeine:</span>
-                <Input
-                  value={data.caffeineIntake || 'Not mentioned'}
-                  onChange={(e) => setData(prev => ({ ...prev, caffeineIntake: e.target.value }))}
-                  className="w-48 text-right"
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-foreground/80">Conflicts:</span>
-                <Input
-                  value={data.conflicts || 'Not mentioned'}
-                  onChange={(e) => setData(prev => ({ ...prev, conflicts: e.target.value }))}
-                  className="w-48 text-right"
-                />
-              </div>
+          {/* Add Custom Factor */}
+          {!showCustomFactor ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowCustomFactor(true)}
+              className="gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Add another factor
+            </Button>
+          ) : (
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+              <Textarea
+                placeholder="What else is contributing?"
+                value={data.customFactor || ''}
+                onChange={(e) => setData(prev => ({ ...prev, customFactor: e.target.value }))}
+                className="min-h-[80px]"
+              />
             </div>
           )}
         </Card>
 
-        {/* Confidence Check */}
-        <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-400">
-          <h2 className="text-xl font-semibold text-foreground mb-6 text-center">
-            Does this feel accurate?
+        {/* SECTION 3: PATTERN CHECK */}
+        <Card className="p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
+          <h2 className="text-xl font-semibold text-foreground mb-4">
+            Here's the pattern I'm seeing:
           </h2>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              onClick={() => onConfirm(data)}
-              size="lg"
-              className="px-8"
-            >
-              Yes, that's right
-            </Button>
-            <Button
-              onClick={onAdjust}
-              variant="outline"
-              size="lg"
-              className="px-8"
-            >
-              Not quite - let me adjust
-            </Button>
+          
+          {/* AI Pattern Summary */}
+          <div className="bg-primary/5 rounded-lg p-5 mb-6 border border-primary/10">
+            <p className="text-lg leading-relaxed text-foreground">
+              {data.aiGeneratedPattern || "You're juggling multiple demands while running on insufficient rest. The stress isn't just about one thing—it's the cumulative load of everything happening at once while your body is signaling it needs recovery."}
+            </p>
+          </div>
+
+          {/* Accuracy Check */}
+          <p className="text-base text-foreground/80 mb-3">Does this feel accurate?</p>
+          <RadioGroup
+            value={data.patternAccuracy || ''}
+            onValueChange={(value) => setData(prev => ({ 
+              ...prev, 
+              patternAccuracy: value as 'yes' | 'partial' | 'no'
+            }))}
+            className="space-y-3"
+          >
+            <div className="flex items-center space-x-3">
+              <RadioGroupItem value="yes" id="yes" />
+              <Label htmlFor="yes" className="text-base cursor-pointer">
+                Yes, that's it
+              </Label>
+            </div>
+            <div className="flex items-center space-x-3">
+              <RadioGroupItem value="partial" id="partial" />
+              <Label htmlFor="partial" className="text-base cursor-pointer">
+                Partially—something's missing
+              </Label>
+            </div>
+            <div className="flex items-center space-x-3">
+              <RadioGroupItem value="no" id="no" />
+              <Label htmlFor="no" className="text-base cursor-pointer">
+                Not quite right
+              </Label>
+            </div>
+          </RadioGroup>
+
+          {/* Conditional Feedback */}
+          {(data.patternAccuracy === 'partial' || data.patternAccuracy === 'no') && (
+            <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
+              <Textarea
+                placeholder="What should I know?"
+                value={data.patternFeedback || ''}
+                onChange={(e) => setData(prev => ({ ...prev, patternFeedback: e.target.value }))}
+                className="min-h-[100px]"
+              />
+            </div>
+          )}
+        </Card>
+
+        {/* SECTION 4: WHAT WOULD HELP */}
+        <Card className="p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
+          <h2 className="text-xl font-semibold text-foreground mb-4">
+            What kind of support would be most helpful right now?
+          </h2>
+          
+          <div className="space-y-3">
+            {SUPPORT_OPTIONS.map(option => (
+              <div key={option.id} className="flex items-start gap-3">
+                <Checkbox
+                  id={option.id}
+                  checked={data.desiredSupport.includes(option.id)}
+                  onCheckedChange={() => toggleSupportOption(option.id)}
+                  className="mt-1"
+                />
+                <Label 
+                  htmlFor={option.id}
+                  className="text-base leading-relaxed cursor-pointer flex-1"
+                >
+                  {option.label}
+                </Label>
+              </div>
+            ))}
           </div>
         </Card>
 
         {/* Continue Button */}
-        <div className="text-center pt-4">
+        <div className="flex justify-center pt-4">
           <Button
-            onClick={() => onConfirm(data)}
             size="lg"
-            className="px-12"
+            onClick={() => onConfirm(data)}
+            disabled={!isComplete}
+            className="px-12 py-6 text-lg"
           >
-            Get my recommendations
+            Continue →
           </Button>
         </div>
       </div>

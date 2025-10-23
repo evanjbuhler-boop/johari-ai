@@ -45,6 +45,21 @@ const Index = () => {
     if (conversationText.includes('sleep')) stressors.push('Sleep');
     if (conversationText.includes('wife') || conversationText.includes('relationship')) stressors.push('Relationships');
     
+    // Extract contributing factors
+    const contributingFactors: string[] = [];
+    if (conversationText.includes('work') || conversationText.includes('boss') || conversationText.includes('meeting')) {
+      contributingFactors.push('work');
+    }
+    if (conversationText.includes('sleep') || conversationText.includes('tired') || conversationText.includes('rest')) {
+      contributingFactors.push('sleep');
+    }
+    if (conversationText.includes('coffee') || conversationText.includes('caffeine') || conversationText.includes('alcohol')) {
+      contributingFactors.push('caffeine');
+    }
+    if (conversationText.includes('wife') || conversationText.includes('relationship') || conversationText.includes('partner') || conversationText.includes('conflict')) {
+      contributingFactors.push('relationships');
+    }
+    
     let stressLevel = 5;
     if (conversationText.includes('very stress') || conversationText.includes('extremely')) stressLevel = 8;
     else if (conversationText.includes('a bit') || conversationText.includes('somewhat')) stressLevel = 4;
@@ -59,6 +74,10 @@ const Index = () => {
       mainStressors: stressors.length > 0 ? stressors : ['General stress'],
       sleepHours,
       sleepQuality: sleepHours && sleepHours < 6 ? 'poor quality' : undefined,
+      contributingFactors,
+      patternAccuracy: null,
+      desiredSupport: [],
+      aiGeneratedPattern: "You're juggling multiple demands while running on insufficient rest. The stress isn't just about one thing—it's the cumulative load of everything happening at once while your body is signaling it needs recovery."
     };
   };
 
