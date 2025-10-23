@@ -2,16 +2,17 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Message } from '@/types/checkin';
-import { Send } from 'lucide-react';
+import { Send, ArrowLeft } from 'lucide-react';
 
 interface ChatInterfaceProps {
   initialMessage: string;
   onComplete: () => void;
   messages: Message[];
   onSendMessage: (message: string) => void;
+  onBack: () => void;
 }
 
-const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage }: ChatInterfaceProps) => {
+const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
@@ -36,7 +37,16 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage }: 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8">
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={onBack}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
           <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
             {exchangeCount}/5 exchanges
           </div>

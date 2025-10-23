@@ -173,6 +173,7 @@ const Index = () => {
         onComplete={handleChatComplete}
         messages={messages}
         onSendMessage={handleSendMessage}
+        onBack={handleNewCheckIn}
       />
     );
   }
