@@ -36,18 +36,20 @@ serve(async (req) => {
         // Check if this is path selection
         if (userMessage.includes('nightly routine') || userMessage.includes('vent')) {
           if (userMessage.includes('nightly routine')) {
-            mockResponse = "Great. Let's start with how you're feeling right now. Just one or two words.";
+            mockResponse = "Got it. How are you feeling right now? Just one or two words.";
           } else {
-            mockResponse = "Go ahead—I'm listening.";
+            mockResponse = "I'm here. Go ahead.";
           }
         } else if (exchangeCount === 1) {
-          // First interaction - offer path selection
+          // First interaction - offer path selection (reflect + offer)
           if (userMessage.includes('stress') || userMessage.includes('anxious') || userMessage.includes('overwhelmed')) {
-            mockResponse = "I'm hearing that stress is really weighing on you right now. That feeling of being anxious and overwhelmed - it's exhausting, isn't it?\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
-          } else if (userMessage.includes('fine')) {
-            mockResponse = "You say 'fine,' but I'm curious about what's beneath that word. Sometimes 'fine' can mean we're managing, but not necessarily thriving.\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
+            mockResponse = "That sounds exhausting.\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
+          } else if (userMessage.includes('fine') || userMessage.includes('okay')) {
+            mockResponse = "Got it—'fine' can mean a lot of things.\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
+          } else if (userMessage.includes('tired') || userMessage.includes('exhausted')) {
+            mockResponse = "You sound worn out.\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
           } else {
-            mockResponse = "I'm picking up on what you're sharing - there's a lot happening for you right now.\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
+            mockResponse = "I hear you.\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
           }
         } else if (conversationPath === 'nightly_routine') {
           // Structured nightly routine responses
@@ -58,23 +60,26 @@ serve(async (req) => {
           } else if (exchangeCount === 4) {
             mockResponse = "What's on your mind for tomorrow—anything you're worried about?";
           } else if (exchangeCount === 5) {
-            mockResponse = "What's the part making you most anxious about it?";
+            const concern = userMessage.match(/\b(meeting|presentation|deadline|conversation|interview)\b/)?.[0] || 'that';
+            mockResponse = `What's the part about ${concern} that's making you most anxious?`;
           } else if (exchangeCount === 6) {
             mockResponse = "How's your body doing—sleep, energy, anything physical?";
           } else {
-            mockResponse = "Thanks for checking in tonight. I'm going to pull together some thoughts for you.";
+            mockResponse = "Thanks for checking in tonight. Give me a sec to pull some thoughts together for you.";
           }
         } else if (conversationPath === 'venting_session') {
-          // Venting session responses - listen and reflect
-          if (exchangeCount === 2 || exchangeCount === 3) {
-            mockResponse = "I'm here, keep going.";
+          // Venting session responses - minimal until they finish
+          if (exchangeCount === 2) {
+            mockResponse = "I'm listening.";
+          } else if (exchangeCount === 3) {
+            mockResponse = "Keep going.";
           } else if (exchangeCount === 4) {
-            mockResponse = "Okay, so it sounds like you're carrying a lot right now. What's the main thing weighing on you the most?";
+            mockResponse = "So it sounds like you're carrying a lot right now. What's the main thing weighing on you the most?";
           } else {
-            mockResponse = "I hear you. Thanks for sharing all of that with me.";
+            mockResponse = "Got it. I hear you.";
           }
         } else {
-          mockResponse = "I'm here listening. Tell me more.";
+          mockResponse = "Tell me more.";
         }
 
         console.log('Returning mock response for exchange:', exchangeCount, 'path:', conversationPath);
@@ -107,11 +112,22 @@ ${phase === 2 ? '2. DAILY HIGHLIGHT/LOWLIGHT: Ask "What\'s one thing that stood 
 ${phase === 3 ? '3. WORRY PROCESSING: Ask "What\'s on your mind for tomorrow—anything you\'re worried about?" Follow up: "What\'s the part making you most anxious?" Then validate: "So it sounds like [X]—does that feel right?"' : ''}
 ${phase === 4 ? '4. LIFESTYLE PULSE: Ask "How\'s your body doing—sleep, energy, anything physical?" Connect it: "That might be why you\'re feeling [emotion]—your body is running on fumes."' : ''}
 
-STYLE:
-- One question at a time
-- Keep responses 1-2 sentences
-- Validate collaboratively
-- No therapy-speak`;
+RESPONSE STYLE RULES:
+✅ DO:
+- REFLECT FIRST, THEN ASK: Acknowledge what they said before moving forward
+  Example: "That sounds exhausting." [pause] "What made it feel that way?"
+- ASK OPEN-ENDED FOLLOW-UPS: "What's the part making you most anxious?" NOT "Did that stress you out?"
+- CONNECT DOTS: If they mention multiple things, link them: "It sounds like A and B drained you, so you didn't have energy for C"
+- VALIDATE COLLABORATIVELY: Reflect back and check: "So it sounds like [X]—does that feel right?"
+- KEEP IT CONVERSATIONAL: Use "Got it" / "That makes sense" / "I hear you"
+- SHORT RESPONSES: 1-2 sentences per turn
+
+❌ DON'T:
+- Give advice: "You should try to get more sleep"
+- Ask yes/no questions: "Did the stress affect your focus?"
+- Use therapy jargon: "Let's unpack that" / "How does that land?"
+- Be overly effusive: "That's amazing!" / "I'm so sorry!"
+- Ask multiple questions at once`;
 
       } else if (conversationPath === 'venting_session') {
         // Free-form venting mode
@@ -125,11 +141,22 @@ YOUR ROLE:
 - Track emotions, stressors, and worries mentioned
 - After they finish (or pause), reflect: "So it sounds like you're carrying [summarize]... What's the main thing weighing on you most?"
 
-STYLE:
-- Warm but not effusive
-- Minimal responses until they're done
-- No advice unless asked
-- Reflect back what you heard`;
+RESPONSE STYLE RULES:
+✅ DO:
+- REFLECT FIRST: "That sounds painful" or "Got it—work was rough"
+- ASK OPEN-ENDED FOLLOW-UPS: "What's the part that's making you most anxious?"
+- CONNECT DOTS: "It sounds like work stress and date anxiety drained you—you didn't have energy for your workout. Which one feels heavier?"
+- VALIDATE COLLABORATIVELY: "So it sounds like the real worry is being seen as not good enough—does that feel right?"
+- KEEP IT CONVERSATIONAL: Use "Got it" / "That makes sense" / "I hear you"
+- SHORT RESPONSES: 1-2 sentences per turn
+
+❌ DON'T:
+- Give advice: "It's important to take care of it" / "You should..."
+- Ask yes/no questions: "Did that stress you out?" / "Were you able to relax?"
+- Use therapy jargon: "Let's unpack that" / "What's coming up for you?"
+- Be overly effusive: "That's amazing!" / "I'm so sorry you're going through this!"
+- Ask multiple questions at once
+- Focus on understanding, not solving`;
 
       } else {
         // Initial conversation before path selection
@@ -137,11 +164,17 @@ STYLE:
 
 FIRST RESPONSE ONLY:
 1. Give empathetic reflection of what they shared (1-2 sentences)
-2. Then say: "Would you like to:
-→ Do your nightly routine (helps you process and wind down)
-→ Just vent right now (I'm here to listen)"
+   - Use conversational language: "That sounds exhausting" NOT "I hear you're feeling stressed"
+   - Avoid therapy-speak and overly effusive language
+2. Then offer path selection:
+   "Would you like to:
+   → Do your nightly routine (helps you process and wind down)
+   → Just vent right now (I'm here to listen)"
 
-Keep it conversational and warm but brief.`;
+STYLE:
+- Warm but not clinical
+- Brief reflection (1-2 sentences max)
+- Natural conversational tone`;
       }
 
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
