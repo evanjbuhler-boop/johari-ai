@@ -1,7 +1,9 @@
 import { CheckInResults } from '@/types/checkin';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Heart, BookOpen, Lightbulb, Sparkles } from 'lucide-react';
+import { Heart, BookOpen, Lightbulb, Sparkles, Headphones, BookMarked, ChevronDown, ChevronUp, Bookmark } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface ResultsDisplayProps {
   results: CheckInResults;
@@ -9,78 +11,165 @@ interface ResultsDisplayProps {
 }
 
 const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
+  const [frameworkExpanded, setFrameworkExpanded] = useState(false);
+  const [techniqueExpanded, setTechniqueExpanded] = useState(false);
+  const [storyExpanded, setStoryExpanded] = useState(false);
+
+  const handleSave = (type: string, content: string) => {
+    const saved = JSON.parse(localStorage.getItem('savedResources') || '[]');
+    saved.push({ type, content, timestamp: new Date().toISOString() });
+    localStorage.setItem('savedResources', JSON.stringify(saved));
+    toast.success(`Saved to your library`);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
-      <div className="max-w-4xl mx-auto p-4 md:p-8 py-12">
-        <div className="text-center mb-12 animate-in fade-in duration-700">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-            <Heart className="w-8 h-8 text-primary" />
-          </div>
-          <h1 className="text-4xl font-bold text-foreground mb-2">Your Check-in Summary</h1>
-          <p className="text-muted-foreground">Here's what we learned about your day</p>
+      <div className="max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6">
+        
+        {/* Reflection Section - Warm gradient background */}
+        <Card className="p-8 md:p-10 border-none bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 shadow-lg">
+          <p className="text-xl md:text-2xl leading-relaxed text-foreground font-medium">
+            {results.reflection}
+          </p>
+        </Card>
+
+        {/* Framework Section - What's Happening */}
+        <Card className="p-6 hover:shadow-lg transition-shadow">
+          <button 
+            onClick={() => setFrameworkExpanded(!frameworkExpanded)}
+            className="w-full flex items-center justify-between gap-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">💡</div>
+              <h2 className="text-xl md:text-2xl font-semibold text-foreground">What's Happening</h2>
+            </div>
+            {frameworkExpanded ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+          </button>
+          {frameworkExpanded && (
+            <div className="mt-4 pt-4 border-t border-border animate-in fade-in slide-in-from-top-2 duration-300">
+              <p className="text-base leading-relaxed text-foreground/80">
+                {results.framework}
+              </p>
+            </div>
+          )}
+        </Card>
+
+        {/* Recommendation Cards Grid */}
+        <div className="grid gap-6 md:grid-cols-2">
+          
+          {/* Podcast Card */}
+          {results.recommendations.podcast && (
+            <Card className="p-6 hover:shadow-lg transition-all group">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="text-2xl">🎧</div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Listen to This</h3>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{results.recommendations.podcast}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <Button size="sm" className="flex-1">Play</Button>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => handleSave('podcast', results.recommendations.podcast!)}
+                >
+                  <Bookmark className="w-4 h-4" />
+                </Button>
+              </div>
+            </Card>
+          )}
+
+          {/* Article Card */}
+          {results.recommendations.article && (
+            <Card className="p-6 hover:shadow-lg transition-all group">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="text-2xl">📖</div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Quick Read</h3>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{results.recommendations.article}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <Button size="sm" className="flex-1">Read</Button>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => handleSave('article', results.recommendations.article!)}
+                >
+                  <Bookmark className="w-4 h-4" />
+                </Button>
+              </div>
+            </Card>
+          )}
         </div>
 
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-          {/* Reflection */}
-          <Card className="p-8 border-2 border-primary/20 bg-gradient-to-br from-card to-primary/5">
+        {/* Technique Card - Full width with glow */}
+        {results.recommendations.technique && (
+          <Card className="p-6 bg-gradient-to-br from-accent/10 to-primary/10 border-accent/20 shadow-lg hover:shadow-xl transition-all">
             <div className="flex items-start gap-3 mb-3">
-              <Heart className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
-              <h2 className="text-2xl font-semibold text-foreground">Reflection</h2>
+              <div className="text-2xl">✨</div>
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-foreground mb-2">Try This Tonight</h3>
+                <button 
+                  onClick={() => setTechniqueExpanded(!techniqueExpanded)}
+                  className="text-left w-full"
+                >
+                  <p className="text-sm text-foreground/80 leading-relaxed">
+                    {techniqueExpanded ? results.recommendations.technique : results.recommendations.technique.split('.')[0] + '...'}
+                  </p>
+                </button>
+              </div>
+              <button onClick={() => setTechniqueExpanded(!techniqueExpanded)}>
+                {techniqueExpanded ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+              </button>
             </div>
-            <p className="text-lg leading-relaxed text-foreground/90 ml-9">{results.reflection}</p>
+            <div className="flex gap-2 mt-4">
+              <Button size="sm" className="flex-1">Start Guided Exercise</Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => handleSave('technique', results.recommendations.technique!)}
+              >
+                <Bookmark className="w-4 h-4" />
+              </Button>
+            </div>
           </Card>
+        )}
 
-          {/* Framework */}
-          <Card className="p-8">
+        {/* Story Card - Softest emphasis */}
+        {results.story && (
+          <Card className="p-6 bg-gradient-to-br from-secondary/5 to-muted/30 hover:shadow-md transition-shadow">
             <div className="flex items-start gap-3 mb-3">
-              <BookOpen className="w-6 h-6 text-secondary mt-1 flex-shrink-0" />
-              <h2 className="text-2xl font-semibold text-foreground">Understanding the Pattern</h2>
+              <div className="text-2xl">📚</div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-foreground mb-2">A Different Perspective</h3>
+                <p className="text-sm text-foreground/70 leading-relaxed italic">
+                  {storyExpanded ? results.story : results.story.split('.').slice(0, 2).join('.') + '...'}
+                </p>
+              </div>
             </div>
-            <p className="text-base leading-relaxed text-foreground/80 ml-9">{results.framework}</p>
+            {!storyExpanded && (
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                className="mt-2"
+                onClick={() => setStoryExpanded(true)}
+              >
+                Read more
+              </Button>
+            )}
           </Card>
+        )}
 
-          {/* Recommendations */}
-          <Card className="p-8">
-            <div className="flex items-start gap-3 mb-4">
-              <Lightbulb className="w-6 h-6 text-accent mt-1 flex-shrink-0" />
-              <h2 className="text-2xl font-semibold text-foreground">Recommendations</h2>
-            </div>
-            <div className="space-y-4 ml-9">
-              {results.recommendations.podcast && (
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Podcast</h3>
-                  <p className="text-foreground/80">{results.recommendations.podcast}</p>
-                </div>
-              )}
-              {results.recommendations.article && (
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Article</h3>
-                  <p className="text-foreground/80">{results.recommendations.article}</p>
-                </div>
-              )}
-              {results.recommendations.technique && (
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Technique</h3>
-                  <p className="text-foreground/80">{results.recommendations.technique}</p>
-                </div>
-              )}
-            </div>
-          </Card>
-
-          {/* Story/Parable */}
-          <Card className="p-8 bg-gradient-to-br from-secondary/5 to-accent/5">
-            <div className="flex items-start gap-3 mb-3">
-              <Sparkles className="w-6 h-6 text-secondary mt-1 flex-shrink-0" />
-              <h2 className="text-2xl font-semibold text-foreground">A Story for You</h2>
-            </div>
-            <p className="text-base leading-relaxed text-foreground/80 ml-9 italic">{results.story}</p>
-          </Card>
-
-          <div className="flex justify-center pt-8">
-            <Button onClick={onNewCheckIn} size="lg" className="px-8">
-              Start New Check-in
-            </Button>
-          </div>
+        {/* Footer */}
+        <div className="text-center pt-8 pb-4 space-y-4">
+          <p className="text-muted-foreground text-sm">
+            I'll be here tomorrow evening
+          </p>
+          <Button onClick={onNewCheckIn} size="lg" className="px-8">
+            Start New Check-in
+          </Button>
         </div>
       </div>
     </div>
