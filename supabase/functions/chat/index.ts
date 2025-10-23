@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,10 +16,10 @@ serve(async (req) => {
     const { messages, type, mock } = await req.json();
     const truthy = (v: unknown) => typeof v === 'string' ? ['true','1','yes','y','on'].includes(v.toLowerCase().trim()) : !!v;
     const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(mock);
-    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
     
-    if (!useMockAI && !anthropicApiKey) {
-      throw new Error('ANTHROPIC_API_KEY is not configured');
+    if (!useMockAI && !openaiApiKey) {
+      throw new Error('OPENAI_API_KEY is not configured');
     }
 
     console.log('Processing chat request, type:', type, 'messages:', messages.length, 'mock mode:', useMockAI);
@@ -66,24 +67,25 @@ Your goal is to:
 
 Keep responses brief (2-3 sentences) and empathetic. Ask one question at a time.`;
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'x-api-key': anthropicApiKey!,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json',
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-5',
-          max_tokens: 300,
-          messages: messages,
-          system: systemPrompt,
+          model: 'gpt-5-2025-08-07',
+          max_completion_tokens: 300,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...messages
+          ],
         }),
       });
 
       if (!response.ok) {
         const error = await response.text();
-        console.error('Claude API error:', response.status, error);
+        console.error('OpenAI API error:', response.status, error);
         if (useMockAI) {
           const userMessage = messages[messages.length - 1].content.toLowerCase();
           let mockResponse = '';
@@ -109,14 +111,14 @@ Keep responses brief (2-3 sentences) and empathetic. Ask one question at a time.
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        throw new Error(`Claude API error: ${response.status}`);
+        throw new Error(`OpenAI API error: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('Claude response received');
+      console.log('OpenAI response received');
       
       return new Response(
-        JSON.stringify({ content: data.content[0].text }),
+        JSON.stringify({ content: data.choices[0].message.content }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -166,29 +168,28 @@ Format your response as JSON with this structure:
         `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
       ).join('\n\n');
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'x-api-key': anthropicApiKey!,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json',
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-5',
-          max_tokens: 2000,
+          model: 'gpt-5-2025-08-07',
+          max_completion_tokens: 2000,
           messages: [
+            { role: 'system', content: systemPrompt },
             {
               role: 'user',
               content: `Based on this conversation, provide the psychological analysis and recommendations:\n\n${conversationSummary}`
             }
           ],
-          system: systemPrompt,
         }),
       });
 
       if (!response.ok) {
         const error = await response.text();
-        console.error('Claude API error:', response.status, error);
+        console.error('OpenAI API error:', response.status, error);
         if (useMockAI) {
           const mockResults = {
             reflection: "It sounds like you're navigating a period of transition and growth. The stress you're experiencing seems to stem from balancing multiple responsibilities while trying to maintain your well-being. Your awareness of these challenges is already a positive step forward.",
@@ -206,14 +207,14 @@ Format your response as JSON with this structure:
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        throw new Error(`Claude API error: ${response.status}`);
+        throw new Error(`OpenAI API error: ${response.status}`);
       }
 
       const data = await response.json();
       console.log('Results generated');
       
-      // Parse the JSON response from Claude
-      const resultsText = data.content[0].text;
+      // Parse the JSON response from OpenAI
+      const resultsText = data.choices[0].message.content;
       let results;
       
       try {
