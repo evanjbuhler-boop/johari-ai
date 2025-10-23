@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
 import { Message } from '@/types/checkin';
-import { Send, ArrowLeft } from 'lucide-react';
+import { Send, ArrowLeft, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
 
 interface ChatInterfaceProps {
   initialMessage: string;
@@ -21,6 +22,10 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   
   // Calculate progress percentage based on emotional depth (min 3 exchanges, natural max ~7)
   const progressPercentage = Math.min(100, Math.floor((exchangeCount / 7) * 100));
+  
+  // Calculate time estimate (assuming ~1 min per exchange, max 7 exchanges)
+  const remainingExchanges = Math.max(0, 7 - exchangeCount);
+  const estimatedMinutes = Math.max(1, Math.ceil(remainingExchanges * 0.8)); // Slightly optimistic
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -136,20 +141,49 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       </div>
 
       <div className="sticky bottom-0 bg-background border-t border-border">
-        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-4">
-          <div className="flex gap-2">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your response..."
-              className="flex-1 h-12 text-base"
-              disabled={isLoading}
-            />
-            <Button type="submit" size="lg" disabled={!input.trim() || isLoading}>
-              <Send className="h-5 w-5" />
-            </Button>
+        <div className="max-w-4xl mx-auto">
+          {/* Progress bar section */}
+          <div className="px-4 pt-3 pb-2">
+            <div className="flex items-center justify-between mb-2 text-xs">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5">
+                  <MessageSquare className="h-3.5 w-3.5 text-primary" />
+                  <span className="font-medium text-primary">Chat</span>
+                </div>
+                <span className="text-muted-foreground">→</span>
+                <div className="flex items-center gap-1.5 opacity-50">
+                  <CheckCircle className="h-3.5 w-3.5" />
+                  <span>Validate</span>
+                </div>
+                <span className="text-muted-foreground opacity-50">→</span>
+                <div className="flex items-center gap-1.5 opacity-50">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span>Recommendations</span>
+                </div>
+              </div>
+              <span className="text-muted-foreground font-medium">
+                ~{estimatedMinutes} min remaining
+              </span>
+            </div>
+            <Progress value={progressPercentage} className="h-1.5" />
           </div>
-        </form>
+          
+          {/* Input form */}
+          <form onSubmit={handleSubmit} className="p-4 pt-2">
+            <div className="flex gap-2">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type your response..."
+                className="flex-1 h-12 text-base"
+                disabled={isLoading}
+              />
+              <Button type="submit" size="lg" disabled={!input.trim() || isLoading}>
+                <Send className="h-5 w-5" />
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
