@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Message } from '@/types/checkin';
 import { Send, ArrowLeft, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
+import EducationalSidebar from '@/components/EducationalSidebar';
 
 interface ChatInterfaceProps {
   initialMessage: string;
@@ -14,11 +15,22 @@ interface ChatInterfaceProps {
   isLoading: boolean;
 }
 
+type SidebarPhase = 'highlight' | 'worry' | 'lifestyle';
+
 const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [showPathSelection, setShowPathSelection] = useState(false);
+  const [sidebar, setSidebar] = useState<{
+    visible: boolean;
+    phase: SidebarPhase | null;
+    dismissedPhases: Set<SidebarPhase>;
+  }>({
+    visible: false,
+    phase: null,
+    dismissedPhases: new Set()
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
   
@@ -41,7 +53,37 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     if (conversationPath && exchangeCount >= 3) {
       setShowEarlyExit(true);
     }
-  }, [messages, exchangeCount, conversationPath, showPathSelection]);
+
+    // Educational sidebar triggers (only for nightly_routine path)
+    if (conversationPath === 'nightly_routine' && !isLoading) {
+      const lastMessage = messages[messages.length - 1];
+      const isAIMessage = lastMessage?.role === 'assistant';
+      
+      // Phase 2: After AI asks about daily highlight (exchange 2)
+      if (exchangeCount === 2 && isAIMessage && !sidebar.dismissedPhases.has('highlight')) {
+        const timer = setTimeout(() => {
+          setSidebar(prev => ({ ...prev, visible: true, phase: 'highlight' }));
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+      
+      // Phase 3: After user responds with worry (exchange 5 - user has answered worry question)
+      if (exchangeCount === 5 && !isAIMessage && !sidebar.dismissedPhases.has('worry')) {
+        const timer = setTimeout(() => {
+          setSidebar(prev => ({ ...prev, visible: true, phase: 'worry' }));
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+      
+      // Phase 4: After AI asks about lifestyle (exchange 6)
+      if (exchangeCount === 6 && isAIMessage && !sidebar.dismissedPhases.has('lifestyle')) {
+        const timer = setTimeout(() => {
+          setSidebar(prev => ({ ...prev, visible: true, phase: 'lifestyle' }));
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [messages, exchangeCount, conversationPath, showPathSelection, isLoading, sidebar.dismissedPhases]);
 
   const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
     setConversationPath(path);
@@ -49,9 +91,24 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     onSendMessage(path === 'nightly_routine' ? 'Do my nightly routine' : 'I just need to vent', path);
   };
 
+  const handleSidebarDismiss = () => {
+    if (sidebar.phase) {
+      setSidebar(prev => ({
+        ...prev,
+        visible: false,
+        dismissedPhases: new Set([...prev.dismissedPhases, prev.phase!])
+      }));
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
+      // Auto-dismiss sidebar when user sends a message (phase change)
+      if (sidebar.visible) {
+        handleSidebarDismiss();
+      }
+      
       onSendMessage(input, conversationPath || undefined);
       setInput('');
       
@@ -63,7 +120,15 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col relative">
+      {/* Educational Sidebar */}
+      {sidebar.visible && sidebar.phase && (
+        <EducationalSidebar 
+          phase={sidebar.phase}
+          onDismiss={handleSidebarDismiss}
+        />
+      )}
+
       <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8">
         <div className="mb-6 flex items-center justify-between">
           <Button 
