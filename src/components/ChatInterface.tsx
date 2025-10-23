@@ -14,12 +14,20 @@ interface ChatInterfaceProps {
 
 const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
+  const [showEarlyExit, setShowEarlyExit] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
+  
+  // Calculate progress percentage based on emotional depth (min 3 exchanges, natural max ~7)
+  const progressPercentage = Math.min(100, Math.floor((exchangeCount / 7) * 100));
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    // Show early exit option after 3 exchanges
+    if (exchangeCount >= 3) {
+      setShowEarlyExit(true);
+    }
+  }, [messages, exchangeCount]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +35,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       onSendMessage(input);
       setInput('');
       
-      // Complete after 5 user messages
-      if (exchangeCount >= 4) {
+      // Auto-complete after 7 user messages (soft limit)
+      if (exchangeCount >= 6) {
         setTimeout(() => onComplete(), 2000);
       }
     }
@@ -47,8 +55,45 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
             <ArrowLeft className="h-4 w-4" />
             Back
           </Button>
-          <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
-            {exchangeCount}/5 exchanges
+          <div className="flex items-center gap-4">
+            {showEarlyExit && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onComplete}
+                className="text-sm"
+              >
+                I'm ready to see my reflection
+              </Button>
+            )}
+            <div className="relative w-16 h-16">
+              <svg className="transform -rotate-90 w-16 h-16">
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="28"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                  className="text-muted"
+                />
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="28"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                  strokeDasharray={`${2 * Math.PI * 28}`}
+                  strokeDashoffset={`${2 * Math.PI * 28 * (1 - progressPercentage / 100)}`}
+                  className="text-primary transition-all duration-500"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-sm font-medium">{progressPercentage}%</span>
+              </div>
+            </div>
           </div>
         </div>
 

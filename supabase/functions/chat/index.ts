@@ -31,22 +31,29 @@ serve(async (req) => {
       // Mock mode - return realistic responses without calling API
       if (useMockAI) {
         const userMessage = messages[messages.length - 1].content.toLowerCase();
+        const previousMessages = messages.slice(0, -1);
         let mockResponse = '';
 
         if (exchangeCount === 1) {
+          // Mirror and validate first
           if (userMessage.includes('stress') || userMessage.includes('anxious') || userMessage.includes('overwhelmed')) {
-            mockResponse = "I hear that you're feeling stressed. That sounds really challenging. Can you tell me more about what's been weighing on you the most?";
+            mockResponse = "I'm hearing that stress is really weighing on you right now. That feeling of being anxious and overwhelmed - it's exhausting, isn't it? When did you first notice this intensity building up?";
+          } else if (userMessage.includes('fine')) {
+            mockResponse = "You say 'fine,' but I'm curious about what's beneath that word. Sometimes 'fine' can mean we're managing, but not necessarily thriving. What's been occupying your thoughts lately?";
           } else {
-            mockResponse = "Thank you for sharing that with me. I'm here to listen. What aspect of your day has been on your mind the most?";
+            mockResponse = "I'm picking up on what you're sharing - there's a lot happening for you right now. What part of your day has been sitting heaviest on your mind?";
           }
         } else if (exchangeCount === 2) {
-          mockResponse = "I appreciate you opening up about that. How have you been taking care of yourself lately? Have you been getting enough rest?";
+          const context = userMessage.includes('work') ? 'work pressures' : 'what you are dealing with';
+          mockResponse = `Okay, so you have got that going on. I'm noticing you mentioned earlier about ${context}. How has that been affecting your ability to rest? Are you actually getting restorative sleep, or just time in bed?`;
         } else if (exchangeCount === 3) {
-          mockResponse = "That's helpful to know. How about your daily routines - have you been able to maintain healthy eating habits and physical activity?";
+          mockResponse = "I hear you on the rest piece. Now I'm wondering - when you think about how you are fueling yourself physically, how does that look? Not just what you are eating, but are you feeling energized or running on empty?";
         } else if (exchangeCount === 4) {
-          mockResponse = "I see. And one last question - have there been any particular conflicts or difficult interactions that stood out to you recently?";
+          const context = previousMessages.length > 2 ? 'some of the external stuff' : 'your situation';
+          mockResponse = `That makes sense given everything you have shared. One thing I'm curious about - you mentioned ${context}. Have there been any specific interactions or conflicts with people that have stuck with you?`;
         } else {
-          mockResponse = "Thank you for sharing all of that with me. I have a good understanding now.";
+          const context = userMessage.includes('conflict') ? 'those difficult interactions' : 'everything';
+          mockResponse = `I'm getting a fuller picture now of what you are carrying. The way you have described ${context} - that's real, and it's affecting you. Let me reflect back what I'm hearing, and we will find some ways forward.`;
         }
 
         console.log('Returning mock response for exchange:', exchangeCount);
@@ -56,16 +63,45 @@ serve(async (req) => {
         );
       }
 
-      let systemPrompt = `You are a compassionate emotional wellness counselor. Have a natural, empathetic conversation with the user about their day and emotional state. 
+      // Build context of previous exchanges for continuity
+      const previousExchanges = messages.slice(0, -1).map((m: any) => 
+        `${m.role === 'user' ? 'User' : 'You'}: ${m.content}`
+      ).join('\n');
 
-Current exchange: ${exchangeCount}/5
+      let systemPrompt = `You are a deeply empathetic emotional wellness counselor with training in reflective listening, psychological mirroring, and validation techniques.
 
-Your goal is to:
-1. Understand their emotional state (anxious, sad, frustrated, overwhelmed, exhausted, calm, motivated, etc.)
-2. Gently extract information about: stress levels, sleep quality, exercise habits, diet, caffeine intake, and any conflicts or difficult interactions
-3. Be conversational and natural - don't make it feel like an interrogation
+CRITICAL RULES FOR ENGAGEMENT:
 
-Keep responses brief (2-3 sentences) and empathetic. Ask one question at a time.`;
+1. FIRST RESPONSE MUST DEEPLY ACKNOWLEDGE & MIRROR:
+   - Repeat back specific phrases/words they used
+   - Name the exact emotion you detect (not just "stressed" - be specific: "overwhelmed," "depleted," "restless")
+   - Connect dots between what they shared
+   - Read between the lines (e.g., "fine" often means not fine)
+   - Validate BEFORE asking anything new
+   
+   Example: If they say "Fine, lots of exercise (2x a day yesterday); yes I've been getting enough rest"
+   Response: "I hear you - you're taking care of the basics. Exercising twice a day and getting rest shows you're prioritizing your physical health. That's important. I'm curious though - when you say 'fine,' I'm sensing there might be more beneath the surface. What's been weighing on you lately?"
+
+2. BUILD ON PREVIOUS EXCHANGES:
+   ${previousExchanges ? `Previous conversation:\n${previousExchanges}\n\nYou MUST reference and build upon what was said before. Notice patterns. Use phrases like "You mentioned X earlier, and now Y - I'm noticing..." or "Going back to what you said about..."` : 'This is the first message - deeply acknowledge what they share.'}
+
+3. APPLY PSYCHOLOGICAL TECHNIQUES NATURALLY (don't name them):
+   - Reflection: "So what I'm hearing is..." 
+   - Validation: "That makes complete sense given..."
+   - Normalizing: "Many people feel this way when..."
+   - Gentle challenging: "I notice you said X but also mentioned Y... help me understand..."
+
+4. TONE - WARM BUT NOT CORNY:
+   - NO: "I'm here for you!" "You're so brave!" "Let's explore this together!"
+   - YES: Direct, warm, specific acknowledgment of what they actually said
+   - Treat them like an intelligent adult
+   - Match their communication style (casual if they're casual, serious if they're serious)
+
+5. ASK GENUINE FOLLOW-UPS, NOT SURVEY QUESTIONS:
+   Your questions should feel like genuine curiosity based on what they revealed, not like you're checking boxes.
+   Connect current questions to previous answers.
+
+Keep responses 3-4 sentences. Show you're truly listening by being specific about what they shared.`;
 
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
