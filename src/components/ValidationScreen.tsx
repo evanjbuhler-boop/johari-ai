@@ -1,12 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Brain, Heart, Moon, Sparkles } from 'lucide-react';
 import { ValidationData } from '@/types/checkin';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 
 interface ValidationScreenProps {
   initialData: ValidationData;
@@ -15,6 +9,8 @@ interface ValidationScreenProps {
 }
 
 const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => {
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+
   // Auto-advance to recommendations after 30 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -23,6 +19,18 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
     return () => clearTimeout(timer);
   }, [initialData, onConfirm]);
+
+  const parseReasoningToBullets = (reasoning?: string): string[] => {
+    if (!reasoning) return ['Based on your conversation patterns'];
+    
+    // Split by sentences and clean up
+    const sentences = reasoning
+      .split(/[.!?]+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+    
+    return sentences.length > 0 ? sentences : ['Based on your conversation patterns'];
+  };
 
   // Format insights from the data
   const primaryEmotions = initialData.emotions.slice(0, 3).join(', ') || 'Processing';
@@ -61,125 +69,183 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
         </div>
 
         {/* Insights grid */}
-        <TooltipProvider delayDuration={200}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Emotional state */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div 
-                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help min-h-[140px] flex flex-col"
-                  style={{ animationDelay: '200ms', boxShadow: 'var(--shadow-soft)' }}
-                >
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-400/20 to-pink-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Heart className="h-6 w-6 text-rose-500" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                        Emotional State
-                      </h3>
-                      <p className="text-lg font-medium text-foreground leading-snug">
-                        {primaryEmotions}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs">
-                <p className="text-sm text-muted-foreground">
-                  {initialData.emotionReasoning || "Based on your conversation patterns"}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Emotional state */}
+          <div 
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
+            style={{ animationDelay: '200ms', boxShadow: 'var(--shadow-soft)' }}
+            onClick={() => setExpandedCard(expandedCard === 'emotion' ? null : 'emotion')}
+            onMouseEnter={() => setExpandedCard('emotion')}
+            onMouseLeave={() => setExpandedCard(null)}
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-400/20 to-pink-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <Heart className="h-6 w-6 text-rose-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
+                  Emotional State
+                </h3>
+                <p className="text-lg font-medium text-foreground leading-snug">
+                  {primaryEmotions}
                 </p>
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Main stressors */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div 
-                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help min-h-[140px] flex flex-col"
-                  style={{ animationDelay: '300ms', boxShadow: 'var(--shadow-soft)' }}
-                >
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400/20 to-orange-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Brain className="h-6 w-6 text-amber-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                        Key Stressors
-                      </h3>
-                      <p className="text-lg font-medium text-foreground leading-snug">
-                        {stressorsText}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs">
-                <p className="text-sm text-muted-foreground">
-                  {initialData.stressorReasoning || "Based on your conversation patterns"}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Sleep & physical */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div 
-                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help min-h-[140px] flex flex-col"
-                  style={{ animationDelay: '400ms', boxShadow: 'var(--shadow-soft)' }}
-                >
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400/20 to-indigo-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Moon className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                        Physical State
-                      </h3>
-                      <p className="text-lg font-medium text-foreground leading-snug">
-                        {sleepStatus}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs">
-                <p className="text-sm text-muted-foreground">
-                  {initialData.sleepReasoning || "Based on your conversation patterns"}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Support approach */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div 
-                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help min-h-[140px] flex flex-col"
-                  style={{ animationDelay: '500ms', boxShadow: 'var(--shadow-soft)' }}
-                >
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400/20 to-green-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Sparkles className="h-6 w-6 text-emerald-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                        Support Focus
-                      </h3>
-                      <p className="text-lg font-medium text-foreground leading-snug">
-                        {supportApproach}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs">
-                <p className="text-sm text-muted-foreground">
-                  {initialData.supportReasoning || "Based on your conversation patterns"}
-                </p>
-              </TooltipContent>
-            </Tooltip>
+              </div>
+            </div>
+            
+            {/* Expanded content */}
+            <div 
+              className={`transition-all duration-500 ease-in-out ${
+                expandedCard === 'emotion' 
+                  ? 'max-h-96 opacity-100 mt-4' 
+                  : 'max-h-0 opacity-0 mt-0'
+              }`}
+            >
+              <div className="border-t border-border pt-4">
+                <p className="text-sm font-medium text-muted-foreground mb-3">Based on:</p>
+                <ul className="space-y-2">
+                  {parseReasoningToBullets(initialData.emotionReasoning).map((bullet, idx) => (
+                    <li key={idx} className="flex gap-2 text-sm text-muted-foreground">
+                      <span className="text-primary mt-1">•</span>
+                      <span className="flex-1">{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
-        </TooltipProvider>
+
+          {/* Main stressors */}
+          <div 
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
+            style={{ animationDelay: '300ms', boxShadow: 'var(--shadow-soft)' }}
+            onClick={() => setExpandedCard(expandedCard === 'stressor' ? null : 'stressor')}
+            onMouseEnter={() => setExpandedCard('stressor')}
+            onMouseLeave={() => setExpandedCard(null)}
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400/20 to-orange-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <Brain className="h-6 w-6 text-amber-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
+                  Key Stressors
+                </h3>
+                <p className="text-lg font-medium text-foreground leading-snug">
+                  {stressorsText}
+                </p>
+              </div>
+            </div>
+            
+            {/* Expanded content */}
+            <div 
+              className={`transition-all duration-500 ease-in-out ${
+                expandedCard === 'stressor' 
+                  ? 'max-h-96 opacity-100 mt-4' 
+                  : 'max-h-0 opacity-0 mt-0'
+              }`}
+            >
+              <div className="border-t border-border pt-4">
+                <p className="text-sm font-medium text-muted-foreground mb-3">Based on:</p>
+                <ul className="space-y-2">
+                  {parseReasoningToBullets(initialData.stressorReasoning).map((bullet, idx) => (
+                    <li key={idx} className="flex gap-2 text-sm text-muted-foreground">
+                      <span className="text-primary mt-1">•</span>
+                      <span className="flex-1">{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Sleep & physical */}
+          <div 
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
+            style={{ animationDelay: '400ms', boxShadow: 'var(--shadow-soft)' }}
+            onClick={() => setExpandedCard(expandedCard === 'sleep' ? null : 'sleep')}
+            onMouseEnter={() => setExpandedCard('sleep')}
+            onMouseLeave={() => setExpandedCard(null)}
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400/20 to-indigo-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <Moon className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
+                  Physical State
+                </h3>
+                <p className="text-lg font-medium text-foreground leading-snug">
+                  {sleepStatus}
+                </p>
+              </div>
+            </div>
+            
+            {/* Expanded content */}
+            <div 
+              className={`transition-all duration-500 ease-in-out ${
+                expandedCard === 'sleep' 
+                  ? 'max-h-96 opacity-100 mt-4' 
+                  : 'max-h-0 opacity-0 mt-0'
+              }`}
+            >
+              <div className="border-t border-border pt-4">
+                <p className="text-sm font-medium text-muted-foreground mb-3">Based on:</p>
+                <ul className="space-y-2">
+                  {parseReasoningToBullets(initialData.sleepReasoning).map((bullet, idx) => (
+                    <li key={idx} className="flex gap-2 text-sm text-muted-foreground">
+                      <span className="text-primary mt-1">•</span>
+                      <span className="flex-1">{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Support approach */}
+          <div 
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
+            style={{ animationDelay: '500ms', boxShadow: 'var(--shadow-soft)' }}
+            onClick={() => setExpandedCard(expandedCard === 'support' ? null : 'support')}
+            onMouseEnter={() => setExpandedCard('support')}
+            onMouseLeave={() => setExpandedCard(null)}
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400/20 to-green-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <Sparkles className="h-6 w-6 text-emerald-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
+                  Support Focus
+                </h3>
+                <p className="text-lg font-medium text-foreground leading-snug">
+                  {supportApproach}
+                </p>
+              </div>
+            </div>
+            
+            {/* Expanded content */}
+            <div 
+              className={`transition-all duration-500 ease-in-out ${
+                expandedCard === 'support' 
+                  ? 'max-h-96 opacity-100 mt-4' 
+                  : 'max-h-0 opacity-0 mt-0'
+              }`}
+            >
+              <div className="border-t border-border pt-4">
+                <p className="text-sm font-medium text-muted-foreground mb-3">Based on:</p>
+                <ul className="space-y-2">
+                  {parseReasoningToBullets(initialData.supportReasoning).map((bullet, idx) => (
+                    <li key={idx} className="flex gap-2 text-sm text-muted-foreground">
+                      <span className="text-primary mt-1">•</span>
+                      <span className="flex-1">{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Progress indicator */}
         <div className="mt-12 text-center animate-in fade-in duration-700 delay-700">
