@@ -4,11 +4,12 @@ import { ValidationData } from '@/types/checkin';
 
 interface ValidationScreenProps {
   initialData: ValidationData;
+  conversationPath: 'nightly_routine' | 'venting_session' | null;
   onConfirm: (data: ValidationData) => void;
   onAdjust: () => void;
 }
 
-const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => {
+const ValidationScreen = ({ initialData, conversationPath, onConfirm }: ValidationScreenProps) => {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [badgeIndex, setBadgeIndex] = useState(0);
 
@@ -54,10 +55,30 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
   const stressorsText = initialData.mainStressors.length > 0 
     ? initialData.mainStressors.slice(0, 2).join(' + ') 
     : 'General life pressure';
-  const sleepStatus = initialData.sleepHours 
-    ? `${initialData.sleepHours}h (${initialData.sleepQuality?.toLowerCase() || 'moderate'})` 
-    : 'Sleep data collected';
-  const supportApproach = initialData.desiredSupport || 'Personalized guidance';
+  
+  // Physical state - extract from sleepReasoning if available
+  const getPhysicalState = () => {
+    if (initialData.sleepHours) {
+      return `${initialData.sleepHours}h sleep (${initialData.sleepQuality?.toLowerCase() || 'moderate'})`;
+    }
+    // Try to extract from reasoning
+    if (initialData.sleepReasoning) {
+      return initialData.sleepReasoning.split('.')[0] || 'Assessing physical state';
+    }
+    return 'Assessing physical state';
+  };
+  const sleepStatus = getPhysicalState();
+  
+  // Support approach based on conversation path
+  const getSupportApproach = () => {
+    if (conversationPath === 'nightly_routine') {
+      return 'Nightly routine & reflection';
+    } else if (conversationPath === 'venting_session') {
+      return 'Venting & emotional release';
+    }
+    return 'Personalized guidance';
+  };
+  const supportApproach = getSupportApproach();
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">

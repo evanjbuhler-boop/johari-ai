@@ -185,15 +185,19 @@ Please extract and return ONLY a valid JSON object with this exact structure (no
   "emotions": ["array of emotions mentioned - e.g., Anxious, Frustrated, Overwhelmed, etc."],
   "stressLevel": 7,
   "mainStressors": ["brief array of main stressors mentioned"],
+  "sleepHours": null or number (extract if mentioned, otherwise null),
+  "sleepQuality": "good quality" or "poor quality" or "moderate" (extract if mentioned, otherwise null),
   "contributingFactors": ["array of IDs from: work, sleep, caffeine, relationships, physical, life-changes, financial, isolation"],
   "desiredSupport": [],
   "patternAccuracy": null,
   "aiGeneratedPattern": "A 2-3 sentence summary of the pattern you see in their stress/anxiety. Be specific about what's happening and why it's hard.",
-  "emotionReasoning": "2-3 sentences explaining how you determined the emotional state. Format: 'You said X, which indicated Y' or 'You described X/used this word, therefore Y'",
-  "stressorReasoning": "2-3 sentences explaining how you identified the key stressors. Format: 'You said X, which indicated Y' or 'You described X/used this word, therefore Y'",
-  "sleepReasoning": "2-3 sentences explaining the physical state assessment. Format: 'You said X, which indicated Y' or 'You described X/used this word, therefore Y'",
-  "supportReasoning": "2-3 sentences explaining why this support approach was chosen. Format: 'You said X, which indicated Y' or 'You described X/used this word, therefore Y'"
+  "emotionReasoning": "2-3 sentences explaining how you determined the emotional state. Quote their exact words. Format: 'You said \"X\", which indicated Y'",
+  "stressorReasoning": "2-3 sentences explaining how you identified the key stressors. Quote their exact words. Format: 'You mentioned \"X\", which suggests Y'",
+  "sleepReasoning": "2-3 sentences about their physical state (sleep, energy, tiredness, physical symptoms). If they mentioned specific details like hours of sleep or feeling tired, quote them. If not mentioned, say 'You didn't mention specific physical concerns' - DO NOT make up information. Format: 'You said \"X\"' or 'You didn't mention physical state'",
+  "supportReasoning": "1 sentence explaining what type of check-in they're doing based on the conversation path: ${conversationPath || 'general check-in'}"
 }
+
+CRITICAL: For sleepReasoning, ONLY include information they actually mentioned. If they didn't talk about sleep/physical state, say "You didn't mention specific physical concerns" - never fabricate details.
 
 Important: Return ONLY the JSON object, no other text.`;
 
@@ -203,10 +207,16 @@ Important: Return ONLY the JSON object, no other text.`;
           emotions: ['Anxious', 'Overwhelmed', 'Exhausted'],
           stressLevel: 7,
           mainStressors: ['Work', 'Sleep', 'Relationships'],
+          sleepHours: 5,
+          sleepQuality: 'poor quality',
           contributingFactors: ['work', 'sleep', 'relationships'],
           desiredSupport: [],
           patternAccuracy: null,
-          aiGeneratedPattern: "You're juggling multiple demands while running on insufficient rest. The stress isn't just about one thing—it's the cumulative load of everything happening at once while your body is signaling it needs recovery."
+          aiGeneratedPattern: "You're juggling multiple demands while running on insufficient rest. The stress isn't just about one thing—it's the cumulative load of everything happening at once while your body is signaling it needs recovery.",
+          emotionReasoning: "You said you're feeling \"stressed and anxious\", which indicates emotional overwhelm from multiple pressures.",
+          stressorReasoning: "You mentioned work deadlines and relationship concerns, which suggests competing demands on your time and energy.",
+          sleepReasoning: "You said you're only getting \"about 5 hours of sleep\" and feeling \"exhausted\", indicating significant sleep deprivation.",
+          supportReasoning: conversationPath === 'venting_session' ? "You chose venting mode for emotional release" : "You're doing a nightly routine check-in"
         };
         
         console.log('Returning mock validation data');

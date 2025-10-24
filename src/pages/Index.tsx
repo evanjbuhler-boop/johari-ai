@@ -20,6 +20,7 @@ const Index = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [results, setResults] = useState<CheckInResults | null>(null);
   const [validationData, setValidationData] = useState<ValidationData | null>(null);
+  const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const { toast } = useToast();
@@ -229,6 +230,11 @@ const Index = () => {
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
+    
+    // Track conversation path
+    if (pathSelection && (pathSelection === 'nightly_routine' || pathSelection === 'venting_session')) {
+      setConversationPath(pathSelection as 'nightly_routine' | 'venting_session');
+    }
 
     try {
       const { data, error } = await supabase.functions.invoke('chat', {
@@ -318,7 +324,7 @@ const Index = () => {
         body: { 
           messages, 
           type: 'extract_validation',
-          conversationPath: 'validation'
+          conversationPath
         }
       });
 
@@ -434,6 +440,7 @@ const Index = () => {
   };
 
   const handleVentingModeSelected = () => {
+    setConversationPath('venting_session');
     setState('venting');
   };
 
@@ -498,6 +505,7 @@ const Index = () => {
     return (
       <ValidationScreen
         initialData={validationData}
+        conversationPath={conversationPath}
         onConfirm={handleValidationConfirm}
         onAdjust={handleValidationAdjust}
       />
