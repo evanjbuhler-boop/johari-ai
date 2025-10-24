@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import FloatingParticles from '@/components/FloatingParticles';
+import VoiceRecorder from '@/components/VoiceRecorder';
 import { Link } from 'react-router-dom';
 import { User, Library, LogIn } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,6 +20,11 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
     if (message.trim()) {
       onSubmit(message);
     }
+  };
+
+  const handleVoiceTranscript = (text: string) => {
+    // Set the transcribed text in the textarea for user to edit before sending
+    setMessage(text);
   };
 
   return (
@@ -106,18 +112,21 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
                 boxShadow: 'none'
               }}
             />
-            <Button
-              type="submit"
-              size="lg"
-              className="w-full mt-6 text-lg h-14 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
-              style={{
-                background: 'linear-gradient(135deg, hsl(340, 75%, 70%), hsl(260, 60%, 65%))',
-                boxShadow: '0 4px 20px rgba(255, 138, 180, 0.4)'
-              }}
-              disabled={!message.trim()}
-            >
-              I'm ready
-            </Button>
+            <div className="flex gap-3 mt-6">
+              <VoiceRecorder onTranscript={handleVoiceTranscript} />
+              <Button
+                type="submit"
+                size="lg"
+                className="flex-1 text-lg h-14 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
+                style={{
+                  background: 'linear-gradient(135deg, hsl(340, 75%, 70%), hsl(260, 60%, 65%))',
+                  boxShadow: '0 4px 20px rgba(255, 138, 180, 0.4)'
+                }}
+                disabled={!message.trim()}
+              >
+                I'm ready
+              </Button>
+            </div>
           </div>
         </form>
       </div>
