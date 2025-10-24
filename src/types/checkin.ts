@@ -22,6 +22,12 @@ export interface ValidationData {
   patternFeedback?: string;
   desiredSupport: string[];
   aiGeneratedPattern?: string;
+  
+  // AI-generated reasoning for each insight
+  emotionReasoning?: string;
+  stressorReasoning?: string;
+  sleepReasoning?: string;
+  supportReasoning?: string;
 }
 
 export interface EmotionalData {

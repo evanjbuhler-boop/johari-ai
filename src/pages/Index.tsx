@@ -365,7 +365,6 @@ const Index = () => {
         initialData={validationData}
         onConfirm={handleValidationConfirm}
         onAdjust={handleValidationAdjust}
-        messages={messages}
       />
     );
   }

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Brain, Heart, Moon, Sparkles } from 'lucide-react';
-import { ValidationData, Message } from '@/types/checkin';
+import { ValidationData } from '@/types/checkin';
 import {
   Tooltip,
   TooltipContent,
@@ -12,10 +12,9 @@ interface ValidationScreenProps {
   initialData: ValidationData;
   onConfirm: (data: ValidationData) => void;
   onAdjust: () => void;
-  messages?: Message[];
 }
 
-const ValidationScreen = ({ initialData, onConfirm, messages = [] }: ValidationScreenProps) => {
+const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => {
   // Auto-advance to recommendations after 30 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -24,33 +23,6 @@ const ValidationScreen = ({ initialData, onConfirm, messages = [] }: ValidationS
 
     return () => clearTimeout(timer);
   }, [initialData, onConfirm]);
-
-  // Extract relevant quotes from messages
-  const getRelevantQuote = (keywords: string[]): string => {
-    const userMessages = messages.filter(m => m.role === 'user');
-    
-    // Find a message that contains any of the keywords
-    for (const msg of userMessages) {
-      const lowerContent = msg.content.toLowerCase();
-      if (keywords.some(keyword => lowerContent.includes(keyword.toLowerCase()))) {
-        // Return a clean excerpt (first 120 chars)
-        return msg.content.length > 120 
-          ? `"${msg.content.slice(0, 120).trim()}..."` 
-          : `"${msg.content}"`;
-      }
-    }
-    
-    // Fallback to a recent user message
-    return userMessages.length > 0 
-      ? `"${userMessages[userMessages.length - 1].content.slice(0, 100)}..."` 
-      : "Based on your conversation";
-  };
-
-  // Get specific quotes for each insight
-  const emotionQuote = getRelevantQuote(['feel', 'feeling', 'anxious', 'stressed', 'overwhelmed', 'tired', 'exhausted', 'frustrated', 'sad']);
-  const stressorQuote = getRelevantQuote(['work', 'sleep', 'wife', 'relationship', 'boss', 'meeting', 'deadline', 'conflict']);
-  const sleepQuote = getRelevantQuote(['sleep', 'tired', 'rest', 'hour', 'energy', 'exhausted']);
-  const supportQuote = getRelevantQuote(['help', 'need', 'want', 'support', 'advice']);
 
   // Format insights from the data
   const primaryEmotions = initialData.emotions.slice(0, 3).join(', ') || 'Processing';
@@ -114,7 +86,9 @@ const ValidationScreen = ({ initialData, onConfirm, messages = [] }: ValidationS
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-xs">
-                <p className="text-sm italic text-muted-foreground">{emotionQuote}</p>
+                <p className="text-sm text-muted-foreground">
+                  {initialData.emotionReasoning || "Based on your conversation patterns"}
+                </p>
               </TooltipContent>
             </Tooltip>
 
@@ -141,7 +115,9 @@ const ValidationScreen = ({ initialData, onConfirm, messages = [] }: ValidationS
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-xs">
-                <p className="text-sm italic text-muted-foreground">{stressorQuote}</p>
+                <p className="text-sm text-muted-foreground">
+                  {initialData.stressorReasoning || "Based on your conversation patterns"}
+                </p>
               </TooltipContent>
             </Tooltip>
 
@@ -168,7 +144,9 @@ const ValidationScreen = ({ initialData, onConfirm, messages = [] }: ValidationS
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-xs">
-                <p className="text-sm italic text-muted-foreground">{sleepQuote}</p>
+                <p className="text-sm text-muted-foreground">
+                  {initialData.sleepReasoning || "Based on your conversation patterns"}
+                </p>
               </TooltipContent>
             </Tooltip>
 
@@ -195,7 +173,9 @@ const ValidationScreen = ({ initialData, onConfirm, messages = [] }: ValidationS
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-xs">
-                <p className="text-sm italic text-muted-foreground">{supportQuote}</p>
+                <p className="text-sm text-muted-foreground">
+                  {initialData.supportReasoning || "Based on your conversation patterns"}
+                </p>
               </TooltipContent>
             </Tooltip>
           </div>

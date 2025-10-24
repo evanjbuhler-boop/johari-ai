@@ -42,7 +42,11 @@ Please extract and return ONLY a valid JSON object with this exact structure (no
   "contributingFactors": ["array of IDs from: work, sleep, caffeine, relationships, physical, life-changes, financial, isolation"],
   "desiredSupport": [],
   "patternAccuracy": null,
-  "aiGeneratedPattern": "A 2-3 sentence summary of the pattern you see in their stress/anxiety. Be specific about what's happening and why it's hard."
+  "aiGeneratedPattern": "A 2-3 sentence summary of the pattern you see in their stress/anxiety. Be specific about what's happening and why it's hard.",
+  "emotionReasoning": "2-3 sentences explaining how you determined the emotional state. Format: 'You said X, which indicated Y' or 'You described X/used this word, therefore Y'",
+  "stressorReasoning": "2-3 sentences explaining how you identified the key stressors. Format: 'You said X, which indicated Y' or 'You described X/used this word, therefore Y'",
+  "sleepReasoning": "2-3 sentences explaining the physical state assessment. Format: 'You said X, which indicated Y' or 'You described X/used this word, therefore Y'",
+  "supportReasoning": "2-3 sentences explaining why this support approach was chosen. Format: 'You said X, which indicated Y' or 'You described X/used this word, therefore Y'"
 }
 
 Important: Return ONLY the JSON object, no other text.`;
