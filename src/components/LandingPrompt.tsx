@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import FloatingParticles from '@/components/FloatingParticles';
+import { Link } from 'react-router-dom';
+import { User, Library } from 'lucide-react';
 
 interface LandingPromptProps {
   onSubmit: (message: string) => void;
@@ -19,6 +21,26 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden animated-gradient">
+      {/* Navigation buttons */}
+      <div className="fixed top-6 left-6 z-20 flex gap-3">
+        <Link to="/library">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
+          >
+            <Library className="h-5 w-5" />
+          </Button>
+        </Link>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
+        >
+          <User className="h-5 w-5" />
+        </Button>
+      </div>
+
       {/* Floating particles background */}
       <FloatingParticles />
       
