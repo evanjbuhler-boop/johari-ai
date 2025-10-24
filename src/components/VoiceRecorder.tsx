@@ -1,9 +1,13 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Mic, Square, Pause, Play, RotateCcw, Check } from 'lucide-react';
+import { Mic, Square, Pause, Play, RotateCcw, Check, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 
 interface VoiceRecorderProps {
   onTranscript: (text: string) => void;
@@ -14,6 +18,7 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
   const [recordingState, setRecordingState] = useState<'idle' | 'recording' | 'paused' | 'recorded' | 'transcribing'>('idle');
   const [transcript, setTranscript] = useState('');
   const [editableTranscript, setEditableTranscript] = useState('');
+  const [showDialog, setShowDialog] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
@@ -44,6 +49,7 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.start();
       setRecordingState('recording');
+      setShowDialog(true);
     } catch (error) {
       console.error('Error starting recording:', error);
       toast({
@@ -82,6 +88,15 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
   };
 
   const reRecord = () => {
+    setRecordingState('idle');
+    setTranscript('');
+    setEditableTranscript('');
+    chunksRef.current = [];
+    setShowDialog(false);
+  };
+  
+  const closeDialog = () => {
+    setShowDialog(false);
     setRecordingState('idle');
     setTranscript('');
     setEditableTranscript('');
@@ -132,146 +147,157 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
   const handleSubmit = () => {
     if (editableTranscript.trim()) {
       onSubmit(editableTranscript);
+      setShowDialog(false);
+      setRecordingState('idle');
+      setTranscript('');
+      setEditableTranscript('');
     }
   };
 
-  // Idle state - before recording
-  if (recordingState === 'idle') {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[200px] gap-6">
-        <button
-          type="button"
-          onClick={startRecording}
-          className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center"
-        >
-          <Mic className="h-10 w-10" />
-        </button>
-        <p className="text-muted-foreground text-lg">Tap to record</p>
-      </div>
-    );
-  }
+  return (
+    <>
+      {/* Microphone button */}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={startRecording}
+        className="h-8 w-8 hover:bg-primary/10"
+      >
+        <Mic className="h-4 w-4 text-muted-foreground hover:text-primary" />
+      </Button>
 
-  // Recording state
-  if (recordingState === 'recording' || recordingState === 'paused') {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[200px] gap-6">
-        <div className="flex items-center gap-2 text-red-500">
-          <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-          <span className="font-medium">{recordingState === 'recording' ? 'Recording...' : 'Paused'}</span>
-        </div>
-        
-        {/* Waveform animation */}
-        <div className="flex items-center gap-1 h-16">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="w-1.5 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full animate-pulse"
-              style={{
-                height: recordingState === 'recording' ? `${Math.random() * 60 + 20}px` : '20px',
-                animationDelay: `${i * 100}ms`,
-                animationDuration: '800ms'
-              }}
-            />
-          ))}
-        </div>
+      {/* Recording Dialog */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="sm:max-w-md">
+          {/* Recording state */}
+          {(recordingState === 'recording' || recordingState === 'paused') && (
+            <div className="flex flex-col items-center justify-center gap-6 py-6">
+              <div className="flex items-center gap-2 text-red-500">
+                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                <span className="font-medium">{recordingState === 'recording' ? 'Recording...' : 'Paused'}</span>
+              </div>
+              
+              {/* Waveform animation */}
+              <div className="flex items-center gap-1 h-16">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-1.5 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full animate-pulse"
+                    style={{
+                      height: recordingState === 'recording' ? `${Math.random() * 60 + 20}px` : '20px',
+                      animationDelay: `${i * 100}ms`,
+                      animationDuration: '800ms'
+                    }}
+                  />
+                ))}
+              </div>
 
-        <p className="text-muted-foreground text-sm">
-          Speak your message...
-        </p>
+              <p className="text-muted-foreground text-sm">
+                Speak your message...
+              </p>
 
-        {/* Controls */}
-        <div className="flex gap-3">
-          <Button
-            type="button"
-            onClick={stopRecording}
-            variant="outline"
-            size="lg"
-            className="gap-2"
-          >
-            <Square className="h-4 w-4" />
-            Stop
-          </Button>
-          <Button
-            type="button"
-            onClick={recordingState === 'recording' ? pauseRecording : resumeRecording}
-            variant="outline"
-            size="lg"
-            className="gap-2"
-          >
-            {recordingState === 'recording' ? (
-              <>
-                <Pause className="h-4 w-4" />
-                Pause
-              </>
-            ) : (
-              <>
-                <Play className="h-4 w-4" />
-                Resume
-              </>
-            )}
-          </Button>
-        </div>
-      </div>
-    );
-  }
+              {/* Controls */}
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  onClick={stopRecording}
+                  variant="outline"
+                  size="lg"
+                  className="gap-2"
+                >
+                  <Square className="h-4 w-4" />
+                  Stop
+                </Button>
+                <Button
+                  type="button"
+                  onClick={recordingState === 'recording' ? pauseRecording : resumeRecording}
+                  variant="outline"
+                  size="lg"
+                  className="gap-2"
+                >
+                  {recordingState === 'recording' ? (
+                    <>
+                      <Pause className="h-4 w-4" />
+                      Pause
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-4 w-4" />
+                      Resume
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
 
-  // Transcribing state
-  if (recordingState === 'transcribing') {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[200px] gap-6">
-        <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-muted-foreground">Transcribing your message...</p>
-      </div>
-    );
-  }
+          {/* Transcribing state */}
+          {recordingState === 'transcribing' && (
+            <div className="flex flex-col items-center justify-center gap-6 py-6">
+              <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+              <p className="text-muted-foreground">Transcribing your message...</p>
+            </div>
+          )}
 
-  // Recorded state - show transcript with edit capability
-  if (recordingState === 'recorded') {
-    return (
-      <div className="flex flex-col gap-6 min-h-[200px]">
-        <div className="flex items-center gap-2 text-green-500">
-          <Check className="h-5 w-5" />
-          <span className="font-medium">Recorded</span>
-        </div>
+          {/* Recorded state - show transcript with edit capability */}
+          {recordingState === 'recorded' && (
+            <div className="flex flex-col gap-6 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-green-500">
+                  <Check className="h-5 w-5" />
+                  <span className="font-medium">Recorded</span>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={closeDialog}
+                  className="h-8 w-8"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
 
-        <Textarea
-          value={editableTranscript}
-          onChange={(e) => setEditableTranscript(e.target.value)}
-          className="min-h-[120px] text-base resize-none border-transparent focus:border-transparent bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground/90 leading-relaxed"
-          placeholder="Your transcript will appear here..."
-        />
+              <Textarea
+                value={editableTranscript}
+                onChange={(e) => setEditableTranscript(e.target.value)}
+                className="min-h-[120px] text-base resize-none border-transparent focus:border-transparent bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground/90 leading-relaxed"
+                placeholder="Your transcript will appear here..."
+              />
 
-        <div className="flex gap-3">
-          <Button
-            type="button"
-            onClick={reRecord}
-            variant="outline"
-            size="lg"
-            className="flex-1 gap-2"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Re-record
-          </Button>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            size="lg"
-            className="flex-1 gap-2"
-            style={{
-              background: 'linear-gradient(135deg, hsl(340, 75%, 70%), hsl(260, 60%, 65%))',
-              boxShadow: '0 4px 20px rgba(255, 138, 180, 0.4)'
-            }}
-            disabled={!editableTranscript.trim()}
-          >
-            I'm ready
-            <Check className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  onClick={reRecord}
+                  variant="outline"
+                  size="lg"
+                  className="flex-1 gap-2"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  Re-record
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleSubmit}
+                  size="lg"
+                  className="flex-1 gap-2"
+                  style={{
+                    background: 'linear-gradient(135deg, hsl(340, 75%, 70%), hsl(260, 60%, 65%))',
+                    boxShadow: '0 4px 20px rgba(255, 138, 180, 0.4)'
+                  }}
+                  disabled={!editableTranscript.trim()}
+                >
+                  I'm ready
+                  <Check className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 };
 
 export default VoiceRecorder;
