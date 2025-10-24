@@ -234,18 +234,12 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
           <span className="font-medium">Recorded</span>
         </div>
 
-        <div className="relative">
-          <Textarea
-            value={editableTranscript}
-            onChange={(e) => setEditableTranscript(e.target.value)}
-            className="min-h-[120px] text-base resize-none border-muted/30 focus:border-accent/50 transition-all duration-300 bg-background/50 rounded-2xl"
-            placeholder="Your transcript will appear here..."
-          />
-          <div className="absolute top-3 right-3 text-xs text-muted-foreground flex items-center gap-1">
-            <span>✎</span>
-            <span>Edit</span>
-          </div>
-        </div>
+        <Textarea
+          value={editableTranscript}
+          onChange={(e) => setEditableTranscript(e.target.value)}
+          className="min-h-[120px] text-base resize-none border-transparent focus:border-transparent bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground/90 leading-relaxed"
+          placeholder="Your transcript will appear here..."
+        />
 
         <div className="flex gap-3">
           <Button
