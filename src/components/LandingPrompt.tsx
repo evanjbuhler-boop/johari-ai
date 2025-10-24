@@ -103,30 +103,32 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
             {/* Inner glow effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none rounded-3xl" />
             
-            <Textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Share what's on your mind..."
-              className="min-h-[160px] text-lg resize-none border-muted/30 focus:border-accent/50 transition-all duration-300 bg-transparent focus:breathe-border rounded-2xl"
-              style={{
-                boxShadow: 'none'
-              }}
-            />
-            <div className="flex gap-3 mt-6">
-              <VoiceRecorder onTranscript={handleVoiceTranscript} />
-              <Button
-                type="submit"
-                size="lg"
-                className="flex-1 text-lg h-14 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
+            <div className="relative">
+              <Textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Share what's on your mind..."
+                className="min-h-[160px] text-lg resize-none border-muted/30 focus:border-accent/50 transition-all duration-300 bg-transparent focus:breathe-border rounded-2xl pr-14"
                 style={{
-                  background: 'linear-gradient(135deg, hsl(340, 75%, 70%), hsl(260, 60%, 65%))',
-                  boxShadow: '0 4px 20px rgba(255, 138, 180, 0.4)'
+                  boxShadow: 'none'
                 }}
-                disabled={!message.trim()}
-              >
-                I'm ready
-              </Button>
+              />
+              <div className="absolute bottom-3 right-3">
+                <VoiceRecorder onTranscript={handleVoiceTranscript} />
+              </div>
             </div>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full mt-6 text-lg h-14 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
+              style={{
+                background: 'linear-gradient(135deg, hsl(340, 75%, 70%), hsl(260, 60%, 65%))',
+                boxShadow: '0 4px 20px rgba(255, 138, 180, 0.4)'
+              }}
+              disabled={!message.trim()}
+            >
+              I'm ready
+            </Button>
           </div>
         </form>
       </div>

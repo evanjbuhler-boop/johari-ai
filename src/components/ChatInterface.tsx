@@ -293,15 +293,19 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
           
           {/* Input form */}
           <form onSubmit={handleSubmit} className="p-4 pt-2">
-            <div className="flex gap-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your response..."
-                className="flex-1 h-12 text-base"
-                disabled={isLoading}
-              />
-              <VoiceRecorder onTranscript={handleVoiceTranscript} />
+            <div className="flex gap-2 relative">
+              <div className="flex-1 relative">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type your response..."
+                  className="h-12 text-base pr-14"
+                  disabled={isLoading}
+                />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                  <VoiceRecorder onTranscript={handleVoiceTranscript} />
+                </div>
+              </div>
               <Button type="submit" size="lg" disabled={!input.trim() || isLoading}>
                 <Send className="h-5 w-5" />
               </Button>
