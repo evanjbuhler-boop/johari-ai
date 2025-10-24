@@ -66,57 +66,111 @@ Important: Return ONLY the JSON object, no other text.`;
         );
       }
 
-      if (!anthropicApiKey) {
-        throw new Error('ANTHROPIC_API_KEY is not configured');
-      }
-
-      try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': anthropicApiKey,
-            'anthropic-version': '2023-06-01'
-          },
-          body: JSON.stringify({
-            model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 1000,
-            messages: [{
-              role: 'user',
-              content: extractionPrompt
-            }]
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`Anthropic API error: ${response.status}`);
-        }
-
-        const result = await response.json();
-        const extractedText = result.content[0].text.trim();
-        
-        // Parse JSON from response
-        let validationData;
+      // Use Anthropic if available, otherwise OpenAI
+      if (anthropicApiKey) {
         try {
-          // Remove markdown code blocks if present
-          const jsonText = extractedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-          validationData = JSON.parse(jsonText);
-        } catch (parseError) {
-          console.error('Failed to parse validation JSON:', extractedText);
-          throw parseError;
-        }
+          const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': anthropicApiKey,
+              'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+              model: 'claude-3-5-sonnet-20241022',
+              max_tokens: 1000,
+              messages: [{
+                role: 'user',
+                content: extractionPrompt
+              }]
+            })
+          });
 
-        return new Response(
-          JSON.stringify(validationData),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      } catch (error) {
-        console.error('Error extracting validation data:', error);
-        return new Response(
-          JSON.stringify({ error: 'Failed to extract validation data' }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+          if (!response.ok) {
+            throw new Error(`Anthropic API error: ${response.status}`);
+          }
+
+          const result = await response.json();
+          const extractedText = result.content[0].text.trim();
+          
+          // Parse JSON from response
+          let validationData;
+          try {
+            // Remove markdown code blocks if present
+            const jsonText = extractedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+            validationData = JSON.parse(jsonText);
+          } catch (parseError) {
+            console.error('Failed to parse validation JSON:', extractedText);
+            throw parseError;
+          }
+
+          console.log('Validation data extracted via Anthropic:', validationData);
+          return new Response(
+            JSON.stringify(validationData),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        } catch (error) {
+          console.error('Error extracting validation data with Anthropic:', error);
+          // Fall through to try OpenAI
+        }
       }
+
+      // Try OpenAI if Anthropic failed or not available
+      if (openaiApiKey) {
+        try {
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${openaiApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'gpt-4o-mini',
+              max_tokens: 1000,
+              temperature: 0.3,
+              messages: [
+                { role: 'system', content: 'You are a mental health conversation analyzer. Extract structured data from conversations and return ONLY valid JSON with no markdown formatting.' },
+                { role: 'user', content: extractionPrompt }
+              ],
+            }),
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('OpenAI API error:', response.status, errorText);
+            throw new Error(`OpenAI API error: ${response.status}`);
+          }
+
+          const result = await response.json();
+          const extractedText = result.choices[0].message.content.trim();
+          
+          // Parse JSON from response
+          let validationData;
+          try {
+            // Remove markdown code blocks if present
+            const jsonText = extractedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+            validationData = JSON.parse(jsonText);
+          } catch (parseError) {
+            console.error('Failed to parse validation JSON from OpenAI:', extractedText);
+            throw parseError;
+          }
+
+          console.log('Validation data extracted via OpenAI:', validationData);
+          return new Response(
+            JSON.stringify(validationData),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        } catch (error) {
+          console.error('Error extracting validation data with OpenAI:', error);
+          return new Response(
+            JSON.stringify({ error: 'Failed to extract validation data' }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      }
+
+      // If we get here, no API keys are available
+      throw new Error('No AI API keys configured for validation extraction');
     }
 
     // For conversation mode
