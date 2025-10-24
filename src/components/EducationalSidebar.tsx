@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Lightbulb, Brain, Zap } from 'lucide-react';
+import { X, Lightbulb, Brain, Zap, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 type SidebarPhase = 'highlight' | 'worry' | 'lifestyle';
@@ -31,10 +31,12 @@ const sidebarContent: Record<SidebarPhase, SidebarContent> = {
 interface EducationalSidebarProps {
   phase: SidebarPhase;
   onDismiss: () => void;
+  onDisableAllTips?: () => void;
 }
 
-const EducationalSidebar = ({ phase, onDismiss }: EducationalSidebarProps) => {
+const EducationalSidebar = ({ phase, onDismiss, onDisableAllTips }: EducationalSidebarProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const content = sidebarContent[phase];
 
   useEffect(() => {
@@ -60,6 +62,14 @@ const EducationalSidebar = ({ phase, onDismiss }: EducationalSidebarProps) => {
     setTimeout(onDismiss, 300); // Wait for animation to complete
   };
 
+  const handleDisableAllTips = () => {
+    setIsVisible(false);
+    setTimeout(() => {
+      onDisableAllTips?.();
+      onDismiss();
+    }, 300);
+  };
+
   return (
     <>
       {/* Mobile backdrop */}
@@ -72,21 +82,21 @@ const EducationalSidebar = ({ phase, onDismiss }: EducationalSidebarProps) => {
       {/* Desktop sidebar (right) / Mobile bottom sheet */}
       <aside
         className={`
-          fixed z-50 bg-white
+          fixed z-50 bg-card
           transition-all duration-300 ease-out
           
           /* Desktop: right sidebar */
           md:top-1/2 md:-translate-y-1/2 md:right-0
-          md:w-64 md:max-h-[80vh] md:rounded-l-lg md:border-l-4
+          md:w-80 md:rounded-l-lg md:border-l-4
           md:shadow-lg
           
           /* Mobile: bottom sheet */
           bottom-0 left-0 right-0
-          max-h-[50vh] rounded-t-2xl border-t-4
+          rounded-t-2xl border-t-4
           shadow-2xl
           
           /* Common */
-          border-primary overflow-y-auto
+          border-primary overflow-hidden
           
           ${isVisible 
             ? 'md:translate-x-0 translate-y-0' 
@@ -101,31 +111,73 @@ const EducationalSidebar = ({ phase, onDismiss }: EducationalSidebarProps) => {
           <div className="w-12 h-1 bg-muted-foreground/30 rounded-full" />
         </div>
 
-        <div className="p-6">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div className="flex items-center gap-3">
-              {content.icon}
-              <h3 className="font-semibold text-lg leading-tight">
-                {content.headline}
-              </h3>
-            </div>
+        {/* Collapsed Header - Always visible */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full p-4 flex items-center justify-between gap-3 hover:bg-accent/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            {content.icon}
+            <span className="font-semibold text-sm leading-tight text-left">
+              {content.headline}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleDismiss}
-              className="flex-shrink-0 -mt-1 -mr-2"
-              aria-label="Close educational tip"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDismiss();
+              }}
+              className="h-8 w-8"
+              aria-label="Close tip"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </Button>
+            {isExpanded ? (
+              <ChevronUp className="h-5 w-5 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            )}
           </div>
+        </button>
 
-          {/* Body */}
-          <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
-            {content.body.split('\n\n').map((paragraph, idx) => (
-              <p key={idx}>{paragraph}</p>
-            ))}
+        {/* Expanded Content */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="px-6 pb-6 overflow-y-auto max-h-80">
+            {/* Body */}
+            <div className="text-sm text-muted-foreground leading-relaxed space-y-3 mb-4">
+              {content.body.split('\n\n').map((paragraph, idx) => (
+                <p key={idx}>{paragraph}</p>
+              ))}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2 pt-3 border-t">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDismiss}
+                className="flex-1"
+              >
+                Got it
+              </Button>
+              {onDisableAllTips && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDisableAllTips}
+                  className="flex-1 text-muted-foreground"
+                >
+                  Don't show tips
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </aside>

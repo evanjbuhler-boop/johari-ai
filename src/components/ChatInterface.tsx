@@ -29,6 +29,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [showPathSelection, setShowPathSelection] = useState(false);
+  const [tipsDisabled, setTipsDisabled] = useState(false);
   const [sidebar, setSidebar] = useState<{
     visible: boolean;
     phase: SidebarPhase | null;
@@ -61,8 +62,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       setShowEarlyExit(true);
     }
 
-    // Educational sidebar triggers (only for nightly_routine path)
-    if (conversationPath === 'nightly_routine' && !isLoading) {
+    // Educational sidebar triggers (only for nightly_routine path and if tips not disabled)
+    if (conversationPath === 'nightly_routine' && !isLoading && !tipsDisabled) {
       const lastMessage = messages[messages.length - 1];
       const isAIMessage = lastMessage?.role === 'assistant';
       
@@ -90,7 +91,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         return () => clearTimeout(timer);
       }
     }
-  }, [messages, exchangeCount, conversationPath, showPathSelection, isLoading, sidebar.dismissedPhases]);
+  }, [messages, exchangeCount, conversationPath, showPathSelection, isLoading, sidebar.dismissedPhases, tipsDisabled]);
 
   const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
     setConversationPath(path);
@@ -106,6 +107,11 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         dismissedPhases: new Set([...prev.dismissedPhases, prev.phase!])
       }));
     }
+  };
+
+  const handleDisableAllTips = () => {
+    setTipsDisabled(true);
+    localStorage.setItem('tipsDisabled', 'true');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -138,6 +144,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         <EducationalSidebar 
           phase={sidebar.phase}
           onDismiss={handleSidebarDismiss}
+          onDisableAllTips={handleDisableAllTips}
         />
       )}
 
