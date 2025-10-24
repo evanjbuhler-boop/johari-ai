@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Mic, Square, Pause, Play, RotateCcw, Check } from 'lucide-react';
@@ -13,7 +13,6 @@ interface VoiceRecorderProps {
 const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
   const [recordingState, setRecordingState] = useState<'idle' | 'recording' | 'paused' | 'recorded' | 'transcribing'>('idle');
   const [transcript, setTranscript] = useState('');
-  const [liveTranscript, setLiveTranscript] = useState('');
   const [editableTranscript, setEditableTranscript] = useState('');
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -45,7 +44,6 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.start();
       setRecordingState('recording');
-      setLiveTranscript('');
     } catch (error) {
       console.error('Error starting recording:', error);
       toast({
@@ -87,7 +85,6 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
     setRecordingState('idle');
     setTranscript('');
     setEditableTranscript('');
-    setLiveTranscript('');
     chunksRef.current = [];
   };
 
@@ -138,23 +135,6 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
     }
   };
 
-  // Simulate live transcript during recording (this is just visual feedback)
-  useEffect(() => {
-    if (recordingState === 'recording') {
-      const interval = setInterval(() => {
-        const samples = [
-          "I'm feeling...",
-          "I'm feeling pretty good...",
-          "I'm feeling pretty good today...",
-          "I'm feeling pretty good today. Had a nice...",
-        ];
-        setLiveTranscript(samples[Math.floor(Math.random() * samples.length)]);
-      }, 2000);
-      
-      return () => clearInterval(interval);
-    }
-  }, [recordingState]);
-
   // Idle state - before recording
   if (recordingState === 'idle') {
     return (
@@ -195,12 +175,9 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
           ))}
         </div>
 
-        {/* Live transcript */}
-        {liveTranscript && (
-          <p className="text-foreground/70 italic text-center max-w-md">
-            "{liveTranscript}"
-          </p>
-        )}
+        <p className="text-muted-foreground text-sm">
+          Speak your message...
+        </p>
 
         {/* Controls */}
         <div className="flex gap-3">
