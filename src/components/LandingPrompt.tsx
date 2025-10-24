@@ -111,18 +111,20 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
             {/* Inner glow effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none rounded-3xl" />
             
-            <div className="relative">
+            <div className="relative flex items-center justify-center">
               <Textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Share what's on your mind..."
-                className="min-h-[160px] text-lg resize-none border-muted/30 focus:border-accent/50 transition-all duration-300 bg-transparent focus:breathe-border rounded-2xl pr-14"
+                className="min-h-[160px] text-lg resize-none border-muted/30 focus:border-accent/50 transition-all duration-300 bg-transparent focus:breathe-border rounded-2xl"
                 style={{
                   boxShadow: 'none'
                 }}
               />
-              <div className="absolute top-1/2 right-4 -translate-y-1/2">
-                <VoiceRecorder onTranscript={handleVoiceTranscript} />
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="pointer-events-auto">
+                  <VoiceRecorder onTranscript={handleVoiceTranscript} />
+                </div>
               </div>
             </div>
             <Button
