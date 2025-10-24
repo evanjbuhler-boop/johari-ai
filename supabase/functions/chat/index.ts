@@ -690,16 +690,23 @@ STYLE:
     if (type === 'results') {
       // Mock mode - return realistic psychological analysis
       if (useMockAI) {
-        const mockResults = {
+      const mockResults = {
           byline: "You're carrying the weight of uncertainty while trying to perform at your best",
-          userQuote: "Not knowing if I'll get the promotion or not!",
           whatsHappening: {
             summary: "You're experiencing what psychologists call 'anticipatory anxiety' - the stress of waiting for an outcome you can't control. This is compounded by comparison with colleagues, creating a constant state of competitive vigilance that's exhausting your nervous system.",
+            themes: ["Career pressure", "Uncertainty", "Social comparison"],
             fullExplanation: "When we face uncertainty about important outcomes, our brain's threat detection system stays activated, constantly scanning for signs of danger or failure. This is what you're experiencing with the promotion uncertainty.\n\nThe ambient competition you described is particularly draining because it creates a state called 'social comparison anxiety.' Your nervous system interprets every colleague's success as a potential threat to your own advancement, keeping you in a heightened state of stress.\n\nThis chronic stress directly impacts sleep quality through elevated cortisol levels, which then creates a feedback loop: poor sleep → increased anxiety → worse sleep. Your body is essentially stuck in 'fight or flight' mode, making it nearly impossible to relax even when you want to.",
             citations: [
               { author: "Grupe & Nitschke", year: "2013", title: "Uncertainty and anticipation in anxiety: an integrated neurobiological and psychological perspective" },
               { author: "Buunk & Gibbons", year: "2007", title: "Social comparison: The end of a theory and the emergence of a field" }
             ]
+          },
+          quotes: [
+            { text: "Not knowing if I'll get the promotion or not!", sentiment: "negative" as const },
+            { text: "Everyone else might get it", sentiment: "negative" as const }
+          ],
+          reframing: {
+            content: "The silence from uncertainty feels personal - and that makes sense. But uncertainty often says more about the situation than about your worthiness. Your colleagues aren't your enemies; they're fellow travelers in the same anxious waiting room.\n\nIn moments like these, it can be helpful to remember that we're all navigating similar challenges. Just as a storm can obscure the sun, our feelings can sometimes cloud our understanding of reality. Yet beyond the clouds, clarity still waits to break through.\n\nYour worth isn't determined by this one promotion. Your career is a long journey, and this is just one step. What you can control - your effort, your integrity, your growth - matters more than what you can't."
           },
           podcast: {
             title: "The Anxiety Coaches Podcast",
@@ -741,6 +748,7 @@ STYLE:
           },
           story: {
             title: "The Farmer and the Horse",
+            culturalOrigin: "Chinese Taoist Parable",
             content: "There's an old story of a farmer whose horse ran away. His neighbor said, 'Such bad luck!' The farmer replied, 'Maybe.'\n\nThe next day, the horse returned with three wild horses. 'How wonderful!' said the neighbor. 'Maybe,' said the farmer.\n\nWhen his son tried to tame one of the wild horses and broke his leg, the neighbor exclaimed, 'How terrible!' The farmer simply said, 'Maybe.'\n\nThe next week, officers came to draft young men into the army, but the son was excused because of his broken leg. The neighbor congratulated the farmer on his good fortune, to which the farmer responded, 'Maybe.'",
             whyThisMatters: "Right now, not knowing about the promotion feels like 'bad luck' - but you don't yet know how this will unfold. Whether you get this promotion or not, you can't see the full picture of how it will affect your career path. The 'maybe' mindset helps you stay present instead of catastrophizing about unknown outcomes."
           },
@@ -773,13 +781,20 @@ CRITICAL: Use their own words, not therapy-speak. If they said "I'm drowning," u
 Format as JSON with this EXACT structure:
 {
   "byline": "One compelling sentence capturing their core challenge",
-  "userQuote": "Direct quote (2-15 words) from user that captures their struggle",
   "whatsHappening": {
-    "summary": "2-3 sentence explanation of what's happening psychologically (use their language)",
+    "summary": "2-3 sentence empathetic explanation of what's happening psychologically (use warm, validating language)",
+    "themes": ["Theme 1", "Theme 2", "Theme 3"],
     "fullExplanation": "Detailed 3-4 paragraph explanation connecting their experiences to psychological concepts. Use their specific situation.",
     "citations": [
       {"author": "Researcher Name", "year": "2020", "title": "Study Title relevant to their situation"}
     ]
+  },
+  "quotes": [
+    {"text": "Direct quote from user", "sentiment": "positive|negative|neutral"},
+    {"text": "Another impactful quote", "sentiment": "positive|negative|neutral"}
+  ],
+  "reframing": {
+    "content": "3-4 paragraphs offering a thoughtful perspective shift using CBT, ACT, and therapeutic methods. NOT preachy, but gently expansive. Use their specific details (names, situations, actual events they mentioned). Connect their experience to broader human themes. Make them feel seen AND appropriately challenged. Use their own language and references."
   },
   "podcast": {
     "title": "Podcast Name",
@@ -817,8 +832,9 @@ Format as JSON with this EXACT structure:
   },
   "story": {
     "title": "Story Title",
-    "content": "The full story text (2-3 paragraphs, use \\n for line breaks)",
-    "whyThisMatters": "How this story relates to their specific situation"
+    "culturalOrigin": "Cultural tradition (e.g., 'Cherokee Nation', 'Buddhist Parable', 'West African Folktale', 'Greek Mythology')",
+    "content": "The full story text (2-3 paragraphs). Choose from diverse cultural traditions: African proverbs, Buddhist parables, Indigenous wisdom, Greek myths, Taoist stories, etc. Match the theme to their emotional situation.",
+    "whyThisMatters": "Connect the story's wisdom to their specific situation. Use their actual details and help them see their experience in a new light through the story's lens."
   },
   "cbt": {
     "distortion": "Name of cognitive distortion",
@@ -830,7 +846,12 @@ Format as JSON with this EXACT structure:
   "patterns": ["Pattern 1", "Pattern 2", "Pattern 3"]
 }
 
-IMPORTANT: All podcast/book URLs should be real and relevant. Use placeholder images only for thumbnails/covers.`;
+IMPORTANT: 
+- All podcast/book URLs should be real and relevant (test that Spotify links go to Spotify, book links to Amazon/Bookshop.org)
+- Use placeholder images only for thumbnails/covers
+- Ensure diversity: No author should appear in multiple resource types
+- Include diverse perspectives and voices in recommendations
+- Make reframing SPECIFIC to their situation, not generic templates`;
 
       const conversationSummary = messages.map((m: any) => 
         `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
@@ -882,13 +903,19 @@ IMPORTANT: All podcast/book URLs should be real and relevant. Use placeholder im
         // Fallback to a basic structure matching the expected format
         results = {
           byline: "You're navigating a challenging time",
-          userQuote: "I'm struggling with a lot right now",
           whatsHappening: {
             summary: "You're experiencing stress from multiple sources that are compounding on each other. This is creating a pattern where each challenge makes the others feel heavier.",
+            themes: ["Stress", "Overwhelm", "Coping"],
             fullExplanation: "When we face multiple stressors simultaneously, our capacity to cope becomes stretched. This isn't a sign of weakness - it's a natural response to being pulled in many directions at once.\n\nYour body and mind are signaling that they need support, which is why you're here tonight. That awareness is actually a strength, not a failure.\n\nThe key is understanding that you don't have to solve everything at once. Small, intentional steps toward rest and boundary-setting can create positive ripple effects across all areas of stress.",
             citations: [
               { author: "Lazarus & Folkman", year: "1984", title: "Stress, Appraisal, and Coping" }
             ]
+          },
+          quotes: [
+            { text: "I'm struggling with a lot right now", sentiment: "negative" }
+          ],
+          reframing: {
+            content: "What you're feeling isn't weakness - it's your system saying it needs care. Just as a tree doesn't grow all at once but through countless small moments, you don't have to solve everything tonight.\n\nThe challenges you're facing are real, and they deserve acknowledgment. But so do your efforts to show up, even when it's hard. That takes courage.\n\nRemember: progress doesn't require perfection. It requires showing up with compassion for yourself, one day at a time."
           },
           podcast: {
             title: "The Happiness Lab",
@@ -929,9 +956,10 @@ IMPORTANT: All podcast/book URLs should be real and relevant. Use placeholder im
             ]
           },
           story: {
-            title: "The Wisdom of One Day",
-            content: "There's wisdom in taking one day at a time and being gentle with yourself during challenging periods.\n\nJust as a tree doesn't grow all at once but through countless small moments of growth, you don't have to solve everything tonight.\n\nWhat matters is that you're here, paying attention, and taking one small step toward caring for yourself.",
-            whyThisMatters: "This reminds you that progress doesn't require perfection. Small steps count, especially when you're tired."
+            title: "The Cracked Pot",
+            culturalOrigin: "Buddhist Parable",
+            content: "A water bearer in India had two large pots, each hung on opposite ends of a pole he carried across his neck. One pot was perfect, while the other had a crack that leaked water along the path.\n\nFor two years, the water bearer made this trip daily. The perfect pot was proud of its accomplishments, but the cracked pot was ashamed of its imperfection. One day, it spoke to the bearer: 'I am ashamed of my flaw. I leak water, and you only get half of what I carry.'\n\nThe water bearer smiled and pointed to the path. 'Do you see the beautiful flowers on your side of the path? I've always known about your flaw, so I planted flower seeds on your side. Every day while we walk back, you water them. For two years, I've been able to pick these beautiful flowers to decorate my table. Without you being just the way you are, I wouldn't have this beauty.'",
+            whyThisMatters: "Right now, you might feel like that cracked pot - imperfect, struggling, not measuring up. But your challenges have taught you things others don't know. Your sensitivity, your awareness, your ability to feel deeply - these aren't flaws. They're part of what makes you uniquely able to understand, to connect, to grow. You don't have to be perfect to be valuable."
           },
           cbt: {
             distortion: "All-or-nothing thinking",

@@ -24,7 +24,6 @@ export const getMockAIResponse = (messages: Message[]): string => {
 export const generateMockResults = (messages: Message[]): CheckInResults => {
   return {
     byline: "You're navigating multiple demands while running low on rest. Here's what might help right now.",
-    userQuote: "I'm drowning in everything",
     patterns: [
       "Sleep deprivation (4 hours) → heightened emotional reactivity",
       "Work pressure + exhaustion → snapping at your partner",
@@ -32,6 +31,7 @@ export const generateMockResults = (messages: Message[]): CheckInResults => {
     ],
     whatsHappening: {
       summary: "You're experiencing what psychologists call 'cumulative stress'—when multiple smaller stressors compound into feeling overwhelming.",
+      themes: ["Work pressure", "Sleep deprivation", "Relationship strain"],
       fullExplanation: "What you're experiencing aligns with the concept of 'cognitive load' - when our mental capacity is stretched across too many demands simultaneously. This is compounded by what psychologists call 'decision fatigue,' where the quality of our decisions deteriorates after making many decisions throughout the day.\n\nResearch in occupational psychology shows that sleep deprivation significantly amplifies stress responses and reduces emotional regulation capacity. A 2019 study in the Journal of Sleep Research found that even partial sleep restriction can lead to increased irritability and conflict in relationships.\n\nYour body and mind are signaling the need for more intentional rest and boundary-setting. The tension headache and snapping at your partner aren't character flaws—they're physiological stress signals that your nervous system needs support.",
       citations: [
         { author: "Baumeister, R. F.", year: 1998, title: "Ego Depletion: Is the Active Self a Limited Resource?" },
@@ -107,6 +107,7 @@ export const generateMockResults = (messages: Message[]): CheckInResults => {
     },
     story: {
       title: "The Farmer and the Horse",
+      culturalOrigin: "Chinese Taoist Parable",
       content: "There's an old story of a farmer whose horse ran away. His neighbor said, 'Such bad luck!' The farmer replied, 'Maybe.' The next day, the horse returned with three wild horses. 'How wonderful!' said the neighbor. 'Maybe,' said the farmer. When his son tried to tame one of the wild horses and broke his leg, the neighbor exclaimed, 'How terrible!' The farmer simply said, 'Maybe.' The next week, officers came to draft young men into the army, but the son was excused because of his broken leg. The neighbor congratulated the farmer on his good fortune, to which the farmer responded, 'Maybe.'\n\nThis story reminds us that we can't always see the full picture of how events will unfold. What feels overwhelming today may lead to unexpected growth tomorrow. The key is maintaining perspective and being gentle with ourselves during uncertain times.",
       whyThisMatters: "You're judging this moment—the bad sleep, the conflict with your partner, the work stress—as catastrophic. But you don't yet know what this difficult period might teach you or where it might lead. Sometimes our hardest moments become our most transformative ones."
     },

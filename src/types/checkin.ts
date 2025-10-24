@@ -53,15 +53,10 @@ export interface CheckInResults {
   // Section 1: Summary/Byline
   byline: string;
   
-  // Section 2: User's exact words
-  userQuote: string;
-  
-  // Section 3: Pattern identification
-  patterns: string[];
-  
-  // Section 4: What's Happening (Academic Explanation)
+  // Section 2: What's Happening
   whatsHappening: {
     summary: string;
+    themes: string[];
     fullExplanation: string;
     citations?: {
       author: string;
@@ -69,6 +64,20 @@ export interface CheckInResults {
       title: string;
     }[];
   };
+  
+  // Section 3: Quotes from conversation
+  quotes?: {
+    text: string;
+    sentiment: 'positive' | 'negative' | 'neutral';
+  }[];
+  
+  // Section 4: Reframing perspective
+  reframing?: {
+    content: string;
+  };
+  
+  // Section 5: Pattern identification (keep for compatibility)
+  patterns: string[];
   
   // Section 5: Listen to This (Podcast)
   podcast?: {
@@ -116,6 +125,7 @@ export interface CheckInResults {
   // Section 8: A Different Perspective (Story)
   story?: {
     title: string;
+    culturalOrigin: string;
     content: string;
     whyThisMatters: string;
   };
