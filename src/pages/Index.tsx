@@ -168,10 +168,36 @@ const Index = () => {
   };
 
   const handleChatComplete = async () => {
-    // Extract validation data from conversation and show validation screen
-    const extracted = extractValidationData(messages);
-    setValidationData(extracted);
-    setState('validation');
+    setIsLoading(true);
+    try {
+      // Ask AI to extract structured validation data from conversation
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: { 
+          messages, 
+          type: 'extract_validation',
+          conversationPath: 'validation'
+        }
+      });
+
+      if (error) throw error;
+
+      // AI should return structured ValidationData
+      const extracted: ValidationData = data || extractValidationData(messages);
+      setValidationData(extracted);
+      setState('validation');
+    } catch (error) {
+      console.error('Error extracting validation data:', error);
+      // Fallback to keyword extraction
+      const extracted = extractValidationData(messages);
+      setValidationData(extracted);
+      setState('validation');
+      toast({
+        title: "Using offline mode",
+        description: "Validation data extracted locally.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleValidationConfirm = async (data: ValidationData) => {

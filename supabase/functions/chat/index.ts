@@ -17,12 +17,107 @@ serve(async (req) => {
     const truthy = (v: unknown) => typeof v === 'string' ? ['true','1','yes','y','on'].includes(v.toLowerCase().trim()) : !!v;
     const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(mock);
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
     
-    if (!useMockAI && !openaiApiKey) {
-      throw new Error('OPENAI_API_KEY is not configured');
+    if (!useMockAI && !openaiApiKey && !anthropicApiKey) {
+      throw new Error('OPENAI_API_KEY or ANTHROPIC_API_KEY is not configured');
     }
 
     console.log('Processing chat request, type:', type, 'path:', conversationPath, 'messages:', messages.length, 'mock mode:', useMockAI);
+
+    // Handle validation data extraction
+    if (type === 'extract_validation') {
+      const conversationText = messages.map((m: any) => `${m.role}: ${m.content}`).join('\n');
+      
+      const extractionPrompt = `You are analyzing a mental health check-in conversation. Extract the following structured data from the conversation below.
+
+Conversation:
+${conversationText}
+
+Please extract and return ONLY a valid JSON object with this exact structure (no markdown, no code blocks, just the JSON):
+{
+  "emotions": ["array of emotions mentioned - e.g., Anxious, Frustrated, Overwhelmed, etc."],
+  "stressLevel": 7,
+  "mainStressors": ["brief array of main stressors mentioned"],
+  "contributingFactors": ["array of IDs from: work, sleep, caffeine, relationships, physical, life-changes, financial, isolation"],
+  "desiredSupport": [],
+  "patternAccuracy": null,
+  "aiGeneratedPattern": "A 2-3 sentence summary of the pattern you see in their stress/anxiety. Be specific about what's happening and why it's hard."
+}
+
+Important: Return ONLY the JSON object, no other text.`;
+
+      // Mock mode
+      if (useMockAI) {
+        const mockValidation = {
+          emotions: ['Anxious', 'Overwhelmed', 'Exhausted'],
+          stressLevel: 7,
+          mainStressors: ['Work', 'Sleep', 'Relationships'],
+          contributingFactors: ['work', 'sleep', 'relationships'],
+          desiredSupport: [],
+          patternAccuracy: null,
+          aiGeneratedPattern: "You're juggling multiple demands while running on insufficient rest. The stress isn't just about one thing—it's the cumulative load of everything happening at once while your body is signaling it needs recovery."
+        };
+        
+        console.log('Returning mock validation data');
+        return new Response(
+          JSON.stringify(mockValidation),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      if (!anthropicApiKey) {
+        throw new Error('ANTHROPIC_API_KEY is not configured');
+      }
+
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': anthropicApiKey,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 1000,
+            messages: [{
+              role: 'user',
+              content: extractionPrompt
+            }]
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Anthropic API error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        const extractedText = result.content[0].text.trim();
+        
+        // Parse JSON from response
+        let validationData;
+        try {
+          // Remove markdown code blocks if present
+          const jsonText = extractedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+          validationData = JSON.parse(jsonText);
+        } catch (parseError) {
+          console.error('Failed to parse validation JSON:', extractedText);
+          throw parseError;
+        }
+
+        return new Response(
+          JSON.stringify(validationData),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } catch (error) {
+        console.error('Error extracting validation data:', error);
+        return new Response(
+          JSON.stringify({ error: 'Failed to extract validation data' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     // For conversation mode
     if (type === 'conversation') {
