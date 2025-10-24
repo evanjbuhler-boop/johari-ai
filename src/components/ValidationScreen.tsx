@@ -81,7 +81,7 @@ const ValidationScreen = ({ initialData, onConfirm, messages = [] }: ValidationS
             <span className="text-sm font-medium text-primary">Processing your insights</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-            Here's What I'm Seeing
+            Here's What I'm Hearing
           </h1>
           <p className="text-muted-foreground text-lg">
             Give me 30 seconds to prepare your recommendations...
