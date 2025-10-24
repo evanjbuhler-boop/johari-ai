@@ -114,7 +114,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       
       // Auto-complete after 7 user messages (soft limit) only if path is selected
       if (conversationPath && exchangeCount >= 6) {
-        setTimeout(() => onComplete(), 2000);
+        setTimeout(() => onComplete(), 10000);
       }
     }
   };
