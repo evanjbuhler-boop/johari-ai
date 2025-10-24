@@ -4,22 +4,58 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UserProfile } from '@/types/checkin';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 interface ProfileFormProps {
   onSubmit: (profile: UserProfile) => void;
 }
 
 const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
+  const { user } = useAuth();
   const [profile, setProfile] = useState<UserProfile>({
     name: '',
-    email: '',
+    email: user?.email || '',
     age: '',
     location: '',
     lifeStage: '',
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast.error('Please sign in first');
+      return;
+    }
+
+    setLoading(true);
+
+    // Save to database
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({
+        id: user.id,
+        name: profile.name,
+        email: profile.email,
+        age: profile.age,
+        location: profile.location,
+        life_stage: profile.lifeStage,
+      });
+
+    if (error) {
+      console.error('Profile save error:', error);
+      toast.error('Failed to save profile');
+      setLoading(false);
+      return;
+    }
+
+    // Also save to localStorage for backward compatibility
+    localStorage.setItem('userProfile', JSON.stringify(profile));
+    
+    setLoading(false);
     onSubmit(profile);
   };
 
@@ -93,8 +129,8 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
             </Select>
           </div>
 
-          <Button type="submit" size="lg" className="w-full">
-            Continue
+          <Button type="submit" size="lg" className="w-full" disabled={loading}>
+            {loading ? 'Saving...' : 'Continue'}
           </Button>
         </form>
       </div>

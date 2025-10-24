@@ -2,10 +2,12 @@ import { CheckInResults, SavedItem } from '@/types/checkin';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, BookOpen, Share2, Library } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import GuidedExercise from '@/components/GuidedExercise';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ResultsDisplayProps {
   results: CheckInResults;
@@ -14,35 +16,101 @@ interface ResultsDisplayProps {
 
 const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(false);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
-  const [savedItems, setSavedItems] = useState<Set<string>>(
-    new Set(JSON.parse(localStorage.getItem('savedItems') || '[]').map((item: SavedItem) => item.id))
-  );
+  const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
+
+  // Fetch saved items from database
+  useEffect(() => {
+    const fetchSavedItems = async () => {
+      if (!user) return;
+      
+      const { data, error } = await supabase
+        .from('saved_items')
+        .select('id, item_type, title')
+        .eq('user_id', user.id);
+      
+      if (!error && data) {
+        setSavedItems(new Set(data.map(item => `${item.item_type}-${item.title}`)));
+      }
+    };
+
+    fetchSavedItems();
+  }, [user]);
 
   const isSaved = (id: string) => savedItems.has(id);
 
-  const toggleSave = (id: string, type: 'podcast' | 'book' | 'exercise' | 'story', title: string, subtitle: string | undefined, content: any) => {
-    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]') as SavedItem[];
-    
+  const toggleSave = async (id: string, type: 'podcast' | 'book' | 'exercise' | 'story', title: string, subtitle: string | undefined, content: any) => {
+    if (!user) {
+      toast.error('Please sign in to save items');
+      navigate('/auth');
+      return;
+    }
+
     if (isSaved(id)) {
-      const updated = saved.filter(item => item.id !== id);
-      localStorage.setItem('savedItems', JSON.stringify(updated));
-      setSavedItems(new Set(updated.map(item => item.id)));
-      toast.success('Removed from library');
+      // Remove from database
+      const { error } = await supabase
+        .from('saved_items')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('item_type', type)
+        .eq('title', title);
+      
+      if (!error) {
+        setSavedItems(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+        toast.success('Removed from library');
+      } else {
+        toast.error('Failed to remove item');
+      }
     } else {
-      const newItem: SavedItem = {
-        id,
-        type,
+      // Add to database
+      const itemData: any = {
+        user_id: user.id,
+        item_type: type,
         title,
-        subtitle,
-        savedDate: new Date().toISOString(),
-        content
+        description: subtitle || '',
       };
-      saved.push(newItem);
-      localStorage.setItem('savedItems', JSON.stringify(saved));
-      setSavedItems(new Set(saved.map(item => item.id)));
-      toast.success('Saved to library');
+
+      // Add type-specific fields
+      if (type === 'podcast' && results.podcast) {
+        itemData.podcast_host = results.podcast.host;
+        itemData.podcast_episode = results.podcast.episode;
+        itemData.podcast_duration = results.podcast.duration;
+        itemData.podcast_why_helps = results.podcast.whyThisHelps;
+        itemData.podcast_thumbnail = results.podcast.thumbnail;
+        itemData.podcast_urls = results.podcast.urls;
+      } else if (type === 'book' && results.book) {
+        itemData.book_author = results.book.author;
+        itemData.book_byline = results.book.byline;
+        itemData.book_length = results.book.length;
+        itemData.book_why_helps = results.book.whyThisHelps;
+        itemData.book_cover_image = results.book.coverImage;
+        itemData.book_sample_url = results.book.sampleUrl;
+        itemData.book_purchase_url = results.book.purchaseUrl;
+      } else if (type === 'exercise' && results.exercise) {
+        itemData.exercise_duration = results.exercise.duration;
+        itemData.exercise_steps = results.exercise.steps;
+      } else if (type === 'story') {
+        itemData.story_content = typeof content === 'string' ? content : JSON.stringify(content);
+        itemData.story_why_matters = results.story?.whyThisMatters || '';
+      }
+
+      const { error } = await supabase
+        .from('saved_items')
+        .insert([itemData]);
+      
+      if (!error) {
+        setSavedItems(prev => new Set(prev).add(id));
+        toast.success('Saved to library');
+      } else {
+        console.error('Save error:', error);
+        toast.error('Failed to save item');
+      }
     }
   };
 

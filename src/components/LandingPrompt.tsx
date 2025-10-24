@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import FloatingParticles from '@/components/FloatingParticles';
 import { Link } from 'react-router-dom';
-import { User, Library } from 'lucide-react';
+import { User, Library, LogIn } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 interface LandingPromptProps {
   onSubmit: (message: string) => void;
@@ -11,6 +12,7 @@ interface LandingPromptProps {
 
 const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
   const [message, setMessage] = useState('');
+  const { user } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,22 +25,36 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden animated-gradient">
       {/* Navigation buttons */}
       <div className="fixed top-6 left-6 z-20 flex gap-3">
-        <Link to="/library">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
-          >
-            <Library className="h-5 w-5" />
-          </Button>
-        </Link>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
-        >
-          <User className="h-5 w-5" />
-        </Button>
+        {user ? (
+          <>
+            <Link to="/library">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
+              >
+                <Library className="h-5 w-5" />
+              </Button>
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
+            >
+              <User className="h-5 w-5" />
+            </Button>
+          </>
+        ) : (
+          <Link to="/auth">
+            <Button
+              variant="ghost"
+              className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20 gap-2"
+            >
+              <LogIn className="h-4 w-4" />
+              Sign In
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Floating particles background */}

@@ -2,41 +2,97 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { SavedItem } from '@/types/checkin';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Home, Trash2, Play, BookOpen, Sparkles, BookMarked } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+
+interface DbSavedItem {
+  id: string;
+  user_id: string;
+  item_type: 'podcast' | 'book' | 'exercise' | 'story';
+  title: string;
+  description: string | null;
+  podcast_host?: string | null;
+  podcast_episode?: string | null;
+  podcast_duration?: string | null;
+  podcast_thumbnail?: string | null;
+  podcast_urls?: any;
+  book_author?: string | null;
+  book_cover_image?: string | null;
+  book_sample_url?: string | null;
+  book_purchase_url?: string | null;
+  exercise_steps?: any;
+  story_content?: string | null;
+  created_at: string;
+}
 
 const Library = () => {
   const navigate = useNavigate();
-  const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
+  const { user, loading: authLoading } = useAuth();
+  const [savedItems, setSavedItems] = useState<DbSavedItem[]>([]);
   const [filter, setFilter] = useState<'all' | 'podcast' | 'book' | 'exercise' | 'story'>('all');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
-    setSavedItems(saved);
-  }, []);
+    if (authLoading) return;
+    
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+
+    fetchSavedItems();
+  }, [user, authLoading, navigate]);
+
+  const fetchSavedItems = async () => {
+    if (!user) return;
+
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('saved_items')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      setSavedItems(data as DbSavedItem[]);
+    } else if (error) {
+      toast.error('Failed to load library');
+    }
+    setLoading(false);
+  };
 
   const filteredItems = filter === 'all' 
     ? savedItems 
-    : savedItems.filter(item => item.type === filter);
+    : savedItems.filter(item => item.item_type === filter);
 
-  const handleRemove = (id: string) => {
-    const updated = savedItems.filter(item => item.id !== id);
-    setSavedItems(updated);
-    localStorage.setItem('savedItems', JSON.stringify(updated));
-    toast.success('Removed from library');
+  const handleRemove = async (id: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('saved_items')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (!error) {
+      setSavedItems(savedItems.filter(item => item.id !== id));
+      toast.success('Removed from library');
+    } else {
+      toast.error('Failed to remove item');
+    }
   };
 
-  const handleAction = (item: SavedItem) => {
-    if (item.type === 'podcast' && item.content?.urls) {
+  const handleAction = (item: DbSavedItem) => {
+    if (item.item_type === 'podcast' && item.podcast_urls) {
       const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-      const url = isIOS ? item.content.urls.applePodcasts : item.content.urls.spotify;
+      const url = isIOS ? item.podcast_urls.applePodcasts : item.podcast_urls.spotify;
       if (url) window.open(url, '_blank', 'noopener,noreferrer');
-    } else if (item.type === 'book' && item.content?.sampleUrl) {
-      window.open(item.content.sampleUrl, '_blank', 'noopener,noreferrer');
-    } else if (item.type === 'exercise') {
-      // Navigate to exercise flow
+    } else if (item.item_type === 'book' && item.book_sample_url) {
+      window.open(item.book_sample_url, '_blank', 'noopener,noreferrer');
+    } else if (item.item_type === 'exercise') {
       toast.info('Exercise flow will open here');
     }
   };
@@ -64,6 +120,17 @@ const Library = () => {
   const getTypeLabel = (type: string) => {
     return type.charAt(0).toUpperCase() + type.slice(1);
   };
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading your library...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
@@ -123,10 +190,10 @@ const Library = () => {
                 <div className="flex items-start gap-4">
                   {/* Type Icon */}
                   <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-2xl">
-                    {item.type === 'podcast' && '🎧'}
-                    {item.type === 'book' && '📖'}
-                    {item.type === 'exercise' && '✨'}
-                    {item.type === 'story' && '📚'}
+                    {item.item_type === 'podcast' && '🎧'}
+                    {item.item_type === 'book' && '📖'}
+                    {item.item_type === 'exercise' && '✨'}
+                    {item.item_type === 'story' && '📚'}
                   </div>
 
                   {/* Content */}
@@ -134,18 +201,18 @@ const Library = () => {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-                          {getTypeLabel(item.type)}
+                          {getTypeLabel(item.item_type)}
                         </p>
                         <h3 className="text-lg font-semibold text-foreground mb-1">
                           {item.title}
                         </h3>
-                        {item.subtitle && (
-                          <p className="text-sm text-muted-foreground">{item.subtitle}</p>
+                        {item.description && (
+                          <p className="text-sm text-muted-foreground">{item.description}</p>
                         )}
                       </div>
                       <div className="text-right flex-shrink-0">
                         <p className="text-xs text-muted-foreground">
-                          {new Date(item.savedDate).toLocaleDateString('en-US', { 
+                          {new Date(item.created_at).toLocaleDateString('en-US', { 
                             month: 'short', 
                             day: 'numeric' 
                           })}
@@ -161,8 +228,8 @@ const Library = () => {
                       onClick={() => handleAction(item)}
                       className="gap-2"
                     >
-                      {getIcon(item.type)}
-                      <span className="hidden sm:inline">{getActionLabel(item.type)}</span>
+                      {getIcon(item.item_type)}
+                      <span className="hidden sm:inline">{getActionLabel(item.item_type)}</span>
                     </Button>
                     <Button 
                       size="sm" 
