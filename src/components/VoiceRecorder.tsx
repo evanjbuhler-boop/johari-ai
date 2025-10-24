@@ -156,16 +156,36 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
 
   return (
     <>
-      {/* Microphone button */}
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        onClick={startRecording}
-        className="h-8 w-8 hover:bg-primary/10"
-      >
-        <Mic className="h-4 w-4 text-muted-foreground hover:text-primary" />
-      </Button>
+      {/* Centered Microphone with dynamic effects */}
+      <div className="flex flex-col items-center justify-center min-h-[280px] gap-6">
+        <button
+          type="button"
+          onClick={startRecording}
+          className="relative group"
+        >
+          {/* Outer pulse rings */}
+          <div className="absolute inset-0 -m-8 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 animate-pulse" 
+               style={{ animationDuration: '2s' }} />
+          <div className="absolute inset-0 -m-12 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 animate-pulse" 
+               style={{ animationDuration: '3s', animationDelay: '0.5s' }} />
+          
+          {/* Main microphone circle */}
+          <div 
+            className="relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-active:scale-95"
+            style={{
+              background: 'linear-gradient(135deg, hsl(340, 75%, 70%), hsl(260, 60%, 65%))',
+              boxShadow: '0 8px 32px rgba(255, 138, 180, 0.4), 0 0 0 0 rgba(255, 138, 180, 0.4)',
+              animation: 'breathe 4s ease-in-out infinite'
+            }}
+          >
+            <Mic className="h-10 w-10 text-white" strokeWidth={2} />
+          </div>
+        </button>
+        
+        <p className="text-muted-foreground text-sm animate-pulse" style={{ animationDuration: '3s' }}>
+          Tap to start speaking
+        </p>
+      </div>
 
       {/* Recording Dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
