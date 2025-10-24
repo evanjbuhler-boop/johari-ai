@@ -89,7 +89,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Emotional state */}
           <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-red-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden"
             style={{ animationDelay: '0ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'emotion' ? null : 'emotion')}
             onMouseEnter={() => setExpandedCard('emotion')}
@@ -133,7 +133,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
           {/* Main stressors */}
           <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-orange-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden"
             style={{ animationDelay: '200ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'stressor' ? null : 'stressor')}
             onMouseEnter={() => setExpandedCard('stressor')}
@@ -177,7 +177,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
           {/* Sleep & physical */}
           <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-blue-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden"
             style={{ animationDelay: '400ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'sleep' ? null : 'sleep')}
             onMouseEnter={() => setExpandedCard('sleep')}
@@ -221,7 +221,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
           {/* Support approach */}
           <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-green-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden"
             style={{ animationDelay: '600ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'support' ? null : 'support')}
             onMouseEnter={() => setExpandedCard('support')}
