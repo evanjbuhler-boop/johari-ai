@@ -66,9 +66,7 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
 
       {/* Neurodiversity settings button */}
       <div className="fixed top-6 right-6 z-20">
-        <div className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full">
-          <NeurodiveritySettingsDialog variant="icon" />
-        </div>
+        <NeurodiveritySettingsDialog variant="icon" />
       </div>
 
       {/* Floating particles background */}
