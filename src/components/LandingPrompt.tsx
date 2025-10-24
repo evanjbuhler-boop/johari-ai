@@ -113,7 +113,7 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
                   boxShadow: 'none'
                 }}
               />
-              <div className="absolute bottom-3 right-3">
+              <div className="absolute top-1/2 right-4 -translate-y-1/2">
                 <VoiceRecorder onTranscript={handleVoiceTranscript} />
               </div>
             </div>

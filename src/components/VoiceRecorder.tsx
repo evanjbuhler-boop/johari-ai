@@ -116,7 +116,7 @@ const VoiceRecorder = ({ onTranscript }: VoiceRecorderProps) => {
           size="lg"
           variant="destructive"
           onClick={stopRecording}
-          className="animate-pulse"
+          className="animate-pulse bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 border-0 shadow-lg"
         >
           <Square className="h-5 w-5" />
         </Button>
@@ -125,6 +125,7 @@ const VoiceRecorder = ({ onTranscript }: VoiceRecorderProps) => {
           type="button"
           size="lg"
           disabled
+          className="bg-gradient-to-r from-blue-500 to-purple-500 border-0"
         >
           <Loader2 className="h-5 w-5 animate-spin" />
         </Button>
@@ -135,6 +136,7 @@ const VoiceRecorder = ({ onTranscript }: VoiceRecorderProps) => {
           variant="outline"
           onClick={startRecording}
           title="Record voice message"
+          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
         >
           <Mic className="h-5 w-5" />
         </Button>
