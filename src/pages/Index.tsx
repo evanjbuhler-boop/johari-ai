@@ -9,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { getMockAIResponse, generateMockResults } from '@/utils/mockAI';
 
-type AppState = 'landing' | 'chat' | 'validation' | 'profile' | 'results';
+type AppState = 'landing' | 'chat' | 'processing' | 'validation' | 'profile' | 'results';
 
 const Index = () => {
   const [state, setState] = useState<AppState>('landing');
@@ -168,7 +168,13 @@ const Index = () => {
   };
 
   const handleChatComplete = async () => {
+    // Show processing state immediately
+    setState('processing');
     setIsLoading(true);
+    
+    // Add minimum delay for better UX (show processing screen for at least 2 seconds)
+    const minDelay = new Promise(resolve => setTimeout(resolve, 2000));
+    
     try {
       // Ask AI to extract structured validation data from conversation
       const { data, error } = await supabase.functions.invoke('chat', {
@@ -183,12 +189,20 @@ const Index = () => {
 
       // AI should return structured ValidationData
       const extracted: ValidationData = data || extractValidationData(messages);
+      
+      // Wait for minimum delay before showing validation
+      await minDelay;
+      
       setValidationData(extracted);
       setState('validation');
     } catch (error) {
       console.error('Error extracting validation data:', error);
       // Fallback to keyword extraction
       const extracted = extractValidationData(messages);
+      
+      // Wait for minimum delay before showing validation
+      await minDelay;
+      
       setValidationData(extracted);
       setState('validation');
       toast({
@@ -298,6 +312,23 @@ const Index = () => {
         onBack={handleNewCheckIn}
         isLoading={isLoading}
       />
+    );
+  }
+
+  if (state === 'processing') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="text-center space-y-6 max-w-md">
+          <div className="relative w-20 h-20 mx-auto">
+            <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold text-foreground">Analyzing your conversation...</h2>
+            <p className="text-muted-foreground">We're identifying patterns and preparing your personalized insights.</p>
+          </div>
+        </div>
+      </div>
     );
   }
 
