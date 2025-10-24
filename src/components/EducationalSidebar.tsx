@@ -77,7 +77,7 @@ const EducationalSidebar = ({ phase, onDismiss }: EducationalSidebarProps) => {
           
           /* Desktop: right sidebar */
           md:top-1/2 md:-translate-y-1/2 md:right-0
-          md:w-80 md:max-h-[80vh] md:rounded-l-lg md:border-l-4
+          md:w-64 md:max-h-[80vh] md:rounded-l-lg md:border-l-4
           md:shadow-lg
           
           /* Mobile: bottom sheet */
