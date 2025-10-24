@@ -182,9 +182,9 @@ ${conversationText}
 
 Please extract and return ONLY a valid JSON object with this exact structure (no markdown, no code blocks, just the JSON):
 {
-  "emotions": ["array of emotions mentioned - e.g., Anxious, Frustrated, Overwhelmed, etc."],
+  "emotions": ["array of emotions - use SPECIFIC 2-4 word descriptions like: 'Overwhelmed and anxious', 'Mix of hope and uncertainty', 'Frustrated but hopeful', 'Drained and defeated', 'Cautiously optimistic'"],
   "stressLevel": 7,
-  "mainStressors": ["brief array of main stressors mentioned"],
+  "mainStressors": ["Capitalize Like Titles - e.g., 'Work-Related Stress', 'Interacting With Ex', 'Financial Concerns', 'Family Dynamics', 'Sleep Deprivation'"],
   "sleepHours": null or number (extract if mentioned, otherwise null),
   "sleepQuality": "good quality" or "poor quality" or "moderate" (extract if mentioned, otherwise null),
   "contributingFactors": ["array of IDs from: work, sleep, caffeine, relationships, physical, life-changes, financial, isolation"],
@@ -197,16 +197,19 @@ Please extract and return ONLY a valid JSON object with this exact structure (no
   "supportReasoning": "1 sentence explaining what type of check-in they're doing based on the conversation path: ${conversationPath || 'general check-in'}"
 }
 
-CRITICAL: For sleepReasoning, ONLY include information they actually mentioned. If they didn't talk about sleep/physical state, say "You didn't mention specific physical concerns" - never fabricate details.
+CRITICAL FORMATTING RULES:
+1. emotions: Must be specific 2-4 word descriptions (not just single words like "anxious")
+2. mainStressors: Capitalize Like Titles with professional phrasing
+3. sleepReasoning: ONLY include information actually mentioned
 
 Important: Return ONLY the JSON object, no other text.`;
 
       // Mock mode
       if (useMockAI) {
         const mockValidation = {
-          emotions: ['Anxious', 'Overwhelmed', 'Exhausted'],
+          emotions: ['Overwhelmed and drained'],
           stressLevel: 7,
-          mainStressors: ['Work', 'Sleep', 'Relationships'],
+          mainStressors: ['Work-Related Stress', 'Sleep Deprivation', 'Relationship Tension'],
           sleepHours: 5,
           sleepQuality: 'poor quality',
           contributingFactors: ['work', 'sleep', 'relationships'],

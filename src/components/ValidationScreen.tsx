@@ -51,10 +51,10 @@ const ValidationScreen = ({ initialData, conversationPath, onConfirm }: Validati
   };
 
   // Format insights from the data
-  const primaryEmotions = initialData.emotions.slice(0, 3).join(', ') || 'Processing';
+  const primaryEmotions = initialData.emotions[0] || 'Processing your emotional state';
   const stressorsText = initialData.mainStressors.length > 0 
     ? initialData.mainStressors.slice(0, 2).join(' + ') 
-    : 'General life pressure';
+    : 'General Life Pressure';
   
   // Physical state - extract from sleepReasoning if available
   const getPhysicalState = () => {
@@ -110,7 +110,7 @@ const ValidationScreen = ({ initialData, conversationPath, onConfirm }: Validati
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Emotional state */}
           <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-red-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden"
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-red-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden min-h-[160px] flex flex-col"
             style={{ animationDelay: '0ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'emotion' ? null : 'emotion')}
             onMouseEnter={() => setExpandedCard('emotion')}
@@ -154,7 +154,7 @@ const ValidationScreen = ({ initialData, conversationPath, onConfirm }: Validati
 
           {/* Main stressors */}
           <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-orange-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden"
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-orange-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden min-h-[160px] flex flex-col"
             style={{ animationDelay: '200ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'stressor' ? null : 'stressor')}
             onMouseEnter={() => setExpandedCard('stressor')}
@@ -198,7 +198,7 @@ const ValidationScreen = ({ initialData, conversationPath, onConfirm }: Validati
 
           {/* Sleep & physical */}
           <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-blue-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden"
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-blue-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden min-h-[160px] flex flex-col"
             style={{ animationDelay: '400ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'sleep' ? null : 'sleep')}
             onMouseEnter={() => setExpandedCard('sleep')}
@@ -242,7 +242,7 @@ const ValidationScreen = ({ initialData, conversationPath, onConfirm }: Validati
 
           {/* Support approach */}
           <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-green-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden"
+            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-green-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden min-h-[160px] flex flex-col"
             style={{ animationDelay: '600ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'support' ? null : 'support')}
             onMouseEnter={() => setExpandedCard('support')}
