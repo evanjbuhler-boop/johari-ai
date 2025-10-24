@@ -1,9 +1,11 @@
-import { CheckInResults } from '@/types/checkin';
+import { CheckInResults, SavedItem } from '@/types/checkin';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Heart, BookOpen, Lightbulb, Sparkles, Headphones, BookMarked, ChevronDown, ChevronUp, Bookmark } from 'lucide-react';
+import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, BookOpen, Share2, Library } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import GuidedExercise from '@/components/GuidedExercise';
 
 interface ResultsDisplayProps {
   results: CheckInResults;
@@ -11,206 +13,338 @@ interface ResultsDisplayProps {
 }
 
 const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
-  const [frameworkExpanded, setFrameworkExpanded] = useState(false);
-  const [techniqueExpanded, setTechniqueExpanded] = useState(false);
-  const [storyExpanded, setStoryExpanded] = useState(false);
+  const navigate = useNavigate();
+  const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(false);
+  const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
+  const [savedItems, setSavedItems] = useState<Set<string>>(
+    new Set(JSON.parse(localStorage.getItem('savedItems') || '[]').map((item: SavedItem) => item.id))
+  );
 
-  const handleSave = (type: string, content: string) => {
-    const saved = JSON.parse(localStorage.getItem('savedResources') || '[]');
-    saved.push({ type, content, timestamp: new Date().toISOString() });
-    localStorage.setItem('savedResources', JSON.stringify(saved));
-    toast.success(`Saved to your library`);
+  const isSaved = (id: string) => savedItems.has(id);
+
+  const toggleSave = (id: string, type: 'podcast' | 'book' | 'exercise' | 'story', title: string, subtitle: string | undefined, content: any) => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]') as SavedItem[];
+    
+    if (isSaved(id)) {
+      const updated = saved.filter(item => item.id !== id);
+      localStorage.setItem('savedItems', JSON.stringify(updated));
+      setSavedItems(new Set(updated.map(item => item.id)));
+      toast.success('Removed from library');
+    } else {
+      const newItem: SavedItem = {
+        id,
+        type,
+        title,
+        subtitle,
+        savedDate: new Date().toISOString(),
+        content
+      };
+      saved.push(newItem);
+      localStorage.setItem('savedItems', JSON.stringify(saved));
+      setSavedItems(new Set(saved.map(item => item.id)));
+      toast.success('Saved to library');
+    }
+  };
+
+  const handlePodcastPlay = () => {
+    if (!results.podcast) return;
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const url = isIOS ? results.podcast.urls.applePodcasts : results.podcast.urls.spotify;
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleBookRead = () => {
+    if (results.book?.sampleUrl) {
+      window.open(results.book.sampleUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleBookPurchase = () => {
+    if (results.book?.purchaseUrl) {
+      window.open(results.book.purchaseUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleShare = async (title: string) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text: `Check out: ${title}` });
+      } catch (err) {
+        navigator.clipboard.writeText(window.location.href);
+        toast.success('Link copied!');
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied!');
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+      {/* Header */}
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="text-2xl font-semibold text-foreground">Nightingale</h1>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/library')}
+            className="gap-2"
+          >
+            <Library className="w-4 h-4" />
+            <span className="hidden sm:inline">Library</span>
+          </Button>
+        </div>
+      </header>
+
       <div className="max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6">
         
-        {/* Summary Card - Redesigned */}
-        <Card className="p-8 md:p-10 border-none bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 shadow-lg space-y-8">
-          
-          {/* Section 1: User's exact words */}
-          {results.userQuote && (
-            <div className="pb-6 border-b border-border/30">
-              <p className="text-2xl md:text-3xl leading-relaxed text-foreground font-medium italic">
-                "{results.userQuote}"
-              </p>
-            </div>
-          )}
-
-          {/* Section 2: Pattern identification */}
-          {results.patterns && results.patterns.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="text-lg font-semibold text-foreground/90">Here's what I'm seeing:</h3>
-              <ul className="space-y-2">
-                {results.patterns.map((pattern, idx) => (
-                  <li key={idx} className="flex gap-3 text-base leading-relaxed text-foreground/80">
-                    <span className="text-primary mt-1">•</span>
-                    <span>{pattern}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Section 3: Applied CBT */}
-          {results.cbt && (
-            <div className="pt-6 border-t border-border/30 space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold text-foreground/90 mb-2">
-                  Pattern: {results.cbt.distortion}
-                </h3>
-                <div className="space-y-3">
-                  <div className="bg-background/40 rounded-lg p-4">
-                    <p className="text-sm font-medium text-muted-foreground mb-1">Your thought:</p>
-                    <p className="text-base italic text-foreground/80">"{results.cbt.userThought}"</p>
-                  </div>
-                  
-                  <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
-                    <p className="text-sm font-medium text-primary mb-1">Different lens:</p>
-                    <p className="text-base leading-relaxed text-foreground">
-                      {results.cbt.reframe}
-                    </p>
-                  </div>
-                  
-                  <div className="bg-accent/10 rounded-lg p-4 border border-accent/30">
-                    <p className="text-sm font-medium text-accent-foreground mb-1">Try this:</p>
-                    <p className="text-base leading-relaxed text-foreground font-medium">
-                      {results.cbt.practice}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+        {/* Byline Card */}
+        <Card className="p-6 md:p-8 border-none bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 shadow-sm">
+          <h2 className="text-xl md:text-2xl font-medium text-foreground leading-relaxed">
+            {results.byline || "Based on Your Conversation Tonight"}
+          </h2>
         </Card>
 
-        {/* Framework Section - What's Happening */}
-        <Card className="p-6 hover:shadow-lg transition-shadow">
-          <button 
-            onClick={() => setFrameworkExpanded(!frameworkExpanded)}
-            className="w-full flex items-center justify-between gap-4"
+        {/* User Quote */}
+        {results.userQuote && (
+          <Card className="p-6 md:p-8 bg-card/50">
+            <p className="text-lg md:text-xl leading-relaxed text-foreground/90 italic">
+              "{results.userQuote}"
+            </p>
+          </Card>
+        )}
+
+        {/* What's Happening Section */}
+        <Card className="p-6 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border-l-4 border-blue-400 rounded-xl shadow-md">
+          <button
+            onClick={() => setWhatsHappeningExpanded(!whatsHappeningExpanded)}
+            className="w-full flex items-center justify-between gap-4 text-left"
           >
             <div className="flex items-center gap-3">
-              <div className="text-2xl">💡</div>
-              <h2 className="text-xl md:text-2xl font-semibold text-foreground">What's Happening</h2>
+              <span className="text-2xl">💡</span>
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">What's Happening</h2>
             </div>
-            {frameworkExpanded ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+            {whatsHappeningExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
           </button>
-          {frameworkExpanded && (
-            <div className="mt-4 pt-4 border-t border-border animate-in fade-in slide-in-from-top-2 duration-300">
-              <p className="text-base leading-relaxed text-foreground/80">
-                {results.framework}
+
+          <div className="mt-4">
+            <p className="text-base text-gray-700 dark:text-gray-300 leading-7">
+              {results.whatsHappening.summary}
+            </p>
+          </div>
+
+          {!whatsHappeningExpanded && (
+            <button
+              onClick={() => setWhatsHappeningExpanded(true)}
+              className="text-blue-600 dark:text-blue-400 font-medium hover:underline mt-3 text-sm"
+            >
+              Read the full explanation →
+            </button>
+          )}
+
+          {whatsHappeningExpanded && (
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+              <p className="text-base text-gray-700 dark:text-gray-300 leading-7 whitespace-pre-line">
+                {results.whatsHappening.fullExplanation}
               </p>
+
+              {results.whatsHappening.citations && results.whatsHappening.citations.length > 0 && (
+                <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">📚 Related Research:</p>
+                  <ul className="space-y-1">
+                    {results.whatsHappening.citations.map((citation, idx) => (
+                      <li key={idx} className="text-sm text-gray-600 dark:text-gray-400">
+                        • {citation.author} ({citation.year}). {citation.title}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toggleSave('whats-happening', 'story', 'What\'s Happening', undefined, results.whatsHappening)}
+                className="mt-4"
+              >
+                {isSaved('whats-happening') ? <BookmarkCheck className="w-4 h-4 mr-2" /> : <Bookmark className="w-4 h-4 mr-2" />}
+                {isSaved('whats-happening') ? 'Saved' : 'Save for Later'}
+              </Button>
             </div>
           )}
         </Card>
 
-        {/* Recommendation Cards Grid */}
-        <div className="grid gap-6 md:grid-cols-2">
-          
-          {/* Podcast Card */}
-          {results.recommendations.podcast && (
-            <Card className="p-6 hover:shadow-lg transition-all group">
-              <div className="flex items-start gap-3 mb-3">
-                <div className="text-2xl">🎧</div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Listen to This</h3>
-                  <p className="text-sm text-foreground/80 leading-relaxed">{results.recommendations.podcast}</p>
-                </div>
-              </div>
-              <div className="flex gap-2 mt-4">
-                <Button size="sm" className="flex-1">Play</Button>
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={() => handleSave('podcast', results.recommendations.podcast!)}
-                >
-                  <Bookmark className="w-4 h-4" />
-                </Button>
-              </div>
-            </Card>
-          )}
-
-          {/* Article Card */}
-          {results.recommendations.article && (
-            <Card className="p-6 hover:shadow-lg transition-all group">
-              <div className="flex items-start gap-3 mb-3">
-                <div className="text-2xl">📖</div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Quick Read</h3>
-                  <p className="text-sm text-foreground/80 leading-relaxed">{results.recommendations.article}</p>
-                </div>
-              </div>
-              <div className="flex gap-2 mt-4">
-                <Button size="sm" className="flex-1">Read</Button>
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={() => handleSave('article', results.recommendations.article!)}
-                >
-                  <Bookmark className="w-4 h-4" />
-                </Button>
-              </div>
-            </Card>
-          )}
-        </div>
-
-        {/* Technique Card - Full width with glow */}
-        {results.recommendations.technique && (
-          <Card className="p-6 bg-gradient-to-br from-accent/10 to-primary/10 border-accent/20 shadow-lg hover:shadow-xl transition-all">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="text-2xl">✨</div>
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-foreground mb-2">Try This Tonight</h3>
-                <button 
-                  onClick={() => setTechniqueExpanded(!techniqueExpanded)}
-                  className="text-left w-full"
-                >
-                  <p className="text-sm text-foreground/80 leading-relaxed">
-                    {techniqueExpanded ? results.recommendations.technique : results.recommendations.technique.split('.')[0] + '...'}
-                  </p>
-                </button>
-              </div>
-              <button onClick={() => setTechniqueExpanded(!techniqueExpanded)}>
-                {techniqueExpanded ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
-              </button>
+        {/* Podcast Recommendation */}
+        {results.podcast && (
+          <Card className="p-6 bg-white dark:bg-card border border-gray-200 dark:border-border rounded-xl shadow-lg">
+            <div className="flex items-center gap-2 pb-2 mb-4 border-b-2 border-gray-200 dark:border-border">
+              <span className="text-2xl">🎧</span>
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Listen to This</h2>
             </div>
-            <div className="flex gap-2 mt-4">
-              <Button size="sm" className="flex-1">Start Guided Exercise</Button>
-              <Button 
-                size="sm" 
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <img
+                src={results.podcast.thumbnail}
+                alt={`${results.podcast.title} artwork`}
+                className="w-full sm:w-[200px] h-[200px] object-cover rounded-lg shadow-md flex-shrink-0"
+              />
+
+              <div className="flex-1 space-y-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{results.podcast.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 italic">Hosted by {results.podcast.host}</p>
+                  <p className="text-base font-medium text-gray-800 dark:text-gray-200 mt-2">{results.podcast.episode}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">⏱ {results.podcast.duration}</p>
+                </div>
+
+                <p className="text-base text-gray-700 dark:text-gray-300 leading-7">
+                  {results.podcast.description}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-border">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                <span>💬</span> Why this might help:
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-6 italic">
+                {results.podcast.whyThisHelps}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3 mt-4">
+              <Button onClick={handlePodcastPlay} className="flex-1 sm:flex-none gap-2">
+                <Play className="w-4 h-4" />
+                Play Episode
+              </Button>
+              <Button
                 variant="outline"
-                onClick={() => handleSave('technique', results.recommendations.technique!)}
+                onClick={() => toggleSave('podcast-' + results.podcast!.episode, 'podcast', results.podcast!.title, results.podcast!.episode, results.podcast)}
               >
-                <Bookmark className="w-4 h-4" />
+                {isSaved('podcast-' + results.podcast.episode) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+              </Button>
+              <Button variant="outline" onClick={() => handleShare(results.podcast!.title)}>
+                <Share2 className="w-4 h-4" />
               </Button>
             </div>
           </Card>
         )}
 
-        {/* Story Card - Softest emphasis */}
-        {results.story && (
-          <Card className="p-6 bg-gradient-to-br from-secondary/5 to-muted/30 hover:shadow-md transition-shadow">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="text-2xl">📚</div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-foreground mb-2">A Different Perspective</h3>
-                <p className="text-sm text-foreground/70 leading-relaxed italic">
-                  {storyExpanded ? results.story : results.story.split('.').slice(0, 2).join('.') + '...'}
+        {/* Book Recommendation */}
+        {results.book && (
+          <Card className="p-6 bg-white dark:bg-card border border-gray-200 dark:border-border rounded-xl shadow-lg">
+            <div className="flex items-center gap-2 pb-2 mb-4 border-b-2 border-gray-200 dark:border-border">
+              <span className="text-2xl">📖</span>
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Quick Read</h2>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <img
+                src={results.book.coverImage}
+                alt={`${results.book.title} cover`}
+                className="w-full sm:w-[150px] h-[225px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border flex-shrink-0"
+              />
+
+              <div className="flex-1 space-y-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{results.book.title}</h3>
+                  <p className="text-base text-gray-600 dark:text-gray-400">By {results.book.author}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-6 mt-2">{results.book.byline}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">📏 {results.book.length}</p>
+                </div>
+
+                <p className="text-base text-gray-700 dark:text-gray-300 leading-7">
+                  {results.book.description}
                 </p>
               </div>
             </div>
-            {!storyExpanded && (
-              <Button 
-                size="sm" 
-                variant="ghost" 
-                className="mt-2"
-                onClick={() => setStoryExpanded(true)}
-              >
-                Read more
+
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-border">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                <span>💬</span> Why this might help:
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-6 italic">
+                {results.book.whyThisHelps}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3 mt-4">
+              <Button onClick={handleBookRead} className="flex-1 sm:flex-none gap-2">
+                <BookOpen className="w-4 h-4" />
+                Read Sample
               </Button>
-            )}
+              <Button onClick={handleBookPurchase} variant="outline" className="flex-1 sm:flex-none">
+                🛒 Get Book
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => toggleSave('book-' + results.book!.title, 'book', results.book!.title, `By ${results.book!.author}`, results.book)}
+              >
+                {isSaved('book-' + results.book.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+              </Button>
+            </div>
+          </Card>
+        )}
+
+        {/* Exercise Card */}
+        {results.exercise && (
+          <Card className="p-6 bg-gradient-to-br from-accent/10 to-primary/10 border-accent/20 shadow-lg">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-2xl">✨</span>
+              <h2 className="text-xl font-semibold text-foreground">Try This Tonight</h2>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="text-lg font-medium text-foreground">{results.exercise.title}</h3>
+              <p className="text-base text-foreground/80 leading-relaxed">{results.exercise.description}</p>
+            </div>
+
+            <div className="flex flex-wrap gap-3 mt-4">
+              <Button onClick={() => setExerciseModalOpen(true)} className="flex-1 sm:flex-none">
+                Start Guided Exercise →
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => toggleSave('exercise-' + results.exercise!.title, 'exercise', results.exercise!.title, results.exercise!.description, results.exercise)}
+              >
+                {isSaved('exercise-' + results.exercise.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+              </Button>
+            </div>
+          </Card>
+        )}
+
+        {/* Story Card */}
+        {results.story && (
+          <Card className="p-6 bg-gradient-to-br from-secondary/5 to-muted/30">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-2xl">📚</span>
+              <h2 className="text-lg font-semibold text-foreground">A Different Perspective</h2>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium text-foreground">{results.story.title}</h3>
+              <p className="text-sm text-foreground/70 leading-relaxed whitespace-pre-line">
+                {results.story.content}
+              </p>
+
+              <div className="pt-4 border-t border-border">
+                <p className="text-sm font-semibold text-foreground/90 mb-2 flex items-center gap-2">
+                  <span>💬</span> Why this story matters for you:
+                </p>
+                <p className="text-sm text-muted-foreground leading-6 italic">
+                  {results.story.whyThisMatters}
+                </p>
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
+              >
+                {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4 mr-2" /> : <Bookmark className="w-4 h-4 mr-2" />}
+                {isSaved('story-' + results.story.title) ? 'Saved' : 'Save'}
+              </Button>
+            </div>
           </Card>
         )}
 
@@ -224,6 +358,16 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
           </Button>
         </div>
       </div>
+
+      {/* Guided Exercise Modal */}
+      {results.exercise && (
+        <GuidedExercise
+          open={exerciseModalOpen}
+          onClose={() => setExerciseModalOpen(false)}
+          title={results.exercise.title}
+          steps={results.exercise.steps}
+        />
+      )}
     </div>
   );
 };

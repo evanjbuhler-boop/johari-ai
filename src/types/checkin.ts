@@ -43,27 +43,97 @@ export interface UserProfile {
 }
 
 export interface CheckInResults {
-  // Section 1: Empathetic byline with user's exact words
+  // Section 1: Summary/Byline
+  byline: string;
+  
+  // Section 2: User's exact words
   userQuote: string;
   
-  // Section 2: Pattern identification
+  // Section 3: Pattern identification
   patterns: string[];
   
-  // Section 3: Applied CBT
-  cbt: {
-    distortion: string;        // Named cognitive distortion
-    userThought: string;        // Quoted thought pattern from user
-    reframe: string;            // Specific reframe
-    practice: string;           // Actionable instruction
+  // Section 4: What's Happening (Academic Explanation)
+  whatsHappening: {
+    summary: string;
+    fullExplanation: string;
+    citations?: {
+      author: string;
+      year: number;
+      title: string;
+    }[];
+  };
+  
+  // Section 5: Listen to This (Podcast)
+  podcast?: {
+    title: string;
+    host: string;
+    episode: string;
+    duration: string;
+    description: string;
+    whyThisHelps: string;
+    thumbnail: string;
+    urls: {
+      spotify?: string;
+      applePodcasts?: string;
+      direct?: string;
+    };
+  };
+  
+  // Section 6: Quick Read (Book/Article)
+  book?: {
+    title: string;
+    author: string;
+    byline: string;
+    description: string;
+    length: string;
+    whyThisHelps: string;
+    coverImage: string;
+    sampleUrl?: string;
+    purchaseUrl?: string;
+  };
+  
+  // Section 7: Try This Tonight (Exercise)
+  exercise?: {
+    title: string;
+    description: string;
+    duration: string;
+    steps: {
+      stepNumber: number;
+      title: string;
+      content: string;
+      inputRequired: boolean;
+      inputType?: 'text' | 'textarea';
+    }[];
+  };
+  
+  // Section 8: A Different Perspective (Story)
+  story?: {
+    title: string;
+    content: string;
+    whyThisMatters: string;
   };
   
   // Keep existing fields for backward compatibility
-  reflection: string;
-  framework: string;
-  recommendations: {
+  cbt?: {
+    distortion: string;
+    userThought: string;
+    reframe: string;
+    practice: string;
+  };
+  reflection?: string;
+  framework?: string;
+  recommendations?: {
     podcast?: string;
     article?: string;
     technique?: string;
   };
-  story: string;
+}
+
+export interface SavedItem {
+  id: string;
+  type: 'podcast' | 'book' | 'exercise' | 'story';
+  title: string;
+  subtitle?: string;
+  savedDate: string;
+  content: any; // Original content object
 }
