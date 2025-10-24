@@ -14,7 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          age: string
+          created_at: string | null
+          email: string
+          id: string
+          life_stage: string
+          location: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          age: string
+          created_at?: string | null
+          email: string
+          id: string
+          life_stage: string
+          location: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          age?: string
+          created_at?: string | null
+          email?: string
+          id?: string
+          life_stage?: string
+          location?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      saved_items: {
+        Row: {
+          book_author: string | null
+          book_byline: string | null
+          book_cover_image: string | null
+          book_length: string | null
+          book_purchase_url: string | null
+          book_sample_url: string | null
+          book_why_helps: string | null
+          created_at: string | null
+          description: string | null
+          exercise_duration: string | null
+          exercise_steps: Json | null
+          id: string
+          item_type: string
+          podcast_duration: string | null
+          podcast_episode: string | null
+          podcast_host: string | null
+          podcast_thumbnail: string | null
+          podcast_urls: Json | null
+          podcast_why_helps: string | null
+          story_content: string | null
+          story_why_matters: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          book_author?: string | null
+          book_byline?: string | null
+          book_cover_image?: string | null
+          book_length?: string | null
+          book_purchase_url?: string | null
+          book_sample_url?: string | null
+          book_why_helps?: string | null
+          created_at?: string | null
+          description?: string | null
+          exercise_duration?: string | null
+          exercise_steps?: Json | null
+          id?: string
+          item_type: string
+          podcast_duration?: string | null
+          podcast_episode?: string | null
+          podcast_host?: string | null
+          podcast_thumbnail?: string | null
+          podcast_urls?: Json | null
+          podcast_why_helps?: string | null
+          story_content?: string | null
+          story_why_matters?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          book_author?: string | null
+          book_byline?: string | null
+          book_cover_image?: string | null
+          book_length?: string | null
+          book_purchase_url?: string | null
+          book_sample_url?: string | null
+          book_why_helps?: string | null
+          created_at?: string | null
+          description?: string | null
+          exercise_duration?: string | null
+          exercise_steps?: Json | null
+          id?: string
+          item_type?: string
+          podcast_duration?: string | null
+          podcast_episode?: string | null
+          podcast_host?: string | null
+          podcast_thumbnail?: string | null
+          podcast_urls?: Json | null
+          podcast_why_helps?: string | null
+          story_content?: string | null
+          story_why_matters?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
