@@ -517,7 +517,13 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                   disabled={isLoading}
                 />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                  <VoiceRecorder onTranscript={handleVoiceTranscript} />
+                  <VoiceRecorder 
+                    onTranscript={handleVoiceTranscript}
+                    onSubmit={(text) => {
+                      setInput(text);
+                      handleSubmit(new Event('submit') as any);
+                    }}
+                  />
                 </div>
               </div>
               <Button type="submit" size="lg" disabled={!input.trim() || isLoading}>
