@@ -19,6 +19,7 @@ const Index = () => {
   const [results, setResults] = useState<CheckInResults | null>(null);
   const [validationData, setValidationData] = useState<ValidationData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -128,6 +129,17 @@ const Index = () => {
         throw new Error('Empty AI response');
       }
 
+      // Calculate typing delay based on response length
+      const typingDelay = Math.min(1000 + (content.length * 50), 4000);
+      
+      // Show typing indicator
+      setIsLoading(false);
+      setIsTyping(true);
+      
+      // Wait for typing delay
+      await new Promise(resolve => setTimeout(resolve, typingDelay));
+      
+      setIsTyping(false);
       const aiResponse: Message = {
         role: 'assistant',
         content,
@@ -137,6 +149,15 @@ const Index = () => {
       console.error('Error getting AI response:', error);
       // Fallback to mock AI response
       const mockContent = getMockAIResponse([userMessage]);
+      
+      // Calculate typing delay for mock response
+      const typingDelay = Math.min(1000 + (mockContent.length * 50), 4000);
+      
+      setIsLoading(false);
+      setIsTyping(true);
+      await new Promise(resolve => setTimeout(resolve, typingDelay));
+      setIsTyping(false);
+      
       const aiResponse: Message = {
         role: 'assistant',
         content: mockContent
@@ -146,8 +167,6 @@ const Index = () => {
         title: "Using offline mode",
         description: "Connected to local responses.",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -173,6 +192,17 @@ const Index = () => {
         throw new Error('Empty AI response');
       }
 
+      // Calculate typing delay based on response length
+      const typingDelay = Math.min(1000 + (content.length * 50), 4000);
+      
+      // Show typing indicator
+      setIsLoading(false);
+      setIsTyping(true);
+      
+      // Wait for typing delay
+      await new Promise(resolve => setTimeout(resolve, typingDelay));
+      
+      setIsTyping(false);
       const aiResponse: Message = {
         role: 'assistant',
         content,
@@ -182,6 +212,15 @@ const Index = () => {
       console.error('Error getting AI response:', error);
       // Fallback to mock AI response
       const mockContent = getMockAIResponse(updatedMessages);
+      
+      // Calculate typing delay for mock response
+      const typingDelay = Math.min(1000 + (mockContent.length * 50), 4000);
+      
+      setIsLoading(false);
+      setIsTyping(true);
+      await new Promise(resolve => setTimeout(resolve, typingDelay));
+      setIsTyping(false);
+      
       const aiResponse: Message = {
         role: 'assistant',
         content: mockContent
@@ -191,8 +230,6 @@ const Index = () => {
         title: "Using offline mode",
         description: "Connected to local responses.",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -337,7 +374,7 @@ const Index = () => {
         messages={messages}
         onSendMessage={handleSendMessage}
         onBack={handleNewCheckIn}
-        isLoading={isLoading}
+        isLoading={isLoading || isTyping}
       />
     );
   }
