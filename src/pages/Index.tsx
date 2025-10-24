@@ -111,6 +111,35 @@ const Index = () => {
     };
   };
 
+  // Break long responses into conversational chunks
+  const breakIntoChunks = (text: string): string[] => {
+    // Split by double newlines (paragraph breaks) or periods followed by space
+    const paragraphs = text.split(/\n\n+/);
+    
+    if (paragraphs.length >= 2) {
+      // If we have clear paragraphs, use them
+      return paragraphs.filter(p => p.trim().length > 0);
+    }
+    
+    // Otherwise, try to split by sentences into 2-3 chunks
+    const sentences = text.split(/(?<=[.!?])\s+/);
+    
+    if (sentences.length <= 2) {
+      return [text]; // Don't split very short responses
+    }
+    
+    // Group sentences into 2-3 chunks
+    const chunkSize = Math.ceil(sentences.length / 3);
+    const chunks: string[] = [];
+    
+    for (let i = 0; i < sentences.length; i += chunkSize) {
+      const chunk = sentences.slice(i, i + chunkSize).join(' ');
+      if (chunk.trim()) chunks.push(chunk.trim());
+    }
+    
+    return chunks.slice(0, 3); // Max 3 chunks
+  };
+
   const handleLandingSubmit = async (message: string) => {
     const userMessage: Message = { role: 'user', content: message };
     setMessages([userMessage]);
@@ -129,40 +158,60 @@ const Index = () => {
         throw new Error('Empty AI response');
       }
 
-      // Calculate typing delay based on response length
-      const typingDelay = Math.min(1000 + (content.length * 50), 4000);
+      // Break response into chunks
+      const chunks = breakIntoChunks(content);
       
-      // Show typing indicator
       setIsLoading(false);
-      setIsTyping(true);
       
-      // Wait for typing delay
-      await new Promise(resolve => setTimeout(resolve, typingDelay));
-      
-      setIsTyping(false);
-      const aiResponse: Message = {
-        role: 'assistant',
-        content,
-      };
-      setMessages([userMessage, aiResponse]);
+      // Send chunks sequentially with delays
+      for (let i = 0; i < chunks.length; i++) {
+        // Show typing indicator before each chunk
+        setIsTyping(true);
+        
+        // Calculate typing delay based on chunk length
+        const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
+        await new Promise(resolve => setTimeout(resolve, typingDelay));
+        
+        setIsTyping(false);
+        
+        // Add the chunk as a new message
+        const aiResponse: Message = {
+          role: 'assistant',
+          content: chunks[i],
+        };
+        setMessages(prev => [...prev, aiResponse]);
+        
+        // Wait 1 second between chunks (except after the last one)
+        if (i < chunks.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
     } catch (error) {
       console.error('Error getting AI response:', error);
+      setIsLoading(false);
+      
       // Fallback to mock AI response
       const mockContent = getMockAIResponse([userMessage]);
+      const chunks = breakIntoChunks(mockContent);
       
-      // Calculate typing delay for mock response
-      const typingDelay = Math.min(1000 + (mockContent.length * 50), 4000);
+      // Send chunks sequentially with delays
+      for (let i = 0; i < chunks.length; i++) {
+        setIsTyping(true);
+        const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
+        await new Promise(resolve => setTimeout(resolve, typingDelay));
+        
+        setIsTyping(false);
+        const aiResponse: Message = {
+          role: 'assistant',
+          content: chunks[i]
+        };
+        setMessages(prev => [...prev, aiResponse]);
+        
+        if (i < chunks.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
       
-      setIsLoading(false);
-      setIsTyping(true);
-      await new Promise(resolve => setTimeout(resolve, typingDelay));
-      setIsTyping(false);
-      
-      const aiResponse: Message = {
-        role: 'assistant',
-        content: mockContent
-      };
-      setMessages([userMessage, aiResponse]);
       toast({
         title: "Using offline mode",
         description: "Connected to local responses.",
@@ -192,40 +241,54 @@ const Index = () => {
         throw new Error('Empty AI response');
       }
 
-      // Calculate typing delay based on response length
-      const typingDelay = Math.min(1000 + (content.length * 50), 4000);
+      // Break response into chunks
+      const chunks = breakIntoChunks(content);
       
-      // Show typing indicator
       setIsLoading(false);
-      setIsTyping(true);
       
-      // Wait for typing delay
-      await new Promise(resolve => setTimeout(resolve, typingDelay));
-      
-      setIsTyping(false);
-      const aiResponse: Message = {
-        role: 'assistant',
-        content,
-      };
-      setMessages([...updatedMessages, aiResponse]);
+      // Send chunks sequentially with delays
+      for (let i = 0; i < chunks.length; i++) {
+        setIsTyping(true);
+        const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
+        await new Promise(resolve => setTimeout(resolve, typingDelay));
+        
+        setIsTyping(false);
+        const aiResponse: Message = {
+          role: 'assistant',
+          content: chunks[i],
+        };
+        setMessages(prev => [...prev, aiResponse]);
+        
+        if (i < chunks.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
     } catch (error) {
       console.error('Error getting AI response:', error);
+      setIsLoading(false);
+      
       // Fallback to mock AI response
       const mockContent = getMockAIResponse(updatedMessages);
+      const chunks = breakIntoChunks(mockContent);
       
-      // Calculate typing delay for mock response
-      const typingDelay = Math.min(1000 + (mockContent.length * 50), 4000);
+      // Send chunks sequentially with delays
+      for (let i = 0; i < chunks.length; i++) {
+        setIsTyping(true);
+        const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
+        await new Promise(resolve => setTimeout(resolve, typingDelay));
+        
+        setIsTyping(false);
+        const aiResponse: Message = {
+          role: 'assistant',
+          content: chunks[i]
+        };
+        setMessages(prev => [...prev, aiResponse]);
+        
+        if (i < chunks.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
       
-      setIsLoading(false);
-      setIsTyping(true);
-      await new Promise(resolve => setTimeout(resolve, typingDelay));
-      setIsTyping(false);
-      
-      const aiResponse: Message = {
-        role: 'assistant',
-        content: mockContent
-      };
-      setMessages([...updatedMessages, aiResponse]);
       toast({
         title: "Using offline mode",
         description: "Connected to local responses.",
