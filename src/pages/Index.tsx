@@ -5,6 +5,7 @@ import VentingMode from '@/components/VentingMode';
 import ProfileForm from '@/components/ProfileForm';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import ValidationScreen from '@/components/ValidationScreen';
+import AppLayout from '@/components/AppLayout';
 import { Message, UserProfile, CheckInResults, ValidationData } from '@/types/checkin';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -458,66 +459,86 @@ const Index = () => {
   };
 
   if (state === 'landing') {
-    return <LandingPrompt onSubmit={handleLandingSubmit} />;
+    return (
+      <AppLayout>
+        <LandingPrompt onSubmit={handleLandingSubmit} />
+      </AppLayout>
+    );
   }
 
   if (state === 'chat') {
     return (
-      <ChatInterface
-        initialMessage={messages[0]?.content || ''}
-        onComplete={handleChatComplete}
-        messages={messages}
-        onSendMessage={handleSendMessage}
-        onBack={handleNewCheckIn}
-        isLoading={isLoading || isTyping}
-        onVentingModeSelected={handleVentingModeSelected}
-      />
+      <AppLayout showBackground={false}>
+        <ChatInterface
+          initialMessage={messages[0]?.content || ''}
+          onComplete={handleChatComplete}
+          messages={messages}
+          onSendMessage={handleSendMessage}
+          onBack={handleNewCheckIn}
+          isLoading={isLoading || isTyping}
+          onVentingModeSelected={handleVentingModeSelected}
+        />
+      </AppLayout>
     );
   }
 
   if (state === 'venting') {
     return (
-      <VentingMode
-        onComplete={handleVentingComplete}
-        onBack={handleNewCheckIn}
-      />
+      <AppLayout>
+        <VentingMode
+          onComplete={handleVentingComplete}
+          onBack={handleNewCheckIn}
+        />
+      </AppLayout>
     );
   }
 
   if (state === 'processing') {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="text-center space-y-6 max-w-md">
-          <div className="relative w-20 h-20 mx-auto">
-            <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold text-foreground">Analyzing your conversation...</h2>
-            <p className="text-muted-foreground">We're identifying patterns and preparing your personalized insights.</p>
+      <AppLayout>
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <div className="text-center space-y-6 max-w-md">
+            <div className="relative w-20 h-20 mx-auto">
+              <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+              <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-white">Analyzing your conversation...</h2>
+              <p className="text-white/70">We're identifying patterns and preparing your personalized insights.</p>
+            </div>
           </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   if (state === 'validation' && validationData) {
     return (
-      <ValidationScreen
-        initialData={validationData}
-        conversationPath={conversationPath}
-        onConfirm={handleValidationConfirm}
-        onAdjust={handleValidationAdjust}
-      />
+      <AppLayout showBackground={false}>
+        <ValidationScreen
+          initialData={validationData}
+          conversationPath={conversationPath}
+          onConfirm={handleValidationConfirm}
+          onAdjust={handleValidationAdjust}
+        />
+      </AppLayout>
     );
   }
 
   if (state === 'profile') {
-    return <ProfileForm onSubmit={handleProfileSubmit} />;
+    return (
+      <AppLayout>
+        <ProfileForm onSubmit={handleProfileSubmit} />
+      </AppLayout>
+    );
   }
 
   if (state === 'results' && results) {
-    return <ResultsDisplay results={results} onNewCheckIn={handleNewCheckIn} />;
+    return (
+      <AppLayout showBackground={false}>
+        <ResultsDisplay results={results} onNewCheckIn={handleNewCheckIn} />
+      </AppLayout>
+    );
   }
 
   return null;

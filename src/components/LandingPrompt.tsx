@@ -1,13 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import FloatingParticles from '@/components/FloatingParticles';
 import VoiceRecorder from '@/components/VoiceRecorder';
-import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
-import FocusModeToggle from '@/components/FocusModeToggle';
-import { Link } from 'react-router-dom';
-import { User, Library, LogIn } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
 
 interface LandingPromptProps {
   onSubmit: (message: string) => void;
@@ -16,7 +10,6 @@ interface LandingPromptProps {
 const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'type' | 'speak'>('type');
-  const { user } = useAuth();
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -51,56 +44,7 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden animated-gradient">
-      {/* Navigation buttons */}
-      <div className="fixed top-6 left-6 z-20 flex gap-3">
-        {user ? (
-          <>
-            <Link to="/library">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
-              >
-                <Library className="h-5 w-5" />
-              </Button>
-            </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
-            >
-              <User className="h-5 w-5" />
-            </Button>
-          </>
-        ) : (
-          <Link to="/auth">
-            <Button
-              variant="ghost"
-              className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20 gap-2"
-            >
-              <LogIn className="h-4 w-4" />
-              Sign In
-            </Button>
-          </Link>
-        )}
-      </div>
-
-      {/* Focus Mode and Neurodiversity settings */}
-      <div className="fixed top-6 right-6 z-20 flex gap-3">
-        <FocusModeToggle />
-        <NeurodiveritySettingsDialog variant="icon" />
-      </div>
-
-      {/* Floating particles background */}
-      <FloatingParticles />
-      
-      {/* Texture overlay */}
-      <div className="fixed inset-0 texture-overlay pointer-events-none" />
-      
-      {/* Vignette effect */}
-      <div className="fixed inset-0 vignette pointer-events-none" />
-
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       <div className="w-full max-w-2xl relative z-10">
         <div className="text-center mb-12 animate-in fade-in duration-1000">
           {/* Label */}

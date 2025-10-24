@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import FloatingParticles from '@/components/FloatingParticles';
+import AppLayout from '@/components/AppLayout';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -83,23 +83,20 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden animated-gradient">
-      <FloatingParticles />
-      <div className="fixed inset-0 texture-overlay pointer-events-none" />
-      <div className="fixed inset-0 vignette pointer-events-none" />
+    <AppLayout>
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="w-full max-w-md relative z-10">
+          <div className="text-center mb-8 animate-in fade-in duration-1000">
+            <h1 className="text-4xl font-medium text-white mb-3" style={{ textShadow: '0 4px 20px rgba(0, 0, 0, 0.3)' }}>
+              Welcome
+            </h1>
+            <p className="text-white/70">Sign in to access your personalized check-ins</p>
+          </div>
 
-      <div className="w-full max-w-md relative z-10">
-        <div className="text-center mb-8 animate-in fade-in duration-1000">
-          <h1 className="text-4xl font-medium text-white mb-3" style={{ textShadow: '0 4px 20px rgba(0, 0, 0, 0.3)' }}>
-            Welcome
-          </h1>
-          <p className="text-white/70">Sign in to access your personalized check-ins</p>
-        </div>
-
-        <div 
-          className="bg-white/95 dark:bg-card/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300"
-          style={{ boxShadow: '0 20px 60px -15px rgba(0, 0, 0, 0.3)' }}
-        >
+          <div 
+            className="bg-white/95 dark:bg-card/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300"
+            style={{ boxShadow: '0 20px 60px -15px rgba(0, 0, 0, 0.3)' }}
+          >
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -166,8 +163,9 @@ const Auth = () => {
             </TabsContent>
           </Tabs>
         </div>
+        </div>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 
