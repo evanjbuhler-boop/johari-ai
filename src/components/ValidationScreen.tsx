@@ -67,10 +67,10 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
             <Tooltip>
               <TooltipTrigger asChild>
                 <div 
-                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help"
+                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help min-h-[140px] flex flex-col"
                   style={{ animationDelay: '200ms', boxShadow: 'var(--shadow-soft)' }}
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-4 flex-1">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-400/20 to-pink-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                       <Heart className="h-6 w-6 text-rose-500" />
                     </div>
@@ -96,10 +96,10 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
             <Tooltip>
               <TooltipTrigger asChild>
                 <div 
-                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help"
+                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help min-h-[140px] flex flex-col"
                   style={{ animationDelay: '300ms', boxShadow: 'var(--shadow-soft)' }}
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-4 flex-1">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400/20 to-orange-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                       <Brain className="h-6 w-6 text-amber-600" />
                     </div>
@@ -125,10 +125,10 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
             <Tooltip>
               <TooltipTrigger asChild>
                 <div 
-                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help"
+                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help min-h-[140px] flex flex-col"
                   style={{ animationDelay: '400ms', boxShadow: 'var(--shadow-soft)' }}
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-4 flex-1">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400/20 to-indigo-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                       <Moon className="h-6 w-6 text-blue-600" />
                     </div>
@@ -154,10 +154,10 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
             <Tooltip>
               <TooltipTrigger asChild>
                 <div 
-                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help"
+                  className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help min-h-[140px] flex flex-col"
                   style={{ animationDelay: '500ms', boxShadow: 'var(--shadow-soft)' }}
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-4 flex-1">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400/20 to-green-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                       <Sparkles className="h-6 w-6 text-emerald-600" />
                     </div>
