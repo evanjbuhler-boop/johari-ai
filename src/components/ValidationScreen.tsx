@@ -10,6 +10,14 @@ interface ValidationScreenProps {
 
 const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [badgeIndex, setBadgeIndex] = useState(0);
+
+  const badgeMessages = [
+    { icon: '⚙️', text: 'Processing your insights' },
+    { icon: '🧠', text: 'Analyzing emotional patterns' },
+    { icon: '🔍', text: 'Researching your recommendations' },
+    { icon: '✨', text: 'Almost ready...' }
+  ];
 
   // Auto-advance to recommendations after 30 seconds
   useEffect(() => {
@@ -19,6 +27,15 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
     return () => clearTimeout(timer);
   }, [initialData, onConfirm]);
+
+  // Cycle through badge messages every 3.5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBadgeIndex((prev) => (prev + 1) % badgeMessages.length);
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [badgeMessages.length]);
 
   const parseReasoningToBullets = (reasoning?: string): string[] => {
     if (!reasoning) return ['Based on your conversation patterns'];
@@ -56,9 +73,9 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
       <div className="relative z-10 w-full max-w-3xl">
         {/* Header */}
         <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-            <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-            <span className="text-sm font-medium text-primary">Processing your insights</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 transition-all duration-300">
+            <span className="text-base animate-pulse">{badgeMessages[badgeIndex].icon}</span>
+            <span className="text-sm font-medium text-primary">{badgeMessages[badgeIndex].text}</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
             Here's What I'm Hearing
