@@ -10,6 +10,8 @@ import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialo
 import FocusModeToggle from '@/components/FocusModeToggle';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 import { useFocusMode } from '@/hooks/useFocusMode';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import {
   Tooltip,
   TooltipContent,
@@ -34,6 +36,10 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [showPathSelection, setShowPathSelection] = useState(false);
   const [tipsDisabled, setTipsDisabled] = useState(false);
+  const [showSummaryOffer, setShowSummaryOffer] = useState(false);
+  const [summaryRequested, setSummaryRequested] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
   const [sidebar, setSidebar] = useState<{
     visible: boolean;
     phase: SidebarPhase | null;
@@ -46,6 +52,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { settings } = useNeurodiveritySettings();
   const { isEnabled: focusModeEnabled } = useFocusMode();
+  const { toast } = useToast();
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
   
   // Calculate progress percentage based on emotional depth (min 3 exchanges, natural max ~7)
@@ -66,6 +73,11 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     // Show early exit option after path selected and 3+ exchanges
     if (conversationPath && exchangeCount >= 3) {
       setShowEarlyExit(true);
+    }
+
+    // Show summary offer after 10+ user messages (only once)
+    if (exchangeCount >= 10 && !showSummaryOffer && !summaryRequested && conversationPath) {
+      setShowSummaryOffer(true);
     }
 
     // Contextual tips based on conversation content (disabled in focus mode)
@@ -174,6 +186,47 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const handleDisableAllTips = () => {
     setTipsDisabled(true);
     localStorage.setItem('tipsDisabled', 'true');
+  };
+
+  const handleSummaryRequest = async (accepted: boolean) => {
+    setShowSummaryOffer(false);
+    
+    if (!accepted) {
+      setSummaryRequested(true); // Don't ask again
+      return;
+    }
+
+    setSummaryRequested(true);
+    setSummaryLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: { 
+          messages, 
+          type: 'summarize',
+          conversationPath 
+        }
+      });
+
+      if (error) throw error;
+
+      const summaryText = typeof data?.summary === 'string' ? data.summary : '';
+      setSummary(summaryText);
+    } catch (error) {
+      console.error('Error generating summary:', error);
+      toast({
+        title: "Could not generate summary",
+        description: "Please continue with the conversation.",
+        variant: "destructive"
+      });
+    } finally {
+      setSummaryLoading(false);
+    }
+  };
+
+  const handleSummaryAdjust = () => {
+    setSummary(null);
+    // User can provide feedback in the next message
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -333,6 +386,73 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                     </div>
                   </div>
                 </button>
+              </div>
+            </div>
+          )}
+          
+          {/* Summary Offer */}
+          {showSummaryOffer && !isLoading && !summaryLoading && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
+              <div className="max-w-[85%] bg-card text-card-foreground border border-border rounded-2xl p-6">
+                <p className="text-base mb-4">Would it help if I summarized what I'm hearing so far?</p>
+                <div className="flex gap-3">
+                  <Button
+                    variant="default"
+                    onClick={() => handleSummaryRequest(true)}
+                    className="flex-1"
+                  >
+                    Yes, summarize
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleSummaryRequest(false)}
+                    className="flex-1"
+                  >
+                    No, keep going
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Summary Display */}
+          {summary && !summaryLoading && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
+              <div className="max-w-[85%] bg-card text-card-foreground border-2 border-primary/30 rounded-2xl p-6">
+                <h3 className="font-semibold text-lg mb-4">Here's what I'm understanding:</h3>
+                <div className="whitespace-pre-wrap text-base leading-relaxed mb-4">{summary}</div>
+                <p className="text-sm text-muted-foreground mb-3">Did I get that right, or should I adjust anything?</p>
+                <div className="flex gap-3">
+                  <Button
+                    variant="default"
+                    onClick={() => setSummary(null)}
+                    className="flex-1"
+                  >
+                    That's right
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleSummaryAdjust}
+                    className="flex-1"
+                  >
+                    Let me clarify
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {summaryLoading && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
+              <div className="max-w-[85%] rounded-2xl px-6 py-4 bg-card text-card-foreground border border-border">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
+                  <span className="text-sm text-muted-foreground">Generating summary...</span>
+                </div>
               </div>
             </div>
           )}

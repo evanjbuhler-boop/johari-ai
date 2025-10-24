@@ -242,6 +242,76 @@ Important: Return ONLY the JSON object, no other text.`;
       throw new Error('No AI API keys configured for validation extraction');
     }
 
+    // Handle conversation summarization
+    if (type === 'summarize') {
+      const conversationText = messages.map((m: any) => 
+        `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
+      ).join('\n');
+      
+      const summaryPrompt = `Based on the conversation below, create a concise, structured summary in this exact format:
+
+🎯 Main stressor: [Single sentence identifying primary issue]
+💭 Their feelings: [2-3 key emotions with brief context]
+🤔 Core tension: [The main internal conflict or dilemma they're facing]
+
+Conversation:
+${conversationText}
+
+Return ONLY the formatted summary with the emojis. Be specific and use their own words where possible.`;
+
+      // Mock mode
+      if (useMockAI) {
+        const mockSummary = `🎯 Main stressor: Work conflict and feeling misunderstood by boss
+💭 Their feelings: Frustrated, guilty, but also defensive—feeling unfairly accused
+🤔 Core tension: Wanting to communicate more effectively vs. feeling like explanations aren't being heard`;
+        
+        console.log('Returning mock summary');
+        return new Response(
+          JSON.stringify({ summary: mockSummary }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Use OpenAI for summary
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            max_tokens: 300,
+            temperature: 0.5,
+            messages: [
+              { role: 'system', content: 'You are a compassionate therapist creating brief, structured conversation summaries.' },
+              { role: 'user', content: summaryPrompt }
+            ],
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`OpenAI API error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        const summary = result.choices[0].message.content.trim();
+
+        console.log('Summary generated');
+        return new Response(
+          JSON.stringify({ summary }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } catch (error) {
+        console.error('Error generating summary:', error);
+        return new Response(
+          JSON.stringify({ error: 'Failed to generate summary' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
     // For conversation mode
     if (type === 'conversation') {
       const exchangeCount = Math.floor(messages.filter((m: any) => m.role === 'user').length);
