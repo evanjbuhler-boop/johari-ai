@@ -1,6 +1,7 @@
 export interface Message {
   role: 'user' | 'assistant';
   content: string;
+  timestamp: string;
 }
 
 export type ConversationPath = 'nightly_routine' | 'venting_session' | null;

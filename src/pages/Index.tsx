@@ -141,7 +141,7 @@ const Index = () => {
   };
 
   const handleLandingSubmit = async (message: string) => {
-    const userMessage: Message = { role: 'user', content: message };
+    const userMessage: Message = { role: 'user', content: message, timestamp: new Date().toISOString() };
     setMessages([userMessage]);
     setState('chat');
     setIsLoading(true);
@@ -178,6 +178,7 @@ const Index = () => {
         const aiResponse: Message = {
           role: 'assistant',
           content: chunks[i],
+          timestamp: new Date().toISOString(),
         };
         setMessages(prev => [...prev, aiResponse]);
         
@@ -203,7 +204,8 @@ const Index = () => {
         setIsTyping(false);
         const aiResponse: Message = {
           role: 'assistant',
-          content: chunks[i]
+          content: chunks[i],
+          timestamp: new Date().toISOString(),
         };
         setMessages(prev => [...prev, aiResponse]);
         
@@ -220,7 +222,7 @@ const Index = () => {
   };
 
   const handleSendMessage = async (message: string, pathSelection?: string) => {
-    const userMessage: Message = { role: 'user', content: message };
+    const userMessage: Message = { role: 'user', content: message, timestamp: new Date().toISOString() };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
@@ -256,6 +258,7 @@ const Index = () => {
         const aiResponse: Message = {
           role: 'assistant',
           content: chunks[i],
+          timestamp: new Date().toISOString(),
         };
         setMessages(prev => [...prev, aiResponse]);
         
@@ -280,7 +283,8 @@ const Index = () => {
         setIsTyping(false);
         const aiResponse: Message = {
           role: 'assistant',
-          content: chunks[i]
+          content: chunks[i],
+          timestamp: new Date().toISOString(),
         };
         setMessages(prev => [...prev, aiResponse]);
         

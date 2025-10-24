@@ -6,6 +6,12 @@ import { Message } from '@/types/checkin';
 import { Send, ArrowLeft, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
 import EducationalSidebar from '@/components/EducationalSidebar';
 import VoiceRecorder from '@/components/VoiceRecorder';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ChatInterfaceProps {
   initialMessage: string;
@@ -189,24 +195,37 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         </div>
 
         <div className="space-y-6 mb-24">
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`animate-in fade-in slide-in-from-bottom-2 duration-500 ${
-                msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'
-              }`}
-            >
+          <TooltipProvider>
+            {messages.map((msg, idx) => (
               <div
-                className={`max-w-[85%] rounded-2xl px-6 py-4 ${
-                  msg.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-card text-card-foreground border border-border'
+                key={idx}
+                className={`animate-in fade-in slide-in-from-bottom-2 duration-500 ${
+                  msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'
                 }`}
               >
-                <p className="text-base leading-relaxed">{msg.content}</p>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-6 py-4 cursor-default ${
+                        msg.role === 'user'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-card text-card-foreground border border-border'
+                      }`}
+                    >
+                      <p className="text-base leading-relaxed">{msg.content}</p>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    {new Date(msg.timestamp).toLocaleTimeString('en-US', {
+                      hour: 'numeric',
+                      minute: '2-digit',
+                      hour12: true
+                    })}
+                  </TooltipContent>
+                </Tooltip>
               </div>
-            </div>
-          ))}
+            ))}
+          </TooltipProvider>
           
           {/* Path Selection */}
           {showPathSelection && !conversationPath && !isLoading && (
