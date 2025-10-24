@@ -52,7 +52,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
   // Format insights from the data
   const primaryEmotions = initialData.emotions.slice(0, 3).join(', ') || 'Processing';
   const stressorsText = initialData.mainStressors.length > 0 
-    ? initialData.mainStressors.slice(0, 2).join(' and ') 
+    ? initialData.mainStressors.slice(0, 2).join(' + ') 
     : 'General life pressure';
   const sleepStatus = initialData.sleepHours 
     ? `${initialData.sleepHours}h (${initialData.sleepQuality?.toLowerCase() || 'moderate'})` 
