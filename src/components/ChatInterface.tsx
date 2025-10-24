@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { Message } from '@/types/checkin';
 import { Send, ArrowLeft, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
 import EducationalSidebar from '@/components/EducationalSidebar';
+import VoiceRecorder from '@/components/VoiceRecorder';
 
 interface ChatInterfaceProps {
   initialMessage: string;
@@ -117,6 +118,11 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         setTimeout(() => onComplete(), 10000);
       }
     }
+  };
+
+  const handleVoiceTranscript = (text: string) => {
+    // Set the transcribed text in the input for user to edit before sending
+    setInput(text);
   };
 
   return (
@@ -295,6 +301,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                 className="flex-1 h-12 text-base"
                 disabled={isLoading}
               />
+              <VoiceRecorder onTranscript={handleVoiceTranscript} />
               <Button type="submit" size="lg" disabled={!input.trim() || isLoading}>
                 <Send className="h-5 w-5" />
               </Button>
