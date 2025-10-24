@@ -322,35 +322,40 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
 
         <div className="space-y-6 mb-24">
           <TooltipProvider>
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`animate-in fade-in slide-in-from-bottom-2 duration-500 ${
-                  msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'
-                }`}
-              >
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div
-                      className={`max-w-[85%] rounded-2xl px-6 py-4 cursor-default ${
-                        msg.role === 'user'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-card text-card-foreground border border-border'
-                      }`}
-                    >
-                      <p className="text-base leading-relaxed">{msg.content}</p>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-xs">
-                    {new Date(msg.timestamp).toLocaleTimeString('en-US', {
-                      hour: 'numeric',
-                      minute: '2-digit',
-                      hour12: true
-                    })}
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            ))}
+            {messages.map((msg, idx) => {
+              // Ensure we have valid content
+              const messageContent = msg?.content || '';
+              
+              return (
+                <div
+                  key={`${msg.role}-${idx}-${msg.timestamp}`}
+                  className={`animate-in fade-in slide-in-from-bottom-2 duration-500 ${
+                    msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'
+                  }`}
+                >
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={`max-w-[85%] rounded-2xl px-6 py-4 cursor-default ${
+                          msg.role === 'user'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-card text-card-foreground border border-border'
+                        }`}
+                      >
+                        <p className="text-base leading-relaxed whitespace-pre-wrap">{messageContent}</p>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">
+                      {new Date(msg.timestamp).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              );
+            })}
           </TooltipProvider>
           
           {/* Path Selection */}
