@@ -86,7 +86,26 @@ const ValidationScreen = ({ initialData, onConfirm, onAdjust }: ValidationScreen
 
   const handleEdit = (section: SectionType) => {
     setEditingSection(section);
-    setTempData(JSON.parse(JSON.stringify(data[section])));
+    
+    // Initialize with sensible defaults if the section is empty
+    let initialData = data[section];
+    if (!initialData) {
+      if (section === 'today' || section === 'tomorrow') {
+        initialData = { content: '', emotions: [] };
+      } else if (section === 'worries') {
+        initialData = [];
+      } else if (section === 'body') {
+        initialData = {
+          sleepHours: 7,
+          sleepQuality: 'Slept okay',
+          energyLevel: 5,
+          eating: 'Ate normally',
+          physicalNotes: ''
+        };
+      }
+    }
+    
+    setTempData(JSON.parse(JSON.stringify(initialData)));
   };
 
   const handleSave = (section: SectionType) => {
@@ -229,7 +248,7 @@ const ValidationScreen = ({ initialData, onConfirm, onAdjust }: ValidationScreen
       );
     }
 
-    if (section === 'worries' && data.worries) {
+    if (section === 'worries' && data.worries && Array.isArray(data.worries) && data.worries.length > 0) {
       return (
         <ul className="space-y-2">
           {data.worries.map((worry, idx) => (
