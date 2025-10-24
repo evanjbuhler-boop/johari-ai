@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
@@ -63,6 +63,17 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   // Calculate time estimate (assuming ~1 min per exchange, max 7 exchanges)
   const remainingExchanges = Math.max(0, 7 - exchangeCount);
   const estimatedMinutes = Math.max(1, Math.ceil(remainingExchanges * 0.8)); // Slightly optimistic
+
+  // Persist tips disabled preference
+  useEffect(() => {
+    const persisted = localStorage.getItem('tipsDisabled');
+    if (persisted === 'true') setTipsDisabled(true);
+  }, []);
+
+  // Detect the first AI path-offer message index ("Would you like to:")
+  const firstPathPromptIndex = useMemo(() =>
+    messages.findIndex(m => m.role === 'assistant' && /would you like to:/i.test(m.content || ''))
+  , [messages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -336,6 +347,12 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
             {messages.map((msg, idx) => {
               // Ensure we have valid content
               const messageContent = msg?.content || '';
+
+              // Suppress repeated path prompts from AI after the first one
+              const isPathPrompt = msg.role === 'assistant' && /would you like to:/i.test(messageContent);
+              if (isPathPrompt && firstPathPromptIndex !== -1 && idx !== firstPathPromptIndex) {
+                return null;
+              }
               
               return (
                 <div
