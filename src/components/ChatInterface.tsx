@@ -6,6 +6,8 @@ import { Message } from '@/types/checkin';
 import { Send, ArrowLeft, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
 import EducationalSidebar from '@/components/EducationalSidebar';
 import VoiceRecorder from '@/components/VoiceRecorder';
+import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
+import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 import {
   Tooltip,
   TooltipContent,
@@ -40,6 +42,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     dismissedPhases: new Set()
   });
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { settings } = useNeurodiveritySettings();
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
   
   // Calculate progress percentage based on emotional depth (min 3 exchanges, natural max ~7)
@@ -215,7 +218,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
             <ArrowLeft className="h-4 w-4" />
             Back
           </Button>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <NeurodiveritySettingsDialog variant="icon" />
             {showEarlyExit && (
               <Button
                 variant="outline"
@@ -226,7 +230,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                 I'm ready to see my reflection
               </Button>
             )}
-            <div className="relative w-16 h-16">
+            {settings.showVisualProgress && (
+              <div className="relative w-16 h-16">
               <svg className="transform -rotate-90 w-16 h-16">
                 <circle
                   cx="32"
@@ -251,9 +256,10 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-sm font-medium">{progressPercentage}%</span>
+                  <span className="text-sm font-medium">{progressPercentage}%</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -347,8 +353,9 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
 
       <div className="sticky bottom-0 bg-background border-t border-border">
         <div className="max-w-4xl mx-auto">
-          {/* Progress bar section */}
-          <div className="px-4 pt-3 pb-2">
+          {/* Progress bar section - only show if enabled */}
+          {settings.showVisualProgress && (
+            <div className="px-4 pt-3 pb-2">
             <div className="flex items-center justify-between mb-2 text-xs">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5">
@@ -372,6 +379,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
             </div>
             <Progress value={progressPercentage} className="h-1.5" />
           </div>
+          )}
           
           {/* Input form */}
           <form onSubmit={handleSubmit} className="p-4 pt-2">

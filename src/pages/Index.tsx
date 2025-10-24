@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { getMockAIResponse, generateMockResults } from '@/utils/mockAI';
 import { useAuth } from '@/hooks/useAuth';
+import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 
 type AppState = 'landing' | 'chat' | 'processing' | 'validation' | 'profile' | 'results';
 
@@ -22,6 +23,7 @@ const Index = () => {
   const [isTyping, setIsTyping] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { settings } = useNeurodiveritySettings();
 
   // Load user profile from database if authenticated, otherwise check localStorage
   useEffect(() => {
@@ -148,7 +150,7 @@ const Index = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('chat', {
-        body: { messages: [userMessage], type: 'conversation' }
+        body: { messages: [userMessage], type: 'conversation', neurodiveritySettings: settings }
       });
 
       if (error) throw error;
@@ -232,7 +234,8 @@ const Index = () => {
         body: { 
           messages: updatedMessages, 
           type: 'conversation',
-          conversationPath: pathSelection 
+          conversationPath: pathSelection,
+          neurodiveritySettings: settings
         }
       });
 

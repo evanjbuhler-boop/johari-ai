@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import FloatingParticles from '@/components/FloatingParticles';
 import VoiceRecorder from '@/components/VoiceRecorder';
+import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
 import { Link } from 'react-router-dom';
 import { User, Library, LogIn } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -61,6 +62,13 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
             </Button>
           </Link>
         )}
+      </div>
+
+      {/* Neurodiversity settings button */}
+      <div className="fixed top-6 right-6 z-20">
+        <div className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full">
+          <NeurodiveritySettingsDialog variant="icon" />
+        </div>
       </div>
 
       {/* Floating particles background */}

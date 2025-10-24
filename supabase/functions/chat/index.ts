@@ -78,7 +78,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, type, mock, conversationPath } = await req.json();
+    const { messages, type, mock, conversationPath, neurodiveritySettings } = await req.json();
     const truthy = (v: unknown) => typeof v === 'string' ? ['true','1','yes','y','on'].includes(v.toLowerCase().trim()) : !!v;
     const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(mock);
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
@@ -322,6 +322,38 @@ Important: Return ONLY the JSON object, no other text.`;
       
       console.log('Detected complexity level:', complexity);
       
+      // Build neurodiversity-specific instructions
+      let neuroInstructions = '';
+      if (neurodiveritySettings) {
+        const instructions = [];
+        
+        if (neurodiveritySettings.usePlainLanguage) {
+          instructions.push('- Use plain, literal language. Avoid metaphors, idioms, and figurative speech');
+          instructions.push('- Be direct and concrete in your responses');
+        }
+        
+        if (neurodiveritySettings.includeContentWarnings) {
+          instructions.push('- Before discussing heavy or potentially distressing topics, provide a brief content warning');
+          instructions.push('- Example: "I\'m about to ask about stress—let me know if you\'d rather skip this"');
+        }
+        
+        if (neurodiveritySettings.oneQuestionPerMessage) {
+          instructions.push('- CRITICAL: Ask only ONE question per message, never multiple');
+          instructions.push('- Wait for the user to answer before asking follow-up questions');
+        }
+        
+        if (neurodiveritySettings.explainQuestions) {
+          instructions.push('- Before or after each question, briefly explain why you\'re asking it');
+          instructions.push('- Example: "What happened at work? (This helps me understand what\'s weighing on you)"');
+        }
+        
+        if (instructions.length > 0) {
+          neuroInstructions = `\n\nNEURODIVERSITY ADAPTATIONS:\n${instructions.join('\n')}`;
+        }
+      }
+      
+      console.log('Neurodiversity settings applied:', neurodiveritySettings);
+      
       if (conversationPath === 'nightly_routine') {
         // Structured 4-phase routine
         const userExchanges = messages.filter((m: any) => m.role === 'user').length;
@@ -338,6 +370,7 @@ ${phase === 3 ? '3. WORRY PROCESSING: Ask "What\'s on your mind for tomorrow—a
 ${phase === 4 ? '4. LIFESTYLE PULSE: Ask "How\'s your body doing—sleep, energy, anything physical?" Connect it: "That might be why you\'re feeling [emotion]—your body is running on fumes."' : ''}
 
 ${languageInstructions}
+${neuroInstructions}
 
 RESPONSE STYLE RULES:
 ✅ DO:
@@ -369,6 +402,7 @@ YOUR ROLE:
 - After they finish (or pause), reflect: "So it sounds like you're carrying [summarize]... What's the main thing weighing on you most?"
 
 ${languageInstructions}
+${neuroInstructions}
 
 RESPONSE STYLE RULES:
 ✅ DO:
@@ -392,6 +426,7 @@ RESPONSE STYLE RULES:
         systemPrompt = `You are a compassionate evening check-in coach. This is the first interaction.
 
 ${languageInstructions}
+${neuroInstructions}
 
 FIRST RESPONSE ONLY:
 1. Give empathetic reflection of what they shared (1-2 sentences)
