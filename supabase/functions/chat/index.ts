@@ -345,26 +345,72 @@ STYLE:
       // Mock mode - return realistic psychological analysis
       if (useMockAI) {
         const mockResults = {
-          userQuote: "I'm drowning in everything",
-          patterns: [
-            "Sleep deprivation (4 hours) → heightened emotional reactivity",
-            "Work pressure + exhaustion → snapping at your partner",
-            "Guilt about the conflict → more stress → worse sleep (reinforcing cycle)"
-          ],
+          byline: "You're carrying the weight of uncertainty while trying to perform at your best",
+          userQuote: "Not knowing if I'll get the promotion or not!",
+          whatsHappening: {
+            summary: "You're experiencing what psychologists call 'anticipatory anxiety' - the stress of waiting for an outcome you can't control. This is compounded by comparison with colleagues, creating a constant state of competitive vigilance that's exhausting your nervous system.",
+            fullExplanation: "When we face uncertainty about important outcomes, our brain's threat detection system stays activated, constantly scanning for signs of danger or failure. This is what you're experiencing with the promotion uncertainty.\n\nThe ambient competition you described is particularly draining because it creates a state called 'social comparison anxiety.' Your nervous system interprets every colleague's success as a potential threat to your own advancement, keeping you in a heightened state of stress.\n\nThis chronic stress directly impacts sleep quality through elevated cortisol levels, which then creates a feedback loop: poor sleep → increased anxiety → worse sleep. Your body is essentially stuck in 'fight or flight' mode, making it nearly impossible to relax even when you want to.",
+            citations: [
+              { author: "Grupe & Nitschke", year: "2013", title: "Uncertainty and anticipation in anxiety: an integrated neurobiological and psychological perspective" },
+              { author: "Buunk & Gibbons", year: "2007", title: "Social comparison: The end of a theory and the emergence of a field" }
+            ]
+          },
+          podcast: {
+            title: "The Anxiety Coaches Podcast",
+            host: "Gina Ryan",
+            episode: "Managing Workplace Anxiety and Career Pressure",
+            duration: "42 min",
+            description: "Practical strategies for handling career uncertainty and competitive work environments without burning out.",
+            whyThisHelps: "This episode specifically addresses the promotion anxiety you're experiencing and offers concrete tools for managing the waiting period while maintaining your performance.",
+            thumbnail: "https://via.placeholder.com/400x400?text=Anxiety+Coaches",
+            urls: {
+              spotify: "https://open.spotify.com/show/4fTTVSTrgXKhZTgjxiF5kp",
+              applePodcasts: "https://podcasts.apple.com/us/podcast/the-anxiety-coaches-podcast/id1439613688"
+            }
+          },
+          book: {
+            title: "The Upside of Stress",
+            author: "Kelly McGonigal",
+            byline: "Why Stress Is Good for You, and How to Get Good at It",
+            length: "304 pages / 6-hour read",
+            description: "A groundbreaking look at how changing your mindset about stress can transform it from something harmful into something that helps you thrive.",
+            whyThisHelps: "This book will help you reframe the promotion stress you're experiencing, turning it from something that's draining you into fuel for better performance.",
+            coverImage: "https://via.placeholder.com/300x450?text=The+Upside+of+Stress",
+            sampleUrl: "https://www.amazon.com/Upside-Stress-Why-Good-You-ebook/dp/B00PWCTP8Y",
+            purchaseUrl: "https://www.amazon.com/Upside-Stress-Why-Good-You/dp/1101982934"
+          },
+          exercise: {
+            title: "Box Breathing for Sleep",
+            description: "A simple breathing technique to calm your nervous system and prepare for restful sleep, especially effective when work anxiety is keeping you awake.",
+            duration: "5-10 minutes",
+            steps: [
+              "Lie in bed and close your eyes. Place one hand on your chest and one on your belly.",
+              "Breathe in slowly through your nose for 4 counts, feeling your belly rise.",
+              "Hold your breath for 4 counts, staying relaxed.",
+              "Exhale slowly through your mouth for 4 counts, letting your belly fall.",
+              "Hold empty for 4 counts.",
+              "Repeat this cycle 8-10 times, or until you feel your body relaxing.",
+              "If thoughts about work arise, acknowledge them and return to counting your breath."
+            ]
+          },
+          story: {
+            title: "The Farmer and the Horse",
+            content: "There's an old story of a farmer whose horse ran away. His neighbor said, 'Such bad luck!' The farmer replied, 'Maybe.'\n\nThe next day, the horse returned with three wild horses. 'How wonderful!' said the neighbor. 'Maybe,' said the farmer.\n\nWhen his son tried to tame one of the wild horses and broke his leg, the neighbor exclaimed, 'How terrible!' The farmer simply said, 'Maybe.'\n\nThe next week, officers came to draft young men into the army, but the son was excused because of his broken leg. The neighbor congratulated the farmer on his good fortune, to which the farmer responded, 'Maybe.'",
+            whyThisMatters: "Right now, not knowing about the promotion feels like 'bad luck' - but you don't yet know how this will unfold. Whether you get this promotion or not, you can't see the full picture of how it will affect your career path. The 'maybe' mindset helps you stay present instead of catastrophizing about unknown outcomes."
+          },
           cbt: {
-            distortion: "Catastrophizing",
-            userThought: "I'm going to fail at work and ruin my relationship",
-            reframe: "You're juggling a lot right now, and one rough week doesn't define your competence or your relationship. Your partner knows you're stressed. Your boss hasn't said you're failing. You're extrapolating from feeling overwhelmed to total collapse, but that's the anxiety talking, not reality.",
-            practice: "Before bed tonight, text your partner one specific thing you appreciate about them. Tomorrow at work, identify one task you can delegate or push to next week. You can't do everything - pick what matters most right now."
+            distortion: "catastrophizing",
+            userThought: "Not knowing if I'll get the promotion or not! It's tough, everyone else might get it.",
+            reframe: "The uncertainty is uncomfortable, but it doesn't mean disaster. You can't control the decision, but you can control how you prepare and perform. Your worth isn't determined by this one promotion - your career is a long game, and this is just one move.",
+            practice: "Tonight before bed: Write down 3 things you did well at work this week. Tomorrow: Identify one task you can complete that's fully within your control, and focus your energy there instead of the promotion outcome."
           },
-          reflection: "It sounds like you're navigating a period of transition and growth. The stress you're experiencing seems to stem from balancing multiple responsibilities while trying to maintain your well-being. Your awareness of these challenges is already a positive step forward.",
-          framework: "What you're experiencing aligns with the concept of 'cognitive load' - when our mental capacity is stretched across too many demands simultaneously. This is compounded by what psychologists call 'decision fatigue,' where the quality of our decisions deteriorates after making many decisions throughout the day. Your body and mind are signaling the need for more intentional rest and boundary-setting.",
-          recommendations: {
-            podcast: "Try 'The Happiness Lab' by Dr. Laurie Santos, particularly the episode on managing stress through realistic expectations.",
-            article: "'The Science of Self-Care' on Greater Good Magazine explores evidence-based approaches to maintaining emotional balance.",
-            technique: "Consider the '3-3-3 Rule' for anxiety: Name 3 things you see, 3 sounds you hear, and move 3 parts of your body. This grounds you in the present moment and interrupts the stress cycle."
-          },
-          story: "There's an old story of a farmer whose horse ran away. His neighbor said, 'Such bad luck!' The farmer replied, 'Maybe.' The next day, the horse returned with three wild horses. 'How wonderful!' said the neighbor. 'Maybe,' said the farmer. When his son tried to tame one of the wild horses and broke his leg, the neighbor exclaimed, 'How terrible!' The farmer simply said, 'Maybe.' The next week, officers came to draft young men into the army, but the son was excused because of his broken leg. The neighbor congratulated the farmer on his good fortune, to which the farmer responded, 'Maybe.' \n\nThis story reminds us that we can't always see the full picture of how events will unfold. What feels overwhelming today may lead to unexpected growth tomorrow. The key is maintaining perspective and being gentle with ourselves during uncertain times."
+          reflection: "You're experiencing the collision of high stakes (career advancement) and zero control (waiting for a decision). That combination is uniquely stressful, and it makes sense that it's affecting your sleep and nerves.",
+          patterns: [
+            "Promotion uncertainty → constant vigilance → nervous system activation",
+            "Workplace competition → comparison anxiety → feeling under threat",
+            "Chronic stress → poor sleep → heightened anxiety (feedback loop)",
+            "Loss of control → catastrophic thinking → more stress"
+          ]
         };
 
         console.log('Returning mock results');
@@ -378,42 +424,67 @@ STYLE:
 
 CRITICAL: Use their own words, not therapy-speak. If they said "I'm drowning," use that. If they said "My boss is an asshole," quote it.
 
-Provide:
-1. userQuote: Pull a direct quote (2-15 words) from the user that captures their core struggle. Use EXACTLY what they said.
-
-2. patterns: 3-4 bullet points connecting the dots between factors (sleep → irritability → work conflict). Be specific to their situation, not generic.
-
-3. cbt: Applied CBT analysis with:
-   - distortion: Name ONE specific cognitive distortion (catastrophizing, all-or-nothing thinking, mind reading, overgeneralization, etc.)
-   - userThought: Quote a thought pattern they revealed in the conversation (their EXACT words or close paraphrase)
-   - reframe: Specific reframe using details from their life. Not "think positively" - show them a different lens using their situation
-   - practice: One clear action they can take tonight or tomorrow. Concrete, not vague.
-
-4. Keep legacy fields for compatibility:
-   - reflection: 2-3 sentence empathetic reflection
-   - framework: Psychological concept explaining their experience
-   - recommendations: podcast, article, technique
-   - story: Relevant parable
-
-Format as JSON:
+Format as JSON with this EXACT structure:
 {
-  "userQuote": "string (their exact words)",
-  "patterns": ["string", "string", "string"],
+  "byline": "One compelling sentence capturing their core challenge",
+  "userQuote": "Direct quote (2-15 words) from user that captures their struggle",
+  "whatsHappening": {
+    "summary": "2-3 sentence explanation of what's happening psychologically (use their language)",
+    "fullExplanation": "Detailed 3-4 paragraph explanation connecting their experiences to psychological concepts. Use their specific situation.",
+    "citations": [
+      {"author": "Researcher Name", "year": "2020", "title": "Study Title relevant to their situation"}
+    ]
+  },
+  "podcast": {
+    "title": "Podcast Name",
+    "host": "Host Name",
+    "episode": "Episode Title (relevant to their issue)",
+    "duration": "45 min",
+    "description": "What this episode covers",
+    "whyThisHelps": "Specific reason this helps their situation",
+    "thumbnail": "https://via.placeholder.com/400x400?text=Podcast",
+    "urls": {
+      "spotify": "https://open.spotify.com/show/...",
+      "applePodcasts": "https://podcasts.apple.com/..."
+    }
+  },
+  "book": {
+    "title": "Book Title",
+    "author": "Author Name",
+    "byline": "One-line book description",
+    "length": "200 pages / 4-hour read",
+    "description": "What this book covers",
+    "whyThisHelps": "Specific reason this helps their situation",
+    "coverImage": "https://via.placeholder.com/300x450?text=Book",
+    "sampleUrl": "https://www.amazon.com/...",
+    "purchaseUrl": "https://www.amazon.com/..."
+  },
+  "exercise": {
+    "title": "Exercise Name",
+    "description": "Brief description of the exercise",
+    "duration": "5-10 minutes",
+    "steps": [
+      "Step 1 instruction",
+      "Step 2 instruction",
+      "Step 3 instruction"
+    ]
+  },
+  "story": {
+    "title": "Story Title",
+    "content": "The full story text (2-3 paragraphs, use \\n for line breaks)",
+    "whyThisMatters": "How this story relates to their specific situation"
+  },
   "cbt": {
-    "distortion": "string",
-    "userThought": "string (quoted from conversation)",
-    "reframe": "string (specific to their situation)",
-    "practice": "string (concrete action)"
+    "distortion": "Name of cognitive distortion",
+    "userThought": "Quote their exact thought",
+    "reframe": "Reframe using their situation",
+    "practice": "Concrete action for tonight/tomorrow"
   },
-  "reflection": "string",
-  "framework": "string",
-  "recommendations": {
-    "podcast": "string",
-    "article": "string",
-    "technique": "string"
-  },
-  "story": "string"
-}`;
+  "reflection": "2-3 sentence empathetic reflection",
+  "patterns": ["Pattern 1", "Pattern 2", "Pattern 3"]
+}
+
+IMPORTANT: All podcast/book URLs should be real and relevant. Use placeholder images only for thumbnails/covers.`;
 
       const conversationSummary = messages.map((m: any) => 
         `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
@@ -442,35 +513,6 @@ Format as JSON:
       if (!response.ok) {
         const error = await response.text();
         console.error('OpenAI API error:', response.status, error);
-        if (useMockAI) {
-          const mockResults = {
-            userQuote: "I'm drowning in everything",
-            patterns: [
-              "Sleep deprivation (4 hours) → heightened emotional reactivity",
-              "Work pressure + exhaustion → snapping at your partner",
-              "Guilt about the conflict → more stress → worse sleep (reinforcing cycle)"
-            ],
-            cbt: {
-              distortion: "Catastrophizing",
-              userThought: "I'm going to fail at work and ruin my relationship",
-              reframe: "You're juggling a lot right now, and one rough week doesn't define your competence or your relationship. Your partner knows you're stressed. Your boss hasn't said you're failing. You're extrapolating from feeling overwhelmed to total collapse, but that's the anxiety talking, not reality.",
-              practice: "Before bed tonight, text your partner one specific thing you appreciate about them. Tomorrow at work, identify one task you can delegate or push to next week. You can't do everything - pick what matters most right now."
-            },
-            reflection: "It sounds like you're navigating a period of transition and growth. The stress you're experiencing seems to stem from balancing multiple responsibilities while trying to maintain your well-being. Your awareness of these challenges is already a positive step forward.",
-            framework: "What you're experiencing aligns with the concept of 'cognitive load' - when our mental capacity is stretched across too many demands simultaneously. This is compounded by what psychologists call 'decision fatigue,' where the quality of our decisions deteriorates after making many decisions throughout the day. Your body and mind are signaling the need for more intentional rest and boundary-setting.",
-            recommendations: {
-              podcast: "Try 'The Happiness Lab' by Dr. Laurie Santos, particularly the episode on managing stress through realistic expectations.",
-              article: "'The Science of Self-Care' on Greater Good Magazine explores evidence-based approaches to maintaining emotional balance.",
-              technique: "Consider the '3-3-3 Rule' for anxiety: Name 3 things you see, 3 sounds you hear, and move 3 parts of your body. This grounds you in the present moment and interrupts the stress cycle."
-            },
-            story: "There's an old story of a farmer whose horse ran away. His neighbor said, 'Such bad luck!' The farmer replied, 'Maybe.' The next day, the horse returned with three wild horses. 'How wonderful!' said the neighbor. 'Maybe,' said the farmer. When his son tried to tame one of the wild horses and broke his leg, the neighbor exclaimed, 'How terrible!' The farmer simply said, 'Maybe.' The next week, officers came to draft young men into the army, but the son was excused because of his broken leg. The neighbor congratulated the farmer on his good fortune, to which the farmer responded, 'Maybe.' \n\nThis story reminds us that we can't always see the full picture of how events will unfold. What feels overwhelming today may lead to unexpected growth tomorrow. The key is maintaining perspective and being gentle with ourselves during uncertain times."
-          };
-
-          return new Response(
-            JSON.stringify(mockResults),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
         throw new Error(`OpenAI API error: ${response.status}`);
       }
 
@@ -491,28 +533,72 @@ Format as JSON:
         }
       } catch (e) {
         console.error('Failed to parse results:', e);
-        // Fallback to a basic structure
+        // Fallback to a basic structure matching the expected format
         results = {
+          byline: "You're navigating a challenging time",
           userQuote: "I'm struggling with a lot right now",
-          patterns: [
-            "Multiple demands on your energy and attention",
-            "Stress building up without clear release",
-            "Need for more intentional rest and boundaries"
-          ],
+          whatsHappening: {
+            summary: "You're experiencing stress from multiple sources that are compounding on each other. This is creating a pattern where each challenge makes the others feel heavier.",
+            fullExplanation: "When we face multiple stressors simultaneously, our capacity to cope becomes stretched. This isn't a sign of weakness - it's a natural response to being pulled in many directions at once.\n\nYour body and mind are signaling that they need support, which is why you're here tonight. That awareness is actually a strength, not a failure.\n\nThe key is understanding that you don't have to solve everything at once. Small, intentional steps toward rest and boundary-setting can create positive ripple effects across all areas of stress.",
+            citations: [
+              { author: "Lazarus & Folkman", year: "1984", title: "Stress, Appraisal, and Coping" }
+            ]
+          },
+          podcast: {
+            title: "The Happiness Lab",
+            host: "Dr. Laurie Santos",
+            episode: "Managing Stress Through Self-Compassion",
+            duration: "38 min",
+            description: "Evidence-based strategies for handling overwhelming periods with kindness toward yourself.",
+            whyThisHelps: "This episode offers practical tools for managing stress when you're feeling stretched thin.",
+            thumbnail: "https://via.placeholder.com/400x400?text=Happiness+Lab",
+            urls: {
+              spotify: "https://open.spotify.com/show/3i5TCKhc6GY42pOWkpWveG",
+              applePodcasts: "https://podcasts.apple.com/us/podcast/the-happiness-lab-with-dr-laurie-santos/id1474244606"
+            }
+          },
+          book: {
+            title: "The Upside of Stress",
+            author: "Kelly McGonigal",
+            byline: "Why Stress Is Good for You, and How to Get Good at It",
+            length: "304 pages / 6-hour read",
+            description: "A science-backed approach to transforming your relationship with stress.",
+            whyThisHelps: "This book helps reframe stress as something that can strengthen you rather than just drain you.",
+            coverImage: "https://via.placeholder.com/300x450?text=Upside+of+Stress",
+            sampleUrl: "https://www.amazon.com/Upside-Stress-Why-Good-You-ebook/dp/B00PWCTP8Y",
+            purchaseUrl: "https://www.amazon.com/Upside-Stress-Why-Good-You/dp/1101982934"
+          },
+          exercise: {
+            title: "4-7-8 Breathing",
+            description: "A calming breath technique that helps activate your parasympathetic nervous system and prepare for sleep.",
+            duration: "5 minutes",
+            steps: [
+              "Sit or lie comfortably and place your tongue behind your upper front teeth.",
+              "Exhale completely through your mouth, making a whoosh sound.",
+              "Close your mouth and inhale quietly through your nose for 4 counts.",
+              "Hold your breath for 7 counts.",
+              "Exhale completely through your mouth for 8 counts, making a whoosh sound.",
+              "Repeat this cycle 3-4 times total.",
+              "Notice how your body feels more relaxed with each cycle."
+            ]
+          },
+          story: {
+            title: "The Wisdom of One Day",
+            content: "There's wisdom in taking one day at a time and being gentle with yourself during challenging periods.\n\nJust as a tree doesn't grow all at once but through countless small moments of growth, you don't have to solve everything tonight.\n\nWhat matters is that you're here, paying attention, and taking one small step toward caring for yourself.",
+            whyThisMatters: "This reminds you that progress doesn't require perfection. Small steps count, especially when you're tired."
+          },
           cbt: {
             distortion: "All-or-nothing thinking",
             userThought: "I have to handle everything perfectly or I'm failing",
             reframe: "You can be doing your best while also struggling. Progress isn't about perfection - it's about taking the next right step, even when you're tired.",
             practice: "Tonight, write down one thing you did well today, no matter how small. Then pick one thing you can let go of or delegate tomorrow."
           },
-          reflection: resultsText,
-          framework: "General stress response theory",
-          recommendations: {
-            podcast: "Try 'The Happiness Lab' by Dr. Laurie Santos",
-            article: "Search for 'The Science of Self-Care' on Greater Good Magazine",
-            technique: "Practice the 3-3-3 Rule for anxiety: Name 3 things you see, 3 sounds you hear, and move 3 parts of your body."
-          },
-          story: "There's wisdom in taking one day at a time and being gentle with yourself during challenging periods."
+          reflection: "You're navigating a challenging time, and it's understandable to feel overwhelmed. The fact that you're here seeking support shows strength and self-awareness.",
+          patterns: [
+            "Multiple stressors creating cumulative load",
+            "Need for intentional rest and boundary-setting",
+            "Body and mind signaling need for support"
+          ]
         };
       }
       
