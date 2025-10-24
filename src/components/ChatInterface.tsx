@@ -22,7 +22,7 @@ interface ChatInterfaceProps {
   isLoading: boolean;
 }
 
-type SidebarPhase = 'highlight' | 'worry' | 'lifestyle';
+type SidebarPhase = 'highlight' | 'worry' | 'lifestyle' | 'uncertainty' | 'sleep' | 'conflict' | 'guilt' | 'rumination' | 'avoidance';
 
 const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
@@ -60,6 +60,62 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     // Show early exit option after path selected and 3+ exchanges
     if (conversationPath && exchangeCount >= 3) {
       setShowEarlyExit(true);
+    }
+
+    // Contextual tips based on conversation content
+    if (!isLoading && !tipsDisabled) {
+      const userMessages = messages.filter(m => m.role === 'user');
+      const recentUserMessages = userMessages.slice(-5); // Last 5 user messages
+      const conversationText = recentUserMessages.map(m => m.content.toLowerCase()).join(' ');
+      
+      // Check for uncertainty pattern ("I don't know" repeated)
+      const uncertaintyCount = (conversationText.match(/i don'?t know|not sure|no idea|unsure/gi) || []).length;
+      if (uncertaintyCount >= 3 && !sidebar.dismissedPhases.has('uncertainty')) {
+        const timer = setTimeout(() => {
+          setSidebar(prev => ({ ...prev, visible: true, phase: 'uncertainty' }));
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
+      
+      // Check for sleep/fatigue mentions
+      if ((conversationText.includes('sleep') || conversationText.includes('tired') || conversationText.includes('exhaust') || conversationText.includes('rest')) && !sidebar.dismissedPhases.has('sleep')) {
+        const timer = setTimeout(() => {
+          setSidebar(prev => ({ ...prev, visible: true, phase: 'sleep' }));
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
+      
+      // Check for conflict mentions
+      if ((conversationText.includes('conflict') || conversationText.includes('argument') || conversationText.includes('fight') || conversationText.includes('disagree')) && !sidebar.dismissedPhases.has('conflict')) {
+        const timer = setTimeout(() => {
+          setSidebar(prev => ({ ...prev, visible: true, phase: 'conflict' }));
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
+      
+      // Check for guilt expressions
+      if ((conversationText.includes('guilt') || conversationText.includes('should have') || conversationText.includes('my fault') || conversationText.includes('blame myself')) && !sidebar.dismissedPhases.has('guilt')) {
+        const timer = setTimeout(() => {
+          setSidebar(prev => ({ ...prev, visible: true, phase: 'guilt' }));
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
+      
+      // Check for rumination patterns (keeps/keep thinking about, can't stop thinking)
+      if ((conversationText.includes('keep thinking') || conversationText.includes('keeps coming back') || conversationText.includes("can't stop thinking")) && !sidebar.dismissedPhases.has('rumination')) {
+        const timer = setTimeout(() => {
+          setSidebar(prev => ({ ...prev, visible: true, phase: 'rumination' }));
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
+      
+      // Check for avoidance patterns
+      if ((conversationText.includes('avoid') || conversationText.includes('putting off') || conversationText.includes('procrastinat') || conversationText.includes("don't want to deal")) && !sidebar.dismissedPhases.has('avoidance')) {
+        const timer = setTimeout(() => {
+          setSidebar(prev => ({ ...prev, visible: true, phase: 'avoidance' }));
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
     }
 
     // Educational sidebar triggers (only for nightly_routine path and if tips not disabled)
