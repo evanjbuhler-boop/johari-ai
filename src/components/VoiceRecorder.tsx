@@ -157,7 +157,7 @@ const VoiceRecorder = ({ onTranscript, onSubmit }: VoiceRecorderProps) => {
   return (
     <>
       {/* Centered Microphone with dynamic effects */}
-      <div className="flex flex-col items-center justify-center min-h-[280px] gap-6">
+      <div className="flex flex-col items-center justify-center min-h-[280px] gap-8">
         <button
           type="button"
           onClick={startRecording}
