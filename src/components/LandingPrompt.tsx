@@ -15,7 +15,7 @@ interface LandingPromptProps {
 
 const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
   const [message, setMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'type' | 'speak'>('type');
+  const [activeTab, setActiveTab] = useState<'type' | 'speak'>('speak');
   const { user } = useAuth();
 
   // Keyboard shortcuts
