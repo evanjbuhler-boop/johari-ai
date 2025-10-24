@@ -227,10 +227,8 @@ const Index = () => {
   };
 
   const handleValidationAdjust = () => {
-    toast({
-      title: "Make your adjustments",
-      description: "Update any fields that don't feel right.",
-    });
+    // Go back to chat to make adjustments
+    setState('chat');
   };
 
   const generateResults = async (data: ValidationData) => {
