@@ -36,6 +36,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [showPathSelection, setShowPathSelection] = useState(false);
+  const [pathSelectionShown, setPathSelectionShown] = useState(false); // Track if path selection was ever shown
   const [tipsDisabled, setTipsDisabled] = useState(false);
   const [showSummaryOffer, setShowSummaryOffer] = useState(false);
   const [summaryRequested, setSummaryRequested] = useState(false);
@@ -67,8 +68,10 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     
     // Show path selection after first AI response (when there are 2 messages total)
-    if (messages.length === 2 && !conversationPath && !showPathSelection) {
+    // Only show once - never show again after it's been displayed
+    if (messages.length === 2 && !conversationPath && !showPathSelection && !pathSelectionShown) {
       setShowPathSelection(true);
+      setPathSelectionShown(true); // Mark that we've shown it
     }
     
     // Show early exit option after path selected and 3+ exchanges
