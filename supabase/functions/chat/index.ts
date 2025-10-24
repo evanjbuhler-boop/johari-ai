@@ -78,9 +78,9 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, type, mock, conversationPath, neurodiveritySettings } = await req.json();
+    const { messages, type, conversationPath, validationData, neurodiveritySettings, ventText } = await req.json();
     const truthy = (v: unknown) => typeof v === 'string' ? ['true','1','yes','y','on'].includes(v.toLowerCase().trim()) : !!v;
-    const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(mock);
+    const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(messages?.[0]?.mock);
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
     const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
     
@@ -88,7 +88,88 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY or ANTHROPIC_API_KEY is not configured');
     }
 
-    console.log('Processing chat request, type:', type, 'path:', conversationPath, 'messages:', messages.length, 'mock mode:', useMockAI);
+    console.log('Processing chat request, type:', type, 'path:', conversationPath, 'messages:', messages?.length, 'mock mode:', useMockAI);
+
+    // Handle venting summary
+    if (type === 'venting_summary') {
+      const summaryPrompt = `Based on the venting session below, create an empathetic summary and identify key themes.
+
+Venting text:
+${ventText}
+
+Return ONLY valid JSON in this format:
+{
+  "empathy": "A warm, empathetic 2-3 sentence response that acknowledges their feelings",
+  "themes": ["Theme 1", "Theme 2", "Theme 3"]
+}`;
+
+      // Mock mode
+      if (useMockAI) {
+        const mockData = {
+          empathy: "I heard that you're feeling overwhelmed and needed space to process everything. It sounds like you're carrying a lot right now.",
+          themes: ["Feeling overwhelmed", "Processing emotions", "Need for support"]
+        };
+        
+        console.log('Returning mock venting summary');
+        return new Response(
+          JSON.stringify(mockData),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Use OpenAI for venting summary
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            max_tokens: 300,
+            temperature: 0.7,
+            messages: [
+              { role: 'system', content: 'You are a compassionate, empathetic listener creating summaries of venting sessions. Be warm and understanding.' },
+              { role: 'user', content: summaryPrompt }
+            ],
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`OpenAI API error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        const responseText = result.choices[0].message.content.trim();
+        
+        // Parse JSON from response
+        let summaryData;
+        try {
+          const jsonText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+          summaryData = JSON.parse(jsonText);
+        } catch (parseError) {
+          console.error('Failed to parse venting summary JSON:', responseText);
+          // Fallback
+          summaryData = {
+            empathy: "I heard that you needed space to express yourself. Thank you for sharing with me.",
+            themes: ["Processing emotions", "Self-expression", "Seeking clarity"]
+          };
+        }
+
+        console.log('Venting summary generated');
+        return new Response(
+          JSON.stringify(summaryData),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } catch (error) {
+        console.error('Error generating venting summary:', error);
+        return new Response(
+          JSON.stringify({ error: 'Failed to generate venting summary' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     // Handle validation data extraction
     if (type === 'extract_validation') {

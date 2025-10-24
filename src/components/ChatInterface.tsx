@@ -26,11 +26,12 @@ interface ChatInterfaceProps {
   onSendMessage: (message: string, pathSelection?: string) => void;
   onBack: () => void;
   isLoading: boolean;
+  onVentingModeSelected?: () => void;
 }
 
 type SidebarPhase = 'highlight' | 'worry' | 'lifestyle' | 'uncertainty' | 'sleep' | 'conflict' | 'guilt' | 'rumination' | 'avoidance';
 
-const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading }: ChatInterfaceProps) => {
+const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading, onVentingModeSelected }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
@@ -170,6 +171,13 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
     setConversationPath(path);
     setShowPathSelection(false);
+    
+    // For venting mode, switch to VentingMode component
+    if (path === 'venting_session' && onVentingModeSelected) {
+      onVentingModeSelected();
+      return;
+    }
+    
     onSendMessage(path === 'nightly_routine' ? 'Do my nightly routine' : 'I just need to vent', path);
   };
 

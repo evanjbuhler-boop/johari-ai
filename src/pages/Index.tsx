@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import LandingPrompt from '@/components/LandingPrompt';
 import ChatInterface from '@/components/ChatInterface';
+import VentingMode from '@/components/VentingMode';
 import ProfileForm from '@/components/ProfileForm';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import ValidationScreen from '@/components/ValidationScreen';
@@ -11,7 +12,7 @@ import { getMockAIResponse, generateMockResults } from '@/utils/mockAI';
 import { useAuth } from '@/hooks/useAuth';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 
-type AppState = 'landing' | 'chat' | 'processing' | 'validation' | 'profile' | 'results';
+type AppState = 'landing' | 'chat' | 'venting' | 'processing' | 'validation' | 'profile' | 'results';
 
 const Index = () => {
   const [state, setState] = useState<AppState>('landing');
@@ -432,6 +433,23 @@ const Index = () => {
     setState('landing');
   };
 
+  const handleVentingModeSelected = () => {
+    setState('venting');
+  };
+
+  const handleVentingComplete = (ventText: string) => {
+    // Create a message from the venting text
+    const ventMessage: Message = {
+      role: 'user',
+      content: ventText,
+      timestamp: new Date().toISOString()
+    };
+    setMessages([ventMessage]);
+    
+    // Go to validation/results
+    handleChatComplete();
+  };
+
   if (state === 'landing') {
     return <LandingPrompt onSubmit={handleLandingSubmit} />;
   }
@@ -445,6 +463,16 @@ const Index = () => {
         onSendMessage={handleSendMessage}
         onBack={handleNewCheckIn}
         isLoading={isLoading || isTyping}
+        onVentingModeSelected={handleVentingModeSelected}
+      />
+    );
+  }
+
+  if (state === 'venting') {
+    return (
+      <VentingMode
+        onComplete={handleVentingComplete}
+        onBack={handleNewCheckIn}
       />
     );
   }
