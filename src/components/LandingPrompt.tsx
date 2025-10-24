@@ -157,7 +157,8 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
               </div>
 
               {/* Tab Content */}
-              {activeTab === 'type' ? (
+              <div className="min-h-[280px]">
+                {activeTab === 'type' ? (
                 <form onSubmit={handleSubmit}>
                   <Textarea
                     value={message}
@@ -186,7 +187,8 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
                   onTranscript={handleVoiceTranscript}
                   onSubmit={handleVoiceSubmit}
                 />
-              )}
+                )}
+              </div>
 
               {/* Keyboard hint */}
               <div className="mt-4 text-center text-xs text-muted-foreground">
