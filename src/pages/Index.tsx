@@ -8,6 +8,7 @@ import { Message, UserProfile, CheckInResults, ValidationData } from '@/types/ch
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { getMockAIResponse, generateMockResults } from '@/utils/mockAI';
+import { useAuth } from '@/hooks/useAuth';
 
 type AppState = 'landing' | 'chat' | 'processing' | 'validation' | 'profile' | 'results';
 
@@ -19,14 +20,42 @@ const Index = () => {
   const [validationData, setValidationData] = useState<ValidationData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
-  // Check if user has completed profile before
+  // Load user profile from database if authenticated, otherwise check localStorage
   useEffect(() => {
-    const savedProfile = localStorage.getItem('userProfile');
-    if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
-    }
-  }, []);
+    const loadProfile = async () => {
+      if (user) {
+        // Fetch from database for authenticated users
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && data) {
+          const userProfile: UserProfile = {
+            name: data.name,
+            email: data.email,
+            age: data.age,
+            location: data.location,
+            lifeStage: data.life_stage,
+          };
+          setProfile(userProfile);
+          // Also update localStorage for consistency
+          localStorage.setItem('userProfile', JSON.stringify(userProfile));
+        }
+      } else {
+        // Fallback to localStorage for non-authenticated users
+        const savedProfile = localStorage.getItem('userProfile');
+        if (savedProfile) {
+          setProfile(JSON.parse(savedProfile));
+        }
+      }
+    };
+
+    loadProfile();
+  }, [user]);
 
   // Extract validation data from conversation
   const extractValidationData = (messages: Message[]): ValidationData => {
