@@ -73,7 +73,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
           {/* Emotional state */}
           <div 
             className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
-            style={{ animationDelay: '200ms', boxShadow: 'var(--shadow-soft)' }}
+            style={{ animationDelay: '0ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'emotion' ? null : 'emotion')}
             onMouseEnter={() => setExpandedCard('emotion')}
             onMouseLeave={() => setExpandedCard(null)}
@@ -117,7 +117,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
           {/* Main stressors */}
           <div 
             className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
-            style={{ animationDelay: '300ms', boxShadow: 'var(--shadow-soft)' }}
+            style={{ animationDelay: '200ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'stressor' ? null : 'stressor')}
             onMouseEnter={() => setExpandedCard('stressor')}
             onMouseLeave={() => setExpandedCard(null)}
@@ -205,7 +205,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
           {/* Support approach */}
           <div 
             className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-pointer overflow-hidden"
-            style={{ animationDelay: '500ms', boxShadow: 'var(--shadow-soft)' }}
+            style={{ animationDelay: '600ms', boxShadow: 'var(--shadow-soft)' }}
             onClick={() => setExpandedCard(expandedCard === 'support' ? null : 'support')}
             onMouseEnter={() => setExpandedCard('support')}
             onMouseLeave={() => setExpandedCard(null)}
