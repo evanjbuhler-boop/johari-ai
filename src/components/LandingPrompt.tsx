@@ -186,6 +186,7 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
                 <VoiceRecorder 
                   onTranscript={handleVoiceTranscript}
                   onSubmit={handleVoiceSubmit}
+                  variant="landing"
                 />
                 )}
               </div>
