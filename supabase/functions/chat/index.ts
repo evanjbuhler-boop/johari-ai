@@ -6,6 +6,71 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Helper function to analyze user message complexity
+function analyzeComplexity(userMessages: any[]): 'simple' | 'moderate' | 'complex' {
+  if (userMessages.length === 0) return 'moderate';
+  
+  // Analyze the last 3-5 user messages
+  const recentMessages = userMessages.slice(-5);
+  const allText = recentMessages.map(m => m.content).join(' ');
+  
+  // Calculate metrics
+  const words = allText.split(/\s+/);
+  const sentences = allText.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const avgWordsPerSentence = words.length / Math.max(sentences.length, 1);
+  const longWords = words.filter(w => w.length > 7).length;
+  const longWordRatio = longWords / Math.max(words.length, 1);
+  
+  // Count psychological/academic terminology
+  const complexTerms = [
+    'cognitive', 'dissonance', 'empathetic', 'boundaries', 'professional',
+    'experiencing', 'navigating', 'tension', 'maintaining', 'appropriate',
+    'honoring', 'facilitate', 'discourse', 'metaphor', 'dialectical',
+    'ambivalent', 'internalized', 'systemic', 'framework', 'conceptual'
+  ];
+  const complexTermCount = complexTerms.filter(term => 
+    allText.toLowerCase().includes(term)
+  ).length;
+  
+  // Determine complexity level
+  if (avgWordsPerSentence < 8 && longWordRatio < 0.15 && complexTermCount === 0) {
+    return 'simple';
+  } else if (avgWordsPerSentence > 15 || longWordRatio > 0.25 || complexTermCount >= 2) {
+    return 'complex';
+  }
+  return 'moderate';
+}
+
+// Helper function to get language adaptation instructions
+function getLanguageInstructions(complexity: 'simple' | 'moderate' | 'complex'): string {
+  switch (complexity) {
+    case 'simple':
+      return `LANGUAGE ADAPTATION:
+- Use simple, everyday words
+- Short sentences (8 words or less when possible)
+- Avoid jargon, clinical terms, or complex vocabulary
+- Example: "That sounds hard" NOT "That sounds challenging"
+- Example: "What happened?" NOT "What about that situation stands out to you?"`;
+    
+    case 'complex':
+      return `LANGUAGE ADAPTATION:
+- Match the user's sophisticated vocabulary and complexity
+- Use nuanced psychological terminology when appropriate
+- Longer, more complex sentence structures are acceptable
+- Example: "It sounds like you're navigating the tension between X and Y"
+- Example: "That dissonance between your values and the situation seems significant"`;
+    
+    case 'moderate':
+    default:
+      return `LANGUAGE ADAPTATION:
+- Use clear, conversational language
+- Balance accessibility with depth
+- Moderate sentence length (10-15 words)
+- Example: "That sounds really difficult to navigate"
+- Example: "What part of that feels hardest right now?"`;
+  }
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -250,6 +315,13 @@ Important: Return ONLY the JSON object, no other text.`;
       // Determine conversation mode
       let systemPrompt = '';
       
+      // Analyze user message complexity for language adaptation
+      const userMessages = messages.filter((m: any) => m.role === 'user');
+      const complexity = analyzeComplexity(userMessages);
+      const languageInstructions = getLanguageInstructions(complexity);
+      
+      console.log('Detected complexity level:', complexity);
+      
       if (conversationPath === 'nightly_routine') {
         // Structured 4-phase routine
         const userExchanges = messages.filter((m: any) => m.role === 'user').length;
@@ -264,6 +336,8 @@ ${phase === 1 ? '1. EMOTION CHECK-IN: Ask "How are you feeling right now? Just o
 ${phase === 2 ? '2. DAILY HIGHLIGHT/LOWLIGHT: Ask "What\'s one thing that stood out today—good or hard?" Then follow up with "What about that moment made it stick with you?"' : ''}
 ${phase === 3 ? '3. WORRY PROCESSING: Ask "What\'s on your mind for tomorrow—anything you\'re worried about?" Follow up: "What\'s the part making you most anxious?" Then validate: "So it sounds like [X]—does that feel right?"' : ''}
 ${phase === 4 ? '4. LIFESTYLE PULSE: Ask "How\'s your body doing—sleep, energy, anything physical?" Connect it: "That might be why you\'re feeling [emotion]—your body is running on fumes."' : ''}
+
+${languageInstructions}
 
 RESPONSE STYLE RULES:
 ✅ DO:
@@ -294,6 +368,8 @@ YOUR ROLE:
 - Track emotions, stressors, and worries mentioned
 - After they finish (or pause), reflect: "So it sounds like you're carrying [summarize]... What's the main thing weighing on you most?"
 
+${languageInstructions}
+
 RESPONSE STYLE RULES:
 ✅ DO:
 - REFLECT FIRST: "That sounds painful" or "Got it—work was rough"
@@ -314,6 +390,8 @@ RESPONSE STYLE RULES:
       } else {
         // Initial conversation before path selection
         systemPrompt = `You are a compassionate evening check-in coach. This is the first interaction.
+
+${languageInstructions}
 
 FIRST RESPONSE ONLY:
 1. Give empathetic reflection of what they shared (1-2 sentences)
