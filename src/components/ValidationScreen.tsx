@@ -96,7 +96,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
             onMouseLeave={() => setExpandedCard(null)}
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-400/20 to-pink-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-xl bg-red-100/60 border border-red-200 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <Heart className="h-6 w-6 text-rose-500" />
               </div>
               <div className="flex-1 min-w-0">
@@ -140,7 +140,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
             onMouseLeave={() => setExpandedCard(null)}
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400/20 to-orange-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-xl bg-orange-100/60 border border-orange-200 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <Brain className="h-6 w-6 text-amber-600" />
               </div>
               <div className="flex-1 min-w-0">
@@ -184,7 +184,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
             onMouseLeave={() => setExpandedCard(null)}
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400/20 to-indigo-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-xl bg-blue-100/60 border border-blue-200 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <Moon className="h-6 w-6 text-blue-600" />
               </div>
               <div className="flex-1 min-w-0">
@@ -228,7 +228,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
             onMouseLeave={() => setExpandedCard(null)}
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400/20 to-green-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-xl bg-green-100/60 border border-green-200 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <Sparkles className="h-6 w-6 text-emerald-600" />
               </div>
               <div className="flex-1 min-w-0">
