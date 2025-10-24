@@ -7,7 +7,9 @@ import { Send, ArrowLeft, MessageSquare, CheckCircle, Sparkles } from 'lucide-re
 import EducationalSidebar from '@/components/EducationalSidebar';
 import VoiceRecorder from '@/components/VoiceRecorder';
 import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
+import FocusModeToggle from '@/components/FocusModeToggle';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
+import { useFocusMode } from '@/hooks/useFocusMode';
 import {
   Tooltip,
   TooltipContent,
@@ -43,6 +45,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { settings } = useNeurodiveritySettings();
+  const { isEnabled: focusModeEnabled } = useFocusMode();
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
   
   // Calculate progress percentage based on emotional depth (min 3 exchanges, natural max ~7)
@@ -65,8 +68,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       setShowEarlyExit(true);
     }
 
-    // Contextual tips based on conversation content
-    if (!isLoading && !tipsDisabled) {
+    // Contextual tips based on conversation content (disabled in focus mode)
+    if (!isLoading && !tipsDisabled && !focusModeEnabled) {
       const userMessages = messages.filter(m => m.role === 'user');
       const recentUserMessages = userMessages.slice(-5); // Last 5 user messages
       const conversationText = recentUserMessages.map(m => m.content.toLowerCase()).join(' ');
@@ -121,8 +124,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       }
     }
 
-    // Educational sidebar triggers (only for nightly_routine path and if tips not disabled)
-    if (conversationPath === 'nightly_routine' && !isLoading && !tipsDisabled) {
+    // Educational sidebar triggers (only for nightly_routine path and if tips not disabled and focus mode off)
+    if (conversationPath === 'nightly_routine' && !isLoading && !tipsDisabled && !focusModeEnabled) {
       const lastMessage = messages[messages.length - 1];
       const isAIMessage = lastMessage?.role === 'assistant';
       
@@ -150,7 +153,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         return () => clearTimeout(timer);
       }
     }
-  }, [messages, exchangeCount, conversationPath, showPathSelection, isLoading, sidebar.dismissedPhases, tipsDisabled]);
+  }, [messages, exchangeCount, conversationPath, showPathSelection, isLoading, sidebar.dismissedPhases, tipsDisabled, focusModeEnabled]);
 
   const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
     setConversationPath(path);
@@ -198,8 +201,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
-      {/* Educational Sidebar */}
-      {sidebar.visible && sidebar.phase && (
+      {/* Educational Sidebar - hidden in focus mode */}
+      {sidebar.visible && sidebar.phase && !focusModeEnabled && (
         <EducationalSidebar 
           phase={sidebar.phase}
           onDismiss={handleSidebarDismiss}
@@ -219,6 +222,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
             Back
           </Button>
           <div className="flex items-center gap-2">
+            <FocusModeToggle className="bg-background/10 hover:bg-background/20 text-foreground border-border" />
             <NeurodiveritySettingsDialog variant="icon" />
             {showEarlyExit && (
               <Button

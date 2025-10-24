@@ -4,6 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import FloatingParticles from '@/components/FloatingParticles';
 import VoiceRecorder from '@/components/VoiceRecorder';
 import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
+import FocusModeToggle from '@/components/FocusModeToggle';
 import { Link } from 'react-router-dom';
 import { User, Library, LogIn } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -64,8 +65,9 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
         )}
       </div>
 
-      {/* Neurodiversity settings button */}
-      <div className="fixed top-6 right-6 z-20">
+      {/* Focus Mode and Neurodiversity settings */}
+      <div className="fixed top-6 right-6 z-20 flex gap-3">
+        <FocusModeToggle />
         <NeurodiveritySettingsDialog variant="icon" />
       </div>
 

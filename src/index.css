@@ -105,6 +105,45 @@ All colors MUST be HSL.
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  /* Focus Mode - Calmer, desaturated color palette */
+  .focus-mode {
+    --primary: 220 30% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 260 25% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 260 25% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --gradient-sunset: linear-gradient(135deg, hsl(25, 40%, 60%), hsl(340, 35%, 65%), hsl(260, 30%, 60%));
+    --gradient-twilight: linear-gradient(135deg, hsl(260, 30%, 60%), hsl(220, 35%, 45%), hsl(200, 40%, 55%));
+    --gradient-hero: linear-gradient(135deg, hsl(220, 35%, 45%), hsl(260, 30%, 60%));
+    
+    --shadow-soft: 0 10px 40px -10px hsl(220 30% 45% / 0.1);
+    --shadow-glow: 0 0 60px hsl(260 30% 60% / 0.15);
+    --shadow-warm: 0 20px 60px -15px hsl(340 35% 65% / 0.2);
+  }
+
+  .focus-mode.dark {
+    --primary: 220 25% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 260 25% 60%;
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 260 25% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --gradient-sunset: linear-gradient(135deg, hsl(25, 30%, 45%), hsl(340, 25%, 50%), hsl(260, 25%, 45%));
+    --gradient-twilight: linear-gradient(135deg, hsl(260, 25%, 45%), hsl(220, 30%, 35%), hsl(200, 35%, 40%));
+    --gradient-hero: linear-gradient(135deg, hsl(220, 30%, 35%), hsl(260, 25% 45%));
+    
+    --shadow-soft: 0 10px 40px -10px hsl(220 25% 25% / 0.2);
+    --shadow-glow: 0 0 60px hsl(260 25% 35% / 0.2);
+    --shadow-warm: 0 20px 60px -15px hsl(340 25% 45% / 0.25);
+  }
 }
 
 @layer base {
@@ -138,6 +177,19 @@ All colors MUST be HSL.
   );
   background-size: 200% 200%;
   animation: gradient-shift 30s ease infinite;
+}
+
+/* Focus mode - calmer gradient */
+.focus-mode .animated-gradient {
+  background: linear-gradient(135deg, 
+    hsl(25, 40%, 60%) 0%, 
+    hsl(340, 35%, 65%) 25%,
+    hsl(260, 30%, 60%) 50%,
+    hsl(220, 35%, 45%) 75%,
+    hsl(200, 40%, 55%) 100%
+  );
+  background-size: 200% 200%;
+  animation: gradient-shift 45s ease infinite;
 }
 
 /* Breathing animation for input */
