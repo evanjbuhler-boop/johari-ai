@@ -77,10 +77,16 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     
     // Show path selection after first AI response (when there are 2 messages total)
+    // Add delay to ensure both intro messages are fully rendered
     // Only show once - never show again after it's been displayed
-    if (messages.length === 2 && !conversationPath && !showPathSelection && !pathSelectionShown) {
-      setShowPathSelection(true);
-      setPathSelectionShown(true); // Mark that we've shown it
+    if (messages.length === 2 && !conversationPath && !showPathSelection && !pathSelectionShown && !isLoading) {
+      // Delay showing buttons to ensure all messages are fully rendered
+      const timer = setTimeout(() => {
+        setShowPathSelection(true);
+        setPathSelectionShown(true); // Mark that we've shown it
+      }, 500);
+      
+      return () => clearTimeout(timer);
     }
     
     // Show early exit option after path selected and 3+ exchanges
