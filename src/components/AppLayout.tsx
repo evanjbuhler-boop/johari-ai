@@ -47,7 +47,7 @@ const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
               variant="ghost"
               size="icon"
               onClick={() => navigate(isLibraryPage ? '/' : '/library')}
-              className="bg-white/40 hover:bg-white/50 text-white backdrop-blur-md border-2 border-white/50 shadow-lg transition-all"
+              className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm transition-all"
             >
               {isLibraryPage ? (
                 <Home className="h-5 w-5" />
@@ -59,7 +59,7 @@ const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="bg-white/40 hover:bg-white/50 text-white backdrop-blur-md border-2 border-white/50 shadow-lg"
+                className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm"
               >
                 <User className="h-5 w-5" />
               </Button>
@@ -69,7 +69,7 @@ const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
           <Link to="/auth">
             <Button
               variant="ghost"
-              className="bg-white/40 hover:bg-white/50 text-white backdrop-blur-md border-2 border-white/50 shadow-lg gap-2"
+              className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm gap-2"
             >
               <LogIn className="h-4 w-4" />
               Sign In
