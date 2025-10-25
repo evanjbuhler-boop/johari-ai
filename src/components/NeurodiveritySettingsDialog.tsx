@@ -26,7 +26,7 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
           <Button
             variant="ghost"
             size="icon"
-            className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
+            className="bg-white/40 hover:bg-white/50 text-white backdrop-blur-md border-2 border-white/50 shadow-lg"
             title="Conversation Preferences"
           >
             <Brain className="h-5 w-5" />

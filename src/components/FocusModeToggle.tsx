@@ -23,8 +23,8 @@ const FocusModeToggle = ({ className }: FocusModeToggleProps) => {
             variant="ghost"
             size="icon"
             onClick={toggle}
-            className={`bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20 transition-all ${
-              isEnabled ? 'ring-2 ring-white/40' : ''
+            className={`bg-white/40 hover:bg-white/50 text-white backdrop-blur-md border-2 border-white/50 shadow-lg transition-all ${
+              isEnabled ? 'ring-2 ring-white/60' : ''
             } ${className}`}
             title="Focus Mode"
           >
