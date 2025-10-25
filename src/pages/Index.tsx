@@ -468,7 +468,7 @@ const Index = () => {
 
   if (state === 'chat') {
     return (
-      <AppLayout showBackground={false}>
+      <AppLayout showBackground={true}>
         <ChatInterface
           initialMessage={messages[0]?.content || ''}
           onComplete={handleChatComplete}

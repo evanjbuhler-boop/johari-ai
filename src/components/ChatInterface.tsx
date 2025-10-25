@@ -276,7 +276,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col relative">
+    <div className="min-h-screen flex flex-col relative">
       {/* Educational Sidebar - hidden in focus mode */}
       {sidebar.visible && sidebar.phase && !focusModeEnabled && (
         <EducationalSidebar 
@@ -377,10 +377,10 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div
-                        className={`max-w-[85%] rounded-2xl px-6 py-4 cursor-default ${
+                        className={`max-w-[85%] rounded-2xl px-6 py-4 cursor-default shadow-lg ${
                           msg.role === 'user'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-card text-card-foreground border border-border'
+                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                            : 'bg-white/95 backdrop-blur-md text-gray-900 border border-white/50'
                         }`}
                       >
                         <p className="text-base leading-relaxed whitespace-pre-wrap">{messageContent}</p>
@@ -403,32 +403,32 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
           {showPathSelection && !conversationPath && !isLoading && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
               <div className="max-w-[85%] space-y-4">
-                <p className="text-sm text-muted-foreground mb-3">Would you like to:</p>
+                <p className="text-sm text-white/80 mb-3">Would you like to:</p>
                 <button
                   onClick={() => handlePathSelection('nightly_routine')}
-                  className="w-full text-left p-6 rounded-2xl border-2 border-border hover:border-primary transition-all duration-200 bg-card hover:bg-accent group"
+                  className="w-full text-left p-6 rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-200 bg-white/95 backdrop-blur-md hover:bg-white shadow-lg group"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                      <CheckCircle className="h-5 w-5 text-primary" />
+                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
+                      <CheckCircle className="h-5 w-5 text-purple-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-base mb-1">Do your nightly routine</h3>
-                      <p className="text-sm text-muted-foreground">Structured check-in to help you process and wind down</p>
+                      <h3 className="font-semibold text-base mb-1 text-gray-900">Do your nightly routine</h3>
+                      <p className="text-sm text-gray-600">Structured check-in to help you process and wind down</p>
                     </div>
                   </div>
                 </button>
                 <button
                   onClick={() => handlePathSelection('venting_session')}
-                  className="w-full text-left p-6 rounded-2xl border-2 border-border hover:border-primary transition-all duration-200 bg-card hover:bg-accent group"
+                  className="w-full text-left p-6 rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-200 bg-white/95 backdrop-blur-md hover:bg-white shadow-lg group"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                      <MessageSquare className="h-5 w-5 text-primary" />
+                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
+                      <MessageSquare className="h-5 w-5 text-purple-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-base mb-1">Just vent right now</h3>
-                      <p className="text-sm text-muted-foreground">Talk freely—I'm here to listen</p>
+                      <h3 className="font-semibold text-base mb-1 text-gray-900">Just vent right now</h3>
+                      <p className="text-sm text-gray-600">Talk freely—I'm here to listen</p>
                     </div>
                   </div>
                 </button>
@@ -439,20 +439,20 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
           {/* Summary Offer */}
           {showSummaryOffer && !isLoading && !summaryLoading && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
-              <div className="max-w-[85%] bg-card text-card-foreground border border-border rounded-2xl p-6">
+              <div className="max-w-[85%] bg-white/95 backdrop-blur-md text-gray-900 border border-white/50 rounded-2xl p-6 shadow-lg">
                 <p className="text-base mb-4">Would it help if I summarized what I'm hearing so far?</p>
                 <div className="flex gap-3">
                   <Button
                     variant="default"
                     onClick={() => handleSummaryRequest(true)}
-                    className="flex-1"
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                   >
                     Yes, summarize
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => handleSummaryRequest(false)}
-                    className="flex-1"
+                    className="flex-1 bg-white border-2 border-gray-200"
                   >
                     No, keep going
                   </Button>
@@ -464,15 +464,15 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
           {/* Summary Display */}
           {summary && !summaryLoading && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
-              <div className="max-w-[85%] bg-card text-card-foreground border-2 border-primary/30 rounded-2xl p-6">
+              <div className="max-w-[85%] bg-white/95 backdrop-blur-md text-gray-900 border-2 border-purple-300 rounded-2xl p-6 shadow-lg">
                 <h3 className="font-semibold text-lg mb-4">Here's what I'm understanding:</h3>
                 <div className="whitespace-pre-wrap text-base leading-relaxed mb-4">{summary}</div>
-                <p className="text-sm text-muted-foreground mb-3">Did I get that right, or should I adjust anything?</p>
+                <p className="text-sm text-gray-600 mb-3">Did I get that right, or should I adjust anything?</p>
                 <div className="flex gap-3">
                   <Button
                     variant="default"
                     onClick={() => setSummary(null)}
-                    className="flex-1"
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                   >
                     That's right
                   </Button>
@@ -490,14 +490,14 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
           
           {summaryLoading && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
-              <div className="max-w-[85%] rounded-2xl px-6 py-4 bg-card text-card-foreground border border-border">
+              <div className="max-w-[85%] rounded-2xl px-6 py-4 bg-white/95 backdrop-blur-md text-gray-900 border border-white/50 shadow-lg">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
-                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '300ms' }}></div>
                   </div>
-                  <span className="text-sm text-muted-foreground">Generating summary...</span>
+                  <span className="text-sm text-gray-600">Generating summary...</span>
                 </div>
               </div>
             </div>
@@ -505,14 +505,14 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
           
           {isLoading && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
-              <div className="max-w-[85%] rounded-2xl px-6 py-4 bg-card text-card-foreground border border-border">
+              <div className="max-w-[85%] rounded-2xl px-6 py-4 bg-white/95 backdrop-blur-md text-gray-900 border border-white/50 shadow-lg">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
-                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '300ms' }}></div>
                   </div>
-                  <span className="text-sm text-muted-foreground">AI is thinking...</span>
+                  <span className="text-sm text-gray-600">AI is thinking...</span>
                 </div>
               </div>
             </div>
@@ -521,7 +521,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         </div>
       </div>
 
-      <div className="sticky bottom-0 bg-background border-t border-border">
+      <div className="sticky bottom-0 bg-white/95 backdrop-blur-md border-t border-white/30 shadow-xl">
         <div className="max-w-4xl mx-auto">
           {/* Progress bar section - only show if enabled */}
           {settings.showVisualProgress && (
@@ -529,21 +529,21 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
             <div className="flex items-center justify-between mb-2 text-xs">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5">
-                  <MessageSquare className="h-3.5 w-3.5 text-primary" />
-                  <span className="font-medium text-primary">Chat</span>
+                  <MessageSquare className="h-3.5 w-3.5 text-purple-600" />
+                  <span className="font-medium text-purple-600">Chat</span>
                 </div>
-                <span className="text-muted-foreground">→</span>
+                <span className="text-gray-400">→</span>
                 <div className="flex items-center gap-1.5 opacity-50">
-                  <CheckCircle className="h-3.5 w-3.5" />
-                  <span>Validate</span>
+                  <CheckCircle className="h-3.5 w-3.5 text-gray-600" />
+                  <span className="text-gray-600">Validate</span>
                 </div>
-                <span className="text-muted-foreground opacity-50">→</span>
+                <span className="text-gray-400 opacity-50">→</span>
                 <div className="flex items-center gap-1.5 opacity-50">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  <span>Recommendations</span>
+                  <Sparkles className="h-3.5 w-3.5 text-gray-600" />
+                  <span className="text-gray-600">Recommendations</span>
                 </div>
               </div>
-              <span className="text-muted-foreground font-medium">
+              <span className="text-gray-600 font-medium">
                 ~{estimatedMinutes} min remaining
               </span>
             </div>
@@ -559,7 +559,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your response..."
-                  className="h-12 text-base pr-14"
+                  className="h-12 text-base pr-14 bg-white border-2 border-gray-200"
                   disabled={isLoading}
                 />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -572,7 +572,12 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                   />
                 </div>
               </div>
-              <Button type="submit" size="lg" disabled={!input.trim() || isLoading}>
+              <Button 
+                type="submit" 
+                size="lg" 
+                disabled={!input.trim() || isLoading}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+              >
                 <Send className="h-5 w-5" />
               </Button>
             </div>
