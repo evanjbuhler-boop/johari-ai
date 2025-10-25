@@ -97,6 +97,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     messages.some(m => m.role === 'assistant' && /would you like to:/i.test(m.content || ''))
   , [messages]);
 
+  // Separate effect for scrolling and basic UI updates
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     
@@ -109,47 +110,62 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     if (conversationPath === 'venting_session' && exchangeCount >= 10 && !showSummaryOffer && !summaryRequested) {
       setShowSummaryOffer(true);
     }
-    
-    // NEW: Show finish button after time threshold (3.5 min = 210 seconds) OR message threshold (14 messages)
+  }, [messages, exchangeCount, conversationPath, showSummaryOffer, summaryRequested]);
+  
+  // Separate effect for finish button based on time/messages
+  useEffect(() => {
     const timeThreshold = conversationDuration >= 210;
     const messageThreshold = exchangeCount >= 14;
     if ((timeThreshold || messageThreshold) && conversationPath && !showFinishButton) {
       setShowFinishButton(true);
     }
+  }, [conversationDuration, exchangeCount, conversationPath, showFinishButton]);
+  
+  // Separate effect for emotion detection - only runs when messages change
+  useEffect(() => {
+    if (isLoading) return; // Don't process while loading
     
-    // NEW: Detect emotion from recent user messages
     const recentUserMessages = messages.filter(m => m.role === 'user').slice(-3);
-    if (recentUserMessages.length > 0) {
-      const lastUserMessage = recentUserMessages[recentUserMessages.length - 1];
-      const emotion = detectEmotionFromMessage(lastUserMessage.content);
-      if (emotion !== 'neutral') {
-        setDetectedEmotion(emotion);
-      }
-      
-      // Check if breathing exercise should trigger
-      if (shouldTriggerBreathing(emotion, lastUserMessage.content) && !showBreathingExercise) {
-        setTimeout(() => setShowBreathingExercise(true), 2000);
-      }
-      
-      // Show supportive prompts contextually
-      const hasVulnerableLanguage = /feel|scared|afraid|ashamed|guilty|regret/i.test(lastUserMessage.content);
-      const hasDistressLanguage = /help|can't|dying|panic|crisis/.test(lastUserMessage.content.toLowerCase());
-      
-      if (hasVulnerableLanguage && !supportivePrompt) {
-        setTimeout(() => {
-          setSupportivePrompt(getSupportivePrompt(emotion, 'vulnerable-share'));
-        }, 3000);
-      } else if (hasDistressLanguage && !supportivePrompt) {
-        setTimeout(() => {
-          setSupportivePrompt(getSupportivePrompt(emotion, 'distress'));
-        }, 2000);
-      } else if (emotion === 'overwhelmed' && !supportivePrompt) {
-        setTimeout(() => {
-          setSupportivePrompt(getSupportivePrompt(emotion, 'overwhelmed'));
-        }, 3000);
-      }
+    if (recentUserMessages.length === 0) return;
+    
+    const lastUserMessage = recentUserMessages[recentUserMessages.length - 1];
+    const emotion = detectEmotionFromMessage(lastUserMessage.content);
+    if (emotion !== 'neutral') {
+      setDetectedEmotion(emotion);
     }
+    
+    // Check if breathing exercise should trigger
+    if (shouldTriggerBreathing(emotion, lastUserMessage.content) && !showBreathingExercise) {
+      const timer = setTimeout(() => setShowBreathingExercise(true), 2000);
+      return () => clearTimeout(timer);
+    }
+    
+    // Show supportive prompts contextually
+    if (supportivePrompt) return; // Don't show if already showing one
+    
+    const hasVulnerableLanguage = /feel|scared|afraid|ashamed|guilty|regret/i.test(lastUserMessage.content);
+    const hasDistressLanguage = /help|can't|dying|panic|crisis/.test(lastUserMessage.content.toLowerCase());
+    
+    if (hasVulnerableLanguage) {
+      const timer = setTimeout(() => {
+        setSupportivePrompt(getSupportivePrompt(emotion, 'vulnerable-share'));
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else if (hasDistressLanguage) {
+      const timer = setTimeout(() => {
+        setSupportivePrompt(getSupportivePrompt(emotion, 'distress'));
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else if (emotion === 'overwhelmed') {
+      const timer = setTimeout(() => {
+        setSupportivePrompt(getSupportivePrompt(emotion, 'overwhelmed'));
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [messages, isLoading, showBreathingExercise, supportivePrompt]);
 
+  // Separate effect for contextual educational tips
+  useEffect(() => {
     // Contextual tips based on conversation content (disabled in focus mode)
     if (!isLoading && !tipsDisabled && !focusModeEnabled) {
       const userMessages = messages.filter(m => m.role === 'user');
