@@ -117,7 +117,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   useEffect(() => {
     const timeThreshold = conversationDuration >= 180; // 3 minutes
     const messageThreshold = exchangeCount >= 4; // After 4 messages
-    if ((timeThreshold || messageThreshold) && conversationPath && !showFinishButton) {
+    if ((timeThreshold || messageThreshold) && !showFinishButton) {
       setShowFinishButton(true);
     }
   }, [conversationDuration, exchangeCount, conversationPath, showFinishButton]);
@@ -555,7 +555,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
           )}
           
           {/* NEW: Finish Chat Button */}
-          {showFinishButton && conversationPath && !isLoading && (
+          {showFinishButton && !isLoading && (
             <div className="max-w-4xl mx-auto w-full px-4">
               <FinishChatButton onClick={onComplete} />
             </div>
