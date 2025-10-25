@@ -3,12 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Message } from '@/types/checkin';
-import { Send, ArrowLeft, MessageSquare, CheckCircle, Sparkles, User } from 'lucide-react';
+import { Send, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
 import EducationalSidebar from '@/components/EducationalSidebar';
 import VoiceRecorder from '@/components/VoiceRecorder';
-import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
-import FocusModeToggle from '@/components/FocusModeToggle';
-import ProfileSheet from '@/components/ProfileSheet';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 import { useFocusMode } from '@/hooks/useFocusMode';
 import { supabase } from '@/integrations/supabase/client';
@@ -286,75 +283,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         />
       )}
 
-      <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={onBack}
-              className="bg-white hover:bg-gray-100 text-gray-900 border-2 border-gray-200 shadow-sm"
-              title="Back"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <ProfileSheet>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="bg-white hover:bg-gray-100 text-gray-900 border-2 border-gray-200 shadow-sm"
-                title="Profile"
-              >
-                <User className="h-5 w-5" />
-              </Button>
-            </ProfileSheet>
-          </div>
-          <div className="flex items-center gap-2">
-            <FocusModeToggle className="bg-white hover:bg-gray-100 text-gray-900 border-2 border-gray-200 shadow-sm" />
-            <NeurodiveritySettingsDialog variant="icon" />
-            {showEarlyExit && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onComplete}
-                className="text-sm bg-white hover:bg-gray-100 border-2 border-gray-200"
-              >
-                I'm ready to see my reflection
-              </Button>
-            )}
-            {settings.showVisualProgress && (
-              <div className="relative w-16 h-16">
-              <svg className="transform -rotate-90 w-16 h-16">
-                <circle
-                  cx="32"
-                  cy="32"
-                  r="28"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="none"
-                  className="text-muted"
-                />
-                <circle
-                  cx="32"
-                  cy="32"
-                  r="28"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="none"
-                  strokeDasharray={`${2 * Math.PI * 28}`}
-                  strokeDashoffset={`${2 * Math.PI * 28 * (1 - progressPercentage / 100)}`}
-                  className="text-primary transition-all duration-500"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-sm font-medium">{progressPercentage}%</span>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
+      <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8 pt-20">
         <div className="space-y-6 mb-24">
           <TooltipProvider>
             {messages.map((msg, idx) => {
