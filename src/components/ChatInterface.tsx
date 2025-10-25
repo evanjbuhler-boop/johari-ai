@@ -3,11 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Message } from '@/types/checkin';
-import { Send, ArrowLeft, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
+import { Send, ArrowLeft, MessageSquare, CheckCircle, Sparkles, User } from 'lucide-react';
 import EducationalSidebar from '@/components/EducationalSidebar';
 import VoiceRecorder from '@/components/VoiceRecorder';
 import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
 import FocusModeToggle from '@/components/FocusModeToggle';
+import ProfileSheet from '@/components/ProfileSheet';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 import { useFocusMode } from '@/hooks/useFocusMode';
 import { supabase } from '@/integrations/supabase/client';
@@ -287,24 +288,36 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
 
       <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8">
         <div className="mb-6 flex items-center justify-between">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={onBack}
-            className="gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
           <div className="flex items-center gap-2">
-            <FocusModeToggle className="bg-background/10 hover:bg-background/20 text-foreground border-border" />
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={onBack}
+              className="bg-white hover:bg-gray-100 text-gray-900 border-2 border-gray-200 shadow-sm"
+              title="Back"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <ProfileSheet>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="bg-white hover:bg-gray-100 text-gray-900 border-2 border-gray-200 shadow-sm"
+                title="Profile"
+              >
+                <User className="h-5 w-5" />
+              </Button>
+            </ProfileSheet>
+          </div>
+          <div className="flex items-center gap-2">
+            <FocusModeToggle className="bg-white hover:bg-gray-100 text-gray-900 border-2 border-gray-200 shadow-sm" />
             <NeurodiveritySettingsDialog variant="icon" />
             {showEarlyExit && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={onComplete}
-                className="text-sm"
+                className="text-sm bg-white hover:bg-gray-100 border-2 border-gray-200"
               >
                 I'm ready to see my reflection
               </Button>
