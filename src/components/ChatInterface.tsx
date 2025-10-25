@@ -1,15 +1,14 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
 import { Message } from '@/types/checkin';
-import { Send, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
+import { MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
 import EducationalSidebar from '@/components/EducationalSidebar';
-import VoiceRecorder from '@/components/VoiceRecorder';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 import { useFocusMode } from '@/hooks/useFocusMode';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import StageProgressBar from '@/components/StageProgressBar';
+import ChatInputBar from '@/components/ChatInputBar';
 import {
   Tooltip,
   TooltipContent,
@@ -272,9 +271,11 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     setInput(text);
   };
 
-  // Calculate question progress for nightly routine
-  const nightlyRoutineQuestions = 5;
-  const currentQuestion = conversationPath === 'nightly_routine' ? Math.min(exchangeCount, nightlyRoutineQuestions) : 0;
+  // Calculate overall progress through the chat stage (0-100%)
+  const calculateChatProgress = () => {
+    const maxExchanges = conversationPath === 'nightly_routine' ? 5 : 8;
+    return Math.min((exchangeCount / maxExchanges) * 100, 100);
+  };
   
   return (
     <div className="min-h-screen flex flex-col relative animate-in fade-in duration-700">
@@ -287,19 +288,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         />
       )}
 
-      <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8 pt-20">
-        {/* Question Progress Indicator for Nightly Routine */}
-        {conversationPath === 'nightly_routine' && (
-          <div className="mb-6 p-4 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 animate-in fade-in slide-in-from-top duration-500">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600">Nightly Routine Progress</span>
-              <span className="text-sm font-medium text-purple-600">Question {currentQuestion} of {nightlyRoutineQuestions}</span>
-            </div>
-            <Progress value={(currentQuestion / nightlyRoutineQuestions) * 100} className="h-2" />
-          </div>
-        )}
-        
-        <div className="space-y-6 mb-24">
+      <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8 pt-20 pb-56">
+        <div className="space-y-6 mb-8">
           <TooltipProvider>
           {messages.map((msg, idx) => {
             // Ensure we have valid content
@@ -466,69 +456,20 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         </div>
       </div>
 
-      <div className="sticky bottom-0 bg-white/95 backdrop-blur-md border-t border-white/30 shadow-xl">
-        <div className="max-w-4xl mx-auto">
-          {/* Progress bar section - only show if enabled */}
-          {settings.showVisualProgress && (
-            <div className="px-4 pt-3 pb-2">
-            <div className="flex items-center justify-between mb-2 text-xs">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1.5">
-                  <MessageSquare className="h-3.5 w-3.5 text-purple-600" />
-                  <span className="font-medium text-purple-600">Chat</span>
-                </div>
-                <span className="text-gray-400">→</span>
-                <div className="flex items-center gap-1.5 opacity-50">
-                  <CheckCircle className="h-3.5 w-3.5 text-gray-600" />
-                  <span className="text-gray-600">Validate</span>
-                </div>
-                <span className="text-gray-400 opacity-50">→</span>
-                <div className="flex items-center gap-1.5 opacity-50">
-                  <Sparkles className="h-3.5 w-3.5 text-gray-600" />
-                  <span className="text-gray-600">Recommendations</span>
-                </div>
-              </div>
-              <span className="text-gray-600 font-medium">
-                ~{estimatedMinutes} min remaining
-              </span>
-            </div>
-            <Progress value={progressPercentage} className="h-1.5" />
-          </div>
-          )}
-          
-          {/* Input form */}
-          <form onSubmit={handleSubmit} className="p-4 pt-2">
-            <div className="flex gap-2 relative">
-              <div className="flex-1 relative">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type your response..."
-                  className="h-12 text-base pr-14 bg-white border-2 border-gray-200"
-                  disabled={isLoading}
-                />
-                <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                  <VoiceRecorder 
-                    onTranscript={handleVoiceTranscript}
-                    onSubmit={(text) => {
-                      setInput(text);
-                      handleSubmit(new Event('submit') as any);
-                    }}
-                  />
-                </div>
-              </div>
-              <Button 
-                type="submit" 
-                size="lg" 
-                disabled={!input.trim() || isLoading}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-              >
-                <Send className="h-5 w-5" />
-              </Button>
-            </div>
-          </form>
-        </div>
-      </div>
+      {/* 3-Stage Progress Bar - Fixed at bottom */}
+      <StageProgressBar 
+        currentStage="chat" 
+        chatProgress={calculateChatProgress()}
+        estimatedMinutes={estimatedMinutes}
+      />
+      
+      {/* Chat Input Bar - Fixed at bottom below progress */}
+      <ChatInputBar
+        input={input}
+        setInput={setInput}
+        onSubmit={handleSubmit}
+        isLoading={isLoading}
+      />
     </div>
   );
 };

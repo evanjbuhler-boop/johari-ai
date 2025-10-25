@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import GuidedExercise from '@/components/GuidedExercise';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import StageProgressBar from '@/components/StageProgressBar';
 
 interface ResultsDisplayProps {
   results: CheckInResults;
@@ -148,7 +149,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background pb-32">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -486,6 +487,9 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
           steps={results.exercise.steps}
         />
       )}
+      
+      {/* Stage Progress Bar */}
+      <StageProgressBar currentStage="recommendations" />
     </div>
   );
 };

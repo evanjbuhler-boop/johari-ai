@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Brain, Heart, Moon, Sparkles } from 'lucide-react';
 import { ValidationData } from '@/types/checkin';
+import StageProgressBar from '@/components/StageProgressBar';
 
 interface ValidationScreenProps {
   initialData: ValidationData;
@@ -81,7 +82,7 @@ const ValidationScreen = ({ initialData, conversationPath, onConfirm }: Validati
   const supportApproach = getSupportApproach();
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">
+    <div className="min-h-screen flex items-center justify-center p-4 pb-32 relative overflow-hidden bg-background">
       {/* Background gradient effect */}
       <div className="absolute inset-0 opacity-30">
         <div 
@@ -308,6 +309,9 @@ const ValidationScreen = ({ initialData, conversationPath, onConfirm }: Validati
           </div>
         </div>
       </div>
+      
+      {/* Stage Progress Bar */}
+      <StageProgressBar currentStage="validate" />
     </div>
   );
 };
