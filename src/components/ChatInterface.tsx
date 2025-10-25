@@ -115,8 +115,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   
   // Separate effect for finish button based on time/messages
   useEffect(() => {
-    const timeThreshold = conversationDuration >= 210;
-    const messageThreshold = exchangeCount >= 14;
+    const timeThreshold = conversationDuration >= 180; // 3 minutes
+    const messageThreshold = exchangeCount >= 4; // After 4 messages
     if ((timeThreshold || messageThreshold) && conversationPath && !showFinishButton) {
       setShowFinishButton(true);
     }
@@ -339,10 +339,11 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       setInput('');
       
       // Auto-complete logic based on conversation path
-      if (conversationPath === 'nightly_routine' && exchangeCount >= 5) {
+      // Note: exchangeCount will be +1 after this message is processed
+      if (conversationPath === 'nightly_routine' && exchangeCount >= 4) {
         // After 5 Q&A exchanges for nightly routine, proceed to validation
         setTimeout(() => onComplete(), 2000);
-      } else if (conversationPath === 'venting_session' && exchangeCount >= 8) {
+      } else if (conversationPath === 'venting_session' && exchangeCount >= 7) {
         // For venting, longer conversation (8+ exchanges)
         setTimeout(() => onComplete(), 2000);
       }
