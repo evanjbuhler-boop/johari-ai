@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { User, Library, LogIn } from 'lucide-react';
+import { User, Library, Home, LogIn } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import FloatingParticles from '@/components/FloatingParticles';
 import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
@@ -15,6 +15,9 @@ interface AppLayoutProps {
 
 const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isLibraryPage = location.pathname === '/library';
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -40,15 +43,18 @@ const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
       <div className="fixed top-6 left-6 z-50 flex gap-3">
         {user ? (
           <>
-            <Link to="/library">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
-              >
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(isLibraryPage ? '/' : '/library')}
+              className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20 transition-all"
+            >
+              {isLibraryPage ? (
+                <Home className="h-5 w-5" />
+              ) : (
                 <Library className="h-5 w-5" />
-              </Button>
-            </Link>
+              )}
+            </Button>
             <ProfileSheet>
               <Button
                 variant="ghost"
