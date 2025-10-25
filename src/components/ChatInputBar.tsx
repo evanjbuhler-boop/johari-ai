@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send } from 'lucide-react';
@@ -23,8 +23,24 @@ const ChatInputBar = ({ input, setInput, onSubmit, isLoading }: ChatInputBarProp
     }, 100);
   };
 
+  // Measure input bar height and expose as CSS variable
+  const barRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const update = () => {
+      const h = barRef.current?.clientHeight || 72;
+      document.documentElement.style.setProperty('--chat-input-height', `${h}px`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    if (barRef.current) ro.observe(barRef.current);
+    window.addEventListener('resize', update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
   return (
-    <div className="fixed left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-xl border-t border-white/30" style={{ bottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
+    <div ref={barRef} className="fixed left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-xl border-t border-white/30" style={{ bottom: 'calc(var(--stage-bar-height, 96px) + env(safe-area-inset-bottom) + 8px)' }}>
       <div className="max-w-4xl mx-auto">
         <form onSubmit={onSubmit} className="p-4">
           <div className="flex gap-2 relative">

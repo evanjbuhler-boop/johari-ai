@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { MessageSquare, Check, Lightbulb } from 'lucide-react';
 
 interface StageProgressBarProps {
@@ -32,10 +33,27 @@ const StageProgressBar = ({ currentStage, chatProgress = 0, estimatedMinutes }: 
     return stageIndex < currentIndex;
   };
 
+  // Measure and expose height as CSS variable for layout
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const update = () => {
+      const h = containerRef.current?.clientHeight || 96;
+      document.documentElement.style.setProperty('--stage-bar-height', `${h}px`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    if (containerRef.current) ro.observe(containerRef.current);
+    window.addEventListener('resize', update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[95]">
       {/* Stage Progress Indicator */}
-      <div className="bg-gradient-to-r from-purple-900/95 to-pink-900/95 backdrop-blur-xl border-t border-white/20 shadow-2xl animate-in slide-in-from-bottom duration-500">
+      <div ref={containerRef} className="bg-gradient-to-r from-purple-900/95 to-pink-900/95 backdrop-blur-xl border-t border-white/20 shadow-2xl animate-in slide-in-from-bottom duration-500">
         <div className="max-w-4xl mx-auto px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           {/* Stage Icons and Labels */}
           <div className="flex items-center justify-between mb-3">
