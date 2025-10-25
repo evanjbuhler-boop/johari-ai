@@ -386,8 +386,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       )}
 
       {/* Main chat area - scrollable, with space for input + progress bar */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto w-full p-4 md:p-8 pt-20 pb-44">
+      <div className="flex-1 overflow-y-auto scroll-smooth">
+        <div className="max-w-4xl mx-auto w-full p-4 md:p-8 pt-20 pb-60">
           <div className="space-y-6">
           <TooltipProvider>
           {messages.map((msg, idx) => {
