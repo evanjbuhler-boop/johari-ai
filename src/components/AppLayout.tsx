@@ -50,9 +50,9 @@ const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
               className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm transition-all"
             >
               {isLibraryPage ? (
-                <Library className="h-5 w-5" />
-              ) : (
                 <Home className="h-5 w-5" />
+              ) : (
+                <Library className="h-5 w-5" />
               )}
             </Button>
             <ProfileSheet>
