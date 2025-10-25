@@ -99,11 +99,13 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     // Only show once - never show again after it's been displayed
     if (messages.length === 2 && !conversationPath && !showPathSelection && !pathSelectionShown && !isLoading) {
       console.log('⏰ Setting 500ms timer to show path selection');
+      // CRITICAL: Set pathSelectionShown IMMEDIATELY to prevent multiple timers
+      setPathSelectionShown(true);
+      
       // Delay showing buttons to ensure all messages are fully rendered
       const timer = setTimeout(() => {
         console.log('✨ Timer fired - showing path selection now');
         setShowPathSelection(true);
-        setPathSelectionShown(true); // Mark that we've shown it
       }, 500);
       
       return () => {
