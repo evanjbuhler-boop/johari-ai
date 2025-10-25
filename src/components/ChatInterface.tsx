@@ -288,8 +288,10 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         />
       )}
 
-      <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8 pt-20 pb-56">
-        <div className="space-y-6 mb-8">
+      {/* Main chat area - scrollable, with space for progress bar + input */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto w-full p-4 md:p-8 pt-20 pb-44">
+          <div className="space-y-6">
           <TooltipProvider>
           {messages.map((msg, idx) => {
             // Ensure we have valid content
@@ -453,17 +455,18 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
             </div>
           )}
           <div ref={messagesEndRef} />
+          </div>
         </div>
       </div>
 
-      {/* 3-Stage Progress Bar - Fixed at bottom */}
-      <StageProgressBar 
+      {/* 3-Stage Progress Bar - Fixed above input */}
+      <StageProgressBar
         currentStage="chat" 
         chatProgress={calculateChatProgress()}
         estimatedMinutes={estimatedMinutes}
       />
       
-      {/* Chat Input Bar - Fixed at bottom below progress */}
+      {/* Chat Input Bar - Fixed at very bottom */}
       <ChatInputBar
         input={input}
         setInput={setInput}
