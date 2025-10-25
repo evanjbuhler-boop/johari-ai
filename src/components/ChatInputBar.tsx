@@ -24,7 +24,7 @@ const ChatInputBar = ({ input, setInput, onSubmit, isLoading }: ChatInputBarProp
   };
 
   return (
-    <div className="fixed bottom-20 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-xl border-t border-white/30">
+    <div className="fixed left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-xl border-t border-white/30" style={{ bottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
       <div className="max-w-4xl mx-auto">
         <form onSubmit={onSubmit} className="p-4">
           <div className="flex gap-2 relative">
