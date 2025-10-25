@@ -30,20 +30,9 @@ interface ChatInterfaceProps {
 type SidebarPhase = 'highlight' | 'worry' | 'lifestyle' | 'uncertainty' | 'sleep' | 'conflict' | 'guilt' | 'rumination' | 'avoidance';
 
 const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading, onVentingModeSelected }: ChatInterfaceProps) => {
-  console.log('🔄 Chat component re-rendered at:', Date.now());
-  console.log('📊 Current message count:', messages.length);
-  console.log('📝 Messages array:', messages);
-  console.log('⏳ isLoading:', isLoading);
-  
   const [input, setInput] = useState('');
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
-  const [showPathSelection, setShowPathSelection] = useState(false);
-  const [pathSelectionShown, setPathSelectionShown] = useState(false); // Track if path selection was ever shown
-  
-  console.log('🎯 showPathSelection:', showPathSelection);
-  console.log('✅ pathSelectionShown:', pathSelectionShown);
-  console.log('🛤️ conversationPath:', conversationPath);
   const [tipsDisabled, setTipsDisabled] = useState(false);
   const [showSummaryOffer, setShowSummaryOffer] = useState(false);
   const [summaryRequested, setSummaryRequested] = useState(false);
@@ -83,36 +72,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   , [messages]);
 
   useEffect(() => {
-    console.log('🎬 useEffect triggered - messages.length:', messages.length);
-    console.log('🎬 Conditions check:', {
-      messagesLength: messages.length,
-      conversationPath,
-      showPathSelection,
-      pathSelectionShown,
-      isLoading
-    });
-    
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    
-    // Show path selection after first AI response (when there are 2 messages total)
-    // Add delay to ensure both intro messages are fully rendered
-    // Only show once - never show again after it's been displayed
-    if (messages.length === 2 && !conversationPath && !showPathSelection && !pathSelectionShown && !isLoading) {
-      console.log('⏰ Setting 500ms timer to show path selection');
-      // CRITICAL: Set pathSelectionShown IMMEDIATELY to prevent multiple timers
-      setPathSelectionShown(true);
-      
-      // Delay showing buttons to ensure all messages are fully rendered
-      const timer = setTimeout(() => {
-        console.log('✨ Timer fired - showing path selection now');
-        setShowPathSelection(true);
-      }, 500);
-      
-      return () => {
-        console.log('🧹 Cleanup - clearing timer');
-        clearTimeout(timer);
-      };
-    }
     
     // Show early exit option after path selected and 3+ exchanges
     if (conversationPath && exchangeCount >= 3) {
@@ -209,11 +169,10 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         return () => clearTimeout(timer);
       }
     }
-  }, [messages, exchangeCount, conversationPath, showPathSelection, isLoading, sidebar.dismissedPhases, tipsDisabled, focusModeEnabled]);
+  }, [messages, exchangeCount, conversationPath, isLoading, sidebar.dismissedPhases, tipsDisabled, focusModeEnabled]);
 
   const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
     setConversationPath(path);
-    setShowPathSelection(false);
     
     // For venting mode, switch to VentingMode component
     if (path === 'venting_session' && onVentingModeSelected) {
@@ -317,19 +276,19 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8 pt-20">
         <div className="space-y-6 mb-24">
           <TooltipProvider>
-            {messages.map((msg, idx) => {
-              // Ensure we have valid content
-              const messageContent = msg?.content || '';
+          {messages.map((msg, idx) => {
+            // Ensure we have valid content
+            const messageContent = msg?.content || '';
 
-              // Suppress ALL path prompt messages from AI - we show custom buttons instead
-              const isPathPrompt = msg.role === 'assistant' && /would you like to:/i.test(messageContent);
-              if (isPathPrompt) {
-                return null; // Hide AI's path prompt entirely
-              }
-              
-              return (
+            // Suppress ALL path prompt messages from AI - we show custom buttons instead
+            const isPathPrompt = msg.role === 'assistant' && /would you like to:/i.test(messageContent);
+            if (isPathPrompt) {
+              return null; // Hide AI's path prompt entirely
+            }
+            
+            return (
+              <div key={`${msg.role}-${idx}-${msg.timestamp}`}>
                 <div
-                  key={`${msg.role}-${idx}-${msg.timestamp}`}
                   className={`animate-in fade-in slide-in-from-bottom-2 duration-500 ${
                     msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'
                   }`}
@@ -355,52 +314,47 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                     </TooltipContent>
                   </Tooltip>
                 </div>
-              );
-            })}
-          </TooltipProvider>
-          
-          {/* Path Selection */}
-          {showPathSelection && !conversationPath && !isLoading && (() => {
-            console.log('🎨 OPTIONS COMPONENT RENDERING');
-            console.log('🕐 Render timestamp:', Date.now());
-            console.log('📦 Parent state:', { showPathSelection, conversationPath, isLoading });
-            console.log('💬 Last message:', messages[messages.length - 1]);
-            return true;
-          })() && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
-              <div className="max-w-[85%] space-y-4">
-                <p className="text-sm text-white/80 mb-3">Would you like to:</p>
-                <button
-                  onClick={() => handlePathSelection('nightly_routine')}
-                  className="w-full text-left p-6 rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-200 bg-white/95 backdrop-blur-md hover:bg-white shadow-lg group"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
-                      <CheckCircle className="h-5 w-5 text-purple-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-base mb-1 text-gray-900">Do your nightly routine</h3>
-                      <p className="text-sm text-gray-600">Structured check-in to help you process and wind down</p>
-                    </div>
-                  </div>
-                </button>
-                <button
-                  onClick={() => handlePathSelection('venting_session')}
-                  className="w-full text-left p-6 rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-200 bg-white/95 backdrop-blur-md hover:bg-white shadow-lg group"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
-                      <MessageSquare className="h-5 w-5 text-purple-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-base mb-1 text-gray-900">Just vent right now</h3>
-                      <p className="text-sm text-gray-600">Talk freely—I'm here to listen</p>
+                
+                {/* Inline Path Selection Buttons - attached to message with showPathButtons flag */}
+                {msg.showPathButtons && !conversationPath && !msg.pathButtonsUsed && !isLoading && (
+                  <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start mt-4">
+                    <div className="max-w-[85%] space-y-4">
+                      <p className="text-sm text-white/80 mb-3">Would you like to:</p>
+                      <button
+                        onClick={() => handlePathSelection('nightly_routine')}
+                        className="w-full text-left p-6 rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-200 bg-white/95 backdrop-blur-md hover:bg-white shadow-lg group"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
+                            <CheckCircle className="h-5 w-5 text-purple-600" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-base mb-1 text-gray-900">Do your nightly routine</h3>
+                            <p className="text-sm text-gray-600">Structured check-in to help you process and wind down</p>
+                          </div>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => handlePathSelection('venting_session')}
+                        className="w-full text-left p-6 rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-200 bg-white/95 backdrop-blur-md hover:bg-white shadow-lg group"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
+                            <MessageSquare className="h-5 w-5 text-purple-600" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-base mb-1 text-gray-900">Just vent right now</h3>
+                            <p className="text-sm text-gray-600">Talk freely—I'm here to listen</p>
+                          </div>
+                        </div>
+                      </button>
                     </div>
                   </div>
-                </button>
+                )}
               </div>
-            </div>
-          )}
+            );
+          })}
+          </TooltipProvider>
           
           {/* Summary Offer */}
           {showSummaryOffer && !isLoading && !summaryLoading && (

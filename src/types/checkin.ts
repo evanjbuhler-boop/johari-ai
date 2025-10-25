@@ -2,6 +2,9 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
+  id?: string;
+  showPathButtons?: boolean;
+  pathButtonsUsed?: boolean;
 }
 
 export type ConversationPath = 'nightly_routine' | 'venting_session' | null;
