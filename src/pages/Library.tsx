@@ -48,19 +48,21 @@ const Library = () => {
   const fetchSavedItems = async () => {
     if (!user) return;
 
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('saved_items')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('saved_items')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
-    if (!error && data) {
-      setSavedItems(data as DbSavedItem[]);
-    } else if (error) {
-      toast.error('Failed to load library');
+      if (!error && data) {
+        setSavedItems(data as DbSavedItem[]);
+      } else if (error) {
+        toast.error('Failed to load library');
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const filteredItems = filter === 'all' 
@@ -120,28 +122,18 @@ const Library = () => {
     return type.charAt(0).toUpperCase() + type.slice(1);
   };
 
-  if (authLoading || loading) {
-    return (
-      <AppLayout showBackground={true}>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-            <p className="text-white/80">Loading your library...</p>
-          </div>
-        </div>
-      </AppLayout>
-    );
-  }
+  // Show content immediately with skeleton loading for better UX
+  const showingSkeleton = authLoading || loading;
 
   return (
     <AppLayout showBackground={true}>
-      <div className="min-h-screen">
+      <div className="min-h-screen animate-in fade-in duration-500">
         {/* Centered Header */}
         <div className="text-center pt-20 pb-12 px-4">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
             Your Library
           </h1>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto">
+          <p className="text-xl text-white/80 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700" style={{ animationDelay: '100ms' }}>
             Everything you've bookmarked is here.
           </p>
         </div>
@@ -202,7 +194,26 @@ const Library = () => {
           </div>
 
           {/* Content */}
-          {filteredItems.length === 0 ? (
+          {showingSkeleton ? (
+            // Skeleton Loading State
+            <div className="space-y-4 animate-in fade-in duration-300">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                  <div className="flex items-start gap-5">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 animate-pulse" />
+                    <div className="flex-1 space-y-3">
+                      <div className="h-4 w-20 bg-purple-100 rounded animate-pulse" />
+                      <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse" />
+                      <div className="h-4 w-full bg-gray-100 rounded animate-pulse" />
+                      <div className="flex gap-3 mt-4">
+                        <div className="h-10 w-24 bg-gradient-to-r from-purple-200 to-pink-200 rounded-full animate-pulse" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredItems.length === 0 ? (
             <div className="bg-white/95 backdrop-blur-md rounded-2xl p-16 text-center shadow-xl">
               <div className="text-6xl mb-6">📚</div>
               <h3 className="text-2xl font-semibold text-foreground mb-3">
@@ -219,11 +230,12 @@ const Library = () => {
               </Button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {filteredItems.map((item) => (
+            <div className="space-y-4 animate-in fade-in duration-500">
+              {filteredItems.map((item, idx) => (
                 <div 
                   key={item.id} 
-                  className="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all group"
+                  className="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all group animate-in fade-in slide-in-from-bottom-2 duration-500"
+                  style={{ animationDelay: `${idx * 50}ms` }}
                 >
                   <div className="flex items-start gap-5">
                     {/* Type Icon */}
