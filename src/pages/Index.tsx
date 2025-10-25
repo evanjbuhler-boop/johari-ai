@@ -152,29 +152,39 @@ const Index = () => {
     setIsLoading(true);
 
     try {
+      console.log('🌐 API call initiated - handleLandingSubmit');
       const { data, error } = await supabase.functions.invoke('chat', {
         body: { messages: [userMessage], type: 'conversation', neurodiveritySettings: settings }
       });
 
+      console.log('📥 API response received:', data);
+      console.log('❌ API error:', error);
+
       if (error) throw error;
 
       const content = typeof data?.content === 'string' ? data.content.trim() : '';
+      console.log('📄 Extracted content:', content);
+      console.log('🔍 Options included?:', data?.options);
+      
       if (!content) {
         throw new Error('Empty AI response');
       }
 
       // Break response into chunks
       const chunks = breakIntoChunks(content);
+      console.log('📦 Response broken into chunks:', chunks.length, chunks);
       
       setIsLoading(false);
       
       // Send chunks sequentially with delays
       for (let i = 0; i < chunks.length; i++) {
+        console.log(`🔄 Processing chunk ${i + 1}/${chunks.length}`);
         // Show typing indicator before each chunk
         setIsTyping(true);
         
         // Calculate typing delay based on chunk length
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
+        console.log(`⏳ Waiting ${typingDelay}ms for typing animation`);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
         
         setIsTyping(false);
@@ -185,13 +195,20 @@ const Index = () => {
           content: chunks[i],
           timestamp: new Date().toISOString(),
         };
-        setMessages(prev => [...prev, aiResponse]);
+        console.log(`➕ Adding message chunk to array:`, aiResponse);
+        setMessages(prev => {
+          const newMessages = [...prev, aiResponse];
+          console.log(`📊 Messages array now has ${newMessages.length} messages`);
+          return newMessages;
+        });
         
         // Wait 1 second between chunks (except after the last one)
         if (i < chunks.length - 1) {
+          console.log('⏸️ Waiting 1s before next chunk');
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
+      console.log('✅ All chunks processed for handleLandingSubmit');
     } catch (error) {
       console.error('Error getting AI response:', error);
       setIsLoading(false);
@@ -238,6 +255,8 @@ const Index = () => {
     }
 
     try {
+      console.log('🌐 API call initiated - handleSendMessage');
+      console.log('📤 Sending messages:', updatedMessages);
       const { data, error } = await supabase.functions.invoke('chat', {
         body: { 
           messages: updatedMessages, 
@@ -247,22 +266,31 @@ const Index = () => {
         }
       });
 
+      console.log('📥 API response received:', data);
+      console.log('❌ API error:', error);
+
       if (error) throw error;
 
       const content = typeof data?.content === 'string' ? data.content.trim() : '';
+      console.log('📄 Extracted content:', content);
+      console.log('🔍 Options included?:', data?.options);
+      
       if (!content) {
         throw new Error('Empty AI response');
       }
 
       // Break response into chunks
       const chunks = breakIntoChunks(content);
+      console.log('📦 Response broken into chunks:', chunks.length, chunks);
       
       setIsLoading(false);
       
       // Send chunks sequentially with delays
       for (let i = 0; i < chunks.length; i++) {
+        console.log(`🔄 Processing chunk ${i + 1}/${chunks.length}`);
         setIsTyping(true);
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
+        console.log(`⏳ Waiting ${typingDelay}ms for typing animation`);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
         
         setIsTyping(false);
@@ -271,12 +299,19 @@ const Index = () => {
           content: chunks[i],
           timestamp: new Date().toISOString(),
         };
-        setMessages(prev => [...prev, aiResponse]);
+        console.log(`➕ Adding message chunk to array:`, aiResponse);
+        setMessages(prev => {
+          const newMessages = [...prev, aiResponse];
+          console.log(`📊 Messages array now has ${newMessages.length} messages`);
+          return newMessages;
+        });
         
         if (i < chunks.length - 1) {
+          console.log('⏸️ Waiting 1s before next chunk');
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
+      console.log('✅ All chunks processed for handleSendMessage');
     } catch (error) {
       console.error('Error getting AI response:', error);
       setIsLoading(false);

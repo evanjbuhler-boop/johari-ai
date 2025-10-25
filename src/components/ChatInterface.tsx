@@ -30,11 +30,20 @@ interface ChatInterfaceProps {
 type SidebarPhase = 'highlight' | 'worry' | 'lifestyle' | 'uncertainty' | 'sleep' | 'conflict' | 'guilt' | 'rumination' | 'avoidance';
 
 const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading, onVentingModeSelected }: ChatInterfaceProps) => {
+  console.log('🔄 Chat component re-rendered at:', Date.now());
+  console.log('📊 Current message count:', messages.length);
+  console.log('📝 Messages array:', messages);
+  console.log('⏳ isLoading:', isLoading);
+  
   const [input, setInput] = useState('');
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [showPathSelection, setShowPathSelection] = useState(false);
   const [pathSelectionShown, setPathSelectionShown] = useState(false); // Track if path selection was ever shown
+  
+  console.log('🎯 showPathSelection:', showPathSelection);
+  console.log('✅ pathSelectionShown:', pathSelectionShown);
+  console.log('🛤️ conversationPath:', conversationPath);
   const [tipsDisabled, setTipsDisabled] = useState(false);
   const [showSummaryOffer, setShowSummaryOffer] = useState(false);
   const [summaryRequested, setSummaryRequested] = useState(false);
@@ -74,19 +83,33 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   , [messages]);
 
   useEffect(() => {
+    console.log('🎬 useEffect triggered - messages.length:', messages.length);
+    console.log('🎬 Conditions check:', {
+      messagesLength: messages.length,
+      conversationPath,
+      showPathSelection,
+      pathSelectionShown,
+      isLoading
+    });
+    
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     
     // Show path selection after first AI response (when there are 2 messages total)
     // Add delay to ensure both intro messages are fully rendered
     // Only show once - never show again after it's been displayed
     if (messages.length === 2 && !conversationPath && !showPathSelection && !pathSelectionShown && !isLoading) {
+      console.log('⏰ Setting 500ms timer to show path selection');
       // Delay showing buttons to ensure all messages are fully rendered
       const timer = setTimeout(() => {
+        console.log('✨ Timer fired - showing path selection now');
         setShowPathSelection(true);
         setPathSelectionShown(true); // Mark that we've shown it
       }, 500);
       
-      return () => clearTimeout(timer);
+      return () => {
+        console.log('🧹 Cleanup - clearing timer');
+        clearTimeout(timer);
+      };
     }
     
     // Show early exit option after path selected and 3+ exchanges
@@ -335,7 +358,13 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
           </TooltipProvider>
           
           {/* Path Selection */}
-          {showPathSelection && !conversationPath && !isLoading && (
+          {showPathSelection && !conversationPath && !isLoading && (() => {
+            console.log('🎨 OPTIONS COMPONENT RENDERING');
+            console.log('🕐 Render timestamp:', Date.now());
+            console.log('📦 Parent state:', { showPathSelection, conversationPath, isLoading });
+            console.log('💬 Last message:', messages[messages.length - 1]);
+            return true;
+          })() && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start">
               <div className="max-w-[85%] space-y-4">
                 <p className="text-sm text-white/80 mb-3">Would you like to:</p>
