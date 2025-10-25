@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Message } from '@/types/checkin';
+import { Message, EmotionState } from '@/types/checkin';
 import { MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
 import EducationalSidebar from '@/components/EducationalSidebar';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
@@ -9,6 +9,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import StageProgressBar from '@/components/StageProgressBar';
 import ChatInputBar from '@/components/ChatInputBar';
+import BreathingExerciseModal from '@/components/BreathingExerciseModal';
+import SupportivePromptOverlay from '@/components/SupportivePromptOverlay';
+import FinishChatButton from '@/components/FinishChatButton';
+import {
+  detectEmotionFromMessage,
+  getEmotionGradient,
+  getSupportivePrompt,
+  shouldTriggerBreathing
+} from '@/components/EmotionDetector';
 import {
   Tooltip,
   TooltipContent,
@@ -47,6 +56,15 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     phase: null,
     dismissedPhases: new Set()
   });
+  
+  // NEW: Emotion detection & adaptive UI
+  const [detectedEmotion, setDetectedEmotion] = useState<EmotionState>('neutral');
+  const [showBreathingExercise, setShowBreathingExercise] = useState(false);
+  const [supportivePrompt, setSupportivePrompt] = useState<string | null>(null);
+  const [showFinishButton, setShowFinishButton] = useState(false);
+  const [conversationStartTime] = useState<number>(Date.now());
+  const [conversationDuration, setConversationDuration] = useState(0);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { settings } = useNeurodiveritySettings();
   const { isEnabled: focusModeEnabled } = useFocusMode();
@@ -59,6 +77,14 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   // Calculate time estimate (assuming ~1 min per exchange, max 7 exchanges)
   const remainingExchanges = Math.max(0, 7 - exchangeCount);
   const estimatedMinutes = Math.max(1, Math.ceil(remainingExchanges * 0.8)); // Slightly optimistic
+  
+  // Track conversation duration
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setConversationDuration(Math.floor((Date.now() - conversationStartTime) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [conversationStartTime]);
 
   // Persist tips disabled preference
   useEffect(() => {
@@ -82,6 +108,46 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     // Show summary offer after 10+ user messages (only once) - only for venting
     if (conversationPath === 'venting_session' && exchangeCount >= 10 && !showSummaryOffer && !summaryRequested) {
       setShowSummaryOffer(true);
+    }
+    
+    // NEW: Show finish button after time threshold (3.5 min = 210 seconds) OR message threshold (14 messages)
+    const timeThreshold = conversationDuration >= 210;
+    const messageThreshold = exchangeCount >= 14;
+    if ((timeThreshold || messageThreshold) && conversationPath && !showFinishButton) {
+      setShowFinishButton(true);
+    }
+    
+    // NEW: Detect emotion from recent user messages
+    const recentUserMessages = messages.filter(m => m.role === 'user').slice(-3);
+    if (recentUserMessages.length > 0) {
+      const lastUserMessage = recentUserMessages[recentUserMessages.length - 1];
+      const emotion = detectEmotionFromMessage(lastUserMessage.content);
+      if (emotion !== 'neutral') {
+        setDetectedEmotion(emotion);
+      }
+      
+      // Check if breathing exercise should trigger
+      if (shouldTriggerBreathing(emotion, lastUserMessage.content) && !showBreathingExercise) {
+        setTimeout(() => setShowBreathingExercise(true), 2000);
+      }
+      
+      // Show supportive prompts contextually
+      const hasVulnerableLanguage = /feel|scared|afraid|ashamed|guilty|regret/i.test(lastUserMessage.content);
+      const hasDistressLanguage = /help|can't|dying|panic|crisis/.test(lastUserMessage.content.toLowerCase());
+      
+      if (hasVulnerableLanguage && !supportivePrompt) {
+        setTimeout(() => {
+          setSupportivePrompt(getSupportivePrompt(emotion, 'vulnerable-share'));
+        }, 3000);
+      } else if (hasDistressLanguage && !supportivePrompt) {
+        setTimeout(() => {
+          setSupportivePrompt(getSupportivePrompt(emotion, 'distress'));
+        }, 2000);
+      } else if (emotion === 'overwhelmed' && !supportivePrompt) {
+        setTimeout(() => {
+          setSupportivePrompt(getSupportivePrompt(emotion, 'overwhelmed'));
+        }, 3000);
+      }
     }
 
     // Contextual tips based on conversation content (disabled in focus mode)
@@ -278,7 +344,22 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   };
   
   return (
-    <div className="min-h-screen flex flex-col relative animate-in fade-in duration-700">
+    <div className={`min-h-screen flex flex-col relative animate-in fade-in duration-700 bg-gradient-to-br ${getEmotionGradient(detectedEmotion)} transition-all duration-[2000ms]`}>
+      {/* NEW: Breathing Exercise Modal */}
+      {showBreathingExercise && (
+        <BreathingExerciseModal 
+          onClose={() => setShowBreathingExercise(false)}
+        />
+      )}
+      
+      {/* NEW: Supportive Prompt Overlay */}
+      {supportivePrompt && (
+        <SupportivePromptOverlay 
+          message={supportivePrompt}
+          onDismiss={() => setSupportivePrompt(null)}
+        />
+      )}
+      
       {/* Educational Sidebar - hidden in focus mode */}
       {sidebar.visible && sidebar.phase && !focusModeEnabled && (
         <EducationalSidebar 
@@ -454,6 +535,14 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
               </div>
             </div>
           )}
+          
+          {/* NEW: Finish Chat Button */}
+          {showFinishButton && conversationPath && !isLoading && (
+            <div className="max-w-4xl mx-auto w-full px-4">
+              <FinishChatButton onClick={onComplete} />
+            </div>
+          )}
+          
           <div ref={messagesEndRef} />
           </div>
         </div>

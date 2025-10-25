@@ -19,6 +19,28 @@ export interface ValidationData {
   caffeineIntake?: string;
   conflicts?: string;
   
+  // Enhanced natural data extraction
+  emotional_state?: string[]; // ["anxious", "sad", "frustrated"]
+  primary_stressors?: string[]; // ["work_deadline", "relationship_conflict", "sleep_deprivation"]
+  sleep_hours?: number | null;
+  sleep_quality?: 'poor' | 'fair' | 'good' | null;
+  exercise_today?: boolean;
+  exercise_type?: 'walk' | 'gym' | 'yoga' | 'none' | string;
+  caffeine_intake?: 'none' | 'moderate' | 'high';
+  overwhelm_sources?: string[];
+  interpersonal_conflicts?: boolean;
+  conflict_with?: 'partner' | 'parent' | 'coworker' | 'friend' | string | null;
+  support_mentioned?: string[];
+  isolation_signals?: boolean;
+  
+  // Agency & Circle of Influence
+  things_they_control?: string[];
+  things_outside_control?: string[];
+  
+  // Patterns over time
+  recurring_theme?: 'mother_relationship' | 'work_stress' | 'self_worth' | string;
+  progress_indicators?: string[];
+  
   // New structured validation fields
   contributingFactors: string[];
   customFactor?: string;
@@ -32,6 +54,16 @@ export interface ValidationData {
   stressorReasoning?: string;
   sleepReasoning?: string;
   supportReasoning?: string;
+}
+
+// Emotion state for adaptive UI
+export type EmotionState = 'anxious' | 'frustrated' | 'sad' | 'exhausted' | 'overwhelmed' | 'neutral' | null;
+
+export interface AIResponse {
+  content: string;
+  detectedEmotion?: EmotionState;
+  triggerBreathing?: boolean;
+  supportivePrompt?: string;
 }
 
 export interface EmotionalData {

@@ -5,6 +5,7 @@ import VentingMode from '@/components/VentingMode';
 import ProfileForm from '@/components/ProfileForm';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import ValidationScreen from '@/components/ValidationScreen';
+import ValidationLoadingScreen from '@/components/ValidationLoadingScreen';
 import AppLayout from '@/components/AppLayout';
 import { Message, UserProfile, CheckInResults, ValidationData } from '@/types/checkin';
 import { supabase } from '@/integrations/supabase/client';
@@ -333,12 +334,12 @@ const Index = () => {
   };
 
   const handleChatComplete = async () => {
-    // Show processing state immediately
+    // Show processing state immediately with enhanced loading screen
     setState('processing');
     setIsLoading(true);
     
-    // Add minimum delay for better UX (show processing screen for at least 2 seconds)
-    const minDelay = new Promise(resolve => setTimeout(resolve, 2000));
+    // Add minimum delay for better UX (show processing screen for at least 5 seconds per document spec)
+    const minDelay = new Promise(resolve => setTimeout(resolve, 5000));
     
     try {
       // Ask AI to extract structured validation data from conversation
@@ -352,7 +353,7 @@ const Index = () => {
 
       if (error) throw error;
 
-      // AI should return structured ValidationData
+      // AI should return structured ValidationData with enhanced fields
       const extracted: ValidationData = data || extractValidationData(messages);
       
       // Wait for minimum delay before showing validation
@@ -518,18 +519,7 @@ const Index = () => {
   if (state === 'processing') {
     return (
       <AppLayout>
-        <div className="min-h-screen flex items-center justify-center p-4">
-          <div className="text-center space-y-6 max-w-md">
-            <div className="relative w-20 h-20 mx-auto">
-              <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
-              <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold text-white">Analyzing your conversation...</h2>
-              <p className="text-white/70">We're identifying patterns and preparing your personalized insights.</p>
-            </div>
-          </div>
-        </div>
+        <ValidationLoadingScreen />
       </AppLayout>
     );
   }

@@ -194,13 +194,31 @@ Please extract and return ONLY a valid JSON object with this exact structure (no
   "emotionReasoning": "2-3 sentences explaining how you determined the emotional state. Quote their exact words. Format: 'You said \"X\", which indicated Y'",
   "stressorReasoning": "2-3 sentences explaining how you identified the key stressors. Quote their exact words. Format: 'You mentioned \"X\", which suggests Y'",
   "sleepReasoning": "2-3 sentences about their physical state (sleep, energy, tiredness, physical symptoms). If they mentioned specific details like hours of sleep or feeling tired, quote them. If not mentioned, say 'You didn't mention specific physical concerns' - DO NOT make up information. Format: 'You said \"X\"' or 'You didn't mention physical state'",
-  "supportReasoning": "1 sentence explaining what type of check-in they're doing based on the conversation path: ${conversationPath || 'general check-in'}"
+  "supportReasoning": "1 sentence explaining what type of check-in they're doing based on the conversation path: ${conversationPath || 'general check-in'}",
+  
+  "emotional_state": ["anxious", "frustrated", "sad", "exhausted", "overwhelmed"] (detect from language patterns),
+  "primary_stressors": ["work_deadline", "relationship_conflict", "sleep_deprivation", etc.],
+  "sleep_hours": 5 or null,
+  "sleep_quality": "poor" or "fair" or "good" or null,
+  "exercise_today": true or false,
+  "exercise_type": "walk" or "gym" or "yoga" or "none",
+  "caffeine_intake": "none" or "moderate" or "high",
+  "overwhelm_sources": ["too many tasks", "no support", "uncertainty"],
+  "interpersonal_conflicts": true or false,
+  "conflict_with": "partner" or "parent" or "coworker" or "friend" or null,
+  "support_mentioned": ["brother", "therapist", "friend"] (array of people they mentioned as support),
+  "isolation_signals": true or false (detect from language like "no one understands", "alone", "isolated"),
+  "things_they_control": ["reaching out", "setting boundaries", "asking for help"] (things within their control),
+  "things_outside_control": ["mom's responses", "partner's mood", "work deadline"] (things outside their control),
+  "recurring_theme": "mother_relationship" or "work_stress" or "self_worth" or other pattern,
+  "progress_indicators": ["set a boundary", "reached out to brother"] (positive actions they mentioned)
 }
 
 CRITICAL FORMATTING RULES:
 1. emotions: Must be specific 2-4 word descriptions (not just single words like "anxious")
 2. mainStressors: Capitalize Like Titles with professional phrasing
 3. sleepReasoning: ONLY include information actually mentioned
+4. Detect emotional_state from language patterns: anxious (racing thoughts, can't stop thinking, overwhelmed), frustrated (fed up, can't take it, done with), sad (don't care, empty, numb, hopeless), exhausted (so tired, drained, running on fumes), overwhelmed (too much, drowning, everything at once)
 
 Important: Return ONLY the JSON object, no other text.`;
 
