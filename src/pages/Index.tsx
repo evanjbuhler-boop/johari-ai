@@ -24,7 +24,6 @@ const Index = () => {
   const [validationData, setValidationData] = useState<ValidationData | null>(null);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const { settings } = useNeurodiveritySettings();
@@ -176,18 +175,16 @@ const Index = () => {
       const chunks = breakIntoChunks(content);
       console.log('📦 Response broken into chunks:', chunks.length, chunks);
       
-      setIsLoading(false);
-      
       // Send chunks sequentially with delays
       for (let i = 0; i < chunks.length; i++) {
-        // Show typing indicator before each chunk
-        setIsTyping(true);
-        
         // Calculate typing delay based on chunk length
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
         
-        setIsTyping(false);
+        // Turn off loading indicator after first chunk starts appearing
+        if (i === 0) {
+          setIsLoading(false);
+        }
         
         // Add the chunk as a new message
         // On the LAST chunk of the initial response, add path selection buttons
@@ -217,11 +214,14 @@ const Index = () => {
       
       // Send chunks sequentially with delays
       for (let i = 0; i < chunks.length; i++) {
-        setIsTyping(true);
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
         
-        setIsTyping(false);
+        // Turn off loading indicator after first chunk starts appearing
+        if (i === 0) {
+          setIsLoading(false);
+        }
+        
         const isLastChunk = i === chunks.length - 1;
         const aiResponse: Message = {
           role: 'assistant',
@@ -277,15 +277,17 @@ const Index = () => {
       // Break response into chunks
       const chunks = breakIntoChunks(content);
       
-      setIsLoading(false);
-      
       // Send chunks sequentially with delays
       for (let i = 0; i < chunks.length; i++) {
-        setIsTyping(true);
+        // Show typing indicator before each chunk
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
         
-        setIsTyping(false);
+        // Turn off loading indicator after first chunk starts appearing
+        if (i === 0) {
+          setIsLoading(false);
+        }
+        
         const aiResponse: Message = {
           role: 'assistant',
           content: chunks[i],
@@ -308,11 +310,14 @@ const Index = () => {
       
       // Send chunks sequentially with delays
       for (let i = 0; i < chunks.length; i++) {
-        setIsTyping(true);
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
         
-        setIsTyping(false);
+        // Turn off loading indicator after first chunk starts appearing
+        if (i === 0) {
+          setIsLoading(false);
+        }
+        
         const aiResponse: Message = {
           role: 'assistant',
           content: chunks[i],
@@ -498,7 +503,7 @@ const Index = () => {
           setMessages={setMessages}
           onSendMessage={handleSendMessage}
           onBack={handleNewCheckIn}
-          isLoading={isLoading || isTyping}
+          isLoading={isLoading}
           onVentingModeSelected={handleVentingModeSelected}
         />
       </AppLayout>
