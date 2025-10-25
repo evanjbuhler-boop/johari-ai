@@ -66,6 +66,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const [conversationDuration, setConversationDuration] = useState(0);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastEmotionUpdateRef = useRef<number>(0);
   const { settings } = useNeurodiveritySettings();
   const { isEnabled: focusModeEnabled } = useFocusMode();
   const { toast } = useToast();
@@ -360,7 +361,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   };
   
   return (
-    <div className={`min-h-screen flex flex-col relative animate-in fade-in duration-700 bg-gradient-to-br ${getEmotionGradient(detectedEmotion)} transition-all duration-[2000ms]`}>
+    <div className={`min-h-screen flex flex-col relative animate-in fade-in duration-700 bg-gradient-to-br ${getEmotionGradient(detectedEmotion)} transition-all duration-[3000ms]`}>
       {/* NEW: Breathing Exercise Modal */}
       {showBreathingExercise && (
         <BreathingExerciseModal 
@@ -387,7 +388,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
 
       {/* Main chat area - scrollable, with space for input + progress bar */}
       <div className="flex-1 overflow-y-auto scroll-smooth">
-        <div className="max-w-4xl mx-auto w-full p-4 md:p-8 pt-20 pb-60">
+        <div className="max-w-4xl mx-auto w-full p-4 md:p-8 pt-20 pb-80">
           <div className="space-y-6">
           <TooltipProvider>
           {messages.map((msg, idx) => {
