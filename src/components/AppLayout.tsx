@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import FloatingParticles from '@/components/FloatingParticles';
 import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
 import FocusModeToggle from '@/components/FocusModeToggle';
+import ProfileSheet from '@/components/ProfileSheet';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -48,13 +49,15 @@ const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
                 <Library className="h-5 w-5" />
               </Button>
             </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
-            >
-              <User className="h-5 w-5" />
-            </Button>
+            <ProfileSheet>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
+              >
+                <User className="h-5 w-5" />
+              </Button>
+            </ProfileSheet>
           </>
         ) : (
           <Link to="/auth">
