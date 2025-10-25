@@ -35,7 +35,7 @@ const StageProgressBar = ({ currentStage, chatProgress = 0, estimatedMinutes }: 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[99]">
       {/* Stage Progress Indicator */}
-      <div className="bg-gradient-to-r from-purple-900/95 to-pink-900/95 backdrop-blur-xl border-t border-white/20 shadow-2xl animate-in slide-in-from-bottom duration-500 pt-6">
+      <div className="bg-gradient-to-r from-purple-900/95 to-pink-900/95 backdrop-blur-xl border-t border-white/20 shadow-2xl animate-in slide-in-from-bottom duration-500 pt-24">
         <div className="max-w-4xl mx-auto px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           {/* Stage Icons and Labels */}
           <div className="flex items-center justify-between mb-3">
