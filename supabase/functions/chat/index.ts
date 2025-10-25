@@ -434,18 +434,17 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
             mockResponse = "I hear you.\n\nWould you like to:\n→ Do your nightly routine (helps you process and wind down)\n→ Just vent right now (I'm here to listen)";
           }
         } else if (conversationPath === 'nightly_routine') {
-          // Structured nightly routine responses
+          // Structured 5-question routine
           if (exchangeCount === 2) {
-            mockResponse = "What's one thing that stood out today—good or hard?";
+            mockResponse = "How much sleep did you get last night?";
           } else if (exchangeCount === 3) {
-            mockResponse = "What about that moment made it stick with you?";
+            mockResponse = "Did you move your body today?";
           } else if (exchangeCount === 4) {
-            mockResponse = "What's on your mind for tomorrow—anything you're worried about?";
+            mockResponse = "What was your biggest stressor today?";
           } else if (exchangeCount === 5) {
-            const concern = userMessage.match(/\b(meeting|presentation|deadline|conversation|interview)\b/)?.[0] || 'that';
-            mockResponse = `What's the part about ${concern} that's making you most anxious?`;
+            mockResponse = "Any conflicts or tension with people?";
           } else if (exchangeCount === 6) {
-            mockResponse = "How's your body doing—sleep, energy, anything physical?";
+            mockResponse = "On a scale 1-10, how stressed do you feel?";
           } else {
             mockResponse = "Thanks for checking in tonight. Give me a sec to pull some thoughts together for you.";
           }
@@ -521,19 +520,20 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       console.log('Neurodiversity settings applied:', neurodiveritySettings);
       
       if (conversationPath === 'nightly_routine') {
-        // Structured 4-phase routine
+        // Structured 5-question routine
         const userExchanges = messages.filter((m: any) => m.role === 'user').length;
-        const phase = Math.min(4, userExchanges);
+        const questionNum = Math.min(5, userExchanges);
         
-        systemPrompt = `You are guiding a nightly routine check-in. User selected structured routine.
+        systemPrompt = `You are guiding a structured nightly routine check-in. Ask questions ONE AT A TIME.
 
 ${previousExchanges ? `Previous conversation:\n${previousExchanges}\n` : ''}
 
-PHASE ${phase} OF 4:
-${phase === 1 ? '1. EMOTION CHECK-IN: Ask "How are you feeling right now? Just one or two words."' : ''}
-${phase === 2 ? '2. DAILY HIGHLIGHT/LOWLIGHT: Ask "What\'s one thing that stood out today—good or hard?" Then follow up with "What about that moment made it stick with you?"' : ''}
-${phase === 3 ? '3. WORRY PROCESSING: Ask "What\'s on your mind for tomorrow—anything you\'re worried about?" Follow up: "What\'s the part making you most anxious?" Then validate: "So it sounds like [X]—does that feel right?"' : ''}
-${phase === 4 ? '4. LIFESTYLE PULSE: Ask "How\'s your body doing—sleep, energy, anything physical?" Connect it: "That might be why you\'re feeling [emotion]—your body is running on fumes."' : ''}
+QUESTION ${questionNum} OF 5:
+${questionNum === 1 ? 'Q1: Ask "How much sleep did you get last night?" - Keep it simple, just ask for hours.' : ''}
+${questionNum === 2 ? 'Q2: Ask "Did you move your body today?" - Brief response, then move on.' : ''}
+${questionNum === 3 ? 'Q3: Ask "What was your biggest stressor today?" - Let them share, reflect briefly.' : ''}
+${questionNum === 4 ? 'Q4: Ask "Any conflicts or tension with people?" - Brief acknowledgment only.' : ''}
+${questionNum === 5 ? 'Q5: Ask "On a scale 1-10, how stressed do you feel?" - Final question, acknowledge their answer warmly then say "Thanks for checking in tonight. Give me a sec to pull some thoughts together for you."' : ''}
 
 ${languageInstructions}
 ${neuroInstructions}

@@ -148,8 +148,11 @@ const Index = () => {
   const handleLandingSubmit = async (message: string) => {
     const userMessage: Message = { role: 'user', content: message, timestamp: new Date().toISOString() };
     setMessages([userMessage]);
-    setState('chat');
     setIsLoading(true);
+    
+    // Gentle fade transition to chat interface
+    await new Promise(resolve => setTimeout(resolve, 400));
+    setState('chat');
 
     try {
       console.log('🌐 API call initiated - handleLandingSubmit');
@@ -491,6 +494,7 @@ const Index = () => {
           initialMessage={messages[0]?.content || ''}
           onComplete={handleChatComplete}
           messages={messages}
+          setMessages={setMessages}
           onSendMessage={handleSendMessage}
           onBack={handleNewCheckIn}
           isLoading={isLoading || isTyping}

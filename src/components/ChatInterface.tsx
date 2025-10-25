@@ -25,11 +25,12 @@ interface ChatInterfaceProps {
   onBack: () => void;
   isLoading: boolean;
   onVentingModeSelected?: () => void;
+  setMessages?: React.Dispatch<React.SetStateAction<Message[]>>;
 }
 
 type SidebarPhase = 'highlight' | 'worry' | 'lifestyle' | 'uncertainty' | 'sleep' | 'conflict' | 'guilt' | 'rumination' | 'avoidance';
 
-const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading, onVentingModeSelected }: ChatInterfaceProps) => {
+const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading, onVentingModeSelected, setMessages }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
@@ -74,13 +75,13 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     
-    // Show early exit option after path selected and 3+ exchanges
-    if (conversationPath && exchangeCount >= 3) {
+    // Show early exit option after 3 questions in nightly routine
+    if (conversationPath === 'nightly_routine' && exchangeCount >= 3) {
       setShowEarlyExit(true);
     }
 
-    // Show summary offer after 10+ user messages (only once)
-    if (exchangeCount >= 10 && !showSummaryOffer && !summaryRequested && conversationPath) {
+    // Show summary offer after 10+ user messages (only once) - only for venting
+    if (conversationPath === 'venting_session' && exchangeCount >= 10 && !showSummaryOffer && !summaryRequested) {
       setShowSummaryOffer(true);
     }
 
@@ -174,6 +175,11 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
     setConversationPath(path);
     
+    // Mark buttons as used in the message
+    setMessages(prev => prev.map(msg => 
+      msg.showPathButtons ? { ...msg, pathButtonsUsed: true } : msg
+    ));
+    
     // For venting mode, switch to VentingMode component
     if (path === 'venting_session' && onVentingModeSelected) {
       onVentingModeSelected();
@@ -250,9 +256,13 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       onSendMessage(input, conversationPath || undefined);
       setInput('');
       
-      // Auto-complete after 7 user messages (soft limit) only if path is selected
-      if (conversationPath && exchangeCount >= 6) {
-        setTimeout(() => onComplete(), 10000);
+      // Auto-complete logic based on conversation path
+      if (conversationPath === 'nightly_routine' && exchangeCount >= 5) {
+        // After 5 Q&A exchanges for nightly routine, proceed to validation
+        setTimeout(() => onComplete(), 2000);
+      } else if (conversationPath === 'venting_session' && exchangeCount >= 8) {
+        // For venting, longer conversation (8+ exchanges)
+        setTimeout(() => onComplete(), 2000);
       }
     }
   };
@@ -262,8 +272,12 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     setInput(text);
   };
 
+  // Calculate question progress for nightly routine
+  const nightlyRoutineQuestions = 5;
+  const currentQuestion = conversationPath === 'nightly_routine' ? Math.min(exchangeCount, nightlyRoutineQuestions) : 0;
+  
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="min-h-screen flex flex-col relative animate-in fade-in duration-700">
       {/* Educational Sidebar - hidden in focus mode */}
       {sidebar.visible && sidebar.phase && !focusModeEnabled && (
         <EducationalSidebar 
@@ -274,6 +288,17 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       )}
 
       <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8 pt-20">
+        {/* Question Progress Indicator for Nightly Routine */}
+        {conversationPath === 'nightly_routine' && (
+          <div className="mb-6 p-4 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/50 animate-in fade-in slide-in-from-top duration-500">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-600">Nightly Routine Progress</span>
+              <span className="text-sm font-medium text-purple-600">Question {currentQuestion} of {nightlyRoutineQuestions}</span>
+            </div>
+            <Progress value={(currentQuestion / nightlyRoutineQuestions) * 100} className="h-2" />
+          </div>
+        )}
+        
         <div className="space-y-6 mb-24">
           <TooltipProvider>
           {messages.map((msg, idx) => {

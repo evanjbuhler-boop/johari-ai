@@ -44,7 +44,7 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden animate-in fade-in duration-700">
       <div className="w-full max-w-2xl relative z-10">
         <div className="text-center mb-12 animate-in fade-in duration-1000">
           {/* Label */}
