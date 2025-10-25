@@ -68,9 +68,9 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     if (persisted === 'true') setTipsDisabled(true);
   }, []);
 
-  // Detect the first AI path-offer message index ("Would you like to:")
-  const firstPathPromptIndex = useMemo(() =>
-    messages.findIndex(m => m.role === 'assistant' && /would you like to:/i.test(m.content || ''))
+  // Detect if we should show path selection (but don't use this for message suppression anymore)
+  const hasPathPrompt = useMemo(() =>
+    messages.some(m => m.role === 'assistant' && /would you like to:/i.test(m.content || ''))
   , [messages]);
 
   useEffect(() => {
@@ -296,10 +296,10 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
               // Ensure we have valid content
               const messageContent = msg?.content || '';
 
-              // Suppress repeated path prompts from AI after the first one
+              // Suppress ALL path prompt messages from AI - we show custom buttons instead
               const isPathPrompt = msg.role === 'assistant' && /would you like to:/i.test(messageContent);
-              if (isPathPrompt && firstPathPromptIndex !== -1 && idx !== firstPathPromptIndex) {
-                return null;
+              if (isPathPrompt) {
+                return null; // Hide AI's path prompt entirely
               }
               
               return (
