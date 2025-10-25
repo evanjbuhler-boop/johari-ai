@@ -507,8 +507,10 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
         }
         
         if (neurodiveritySettings.explainQuestions) {
-          instructions.push('- Before or after each question, briefly explain why you\'re asking it');
-          instructions.push('- Example: "What happened at work? (This helps me understand what\'s weighing on you)"');
+          instructions.push('- CRITICAL: You MUST explain why you\'re asking each question. Add a brief reason in parentheses after every question.');
+          instructions.push('- Format: "Question here? (Reason: This helps me understand X)"');
+          instructions.push('- Example: "What happened at work today? (This helps me understand what\'s weighing on you)"');
+          instructions.push('- Example: "How did that make you feel? (I want to understand the emotional impact)"');
         }
         
         if (instructions.length > 0) {
