@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -7,10 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
+import { useNeurodiveritySettings, NeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 
 interface NeurodiveritySettingsDialogProps {
   variant?: 'icon' | 'text';
@@ -18,9 +20,31 @@ interface NeurodiveritySettingsDialogProps {
 
 const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettingsDialogProps) => {
   const { settings, updateSetting } = useNeurodiveritySettings();
+  const [open, setOpen] = useState(false);
+  const [tempSettings, setTempSettings] = useState<NeurodiveritySettings>(settings);
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen) {
+      // Reset temp state to current settings when opening
+      setTempSettings(settings);
+    }
+  };
+
+  const handleTempUpdate = (key: keyof NeurodiveritySettings, value: boolean) => {
+    setTempSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleSave = () => {
+    // Save all settings at once
+    Object.entries(tempSettings).forEach(([key, value]) => {
+      updateSetting(key as keyof NeurodiveritySettings, value);
+    });
+    setOpen(false);
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {variant === 'icon' ? (
           <Button
@@ -52,9 +76,9 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
           <div className="flex items-start gap-3">
             <Checkbox
               id="plain-language"
-              checked={settings.usePlainLanguage}
+              checked={tempSettings.usePlainLanguage}
               onCheckedChange={(checked) => 
-                updateSetting('usePlainLanguage', checked as boolean)
+                handleTempUpdate('usePlainLanguage', checked as boolean)
               }
             />
             <div className="grid gap-1.5 leading-none">
@@ -73,9 +97,9 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
           <div className="flex items-start gap-3">
             <Checkbox
               id="content-warnings"
-              checked={settings.includeContentWarnings}
+              checked={tempSettings.includeContentWarnings}
               onCheckedChange={(checked) => 
-                updateSetting('includeContentWarnings', checked as boolean)
+                handleTempUpdate('includeContentWarnings', checked as boolean)
               }
             />
             <div className="grid gap-1.5 leading-none">
@@ -94,9 +118,9 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
           <div className="flex items-start gap-3">
             <Checkbox
               id="one-question"
-              checked={settings.oneQuestionPerMessage}
+              checked={tempSettings.oneQuestionPerMessage}
               onCheckedChange={(checked) => 
-                updateSetting('oneQuestionPerMessage', checked as boolean)
+                handleTempUpdate('oneQuestionPerMessage', checked as boolean)
               }
             />
             <div className="grid gap-1.5 leading-none">
@@ -115,9 +139,9 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
           <div className="flex items-start gap-3">
             <Checkbox
               id="explain-questions"
-              checked={settings.explainQuestions}
+              checked={tempSettings.explainQuestions}
               onCheckedChange={(checked) => 
-                updateSetting('explainQuestions', checked as boolean)
+                handleTempUpdate('explainQuestions', checked as boolean)
               }
             />
             <div className="grid gap-1.5 leading-none">
@@ -133,6 +157,11 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
             </div>
           </div>
         </div>
+        <DialogFooter>
+          <Button onClick={handleSave} className="w-full">
+            Save Changes
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

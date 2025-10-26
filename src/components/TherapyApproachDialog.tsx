@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Compass } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -7,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -18,9 +20,24 @@ interface TherapyApproachDialogProps {
 
 const TherapyApproachDialog = ({ variant = 'icon' }: TherapyApproachDialogProps) => {
   const { settings, setApproach } = useTherapyApproach();
+  const [open, setOpen] = useState(false);
+  const [tempApproach, setTempApproach] = useState(settings.approach);
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen) {
+      // Reset temp state to current settings when opening
+      setTempApproach(settings.approach);
+    }
+  };
+
+  const handleSave = () => {
+    setApproach(tempApproach);
+    setOpen(false);
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {variant === 'icon' ? (
           <Button
@@ -50,8 +67,8 @@ const TherapyApproachDialog = ({ variant = 'icon' }: TherapyApproachDialogProps)
         </DialogHeader>
         <div className="space-y-4 py-4">
           <RadioGroup
-            value={settings.approach}
-            onValueChange={(value) => setApproach(value as TherapyApproach)}
+            value={tempApproach}
+            onValueChange={(value) => setTempApproach(value as TherapyApproach)}
           >
             {THERAPY_APPROACHES.map((approach) => (
               <div key={approach.value} className="flex items-start gap-3">
@@ -75,6 +92,11 @@ const TherapyApproachDialog = ({ variant = 'icon' }: TherapyApproachDialogProps)
             ))}
           </RadioGroup>
         </div>
+        <DialogFooter>
+          <Button onClick={handleSave} className="w-full">
+            Save Changes
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
