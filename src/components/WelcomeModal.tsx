@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, CheckSquare, Sparkles, Library, Settings, Brain } from 'lucide-react';
+import { MessageCircle, CheckSquare, Sparkles, Library, Compass, Brain } from 'lucide-react';
 
 interface WelcomeModalProps {
   isOpen?: boolean;
@@ -83,7 +83,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
             {/* Settings info */}
             <div className="pt-4 border-t border-border/50 space-y-3">
               <div className="flex gap-3 items-start text-sm">
-                <Settings className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                <Compass className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                 <p className="text-muted-foreground">
                   <span className="font-medium text-foreground">Choose your modality</span> - Select from CBT, ACT, Stoicism, IFS or a blended approach
                 </p>

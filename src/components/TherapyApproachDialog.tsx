@@ -44,14 +44,14 @@ const TherapyApproachDialog = ({ variant = 'icon' }: TherapyApproachDialogProps)
             variant="ghost"
             size="icon"
             className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm"
-            title="Therapy Approach"
+            title="Therapy Modality"
           >
             <Compass className="h-5 w-5" />
           </Button>
         ) : (
           <Button variant="outline" className="gap-2">
             <Compass className="h-4 w-4" />
-            Therapy Approach
+            Therapy Modality
           </Button>
         )}
       </DialogTrigger>
@@ -59,7 +59,7 @@ const TherapyApproachDialog = ({ variant = 'icon' }: TherapyApproachDialogProps)
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Compass className="h-5 w-5 text-primary" />
-            Therapy Approach
+            Therapy Modality
           </DialogTitle>
           <DialogDescription>
             Choose which therapeutic framework guides your conversation. Blended combines all approaches.
