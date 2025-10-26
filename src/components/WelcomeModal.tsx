@@ -93,28 +93,6 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                     <p className="text-sm text-muted-foreground">Receive curated exercises, podcasts and books tailored to your needs</p>
                   </div>
                 </div>
-
-                {/* Settings info */}
-                <div className="pt-4 border-t border-border/50 space-y-3">
-                  <div className="flex gap-3 items-start text-sm">
-                    <Compass className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                    <p className="text-muted-foreground">
-                      <span className="font-medium text-foreground">Choose your modality</span> - Select from CBT, ACT, Stoicism, IFS or a blended approach
-                    </p>
-                  </div>
-                  <div className="flex gap-3 items-start text-sm">
-                    <Brain className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                    <p className="text-muted-foreground">
-                      <span className="font-medium text-foreground">Customize for neurodiversity</span> - Toggle plain language, content warnings and more
-                    </p>
-                  </div>
-                  <div className="flex gap-3 items-start text-sm">
-                    <Library className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                    <p className="text-muted-foreground">
-                      <span className="font-medium text-foreground">Access your library anytime</span> - All your past recommendations saved in one place
-                    </p>
-                  </div>
-                </div>
               </div>
             </>
           )}
@@ -160,12 +138,6 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                     <p className="text-sm text-muted-foreground">The only things we save are resources you explicitly bookmark: podcasts, books, and exercises from your recommendations. Your library is entirely under your control - add or remove items anytime.</p>
                   </div>
                 </div>
-
-                <div className="pt-4 border-t border-border/50">
-                  <p className="text-sm text-center text-muted-foreground">
-                    <span className="font-medium text-foreground">Privacy by design.</span> Our architecture is GDPR and HIPAA-friendly. Your mental health journey is ephemeral, private, and entirely yours.
-                  </p>
-                </div>
               </div>
             </>
           )}
@@ -209,16 +181,6 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   <div>
                     <h3 className="font-semibold mb-1">Save what resonates</h3>
                     <p className="text-sm text-muted-foreground">Found a helpful podcast, book, or exercise? Click the bookmark icon on any recommendation to save it to your Library for easy access later.</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <CheckSquare className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Engage with the validation screen</h3>
-                    <p className="text-sm text-muted-foreground">Taking a moment to review and confirm the emotions we identified helps us provide more accurate, personalized recommendations tailored to your needs.</p>
                   </div>
                 </div>
               </div>
