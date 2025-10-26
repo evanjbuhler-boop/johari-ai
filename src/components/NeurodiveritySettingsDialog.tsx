@@ -153,7 +153,7 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
                 Offer visual cues or summaries
               </Label>
               <p className="text-xs text-muted-foreground">
-                Include simple icons, illustrations or bullet points to highlight key points
+                Include icons, illustrations or bullet points to highlight key points
               </p>
             </div>
           </div>
