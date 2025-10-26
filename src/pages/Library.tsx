@@ -307,15 +307,75 @@ const Library = () => {
           <DialogHeader>
             <DialogTitle className="text-2xl">{selectedStory?.title}</DialogTitle>
           </DialogHeader>
-          {selectedStory && (
-            <div className="space-y-6 py-4">
-              <div className="prose prose-lg max-w-none">
-                <p className="text-base leading-relaxed whitespace-pre-line font-serif">
-                  {selectedStory.story_content}
-                </p>
-              </div>
-            </div>
-          )}
+          {selectedStory && (() => {
+            try {
+              const content = typeof selectedStory.story_content === 'string' 
+                ? JSON.parse(selectedStory.story_content) 
+                : selectedStory.story_content;
+              
+              return (
+                <div className="space-y-6 py-4">
+                  {content?.summary && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Summary</h3>
+                      <p className="text-base leading-relaxed text-muted-foreground">
+                        {content.summary}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {content?.themes && content.themes.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Key Themes</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {content.themes.map((theme: string, idx: number) => (
+                          <span 
+                            key={idx}
+                            className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full text-sm font-medium"
+                          >
+                            {theme}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {content?.fullExplanation && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Full Explanation</h3>
+                      <p className="text-base leading-relaxed text-muted-foreground whitespace-pre-line">
+                        {content.fullExplanation}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {content?.citations && content.citations.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">References</h3>
+                      <ul className="space-y-2">
+                        {content.citations.map((citation: any, idx: number) => (
+                          <li key={idx} className="text-sm text-muted-foreground">
+                            {citation.author} ({citation.year}). <em>{citation.title}</em>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              );
+            } catch (e) {
+              // Fallback for non-JSON content
+              return (
+                <div className="space-y-6 py-4">
+                  <div className="prose prose-lg max-w-none">
+                    <p className="text-base leading-relaxed whitespace-pre-line">
+                      {selectedStory.story_content}
+                    </p>
+                  </div>
+                </div>
+              );
+            }
+          })()}
         </DialogContent>
       </Dialog>
     </AppLayout>
