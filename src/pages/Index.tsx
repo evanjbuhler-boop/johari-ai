@@ -63,6 +63,23 @@ const Index = () => {
           // Also update localStorage for consistency
           localStorage.setItem('userProfile', JSON.stringify(userProfile));
         }
+        
+        // Check if there's a pending conversation to restore
+        const pendingConversation = localStorage.getItem('pendingConversation');
+        if (pendingConversation) {
+          const { messages: savedMessages, timestamp } = JSON.parse(pendingConversation);
+          // Only restore if less than 30 minutes old
+          if (Date.now() - timestamp < 30 * 60 * 1000) {
+            setMessages(savedMessages);
+            setState('chat');
+            toast({
+              title: "Welcome back!",
+              description: "Continuing your conversation...",
+            });
+          }
+          // Clear the pending conversation
+          localStorage.removeItem('pendingConversation');
+        }
       } else {
         // Fallback to localStorage for non-authenticated users
         const savedProfile = localStorage.getItem('userProfile');
@@ -192,6 +209,9 @@ const Index = () => {
       const chunks = breakIntoChunks(content);
       console.log('📦 Response broken into chunks:', chunks.length, chunks);
       
+      // Collect all messages for potential storage
+      const allMessages: Message[] = [userMessage];
+      
       // Send chunks sequentially with delays
       for (let i = 0; i < chunks.length; i++) {
         // Calculate typing delay based on chunk length
@@ -207,6 +227,7 @@ const Index = () => {
           timestamp: new Date().toISOString(),
           id: `msg-${Date.now()}-${i}`,
         };
+        allMessages.push(aiResponse);
         setMessages(prev => [...prev, aiResponse]);
         
         // Wait 1 second between chunks (except after the last one)
@@ -220,6 +241,12 @@ const Index = () => {
 
       // Prompt user to sign in after first message
       if (!user) {
+        // Store conversation state before redirecting
+        localStorage.setItem('pendingConversation', JSON.stringify({
+          messages: allMessages,
+          timestamp: Date.now()
+        }));
+        
         await new Promise(resolve => setTimeout(resolve, 800));
         toast({
           title: "Sign in to continue",
