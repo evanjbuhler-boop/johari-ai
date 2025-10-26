@@ -21,7 +21,21 @@ export const useNeurodiveritySettings = () => {
     const saved = localStorage.getItem('neurodiveritySettings');
     if (saved) {
       try {
-        return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        
+        // Migration: Remove old fields and only keep valid ones
+        const validSettings: NeurodiveritySettings = {
+          usePlainLanguage: parsed.usePlainLanguage ?? DEFAULT_SETTINGS.usePlainLanguage,
+          includeContentWarnings: parsed.includeContentWarnings ?? DEFAULT_SETTINGS.includeContentWarnings,
+          explainQuestions: parsed.explainQuestions ?? DEFAULT_SETTINGS.explainQuestions,
+          offerVisualCues: parsed.offerVisualCues ?? DEFAULT_SETTINGS.offerVisualCues,
+          geniusMode: parsed.geniusMode ?? DEFAULT_SETTINGS.geniusMode,
+        };
+        
+        // Save the cleaned settings back to localStorage
+        localStorage.setItem('neurodiveritySettings', JSON.stringify(validSettings));
+        
+        return validSettings;
       } catch {
         return DEFAULT_SETTINGS;
       }
