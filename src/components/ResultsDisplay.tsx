@@ -152,8 +152,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background pb-32">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-foreground">Nightingale</h1>
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-end">
           <Button 
             variant="outline" 
             onClick={() => navigate('/library')}
