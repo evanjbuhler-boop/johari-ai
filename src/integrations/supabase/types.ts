@@ -113,6 +113,7 @@ export type Database = {
           podcast_thumbnail: string | null
           podcast_urls: Json | null
           podcast_why_helps: string | null
+          preview: string | null
           story_content: string | null
           story_why_matters: string | null
           title: string
@@ -138,6 +139,7 @@ export type Database = {
           podcast_thumbnail?: string | null
           podcast_urls?: Json | null
           podcast_why_helps?: string | null
+          preview?: string | null
           story_content?: string | null
           story_why_matters?: string | null
           title: string
@@ -163,6 +165,7 @@ export type Database = {
           podcast_thumbnail?: string | null
           podcast_urls?: Json | null
           podcast_why_helps?: string | null
+          preview?: string | null
           story_content?: string | null
           story_why_matters?: string | null
           title?: string

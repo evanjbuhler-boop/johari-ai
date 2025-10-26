@@ -52,6 +52,23 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
   const isSaved = (id: string) => savedItems.has(id);
 
+  const generatePreview = (type: 'podcast' | 'book' | 'exercise' | 'story', title: string, content: any): string => {
+    if (type === 'podcast' && results.podcast) {
+      return results.podcast.whyThisHelps || results.podcast.description.slice(0, 150) + '...';
+    } else if (type === 'book' && results.book) {
+      return results.book.whyThisHelps || results.book.description.slice(0, 150) + '...';
+    } else if (type === 'exercise' && results.exercise) {
+      return results.exercise.description || 'A guided exercise to support your wellbeing.';
+    } else if (type === 'story') {
+      if (title === "What's Happening" && results.whatsHappening) {
+        return results.whatsHappening.summary.slice(0, 150) + '...';
+      } else if (results.story) {
+        return results.story.whyThisMatters?.slice(0, 150) + '...' || 'A perspective to help you reflect.';
+      }
+    }
+    return '';
+  };
+
   const toggleSave = async (id: string, type: 'podcast' | 'book' | 'exercise' | 'story', title: string, subtitle: string | undefined, content: any) => {
     if (!user) {
       toast.error('Please sign in to save items');
@@ -85,6 +102,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
         item_type: type,
         title,
         description: subtitle || '',
+        preview: generatePreview(type, title, content),
       };
 
       // Add type-specific fields

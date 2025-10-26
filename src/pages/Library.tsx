@@ -24,6 +24,7 @@ interface DbSavedItem {
   item_type: 'podcast' | 'book' | 'exercise' | 'story';
   title: string;
   description: string | null;
+  preview: string | null;
   podcast_host?: string | null;
   podcast_episode?: string | null;
   podcast_duration?: string | null;
@@ -273,8 +274,10 @@ const Library = () => {
                           <h3 className="text-xl font-bold text-foreground mb-2 leading-tight">
                             {item.title}
                           </h3>
-                          {item.description && (
-                            <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+                          {item.preview && (
+                            <p className="text-muted-foreground leading-relaxed text-sm">
+                              {item.preview}
+                            </p>
                           )}
                         </div>
                         <div className="text-right flex-shrink-0">
