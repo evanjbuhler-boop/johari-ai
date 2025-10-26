@@ -242,20 +242,38 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
         {/* Quotes Section */}
         {results.quotes && results.quotes.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-foreground px-2">Your Words</h2>
-            <div className="grid gap-4">
+            <h2 className="text-2xl font-semibold text-foreground px-2">Your Words</h2>
+            <div className="grid gap-6">
               {results.quotes.map((quote, idx) => (
                 <Card 
                   key={idx}
-                  className={`p-6 md:p-8 ${
-                    quote.sentiment === 'positive' ? 'bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border-l-4 border-green-400' :
-                    quote.sentiment === 'negative' ? 'bg-gradient-to-br from-rose-50/50 to-red-50/50 dark:from-rose-950/20 dark:to-red-950/20 border-l-4 border-rose-400' :
-                    'bg-card/50 border-l-4 border-muted'
+                  className={`relative p-8 md:p-10 overflow-hidden ${
+                    quote.sentiment === 'positive' 
+                      ? 'bg-gradient-to-br from-emerald-500/10 via-green-500/10 to-teal-500/10 border-l-4 border-emerald-400 shadow-lg shadow-emerald-500/10' 
+                      : quote.sentiment === 'negative' 
+                      ? 'bg-gradient-to-br from-rose-500/10 via-pink-500/10 to-red-500/10 border-l-4 border-rose-400 shadow-lg shadow-rose-500/10' 
+                      : 'bg-gradient-to-br from-purple-500/10 via-primary/10 to-indigo-500/10 border-l-4 border-primary shadow-lg'
                   }`}
                 >
-                  <p className="text-lg md:text-2xl leading-relaxed text-foreground italic font-serif">
-                    "{quote.text}"
-                  </p>
+                  {/* Decorative quote mark */}
+                  <div className="absolute top-4 left-4 text-6xl opacity-10 font-serif">
+                    "
+                  </div>
+                  
+                  <div className="relative">
+                    <p className="text-xl md:text-2xl leading-relaxed text-foreground font-serif italic">
+                      "{quote.text}"
+                    </p>
+                  </div>
+                  
+                  {/* Decorative accent */}
+                  <div className={`absolute bottom-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20 ${
+                    quote.sentiment === 'positive' 
+                      ? 'bg-emerald-400' 
+                      : quote.sentiment === 'negative' 
+                      ? 'bg-rose-400' 
+                      : 'bg-primary'
+                  }`}></div>
                 </Card>
               ))}
             </div>
