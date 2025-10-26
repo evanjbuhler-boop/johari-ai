@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import StageProgressBar from '@/components/StageProgressBar';
 import podcastPlaceholder from '@/assets/podcast-placeholder.png';
 import bookPlaceholder from '@/assets/book-placeholder.png';
+import exercisePlaceholder from '@/assets/exercise-placeholder.png';
 
 interface ResultsDisplayProps {
   results: CheckInResults;
@@ -469,9 +470,19 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               </Button>
             </div>
 
-            <div className="space-y-3">
-              <h3 className="text-lg font-medium text-foreground">{results.exercise.title}</h3>
-              <p className="text-base text-foreground/80 leading-relaxed">{results.exercise.description}</p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <img
+                src={exercisePlaceholder}
+                alt={`${results.exercise.title} illustration`}
+                className="w-full sm:w-[200px] h-[200px] object-cover rounded-lg shadow-md flex-shrink-0"
+              />
+
+              <div className="flex-1 space-y-3">
+                <div>
+                  <h3 className="text-lg font-medium text-foreground">{results.exercise.title}</h3>
+                  <p className="text-base text-foreground/80 leading-relaxed mt-2">{results.exercise.description}</p>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-3 mt-4">
