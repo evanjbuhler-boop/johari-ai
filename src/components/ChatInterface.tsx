@@ -375,16 +375,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                     msg.role === 'user' ? 'flex justify-end' : 'flex justify-start items-end gap-3'
                   }`}
                 >
-                  {/* Your Turn Indicator - to the left of last AI message */}
-                  {isLastAIMessage && !isLoading && (
-                    <div className="animate-in fade-in duration-500 mb-1">
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 shadow-sm">
-                        <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
-                        <span className="text-xs text-gray-600 font-medium">Your turn</span>
-                      </div>
-                    </div>
-                  )}
-                  
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div
@@ -405,6 +395,16 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                       })}
                     </TooltipContent>
                   </Tooltip>
+                  
+                  {/* Your Turn Indicator - to the right of last AI message */}
+                  {isLastAIMessage && !isLoading && (
+                    <div className="animate-in fade-in duration-500 mb-1">
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 shadow-sm">
+                        <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                        <span className="text-xs text-gray-600 font-medium">Your turn</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             );
