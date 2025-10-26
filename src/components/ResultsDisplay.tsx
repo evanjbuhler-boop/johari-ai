@@ -252,25 +252,20 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                   key={idx}
                   className="relative p-10 md:p-12 overflow-hidden border-none shadow-2xl"
                 >
-                  {/* Dark flowing gradient background */}
-                  <div className={`absolute inset-0 ${
-                    quote.sentiment === 'positive' 
-                      ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600' 
-                      : quote.sentiment === 'negative' 
-                      ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700' 
-                      : 'bg-gradient-to-br from-gray-800 via-slate-700 to-gray-700'
-                  }`}></div>
+                  {/* Astropunk blue gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900"></div>
                   
-                  {/* Subtle metallic overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-white/5 to-white/10 opacity-60" style={{ clipPath: 'ellipse(75% 55% at 25% 45%)' }}></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-white/5 opacity-40" style={{ clipPath: 'ellipse(65% 75% at 75% 55%)' }}></div>
+                  {/* Cosmic overlay layers */}
+                  <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-cyan-500/20 to-blue-400/30 opacity-60" style={{ clipPath: 'ellipse(75% 55% at 25% 45%)' }}></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-cyan-400/20 opacity-50" style={{ clipPath: 'ellipse(65% 75% at 75% 55%)' }}></div>
                   
-                  {/* Soft blur orbs for depth */}
-                  <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/10 blur-3xl opacity-20"></div>
-                  <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-black/30 blur-3xl opacity-30"></div>
+                  {/* Glowing orbs */}
+                  <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-cyan-400 blur-3xl opacity-20"></div>
+                  <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-indigo-500 blur-3xl opacity-25"></div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-blue-400 blur-2xl opacity-15"></div>
                   
                   {/* Large decorative quote mark */}
-                  <div className="absolute top-6 left-6 text-8xl opacity-10 font-serif text-white">
+                  <div className="absolute top-6 left-6 text-8xl opacity-10 font-serif text-cyan-300">
                     "
                   </div>
                   
@@ -282,7 +277,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                   </div>
                   
                   {/* Bottom accent glow */}
-                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/20 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/30 to-transparent"></div>
                 </Card>
               ))}
             </div>
@@ -344,7 +339,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
         {/* Resources Header */}
         <div className="pt-8">
-          <h2 className="text-2xl font-semibold text-foreground px-2 mb-6">Resources for You</h2>
+          <h2 className="text-2xl font-semibold text-white px-2 mb-6 drop-shadow-lg">Resources for You</h2>
         </div>
 
         {/* Podcast Recommendation */}
@@ -523,11 +518,11 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
         {/* Footer */}
         <div className="text-center pt-8 pb-4 space-y-4">
-          <p className="text-muted-foreground text-sm">
+          <p className="text-white text-sm drop-shadow">
             I'll be here tomorrow evening
           </p>
           <Button onClick={onNewCheckIn} size="lg" className="px-8">
-            Start New Check-in
+            End Session
           </Button>
         </div>
       </div>
