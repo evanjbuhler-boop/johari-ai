@@ -116,22 +116,34 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-br from-purple-900/95 via-pink-900/95 to-purple-900/95"
+      className="relative min-h-screen flex items-center justify-center px-6 py-12 overflow-hidden"
       onClick={handleSkip}
     >
-      <div className="w-full max-w-[560px] flex flex-col items-center text-center">
+      {/* Flowing gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-violet-500"></div>
+      
+      {/* Wave overlays */}
+      <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-violet-400/40 to-purple-300/60 opacity-50" style={{ clipPath: 'ellipse(75% 55% at 25% 45%)' }}></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-pink-300/40 via-transparent to-violet-400/40 opacity-40" style={{ clipPath: 'ellipse(65% 75% at 75% 55%)' }}></div>
+      
+      {/* Soft blur orbs */}
+      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-violet-400 blur-3xl opacity-30"></div>
+      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-pink-400 blur-3xl opacity-25"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-purple-400 blur-3xl opacity-20"></div>
+      
+      <div className="relative z-10 w-full max-w-[560px] flex flex-col items-center text-center">
         {/* Icon - fades in immediately */}
         <div 
           className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-400"
         >
-          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
             <Check className="w-6 h-6 text-white" />
           </div>
         </div>
 
         {/* Heading - fades in immediately */}
         <h1 
-          className="text-2xl sm:text-3xl font-semibold text-white mb-10 animate-in fade-in slide-in-from-bottom-2 duration-400"
+          className="text-2xl sm:text-3xl font-semibold text-white mb-10 animate-in fade-in slide-in-from-bottom-2 duration-400 drop-shadow-lg"
         >
           Here's what I'm hearing
         </h1>
@@ -148,11 +160,11 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
               }`}
             >
               <span 
-                className="flex-shrink-0 text-lg font-bold text-white"
+                className="flex-shrink-0 text-lg font-bold text-white drop-shadow"
               >
                 •
               </span>
-              <p className="text-base sm:text-lg text-white leading-relaxed text-center">
+              <p className="text-base sm:text-lg text-white leading-relaxed text-center drop-shadow">
                 {bullet}
               </p>
             </div>
@@ -161,7 +173,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
         {/* Validation line - appears after bullets */}
         <p 
-          className={`text-[15px] italic mb-10 transition-all duration-300 text-white/80 ${
+          className={`text-[15px] italic mb-10 transition-all duration-300 text-white/90 drop-shadow ${
             showValidation || prefersReducedMotion || skipped
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-3'
@@ -189,7 +201,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
         {/* Skip hint (only visible during animation) */}
         {!skipped && !prefersReducedMotion && !showButton && (
-          <p className="text-xs text-white/50 mt-6 opacity-50">
+          <p className="text-xs text-white/60 mt-6 opacity-60 drop-shadow">
             Tap anywhere to continue
           </p>
         )}

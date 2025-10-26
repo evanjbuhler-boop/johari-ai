@@ -170,26 +170,38 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
       <div className="max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6">
         
         {/* What's Happening Section */}
-        <Card className="p-8 md:p-10 bg-gradient-to-br from-background via-muted/10 to-background border-l-4 border-primary rounded-xl shadow-lg">
-          <div className="flex items-center justify-between gap-4 mb-6">
+        <Card className="relative p-8 md:p-10 overflow-hidden border-none shadow-2xl">
+          {/* Flowing gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 opacity-90"></div>
+          
+          {/* Wave overlays */}
+          <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-violet-300/40 to-purple-200/60 opacity-50" style={{ clipPath: 'ellipse(75% 55% at 25% 45%)' }}></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-200/40 via-transparent to-indigo-300/40 opacity-40" style={{ clipPath: 'ellipse(65% 75% at 75% 55%)' }}></div>
+          
+          {/* Soft blur orbs */}
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-violet-300 blur-3xl opacity-30"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-pink-300 blur-3xl opacity-25"></div>
+          
+          <div className="relative z-10 flex items-center justify-between gap-4 mb-6">
             <button
               onClick={() => setWhatsHappeningExpanded(!whatsHappeningExpanded)}
               className="flex items-center gap-4 text-left"
             >
-              <h2 className="text-2xl md:text-3xl font-medium text-foreground">What's Happening</h2>
-              {whatsHappeningExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+              <h2 className="text-2xl md:text-3xl font-medium text-white drop-shadow-lg">What's Happening</h2>
+              {whatsHappeningExpanded ? <ChevronUp className="w-5 h-5 text-white" /> : <ChevronDown className="w-5 h-5 text-white" />}
             </button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => toggleSave('whats-happening', 'story', "What's Happening", undefined, results.whatsHappening)}
+              className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
             >
               {isSaved('whats-happening') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
             </Button>
           </div>
 
-          <div className="mt-6 space-y-4">
-            <p className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-3xl">
+          <div className="relative z-10 mt-6 space-y-4">
+            <p className="text-lg md:text-xl text-white/95 leading-relaxed max-w-3xl drop-shadow">
               {results.whatsHappening.summary}
             </p>
             
@@ -199,7 +211,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                 {results.whatsHappening.themes.map((theme, idx) => (
                   <span 
                     key={idx}
-                    className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20"
+                    className="px-3 py-1.5 bg-white/20 backdrop-blur-sm text-white text-sm rounded-full border border-white/30"
                   >
                     {theme}
                   </span>
@@ -211,24 +223,24 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
           {!whatsHappeningExpanded && (
             <button
               onClick={() => setWhatsHappeningExpanded(true)}
-              className="text-primary font-medium hover:underline mt-4 text-sm"
+              className="relative z-10 text-white font-medium hover:underline mt-4 text-sm drop-shadow"
             >
               Read the full explanation →
             </button>
           )}
 
           {whatsHappeningExpanded && (
-            <div className="mt-6 pt-6 border-t border-border space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-              <p className="text-base text-foreground/80 leading-relaxed whitespace-pre-line">
+            <div className="relative z-10 mt-6 pt-6 border-t border-white/20 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+              <p className="text-base text-white/90 leading-relaxed whitespace-pre-line drop-shadow">
                 {results.whatsHappening.fullExplanation}
               </p>
 
               {results.whatsHappening.citations && results.whatsHappening.citations.length > 0 && (
-                <div className="mt-6 pt-4 border-t border-border">
-                  <p className="text-sm font-semibold text-foreground/90 mb-2">📚 Related Research:</p>
+                <div className="mt-6 pt-4 border-t border-white/20">
+                  <p className="text-sm font-semibold text-white/95 mb-2 drop-shadow">📚 Related Research:</p>
                   <ul className="space-y-1">
                     {results.whatsHappening.citations.map((citation, idx) => (
-                      <li key={idx} className="text-sm text-muted-foreground">
+                      <li key={idx} className="text-sm text-white/80 drop-shadow">
                         • {citation.author} ({citation.year}). {citation.title}
                       </li>
                     ))}
@@ -237,6 +249,9 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               )}
             </div>
           )}
+          
+          {/* Bottom accent glow */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/10 to-transparent"></div>
         </Card>
 
         {/* Quotes Section */}
@@ -314,54 +329,83 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
         {/* Reframing Section */}
         {results.reframing && (
-          <Card className="p-8 md:p-10 bg-gradient-to-br from-accent/5 via-secondary/5 to-primary/5 border-none shadow-lg">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">🔄</span>
-              <h2 className="text-2xl font-semibold text-foreground">A Different Lens</h2>
+          <Card className="relative p-8 md:p-10 overflow-hidden border-none shadow-2xl">
+            {/* Flowing gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 via-blue-400 to-indigo-400 opacity-90"></div>
+            
+            {/* Wave overlays */}
+            <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-blue-300/40 to-cyan-200/60 opacity-50" style={{ clipPath: 'ellipse(70% 60% at 30% 40%)' }}></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-200/40 via-transparent to-cyan-300/40 opacity-40" style={{ clipPath: 'ellipse(60% 70% at 70% 60%)' }}></div>
+            
+            {/* Soft blur orbs */}
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-blue-300 blur-3xl opacity-30"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-cyan-300 blur-3xl opacity-25"></div>
+            
+            <div className="relative z-10 flex items-center gap-3 mb-6">
+              <span className="text-3xl">🔄</span>
+              <h2 className="text-2xl font-semibold text-white drop-shadow-lg">A Different Lens</h2>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-base md:text-lg text-foreground/90 leading-relaxed whitespace-pre-line">
+            <div className="relative z-10 prose prose-lg dark:prose-invert max-w-none">
+              <p className="text-base md:text-lg text-white/95 leading-relaxed whitespace-pre-line drop-shadow">
                 {results.reframing.content}
               </p>
             </div>
+            
+            {/* Bottom accent glow */}
+            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/10 to-transparent"></div>
           </Card>
         )}
 
         {/* Story Card */}
         {results.story && (
-          <Card className="p-8 md:p-10 bg-gradient-to-br from-secondary/5 to-muted/30 shadow-lg">
-            <div className="flex items-center justify-between gap-3 mb-6">
+          <Card className="relative p-8 md:p-10 overflow-hidden border-none shadow-2xl">
+            {/* Flowing gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400 opacity-90"></div>
+            
+            {/* Wave overlays */}
+            <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-orange-300/40 to-amber-200/60 opacity-50" style={{ clipPath: 'ellipse(75% 55% at 25% 45%)' }}></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-rose-200/40 via-transparent to-amber-300/40 opacity-40" style={{ clipPath: 'ellipse(65% 75% at 75% 55%)' }}></div>
+            
+            {/* Soft blur orbs */}
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-orange-300 blur-3xl opacity-30"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-rose-300 blur-3xl opacity-25"></div>
+            
+            <div className="relative z-10 flex items-center justify-between gap-3 mb-6">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">📖</span>
-                <h2 className="text-2xl font-semibold text-foreground">A Story for You</h2>
+                <h2 className="text-2xl font-semibold text-white drop-shadow-lg">A Story for You</h2>
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
+                className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
               >
                 {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
               </Button>
             </div>
 
-            <div className="space-y-6">
-              <div className="bg-card/50 p-6 rounded-lg border border-border">
-                <h3 className="text-xl font-medium text-foreground mb-2">{results.story.title}</h3>
-                <p className="text-sm text-muted-foreground italic mb-4">{results.story.culturalOrigin}</p>
-                <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-line font-serif">
+            <div className="relative z-10 space-y-6">
+              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border border-white/20">
+                <h3 className="text-xl font-medium text-white mb-2 drop-shadow">{results.story.title}</h3>
+                <p className="text-sm text-white/80 italic mb-4 drop-shadow">{results.story.culturalOrigin}</p>
+                <p className="text-base leading-relaxed text-white/95 whitespace-pre-line font-serif drop-shadow">
                   {results.story.content}
                 </p>
               </div>
 
               <div className="pt-4">
-                <p className="text-sm font-semibold text-foreground/90 mb-3 flex items-center gap-2">
+                <p className="text-sm font-semibold text-white/95 mb-3 flex items-center gap-2 drop-shadow">
                   <span>💭</span> Why this speaks to your experience:
                 </p>
-                <p className="text-base text-foreground/80 leading-relaxed">
+                <p className="text-base text-white/90 leading-relaxed drop-shadow">
                   {results.story.whyThisMatters}
                 </p>
               </div>
             </div>
+            
+            {/* Bottom accent glow */}
+            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/10 to-transparent"></div>
           </Card>
         )}
 
