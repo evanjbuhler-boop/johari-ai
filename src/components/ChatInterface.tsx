@@ -8,10 +8,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import StageProgressBar from '@/components/StageProgressBar';
 import ChatInputBar from '@/components/ChatInputBar';
+import BreathingExerciseModal from '@/components/BreathingExerciseModal';
 import FinishChatButton from '@/components/FinishChatButton';
 import {
   detectEmotionFromMessage,
-  getEmotionGradient
+  getEmotionGradient,
+  shouldTriggerBreathing
 } from '@/components/EmotionDetector';
 import {
   Tooltip,
@@ -54,6 +56,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   
   // NEW: Emotion detection & adaptive UI
   const [detectedEmotion, setDetectedEmotion] = useState<EmotionState>('neutral');
+  const [showBreathingExercise, setShowBreathingExercise] = useState(false);
   const [showFinishButton, setShowFinishButton] = useState(false);
   const [conversationStartTime] = useState<number>(Date.now());
   const [conversationDuration, setConversationDuration] = useState(0);
@@ -126,7 +129,13 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     if (emotion !== 'neutral') {
       setDetectedEmotion(emotion);
     }
-  }, [messages, isLoading]);
+    
+    // Check if breathing exercise should trigger
+    if (shouldTriggerBreathing(emotion, lastUserMessage.content) && !showBreathingExercise) {
+      const timer = setTimeout(() => setShowBreathingExercise(true), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [messages, isLoading, showBreathingExercise]);
 
   // Separate effect for contextual educational tips
   useEffect(() => {
@@ -216,23 +225,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       }
     }
   }, [messages, exchangeCount, conversationPath, isLoading, sidebar.dismissedPhases, tipsDisabled]);
-
-  const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
-    setConversationPath(path);
-    
-    // Mark buttons as used in the message
-    setMessages(prev => prev.map(msg => 
-      msg.showPathButtons ? { ...msg, pathButtonsUsed: true } : msg
-    ));
-    
-    // For venting mode, switch to VentingMode component
-    if (path === 'venting_session' && onVentingModeSelected) {
-      onVentingModeSelected();
-      return;
-    }
-    
-    onSendMessage(path === 'nightly_routine' ? 'Do my nightly routine' : 'I just need to vent', path);
-  };
 
   const handleSidebarDismiss = () => {
     if (sidebar.phase) {
@@ -326,6 +318,13 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   
   return (
     <div className="min-h-screen flex flex-col relative animate-in fade-in duration-700">
+      {/* NEW: Breathing Exercise Modal */}
+      {showBreathingExercise && (
+        <BreathingExerciseModal 
+          onClose={() => setShowBreathingExercise(false)}
+        />
+      )}
+      
       {/* Educational Sidebar */}
       {sidebar.visible && sidebar.phase && (
         <EducationalSidebar 
@@ -378,47 +377,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                
-                {/* Inline Path Selection Buttons - attached to message with showPathButtons flag */}
-                {msg.showPathButtons && !conversationPath && !msg.pathButtonsUsed && !isLoading && (
-                  <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex justify-start mt-4">
-                    <div className="max-w-[85%] space-y-4">
-                      <p className="text-sm text-white/80 mb-3">Would you like to:</p>
-                      <button
-                        onClick={() => handlePathSelection('nightly_routine')}
-                        className="w-full text-left p-6 rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-200 bg-white/95 backdrop-blur-md hover:bg-white shadow-lg group"
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
-                            <CheckCircle className="h-5 w-5 text-purple-600" />
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-base mb-1 text-gray-900">Do your nightly routine</h3>
-                            <p className="text-sm text-gray-600">Structured check-in to help you process and wind down</p>
-                          </div>
-                        </div>
-                      </button>
-                      <button
-                        onClick={() => handlePathSelection('venting_session')}
-                        className="w-full text-left p-6 rounded-2xl border-2 border-white/30 hover:border-white/60 transition-all duration-200 bg-white/95 backdrop-blur-md hover:bg-white shadow-lg group"
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
-                            <MessageSquare className="h-5 w-5 text-purple-600" />
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-base mb-1 text-gray-900">Just vent right now</h3>
-                            <p className="text-sm text-gray-600">Talk freely—I'm here to listen</p>
-                          </div>
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-          </TooltipProvider>
+              
           
           {/* Summary Offer */}
           {showSummaryOffer && !isLoading && !summaryLoading && (
