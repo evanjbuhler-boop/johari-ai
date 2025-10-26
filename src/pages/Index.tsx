@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LandingPrompt from '@/components/LandingPrompt';
@@ -34,6 +35,7 @@ const Index = () => {
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { settings } = useNeurodiveritySettings();
   const { settings: therapySettings } = useTherapyApproach();
@@ -215,6 +217,17 @@ const Index = () => {
       
       // Turn off loading indicator after ALL chunks are sent
       setIsLoading(false);
+
+      // Prompt user to sign in after first message
+      if (!user) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        toast({
+          title: "Sign in to continue",
+          description: "Create an account to save your progress and access your library",
+        });
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        navigate('/auth');
+      }
     } catch (error) {
       console.error('Error getting AI response:', error);
       
