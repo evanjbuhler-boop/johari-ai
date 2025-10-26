@@ -34,6 +34,7 @@ const Index = () => {
   const [validationData, setValidationData] = useState<ValidationData | null>(null);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasSavedConversation, setHasSavedConversation] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -42,6 +43,10 @@ const Index = () => {
 
   // Load user profile from database if authenticated, otherwise check localStorage
   useEffect(() => {
+    // Check for saved conversation
+    const savedConversation = localStorage.getItem('savedConversation');
+    setHasSavedConversation(!!savedConversation);
+    
     const loadProfile = async () => {
       if (user) {
         // Fetch from database for authenticated users
@@ -64,7 +69,7 @@ const Index = () => {
           localStorage.setItem('userProfile', JSON.stringify(userProfile));
         }
         
-        // Check if there's a pending conversation to restore
+        // Check if there's a pending conversation to restore (from sign-in flow)
         const pendingConversation = localStorage.getItem('pendingConversation');
         if (pendingConversation) {
           const { messages: savedMessages, timestamp } = JSON.parse(pendingConversation);
@@ -90,7 +95,7 @@ const Index = () => {
     };
 
     loadProfile();
-  }, [user]);
+  }, [user, toast]);
 
   // Extract validation data from conversation
   const extractValidationData = (messages: Message[]): ValidationData => {
@@ -381,6 +386,10 @@ const Index = () => {
   };
 
   const handleChatComplete = async () => {
+    // Clear any saved conversation since we're completing it
+    localStorage.removeItem('savedConversation');
+    setHasSavedConversation(false);
+    
     // Show processing state immediately with enhanced loading screen
     setProcessingType('validation');
     setState('processing');
@@ -521,6 +530,38 @@ const Index = () => {
     setResults(null);
     setValidationData(null);
     setState('landing');
+    // Clear any saved conversation
+    localStorage.removeItem('savedConversation');
+    setHasSavedConversation(false);
+  };
+
+  const handlePause = () => {
+    // Save current conversation state
+    localStorage.setItem('savedConversation', JSON.stringify({
+      messages,
+      conversationPath,
+      timestamp: Date.now()
+    }));
+    setHasSavedConversation(true);
+    setState('landing');
+    toast({
+      title: "Conversation saved",
+      description: "You can resume this conversation anytime",
+    });
+  };
+
+  const handleResume = () => {
+    const savedConversation = localStorage.getItem('savedConversation');
+    if (savedConversation) {
+      const { messages: savedMessages, conversationPath: savedPath } = JSON.parse(savedConversation);
+      setMessages(savedMessages);
+      setConversationPath(savedPath);
+      setState('chat');
+      toast({
+        title: "Conversation resumed",
+        description: "Welcome back! Pick up where you left off",
+      });
+    }
   };
 
   const handleVentingModeSelected = () => {
@@ -560,7 +601,11 @@ const Index = () => {
           <Info className="h-4 w-4" />
         </Button>
         
-        <LandingPrompt onSubmit={handleLandingSubmit} />
+        <LandingPrompt 
+          onSubmit={handleLandingSubmit}
+          onResume={handleResume}
+          hasSavedConversation={hasSavedConversation}
+        />
       </AppLayout>
     );
   }
@@ -575,6 +620,7 @@ const Index = () => {
           setMessages={setMessages}
           onSendMessage={handleSendMessage}
           onBack={handleNewCheckIn}
+          onPause={handlePause}
           isLoading={isLoading}
           onVentingModeSelected={handleVentingModeSelected}
         />

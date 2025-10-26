@@ -28,6 +28,7 @@ interface ChatInterfaceProps {
   messages: Message[];
   onSendMessage: (message: string, pathSelection?: string) => void;
   onBack: () => void;
+  onPause?: () => void;
   isLoading: boolean;
   onVentingModeSelected?: () => void;
   setMessages?: React.Dispatch<React.SetStateAction<Message[]>>;
@@ -35,7 +36,7 @@ interface ChatInterfaceProps {
 
 type SidebarPhase = 'highlight' | 'worry' | 'lifestyle' | 'uncertainty' | 'sleep' | 'conflict' | 'guilt' | 'rumination' | 'avoidance';
 
-const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, isLoading, onVentingModeSelected, setMessages }: ChatInterfaceProps) => {
+const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, onPause, isLoading, onVentingModeSelected, setMessages }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
@@ -578,8 +579,17 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
           
           {/* NEW: Finish Chat Button */}
           {showFinishButton && (
-            <div className="max-w-4xl mx-auto w-full px-4">
+            <div className="max-w-4xl mx-auto w-full px-4 space-y-3">
               <FinishChatButton onClick={onComplete} />
+              {onPause && (
+                <Button
+                  onClick={onPause}
+                  variant="outline"
+                  className="w-full py-6 text-base"
+                >
+                  Pause & Save for Later
+                </Button>
+              )}
             </div>
           )}
           

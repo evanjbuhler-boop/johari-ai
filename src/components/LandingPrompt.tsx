@@ -5,9 +5,11 @@ import VoiceRecorder from '@/components/VoiceRecorder';
 
 interface LandingPromptProps {
   onSubmit: (message: string) => void;
+  onResume?: () => void;
+  hasSavedConversation?: boolean;
 }
 
-const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
+const LandingPrompt = ({ onSubmit, onResume, hasSavedConversation }: LandingPromptProps) => {
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'type' | 'speak'>('type');
 
@@ -62,6 +64,23 @@ const LandingPrompt = ({ onSubmit }: LandingPromptProps) => {
             How was your day?
           </h1>
         </div>
+
+        {/* Resume conversation banner */}
+        {hasSavedConversation && onResume && (
+          <div className="mb-6 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
+            <div className="bg-white/90 dark:bg-card/90 backdrop-blur-xl rounded-2xl p-6 shadow-xl">
+              <p className="text-sm text-muted-foreground mb-3">You have a saved conversation</p>
+              <Button
+                onClick={onResume}
+                size="lg"
+                className="w-full text-lg h-12"
+                variant="outline"
+              >
+                Resume Previous Conversation
+              </Button>
+            </div>
+          </div>
+        )}
 
         <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-500">
           <div 
