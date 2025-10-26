@@ -436,6 +436,9 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               >
                 {isSaved('book-' + results.book.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
               </Button>
+              <Button variant="outline" onClick={() => handleShare(results.book!.title)}>
+                <Share2 className="w-4 h-4" />
+              </Button>
             </div>
           </Card>
         )}
