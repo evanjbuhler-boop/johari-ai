@@ -67,12 +67,21 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const { toast } = useToast();
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
   
-  // Calculate progress percentage based on emotional depth (min 3 exchanges, natural max ~7)
-  const progressPercentage = Math.min(100, Math.floor((exchangeCount / 7) * 100));
+  // Calculate progress percentage based on when finish button will appear (min 8 mins OR 10 exchanges)
+  const TIME_THRESHOLD_SECONDS = 480; // 8 minutes
+  const MESSAGE_THRESHOLD = 10; // Lowered from 25 for better UX
   
-  // Calculate time estimate (assuming ~1 min per exchange, max 7 exchanges)
-  const remainingExchanges = Math.max(0, 7 - exchangeCount);
-  const estimatedMinutes = Math.max(1, Math.ceil(remainingExchanges * 0.8)); // Slightly optimistic
+  // Progress from both time and message count
+  const timeProgress = (conversationDuration / TIME_THRESHOLD_SECONDS) * 100;
+  const messageProgress = (exchangeCount / MESSAGE_THRESHOLD) * 100;
+  const progressPercentage = Math.min(100, Math.floor(Math.max(timeProgress, messageProgress)));
+  
+  // Calculate time estimate based on actual thresholds
+  const timeRemaining = Math.max(0, TIME_THRESHOLD_SECONDS - conversationDuration);
+  const messagesRemaining = Math.max(0, MESSAGE_THRESHOLD - exchangeCount);
+  
+  // Show whichever will happen first
+  const estimatedMinutes = Math.max(1, Math.ceil(Math.min(timeRemaining / 60, messagesRemaining * 0.8)));
   
   // Track conversation duration
   useEffect(() => {
@@ -110,8 +119,10 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   
   // Separate effect for finish button based on time/messages
   useEffect(() => {
-    const timeThreshold = conversationDuration >= 480; // 8 minutes
-    const messageThreshold = exchangeCount >= 25; // After 25 messages
+    const TIME_THRESHOLD_SECONDS = 480; // 8 minutes
+    const MESSAGE_THRESHOLD = 10; // Lowered from 25 for better UX
+    const timeThreshold = conversationDuration >= TIME_THRESHOLD_SECONDS;
+    const messageThreshold = exchangeCount >= MESSAGE_THRESHOLD;
     if ((timeThreshold || messageThreshold) && !showFinishButton) {
       setShowFinishButton(true);
     }
