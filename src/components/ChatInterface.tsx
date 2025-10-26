@@ -67,9 +67,9 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const { toast } = useToast();
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
   
-  // Calculate progress percentage based on when finish button will appear (min 8 mins OR 10 exchanges)
+  // Calculate progress percentage based on when finish button will appear (8 mins OR 34 exchanges)
   const TIME_THRESHOLD_SECONDS = 480; // 8 minutes
-  const MESSAGE_THRESHOLD = 10; // Lowered from 25 for better UX
+  const MESSAGE_THRESHOLD = 34;
   
   // Progress from both time and message count
   const timeProgress = (conversationDuration / TIME_THRESHOLD_SECONDS) * 100;
@@ -120,7 +120,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   // Separate effect for finish button based on time/messages
   useEffect(() => {
     const TIME_THRESHOLD_SECONDS = 480; // 8 minutes
-    const MESSAGE_THRESHOLD = 10; // Lowered from 25 for better UX
+    const MESSAGE_THRESHOLD = 34;
     const timeThreshold = conversationDuration >= TIME_THRESHOLD_SECONDS;
     const messageThreshold = exchangeCount >= MESSAGE_THRESHOLD;
     if ((timeThreshold || messageThreshold) && !showFinishButton) {
