@@ -507,14 +507,14 @@ const Index = () => {
           onOpenChange={setWelcomeModalOpen}
         />
         
-        {/* Info button in bottom right */}
+        {/* Info button in bottom left */}
         <Button
           onClick={() => setWelcomeModalOpen(true)}
           size="icon"
-          variant="outline"
-          className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg hover:scale-110 transition-transform z-50"
+          variant="ghost"
+          className="fixed bottom-6 left-6 h-10 w-10 rounded-full hover:scale-110 transition-transform z-50 bg-transparent"
         >
-          <Info className="h-5 w-5" />
+          <Info className="h-4 w-4" />
         </Button>
         
         <LandingPrompt onSubmit={handleLandingSubmit} />
