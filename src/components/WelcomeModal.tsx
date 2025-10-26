@@ -47,13 +47,13 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="max-w-2xl p-0 gap-0 border-0">
-        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-xl">
+        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-xl min-h-[650px] flex flex-col">
           
           {/* Step 1: How It Works */}
           {step === 1 && (
             <>
               {/* Header */}
-              <div className="p-8 text-center border-b border-border/50">
+              <div className="p-8 text-center border-b border-border/50 flex-shrink-0">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 mb-4">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
@@ -63,7 +63,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
               </div>
 
               {/* Steps */}
-              <div className="p-8 space-y-6">
+              <div className="p-8 space-y-6 flex-1">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                     <MessageCircle className="w-6 h-6 text-primary" />
@@ -122,7 +122,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
           {/* Step 2: Privacy & Trust */}
           {step === 2 && (
             <>
-              <div className="p-8 text-center border-b border-border/50">
+              <div className="p-8 text-center border-b border-border/50 flex-shrink-0">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 mb-4">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
@@ -130,7 +130,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                 <p className="text-muted-foreground">Built with privacy-first design from the ground up</p>
               </div>
 
-              <div className="p-8 space-y-6">
+              <div className="p-8 space-y-6 flex-1">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
                     <Trash2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
@@ -173,7 +173,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
           {/* Step 3: Quick Start Tips */}
           {step === 3 && (
             <>
-              <div className="p-8 text-center border-b border-border/50">
+              <div className="p-8 text-center border-b border-border/50 flex-shrink-0">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 mb-4">
                   <Lightbulb className="w-8 h-8 text-white" />
                 </div>
@@ -181,7 +181,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                 <p className="text-muted-foreground">Make the most of your experience</p>
               </div>
 
-              <div className="p-8 space-y-6">
+              <div className="p-8 space-y-6 flex-1">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
                     <Compass className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -226,7 +226,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
           )}
 
           {/* Footer with step indicator and button */}
-          <div className="p-8 pt-4 space-y-4">
+          <div className="p-8 pt-4 space-y-4 flex-shrink-0">
             {/* Step dots */}
             <div className="flex justify-center gap-2">
               <div className={`h-2 w-2 rounded-full transition-all ${step === 1 ? 'bg-primary w-6' : 'bg-muted-foreground/30'}`} />
