@@ -187,11 +187,6 @@ const Index = () => {
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
         
-        // Turn off loading indicator after first chunk starts appearing
-        if (i === 0) {
-          setIsLoading(false);
-        }
-        
         // Add the chunk as a new message
         // On the LAST chunk of the initial response, add path selection buttons
         const isLastChunk = i === chunks.length - 1;
@@ -208,9 +203,11 @@ const Index = () => {
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
+      
+      // Turn off loading indicator after ALL chunks are sent
+      setIsLoading(false);
     } catch (error) {
       console.error('Error getting AI response:', error);
-      setIsLoading(false);
       
       // Fallback to mock AI response
       const mockContent = getMockAIResponse([userMessage]);
@@ -220,11 +217,6 @@ const Index = () => {
       for (let i = 0; i < chunks.length; i++) {
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
-        
-        // Turn off loading indicator after first chunk starts appearing
-        if (i === 0) {
-          setIsLoading(false);
-        }
         
         const isLastChunk = i === chunks.length - 1;
         const aiResponse: Message = {
@@ -239,6 +231,9 @@ const Index = () => {
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
+      
+      // Turn off loading indicator after ALL chunks are sent
+      setIsLoading(false);
       
       toast({
         title: "Using offline mode",
@@ -286,11 +281,6 @@ const Index = () => {
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
         
-        // Turn off loading indicator after first chunk starts appearing
-        if (i === 0) {
-          setIsLoading(false);
-        }
-        
         const aiResponse: Message = {
           role: 'assistant',
           content: chunks[i],
@@ -303,9 +293,11 @@ const Index = () => {
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
+      
+      // Turn off loading indicator after ALL chunks are sent
+      setIsLoading(false);
     } catch (error) {
       console.error('Error getting AI response:', error);
-      setIsLoading(false);
       
       // Fallback to mock AI response
       const mockContent = getMockAIResponse(updatedMessages);
@@ -316,11 +308,6 @@ const Index = () => {
         const typingDelay = Math.min(1000 + (chunks[i].length * 50), 4000);
         await new Promise(resolve => setTimeout(resolve, typingDelay));
         
-        // Turn off loading indicator after first chunk starts appearing
-        if (i === 0) {
-          setIsLoading(false);
-        }
-        
         const aiResponse: Message = {
           role: 'assistant',
           content: chunks[i],
@@ -333,6 +320,9 @@ const Index = () => {
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
+      
+      // Turn off loading indicator after ALL chunks are sent
+      setIsLoading(false);
       
       toast({
         title: "Using offline mode",
