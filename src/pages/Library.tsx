@@ -93,9 +93,23 @@ const Library = () => {
       const desc = item.description || 'A book recommendation for you.';
       return author + desc;
     } else if (item.item_type === 'exercise') {
-      const steps = item.exercise_steps ? ` It includes ${JSON.parse(item.exercise_steps as any).length} guided steps.` : '';
+      let stepsInfo = '';
+      if (item.exercise_steps) {
+        try {
+          // Handle both object and string formats
+          const steps = typeof item.exercise_steps === 'string' 
+            ? JSON.parse(item.exercise_steps)
+            : item.exercise_steps;
+          if (Array.isArray(steps) && steps.length > 0) {
+            stepsInfo = ` It includes ${steps.length} guided steps.`;
+          }
+        } catch (e) {
+          // If parsing fails, just skip the steps info
+          console.debug('Could not parse exercise steps:', e);
+        }
+      }
       const desc = item.description || 'A simple exercise to help you process your feelings and articulate them.';
-      return desc + steps;
+      return desc + stepsInfo;
     } else if (item.item_type === 'story') {
       if (item.title === "What's Happening") {
         try {
@@ -107,6 +121,7 @@ const Library = () => {
           }
         } catch (e) {
           // Fall through to default
+          console.debug('Could not parse story content:', e);
         }
         return 'A summary of your check-in session and key insights.';
       }
