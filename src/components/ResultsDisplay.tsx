@@ -1,7 +1,13 @@
 import { CheckInResults, SavedItem } from '@/types/checkin';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, BookOpen, Share2, Library } from 'lucide-react';
+import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, BookOpen, Share2, Library, ExternalLink, Music } from 'lucide-react';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -119,23 +125,66 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
     }
   };
 
-  const handlePodcastPlay = () => {
+  const addUTMParams = (url: string) => {
+    const utmParams = 'utm_source=johari&utm_medium=web';
+    return url.includes('?') ? `${url}&${utmParams}` : `${url}?${utmParams}`;
+  };
+
+  const handlePodcastPlay = (platform: 'spotify' | 'apple' | 'direct' = 'spotify') => {
     if (!results.podcast) return;
-    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-    const url = isIOS ? results.podcast.urls.applePodcasts : results.podcast.urls.spotify;
-    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+    
+    let url = '';
+    if (platform === 'spotify' && results.podcast.urls.spotify) {
+      url = results.podcast.urls.spotify;
+    } else if (platform === 'apple' && results.podcast.urls.applePodcasts) {
+      url = results.podcast.urls.applePodcasts;
+    } else if (platform === 'direct' && results.podcast.urls.direct) {
+      url = results.podcast.urls.direct;
+    }
+    
+    if (url) {
+      window.open(addUTMParams(url), '_blank', 'noopener,noreferrer');
+    } else {
+      toast.error('Link unavailable, please try another platform');
+    }
   };
 
   const handleBookRead = () => {
     if (results.book?.sampleUrl) {
-      window.open(results.book.sampleUrl, '_blank', 'noopener noreferrer');
+      window.open(addUTMParams(results.book.sampleUrl), '_blank', 'noopener noreferrer');
     }
   };
 
-  const handleBookPurchase = () => {
-    if (results.book?.purchaseUrl) {
-      window.open(results.book.purchaseUrl, '_blank', 'noopener noreferrer');
+  const handleBookPurchase = (store: 'bookshop' | 'bn' | 'amazon' = 'bookshop') => {
+    if (!results.book) return;
+    
+    // For now, use purchaseUrl as primary - in production, you'd want different URLs per store
+    if (results.book.purchaseUrl) {
+      window.open(addUTMParams(results.book.purchaseUrl), '_blank', 'noopener noreferrer');
+    } else {
+      toast.error('Purchase link unavailable');
     }
+  };
+
+  const getSpotifyEmbedUrl = (spotifyUrl: string | undefined): string | null => {
+    if (!spotifyUrl) return null;
+    
+    // Convert Spotify URL to embed format
+    // Example: https://open.spotify.com/episode/EXAMPLE -> https://open.spotify.com/embed/episode/EXAMPLE
+    try {
+      const url = new URL(spotifyUrl);
+      if (url.hostname === 'open.spotify.com') {
+        return `https://open.spotify.com/embed${url.pathname}`;
+      }
+    } catch {
+      return null;
+    }
+    return null;
+  };
+
+  const getGoogleBooksEmbedUrl = (isbn: string | undefined): string | null => {
+    if (!isbn) return null;
+    return `https://books.google.com/books?isbn=${isbn}&printsec=frontcover&output=embed`;
   };
 
   const handleShare = async (title: string) => {
@@ -380,14 +429,32 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <img
-                src={podcastPlaceholder}
-                alt={`${results.podcast.title} artwork`}
-                className="w-full sm:w-[200px] h-[200px] object-cover rounded-lg shadow-md flex-shrink-0"
-              />
+            <div className="grid md:grid-cols-[300px_1fr] gap-6">
+              {/* Left column: Embed player */}
+              <div className="space-y-4">
+                {getSpotifyEmbedUrl(results.podcast.urls.spotify) ? (
+                  <div className="w-full">
+                    <iframe
+                      src={getSpotifyEmbedUrl(results.podcast.urls.spotify)!}
+                      width="100%"
+                      height="232"
+                      frameBorder="0"
+                      allow="encrypted-media"
+                      title={`${results.podcast.title} - Spotify Player`}
+                      className="rounded-lg"
+                    />
+                  </div>
+                ) : (
+                  <img
+                    src={podcastPlaceholder}
+                    alt={`${results.podcast.title} artwork`}
+                    className="w-full h-[232px] object-cover rounded-lg shadow-md"
+                  />
+                )}
+              </div>
 
-              <div className="flex-1 space-y-3">
+              {/* Right column: Details */}
+              <div className="flex-1 space-y-4">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{results.podcast.title}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400 italic">Hosted by {results.podcast.host}</p>
@@ -398,23 +465,37 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                 <p className="text-base text-gray-700 dark:text-gray-300 leading-7">
                   {results.podcast.description}
                 </p>
+
+                <div className="pt-3 border-t border-border">
+                  <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                    <span>💬</span> Why this might help:
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 italic">
+                    {results.podcast.whyThisHelps}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <Button onClick={() => handlePodcastPlay('spotify')} className="gap-2">
+                    <Music className="w-4 h-4" />
+                    Play on Spotify
+                  </Button>
+                  
+                  {results.podcast.urls.applePodcasts && (
+                    <Button onClick={() => handlePodcastPlay('apple')} variant="outline" className="gap-2">
+                      <ExternalLink className="w-4 h-4" />
+                      Apple Podcasts
+                    </Button>
+                  )}
+                  
+                  {results.podcast.urls.direct && (
+                    <Button onClick={() => handlePodcastPlay('direct')} variant="outline" className="gap-2">
+                      <ExternalLink className="w-4 h-4" />
+                      Open in Browser
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-border">
-              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                <span>💬</span> Why this might help:
-              </p>
-              <p className="text-xs text-gray-600 dark:text-gray-400 italic">
-                {results.podcast.whyThisHelps}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3 mt-4">
-              <Button onClick={handlePodcastPlay} className="flex-1 sm:flex-none gap-2">
-                <Play className="w-4 h-4" />
-                Play Episode
-              </Button>
             </div>
           </Card>
         )}
@@ -441,14 +522,18 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <img
-                src={bookPlaceholder}
-                alt={`${results.book.title} cover`}
-                className="w-full sm:w-[200px] h-[300px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border flex-shrink-0"
-              />
+            <div className="flex flex-col sm:flex-row gap-6">
+              {/* Book cover or Google Books preview */}
+              <div className="flex-shrink-0">
+                <img
+                  src={bookPlaceholder}
+                  alt={`${results.book.title} cover`}
+                  className="w-full sm:w-[200px] h-[300px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border"
+                />
+              </div>
 
-              <div className="flex-1 space-y-3">
+              {/* Book details */}
+              <div className="flex-1 space-y-4">
                 <div>
                   <h3 className="text-lg font-semibold text-foreground">{results.book.title}</h3>
                   <p className="text-base text-muted-foreground">By {results.book.author}</p>
@@ -459,34 +544,59 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                 <p className="text-base text-foreground/90 leading-7">
                   {results.book.description}
                 </p>
+
+                <div className="pt-3 border-t border-border">
+                  <p className="text-sm font-semibold text-foreground/90 mb-2 flex items-center gap-2">
+                    <span>💬</span> Why this might help:
+                  </p>
+                  <p className="text-sm text-muted-foreground italic">
+                    {results.book.whyThisHelps}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3 pt-2">
+                  {results.book.sampleUrl && (
+                    <Button onClick={handleBookRead} variant="outline" className="gap-2">
+                      <BookOpen className="w-4 h-4" />
+                      Read Sample
+                    </Button>
+                  )}
+                  
+                  {results.book.purchaseUrl && (
+                    <>
+                      <Button 
+                        onClick={() => handleBookPurchase('bookshop')} 
+                        className="gap-2"
+                      >
+                        🛒 Get Book
+                      </Button>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" className="gap-2">
+                            Alternatives
+                            <ChevronDown className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem onClick={() => handleBookPurchase('bookshop')}>
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Bookshop.org
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleBookPurchase('bn')}>
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Barnes & Noble
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleBookPurchase('amazon')}>
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Amazon
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-border">
-              <p className="text-sm font-semibold text-foreground/90 mb-2 flex items-center gap-2">
-                <span>💬</span> Why this might help:
-              </p>
-              <p className="text-xs text-muted-foreground italic">
-                {results.book.whyThisHelps}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3 mt-4">
-              {results.book.sampleUrl && (
-                <Button onClick={handleBookRead} className="flex-1 sm:flex-none gap-2">
-                  <BookOpen className="w-4 h-4" />
-                  Read Sample
-                </Button>
-              )}
-              {results.book.purchaseUrl && (
-                <Button 
-                  onClick={handleBookPurchase} 
-                  variant={results.book.sampleUrl ? "outline" : "default"} 
-                  className="flex-1 sm:flex-none"
-                >
-                  🛒 Get Book
-                </Button>
-              )}
             </div>
           </Card>
         )}
