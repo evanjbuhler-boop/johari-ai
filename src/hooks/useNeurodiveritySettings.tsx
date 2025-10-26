@@ -4,7 +4,6 @@ export interface NeurodiveritySettings {
   usePlainLanguage: boolean;
   includeContentWarnings: boolean;
   oneQuestionPerMessage: boolean;
-  showVisualProgress: boolean;
   explainQuestions: boolean;
 }
 
@@ -12,7 +11,6 @@ const DEFAULT_SETTINGS: NeurodiveritySettings = {
   usePlainLanguage: false,
   includeContentWarnings: false,
   oneQuestionPerMessage: false,
-  showVisualProgress: true, // Default on
   explainQuestions: true,   // Default on
 };
 

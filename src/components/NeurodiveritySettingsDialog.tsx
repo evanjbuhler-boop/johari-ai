@@ -27,14 +27,14 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
             variant="ghost"
             size="icon"
             className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm"
-            title="Conversation Preferences"
+            title="Neurodiversity Toggles"
           >
             <Brain className="h-5 w-5" />
           </Button>
         ) : (
           <Button variant="outline" className="gap-2">
             <Brain className="h-4 w-4" />
-            Conversation Preferences
+            Neurodiversity Toggles
           </Button>
         )}
       </DialogTrigger>
@@ -42,7 +42,7 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
-            Conversation Preferences
+            Neurodiversity Toggles
           </DialogTitle>
           <DialogDescription>
             Customize how the AI communicates with you. These settings help make conversations clearer and more comfortable.
@@ -108,27 +108,6 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
               </Label>
               <p className="text-xs text-muted-foreground">
                 Easier to process and respond to
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <Checkbox
-              id="visual-progress"
-              checked={settings.showVisualProgress}
-              onCheckedChange={(checked) => 
-                updateSetting('showVisualProgress', checked as boolean)
-              }
-            />
-            <div className="grid gap-1.5 leading-none">
-              <Label
-                htmlFor="visual-progress"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-              >
-                Show visual progress bar
-              </Label>
-              <p className="text-xs text-muted-foreground">
-                See where you are in the conversation
               </p>
             </div>
           </div>
