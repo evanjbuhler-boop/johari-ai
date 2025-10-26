@@ -19,14 +19,40 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
   // Check for reduced motion preference
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Get bullets and validation line from data
-  const bullets = initialData.validation_bullets || [
-    "You're feeling stressed about work demands",
-    "You're exhausted from lack of quality sleep",
-    "You're frustrated by relationship tensions",
-    "You want space to reset and find balance"
-  ];
+  // Generate bullets from the validation data
+  const generateBullets = (data: ValidationData): string[] => {
+    const bullets: string[] = [];
+    
+    // Add emotion-based bullet
+    if (data.emotions && data.emotions.length > 0) {
+      bullets.push(`You're feeling ${data.emotions.join(', ').toLowerCase()}`);
+    }
+    
+    // Add stressor-based bullet
+    if (data.mainStressors && data.mainStressors.length > 0) {
+      bullets.push(`You're dealing with ${data.mainStressors.join(', ').toLowerCase()}`);
+    }
+    
+    // Add pattern/insight from AI
+    if (data.aiGeneratedPattern) {
+      bullets.push(data.aiGeneratedPattern);
+    }
+    
+    // Add contributing factors
+    if (data.contributingFactors && data.contributingFactors.length > 0) {
+      const factors = data.contributingFactors.join(', ');
+      bullets.push(`${factors.charAt(0).toUpperCase() + factors.slice(1)} are playing a role`);
+    }
+    
+    return bullets.length > 0 ? bullets : [
+      "You're feeling stressed about work demands",
+      "You're exhausted from lack of quality sleep",
+      "You're frustrated by relationship tensions",
+      "You want space to reset and find balance"
+    ];
+  };
   
+  const bullets = initialData.validation_bullets || generateBullets(initialData);
   const validationLine = initialData.validation_line || "These feelings make sense.";
 
   // Sequential animation logic
@@ -90,47 +116,43 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-br from-background via-muted/20 to-background"
+      className="min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-br from-purple-900/95 via-pink-900/95 to-purple-900/95"
       onClick={handleSkip}
     >
       <div className="w-full max-w-[560px] flex flex-col items-center text-center">
         {/* Icon - fades in immediately */}
         <div 
           className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-400"
-          style={{
-            color: '#8B5CF6',
-          }}
         >
-          <div className="w-12 h-12 rounded-full bg-[#8B5CF6]/10 flex items-center justify-center">
-            <Check className="w-6 h-6" style={{ color: '#8B5CF6' }} />
+          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+            <Check className="w-6 h-6 text-white" />
           </div>
         </div>
 
         {/* Heading - fades in immediately */}
         <h1 
-          className="text-2xl sm:text-3xl font-semibold text-foreground mb-10 animate-in fade-in slide-in-from-bottom-2 duration-400"
+          className="text-2xl sm:text-3xl font-semibold text-white mb-10 animate-in fade-in slide-in-from-bottom-2 duration-400"
         >
           Here's what I'm hearing
         </h1>
 
         {/* Bullets - appear sequentially */}
-        <div className="w-full mb-8 space-y-4 text-left">
+        <div className="w-full mb-8 space-y-4">
           {bullets.map((bullet, index) => (
             <div
               key={index}
-              className={`flex items-start gap-3 transition-all duration-300 ${
+              className={`flex items-center justify-center gap-3 transition-all duration-300 ${
                 index < visibleItems || prefersReducedMotion || skipped
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-3'
               }`}
             >
               <span 
-                className="flex-shrink-0 mt-1 text-lg font-bold"
-                style={{ color: '#8B5CF6' }}
+                className="flex-shrink-0 text-lg font-bold text-white"
               >
                 •
               </span>
-              <p className="text-base sm:text-lg text-foreground leading-relaxed">
+              <p className="text-base sm:text-lg text-white leading-relaxed text-center">
                 {bullet}
               </p>
             </div>
@@ -139,12 +161,11 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
         {/* Validation line - appears after bullets */}
         <p 
-          className={`text-[15px] italic mb-10 transition-all duration-300 ${
+          className={`text-[15px] italic mb-10 transition-all duration-300 text-white/80 ${
             showValidation || prefersReducedMotion || skipped
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-3'
           }`}
-          style={{ color: '#666666' }}
         >
           {validationLine}
         </p>
@@ -152,15 +173,13 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
         {/* Button - appears last */}
         <Button
           onClick={handleContinue}
-          className={`gap-2 px-8 py-6 text-base font-semibold rounded-lg transition-all duration-300 ${
+          className={`gap-2 px-8 py-6 text-base font-semibold rounded-lg transition-all duration-300 bg-white hover:bg-white/90 text-purple-900 ${
             showButton || prefersReducedMotion || skipped
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-3'
           }`}
           style={{
-            backgroundColor: '#8B5CF6',
-            color: '#FFFFFF',
-            boxShadow: '0px 2px 8px rgba(139, 92, 246, 0.15)',
+            boxShadow: '0px 2px 8px rgba(255, 255, 255, 0.15)',
             minWidth: '200px',
           }}
         >
@@ -170,7 +189,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
         {/* Skip hint (only visible during animation) */}
         {!skipped && !prefersReducedMotion && !showButton && (
-          <p className="text-xs text-muted-foreground mt-6 opacity-50">
+          <p className="text-xs text-white/50 mt-6 opacity-50">
             Tap anywhere to continue
           </p>
         )}

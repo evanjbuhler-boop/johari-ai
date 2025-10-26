@@ -4,8 +4,8 @@ const ValidationLoadingScreen = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Animate progress from 0 to 100 over 5 seconds
-    const duration = 5000;
+    // Animate progress from 0 to 100 over 4 seconds
+    const duration = 4000;
     const interval = 50;
     const steps = duration / interval;
     const increment = 100 / steps;

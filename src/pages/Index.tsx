@@ -342,8 +342,8 @@ const Index = () => {
     setState('processing');
     setIsLoading(true);
     
-    // Add minimum delay for better UX (show processing screen for at least 5 seconds per document spec)
-    const minDelay = new Promise(resolve => setTimeout(resolve, 5000));
+    // Add minimum delay for better UX (show processing screen for at least 4 seconds to match progress bar)
+    const minDelay = new Promise(resolve => setTimeout(resolve, 4000));
     
     try {
       // Ask AI to extract structured validation data from conversation
