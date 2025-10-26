@@ -3,15 +3,17 @@ import { useState, useEffect } from 'react';
 export interface NeurodiveritySettings {
   usePlainLanguage: boolean;
   includeContentWarnings: boolean;
-  oneQuestionPerMessage: boolean;
   explainQuestions: boolean;
+  offerVisualCues: boolean;
+  geniusMode: boolean;
 }
 
 const DEFAULT_SETTINGS: NeurodiveritySettings = {
   usePlainLanguage: false,
-  includeContentWarnings: false,
-  oneQuestionPerMessage: false,
-  explainQuestions: true,   // Default on
+  includeContentWarnings: true,  // Default on
+  explainQuestions: true,        // Default on
+  offerVisualCues: false,
+  geniusMode: false,
 };
 
 export const useNeurodiveritySettings = () => {

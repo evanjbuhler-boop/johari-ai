@@ -73,23 +73,24 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
+          {/* Primary toggle - moved to top */}
           <div className="flex items-start gap-3">
             <Checkbox
-              id="plain-language"
-              checked={tempSettings.usePlainLanguage}
+              id="explain-questions"
+              checked={tempSettings.explainQuestions}
               onCheckedChange={(checked) => 
-                handleTempUpdate('usePlainLanguage', checked as boolean)
+                handleTempUpdate('explainQuestions', checked as boolean)
               }
             />
             <div className="grid gap-1.5 leading-none">
               <Label
-                htmlFor="plain-language"
+                htmlFor="explain-questions"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
               >
-                Use plain language (avoid metaphors)
+                Explain why I'm asking questions
               </Label>
               <p className="text-xs text-muted-foreground">
-                Responses will be more literal and direct
+                Understand the purpose behind each question
               </p>
             </div>
           </div>
@@ -117,42 +118,63 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
 
           <div className="flex items-start gap-3">
             <Checkbox
-              id="one-question"
-              checked={tempSettings.oneQuestionPerMessage}
+              id="plain-language"
+              checked={tempSettings.usePlainLanguage}
               onCheckedChange={(checked) => 
-                handleTempUpdate('oneQuestionPerMessage', checked as boolean)
+                handleTempUpdate('usePlainLanguage', checked as boolean)
               }
             />
             <div className="grid gap-1.5 leading-none">
               <Label
-                htmlFor="one-question"
+                htmlFor="plain-language"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
               >
-                Limit questions to one per message
+                Use plain language (avoid metaphors)
               </Label>
               <p className="text-xs text-muted-foreground">
-                Easier to process and respond to
+                Responses will be more literal and direct
               </p>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
             <Checkbox
-              id="explain-questions"
-              checked={tempSettings.explainQuestions}
+              id="visual-cues"
+              checked={tempSettings.offerVisualCues}
               onCheckedChange={(checked) => 
-                handleTempUpdate('explainQuestions', checked as boolean)
+                handleTempUpdate('offerVisualCues', checked as boolean)
               }
             />
             <div className="grid gap-1.5 leading-none">
               <Label
-                htmlFor="explain-questions"
+                htmlFor="visual-cues"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
               >
-                Explain why I'm asking questions
+                Offer visual cues or summaries
               </Label>
               <p className="text-xs text-muted-foreground">
-                Understand the purpose behind each question
+                Include simple icons, illustrations or bullet points to highlight key points
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <Checkbox
+              id="genius-mode"
+              checked={tempSettings.geniusMode}
+              onCheckedChange={(checked) => 
+                handleTempUpdate('geniusMode', checked as boolean)
+              }
+            />
+            <div className="grid gap-1.5 leading-none">
+              <Label
+                htmlFor="genius-mode"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Genius Mode
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                Increase complexity, use advanced vocabulary and challenge yourself with deeper philosophical or analytical prompts
               </p>
             </div>
           </div>

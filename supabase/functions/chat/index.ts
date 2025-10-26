@@ -540,6 +540,15 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       if (neurodiveritySettings) {
         const instructions = [];
         
+        if (neurodiveritySettings.geniusMode) {
+          instructions.push('- **GENIUS MODE ACTIVATED**: Elevate discourse to an intellectually rigorous level');
+          instructions.push('- Use advanced psychological and philosophical terminology');
+          instructions.push('- Reference theoretical frameworks (e.g., Johari Window, Stoic philosophy, cognitive psychology models)');
+          instructions.push('- Analyze situations through multiple theoretical lenses');
+          instructions.push('- Challenge the user with deeper analytical prompts and complex reasoning');
+          instructions.push('- Example: "It appears you\'re experiencing a profound dissonance between your external composure and internal frustration, likely rooted in the \'hidden\' quadrant of your Johari Window"');
+        }
+        
         if (neurodiveritySettings.usePlainLanguage) {
           instructions.push('- Use plain, literal language. Avoid metaphors, idioms, and figurative speech');
           instructions.push('- Be direct and concrete in your responses');
@@ -550,16 +559,17 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
           instructions.push('- Example: "I\'m about to ask about stress—let me know if you\'d rather skip this"');
         }
         
-        if (neurodiveritySettings.oneQuestionPerMessage) {
-          instructions.push('- CRITICAL: Ask only ONE question per message, never multiple');
-          instructions.push('- Wait for the user to answer before asking follow-up questions');
-        }
-        
         if (neurodiveritySettings.explainQuestions) {
           instructions.push('- CRITICAL: You MUST explain why you\'re asking each question. Add a brief reason in parentheses after every question.');
           instructions.push('- Format: "Question here? (Reason: This helps me understand X)"');
           instructions.push('- Example: "What happened at work today? (This helps me understand what\'s weighing on you)"');
           instructions.push('- Example: "How did that make you feel? (I want to understand the emotional impact)"');
+        }
+        
+        if (neurodiveritySettings.offerVisualCues) {
+          instructions.push('- Include visual cues like emojis, bullet points, or simple formatting to highlight key points');
+          instructions.push('- Example: "🔑 Key insight: ...", "• Main point: ...", "⚡ Action item: ..."');
+          instructions.push('- Use clear section markers and structured formatting when appropriate');
         }
         
         if (instructions.length > 0) {
