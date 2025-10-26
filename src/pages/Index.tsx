@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import LandingPrompt from '@/components/LandingPrompt';
 import ChatInterface from '@/components/ChatInterface';
 import VentingMode from '@/components/VentingMode';
@@ -22,7 +24,7 @@ type AppState = 'landing' | 'chat' | 'venting' | 'processing' | 'validation' | '
 type ProcessingType = 'validation' | 'recommendations';
 
 const Index = () => {
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [welcomeModalOpen, setWelcomeModalOpen] = useState(false);
   const [state, setState] = useState<AppState>('landing');
   const [processingType, setProcessingType] = useState<ProcessingType>('validation');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -499,7 +501,22 @@ const Index = () => {
   if (state === 'landing') {
     return (
       <AppLayout>
-        {showWelcome && <WelcomeModal onClose={() => setShowWelcome(false)} />}
+        {/* Welcome Modal - shows on first visit with delay or when manually opened */}
+        <WelcomeModal 
+          isOpen={welcomeModalOpen}
+          onOpenChange={setWelcomeModalOpen}
+        />
+        
+        {/* Info button in bottom right */}
+        <Button
+          onClick={() => setWelcomeModalOpen(true)}
+          size="icon"
+          variant="outline"
+          className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg hover:scale-110 transition-transform z-50"
+        >
+          <Info className="h-5 w-5" />
+        </Button>
+        
         <LandingPrompt onSubmit={handleLandingSubmit} />
       </AppLayout>
     );

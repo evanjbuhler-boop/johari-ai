@@ -4,25 +4,34 @@ import { Button } from '@/components/ui/button';
 import { MessageCircle, CheckSquare, Sparkles, Library, Settings, Brain } from 'lucide-react';
 
 interface WelcomeModalProps {
-  onClose: () => void;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const WelcomeModal = ({ onClose }: WelcomeModalProps) => {
+const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    // If controlled externally, use that
+    if (isOpen !== undefined) {
+      setOpen(isOpen);
+      return;
+    }
+
+    // Otherwise, check if first time visit and delay 3 seconds
     const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
     if (!hasSeenWelcome) {
-      setOpen(true);
-    } else {
-      onClose();
+      const timer = setTimeout(() => {
+        setOpen(true);
+      }, 3000);
+      return () => clearTimeout(timer);
     }
-  }, [onClose]);
+  }, [isOpen]);
 
   const handleClose = () => {
     localStorage.setItem('hasSeenWelcome', 'true');
     setOpen(false);
-    onClose();
+    onOpenChange?.(false);
   };
 
   return (
