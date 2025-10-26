@@ -845,7 +845,7 @@ Format as JSON with this EXACT structure:
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
-        max_tokens: 2000,
+        max_tokens: 5000,
         temperature: 0.7,
         response_format: { type: "json_object" },
         messages: [
