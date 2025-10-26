@@ -45,6 +45,8 @@ export const useNeurodiveritySettings = () => {
 
   useEffect(() => {
     localStorage.setItem('neurodiveritySettings', JSON.stringify(settings));
+    // Broadcast updates so all hook instances sync live (same-tab + cross-components)
+    window.dispatchEvent(new CustomEvent('neurodiveritySettingsUpdated', { detail: settings }));
   }, [settings]);
 
   // Runtime migration guard (handles hot reload without remount)
@@ -65,6 +67,31 @@ export const useNeurodiveritySettings = () => {
         localStorage.setItem('neurodiveritySettings', JSON.stringify(validSettings));
       }
     } catch {}
+  }, []);
+
+  // Listen for cross-component updates and storage changes
+  useEffect(() => {
+    const handleUpdate = (e: any) => {
+      try {
+        if (e?.detail) {
+          setSettings(e.detail as NeurodiveritySettings);
+        }
+      } catch {}
+    };
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'neurodiveritySettings' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          setSettings(parsed as NeurodiveritySettings);
+        } catch {}
+      }
+    };
+    window.addEventListener('neurodiveritySettingsUpdated', handleUpdate as EventListener);
+    window.addEventListener('storage', handleStorage);
+    return () => {
+      window.removeEventListener('neurodiveritySettingsUpdated', handleUpdate as EventListener);
+      window.removeEventListener('storage', handleStorage);
+    };
   }, []);
 
   const updateSetting = (key: keyof NeurodiveritySettings, value: boolean) => {
