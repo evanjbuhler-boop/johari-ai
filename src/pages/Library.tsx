@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Play, BookOpen, Sparkles, BookMarked, Trash2 } from 'lucide-react';
+import { Play, BookOpen, Sparkles, BookMarked, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import AppLayout from '@/components/AppLayout';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface DbSavedItem {
   id: string;
@@ -33,6 +34,7 @@ const Library = () => {
   const [savedItems, setSavedItems] = useState<DbSavedItem[]>([]);
   const [filter, setFilter] = useState<'all' | 'podcast' | 'book' | 'exercise' | 'story'>('all');
   const [loading, setLoading] = useState(true);
+  const [selectedStory, setSelectedStory] = useState<DbSavedItem | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -95,6 +97,8 @@ const Library = () => {
       window.open(item.book_sample_url, '_blank', 'noopener,noreferrer');
     } else if (item.item_type === 'exercise') {
       toast.info('Exercise flow will open here');
+    } else if (item.item_type === 'story') {
+      setSelectedStory(item);
     }
   };
 
@@ -296,6 +300,24 @@ const Library = () => {
           )}
         </div>
       </div>
+      
+      {/* Story Viewer Dialog */}
+      <Dialog open={!!selectedStory} onOpenChange={() => setSelectedStory(null)}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{selectedStory?.title}</DialogTitle>
+          </DialogHeader>
+          {selectedStory && (
+            <div className="space-y-6 py-4">
+              <div className="prose prose-lg max-w-none">
+                <p className="text-base leading-relaxed whitespace-pre-line font-serif">
+                  {selectedStory.story_content}
+                </p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 };
