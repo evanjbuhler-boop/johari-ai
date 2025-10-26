@@ -511,8 +511,8 @@ const Index = () => {
         <Button
           onClick={() => setWelcomeModalOpen(true)}
           size="icon"
-          variant="ghost"
-          className="fixed bottom-6 left-6 h-10 w-10 rounded-full hover:scale-110 transition-transform z-50 bg-transparent"
+          variant="outline"
+          className="fixed bottom-6 left-6 h-10 w-10 rounded-xl hover:scale-105 transition-transform z-50 border-border/50 bg-background/20 backdrop-blur-sm"
         >
           <Info className="h-4 w-4" />
         </Button>
