@@ -127,7 +127,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   <Shield className="w-8 h-8 text-white" />
                 </div>
                 <h2 className="text-3xl font-semibold mb-2">Your Privacy Matters</h2>
-                <p className="text-muted-foreground">Built with privacy-first design</p>
+                <p className="text-muted-foreground">Built with privacy-first design from the ground up</p>
               </div>
 
               <div className="p-8 space-y-6">
@@ -137,7 +137,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Your conversations disappear</h3>
-                    <p className="text-sm text-muted-foreground">We never store your chat messages. Once your session ends, your conversations are gone forever.</p>
+                    <p className="text-sm text-muted-foreground">We never store your chat messages, period. The moment your session ends, your conversations are permanently deleted from our servers. We cannot see, retrieve, or access anything you share during your check-in.</p>
                   </div>
                 </div>
 
@@ -147,7 +147,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">We only track patterns</h3>
-                    <p className="text-sm text-muted-foreground">Session metadata only: when you checked in, how long, completion status. No personal content, ever.</p>
+                    <p className="text-sm text-muted-foreground">The only data we retain is lightweight session metadata: timestamp, duration, therapy modality used, and completion status. This helps us improve the experience without ever storing your personal thoughts or feelings.</p>
                   </div>
                 </div>
 
@@ -157,13 +157,13 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">You control what stays</h3>
-                    <p className="text-sm text-muted-foreground">Only resources you explicitly save (podcasts, books, exercises) go to your library. Everything else vanishes.</p>
+                    <p className="text-sm text-muted-foreground">The only things we save are resources you explicitly bookmark: podcasts, books, and exercises from your recommendations. Your library is entirely under your control - add or remove items anytime.</p>
                   </div>
                 </div>
 
                 <div className="pt-4 border-t border-border/50">
                   <p className="text-sm text-center text-muted-foreground">
-                    <span className="font-medium text-foreground">Privacy by design</span> - GDPR & HIPAA-friendly architecture. Your mental health journey stays private.
+                    <span className="font-medium text-foreground">Privacy by design.</span> Our architecture is GDPR and HIPAA-friendly. Your mental health journey is ephemeral, private, and entirely yours.
                   </p>
                 </div>
               </div>
@@ -184,11 +184,11 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
               <div className="p-8 space-y-6">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <MessageCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    <Compass className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Be as open as you're comfortable</h3>
-                    <p className="text-sm text-muted-foreground">The more you share, the better we can support you. But remember, there's no pressure - go at your own pace.</p>
+                    <h3 className="font-semibold mb-1">Pick your therapy modality first</h3>
+                    <p className="text-sm text-muted-foreground">Before sending your first message, choose your therapeutic approach (CBT, ACT, Stoicism, IFS, or Blended) using the compass icon in the top right. You can adjust neurodiversity settings anytime during chat.</p>
                   </div>
                 </div>
 
@@ -197,18 +197,8 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                     <Pause className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Pause anytime, resume later</h3>
-                    <p className="text-sm text-muted-foreground">Need a break? Click "Pause" to save your spot. Come back whenever you're ready to continue.</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <Settings className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Adjust settings mid-chat</h3>
-                    <p className="text-sm text-muted-foreground">Toggle visual cues, genius mode, or therapy approach anytime using the icons in the top right.</p>
+                    <h3 className="font-semibold mb-1">Go at your own pace</h3>
+                    <p className="text-sm text-muted-foreground">You can pause and resume your conversation anytime. There is no rush - take breaks whenever you need them and pick up right where you left off.</p>
                   </div>
                 </div>
 
@@ -218,7 +208,17 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Save what resonates</h3>
-                    <p className="text-sm text-muted-foreground">Found a helpful podcast or exercise? Click the bookmark icon to access it later from your Library.</p>
+                    <p className="text-sm text-muted-foreground">Found a helpful podcast, book, or exercise? Click the bookmark icon on any recommendation to save it to your Library for easy access later.</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 items-start">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
+                    <CheckSquare className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Engage with the validation screen</h3>
+                    <p className="text-sm text-muted-foreground">Taking a moment to review and confirm the emotions we identified helps us provide more accurate, personalized recommendations tailored to your needs.</p>
                   </div>
                 </div>
               </div>
