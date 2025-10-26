@@ -229,11 +229,10 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => toggleSave('whats-happening', 'story', 'What\'s Happening', undefined, results.whatsHappening)}
+                onClick={() => toggleSave('whats-happening', 'story', "What's Happening", undefined, results.whatsHappening)}
                 className="mt-4"
               >
-                {isSaved('whats-happening') ? <BookmarkCheck className="w-4 h-4 mr-2" /> : <Bookmark className="w-4 h-4 mr-2" />}
-                {isSaved('whats-happening') ? 'Saved' : 'Save for Later'}
+                {isSaved('whats-happening') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
               </Button>
             </div>
           )}
@@ -308,8 +307,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                 size="sm"
                 onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
               >
-                {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4 mr-2" /> : <Bookmark className="w-4 h-4 mr-2" />}
-                {isSaved('story-' + results.story.title) ? 'Saved' : 'Save'}
+                {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
               </Button>
             </div>
           </Card>
