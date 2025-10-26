@@ -343,7 +343,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <img
-                src={results.podcast.thumbnail || podcastPlaceholder}
+                src={podcastPlaceholder}
                 alt={`${results.podcast.title} artwork`}
                 className="w-full sm:w-[200px] h-[200px] object-cover rounded-lg shadow-md flex-shrink-0"
               />
@@ -404,7 +404,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <img
-                src={results.book.coverImage || bookPlaceholder}
+                src={bookPlaceholder}
                 alt={`${results.book.title} cover`}
                 className="w-full sm:w-[150px] h-[225px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border flex-shrink-0"
               />
