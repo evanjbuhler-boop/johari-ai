@@ -497,6 +497,11 @@ const Index = () => {
 
       if (error) throw error;
 
+      console.log('✅ Results data received:', JSON.stringify(resultsData, null, 2));
+      console.log('📚 Has podcast?', !!resultsData?.podcast);
+      console.log('📖 Has book?', !!resultsData?.book);
+      console.log('🧘 Has exercise?', !!resultsData?.exercise);
+      
       setResults(resultsData);
       setIsLoading(false);
       setState('results');

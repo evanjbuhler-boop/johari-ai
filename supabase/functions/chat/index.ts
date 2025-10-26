@@ -766,9 +766,11 @@ return new Response(
       );
     }
 
-    const systemPrompt = `You are an expert psychological counselor. Based on the conversation, provide a personalized analysis using the user's EXACT language.
+const systemPrompt = `You are an expert psychological counselor. Based on the conversation, provide a personalized analysis using the user's EXACT language.
 
 CRITICAL: Use their own words, not therapy-speak. If they said "I'm drowning," use that.
+
+YOU MUST include ALL sections below. Do not skip podcast, book, exercise, or story sections.
 
 Format as JSON with this EXACT structure:
 {
@@ -778,7 +780,7 @@ Format as JSON with this EXACT structure:
     "themes": ["Theme 1", "Theme 2", "Theme 3"],
     "fullExplanation": "Detailed 3-4 paragraph explanation",
     "citations": [
-      {"author": "Researcher Name", "year": "2020", "title": "Study Title"}
+      {"author": "Researcher Name", "year": 2020, "title": "Study Title"}
     ]
   },
   "quotes": [
@@ -788,50 +790,49 @@ Format as JSON with this EXACT structure:
     "content": "3-4 paragraphs offering perspective shift using CBT, ACT, therapeutic methods"
   },
   "podcast": {
-    "title": "Podcast Name",
+    "title": "Real Podcast Name (research and recommend an actual podcast)",
     "host": "Host Name",
-    "episode": "Episode Title",
-    "duration": "45 min",
+    "episode": "Episode Title that matches their situation",
+    "duration": "30-60 min",
     "description": "What this episode covers",
-    "whyThisHelps": "Specific reason this helps",
+    "whyThisHelps": "Specific reason this helps their situation",
     "thumbnail": "https://via.placeholder.com/400x400?text=Podcast",
     "urls": {
-      "spotify": "https://open.spotify.com/show/...",
-      "applePodcasts": "https://podcasts.apple.com/..."
+      "spotify": "https://open.spotify.com/show/ACTUAL_ID_HERE",
+      "applePodcasts": "https://podcasts.apple.com/ACTUAL_URL_HERE"
     }
   },
   "book": {
-    "title": "Book Title",
+    "title": "Real Book Title (recommend an actual book)",
     "author": "Author Name",
     "byline": "One-line description",
     "length": "200 pages / 4-hour read",
     "description": "What this book covers",
-    "whyThisHelps": "Specific reason this helps",
+    "whyThisHelps": "Specific reason this helps their situation",
     "coverImage": "https://via.placeholder.com/300x450?text=Book",
-    "sampleUrl": "https://www.amazon.com/...",
-    "purchaseUrl": "https://www.amazon.com/..."
+    "sampleUrl": "https://www.amazon.com/LINK_HERE",
+    "purchaseUrl": "https://www.amazon.com/LINK_HERE"
   },
   "exercise": {
     "title": "Exercise Name",
     "description": "Brief description",
     "duration": "5-10 minutes",
-    "steps": ["Step 1", "Step 2", "Step 3"]
+    "steps": ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"]
   },
   "story": {
     "title": "Story Title",
-    "culturalOrigin": "Cultural tradition",
+    "culturalOrigin": "Cultural tradition (e.g., 'Buddhist Parable', 'African Folktale')",
     "content": "The full story text (2-3 paragraphs)",
     "whyThisMatters": "Connect the story to their situation"
   },
-  "cbt": {
-    "distortion": "Name of cognitive distortion",
-    "userThought": "Quote their exact thought",
-    "reframe": "Reframe using their situation",
-    "practice": "Concrete action for tonight/tomorrow"
-  },
-  "reflection": "2-3 sentence empathetic reflection",
   "patterns": ["Pattern 1", "Pattern 2", "Pattern 3"]
-}`;
+}
+
+REQUIREMENTS:
+- ALL fields must be present (podcast, book, exercise, story)
+- Recommend REAL podcasts and books that exist
+- Make sure exercise has at least 5 steps
+- Story should be meaningful and relevant`;
 
     const conversationSummary = messages.map((m: any) =>
       `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
@@ -879,6 +880,16 @@ Format as JSON with this EXACT structure:
       // With json_object mode, response should be pure JSON
       results = JSON.parse(resultsText);
       console.log('Successfully parsed results JSON');
+      console.log('📦 Results structure check:', {
+        hasWhatsHappening: !!results.whatsHappening,
+        hasQuotes: !!results.quotes,
+        hasReframing: !!results.reframing,
+        hasPodcast: !!results.podcast,
+        hasBook: !!results.book,
+        hasExercise: !!results.exercise,
+        hasStory: !!results.story,
+        hasPatterns: !!results.patterns
+      });
     } catch (e) {
       console.error('Failed to parse results JSON:', e);
       console.error('Full response text:', resultsText);
