@@ -577,11 +577,11 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
             </div>
           )}
           
-          {/* NEW: Finish Chat Button */}
-          {showFinishButton && (
+          {/* Finish and Pause buttons */}
+          {(showFinishButton || exchangeCount >= 2) && (
             <div className="max-w-4xl mx-auto w-full px-4 space-y-3">
-              <FinishChatButton onClick={onComplete} />
-              {onPause && (
+              {showFinishButton && <FinishChatButton onClick={onComplete} />}
+              {onPause && exchangeCount >= 2 && (
                 <Button
                   onClick={onPause}
                   variant="outline"
