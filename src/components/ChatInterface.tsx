@@ -226,6 +226,23 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     }
   }, [messages, exchangeCount, conversationPath, isLoading, sidebar.dismissedPhases, tipsDisabled]);
 
+  const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
+    setConversationPath(path);
+    
+    // Mark buttons as used in the message
+    setMessages(prev => prev.map(msg => 
+      msg.showPathButtons ? { ...msg, pathButtonsUsed: true } : msg
+    ));
+    
+    // For venting mode, switch to VentingMode component
+    if (path === 'venting_session' && onVentingModeSelected) {
+      onVentingModeSelected();
+      return;
+    }
+    
+    onSendMessage(path === 'nightly_routine' ? 'Do my nightly routine' : 'I just need to vent', path);
+  };
+
   const handleSidebarDismiss = () => {
     if (sidebar.phase) {
       setSidebar(prev => ({
@@ -377,7 +394,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                     </TooltipContent>
                   </Tooltip>
                 </div>
-              
           
           {/* Summary Offer */}
           {showSummaryOffer && !isLoading && !summaryLoading && (
