@@ -22,6 +22,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(false);
+  const [storyExpanded, setStoryExpanded] = useState(false);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
 
@@ -303,10 +304,14 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
         {results.story && (
           <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg">
             <div className="flex items-center justify-between gap-3 mb-6">
-              <div className="flex items-center gap-3">
+              <button
+                onClick={() => setStoryExpanded(!storyExpanded)}
+                className="flex items-center gap-3 text-left"
+              >
                 <span className="text-3xl">📖</span>
                 <h2 className="text-2xl font-semibold text-foreground">A Story for You</h2>
-              </div>
+                {storyExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+              </button>
               <Button
                 variant="outline"
                 size="sm"
@@ -316,24 +321,35 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               </Button>
             </div>
 
-            <div className="space-y-6">
-              <div className="bg-card/50 p-6 rounded-lg border border-border">
-                <h3 className="text-xl font-medium text-foreground mb-2">{results.story.title}</h3>
-                <p className="text-sm text-muted-foreground italic mb-4">{results.story.culturalOrigin}</p>
-                <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-line font-serif">
-                  {results.story.content}
-                </p>
-              </div>
+            {!storyExpanded && (
+              <button
+                onClick={() => setStoryExpanded(true)}
+                className="text-primary font-medium hover:underline text-sm"
+              >
+                Read the story →
+              </button>
+            )}
 
-              <div className="pt-4">
-                <p className="text-sm font-semibold text-foreground/90 mb-3 flex items-center gap-2">
-                  <span>💭</span> Why this speaks to your experience:
-                </p>
-                <p className="text-base text-foreground/80 leading-relaxed">
-                  {results.story.whyThisMatters}
-                </p>
+            {storyExpanded && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="bg-card/50 p-6 rounded-lg border border-border">
+                  <h3 className="text-xl font-medium text-foreground mb-2">{results.story.title}</h3>
+                  <p className="text-sm text-muted-foreground italic mb-4">{results.story.culturalOrigin}</p>
+                  <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-line font-serif">
+                    {results.story.content}
+                  </p>
+                </div>
+
+                <div className="pt-4">
+                  <p className="text-sm font-semibold text-foreground/90 mb-3 flex items-center gap-2">
+                    <span>💭</span> Why this speaks to your experience:
+                  </p>
+                  <p className="text-base text-foreground/80 leading-relaxed">
+                    {results.story.whyThisMatters}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </Card>
         )}
 
