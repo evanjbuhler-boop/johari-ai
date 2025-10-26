@@ -163,7 +163,12 @@ const Index = () => {
     try {
       console.log('🌐 API call initiated - handleLandingSubmit');
       const { data, error } = await supabase.functions.invoke('chat', {
-        body: { messages: [userMessage], type: 'conversation', neurodiveritySettings: settings }
+        body: { 
+          messages: [userMessage], 
+          type: 'conversation', 
+          neurodiveritySettings: settings,
+          therapyApproach: therapySettings.approach
+        }
       });
 
       console.log('📥 API response received:', data);
