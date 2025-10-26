@@ -20,8 +20,13 @@ export type Database = {
           created_at: string
           ended_at: string | null
           id: string
+          message_count: number | null
+          neurodiversity_settings: Json | null
+          session_duration_seconds: number | null
           started_at: string
           therapy_approach: string | null
+          time_of_day: string | null
+          timezone_offset: number | null
           user_id: string
         }
         Insert: {
@@ -29,8 +34,13 @@ export type Database = {
           created_at?: string
           ended_at?: string | null
           id?: string
+          message_count?: number | null
+          neurodiversity_settings?: Json | null
+          session_duration_seconds?: number | null
           started_at?: string
           therapy_approach?: string | null
+          time_of_day?: string | null
+          timezone_offset?: number | null
           user_id: string
         }
         Update: {
@@ -38,8 +48,13 @@ export type Database = {
           created_at?: string
           ended_at?: string | null
           id?: string
+          message_count?: number | null
+          neurodiversity_settings?: Json | null
+          session_duration_seconds?: number | null
           started_at?: string
           therapy_approach?: string | null
+          time_of_day?: string | null
+          timezone_offset?: number | null
           user_id?: string
         }
         Relationships: []

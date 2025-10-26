@@ -212,7 +212,7 @@ const Index = () => {
     
     // Start tracking session if user is logged in
     if (user) {
-      await startSession(therapySettings.approach);
+      await startSession(therapySettings.approach, settings);
     }
     
     // Gentle fade transition to chat interface
@@ -515,9 +515,9 @@ const Index = () => {
       setIsLoading(false);
       setState('results');
       
-      // Mark session as completed
+      // Mark session as completed with message count
       if (currentSessionId) {
-        await endSession(currentSessionId, true);
+        await endSession(currentSessionId, true, messages.length);
       }
       
       // Save to localStorage
@@ -542,9 +542,9 @@ const Index = () => {
       setIsLoading(false);
       setState('results');
       
-      // Mark session as completed (even in offline mode)
+      // Mark session as completed (even in offline mode) with message count
       if (currentSessionId) {
-        await endSession(currentSessionId, true);
+        await endSession(currentSessionId, true, messages.length);
       }
       
       const checkInData = {
@@ -584,9 +584,9 @@ const Index = () => {
   };
 
   const handlePause = () => {
-    // Mark session as incomplete (paused)
+    // Mark session as incomplete (paused) with current message count
     if (currentSessionId) {
-      endSession(currentSessionId, false);
+      endSession(currentSessionId, false, messages.length);
     }
     
     // Save current conversation state
