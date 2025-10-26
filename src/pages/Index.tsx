@@ -23,6 +23,7 @@ const Index = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [results, setResults] = useState<CheckInResults | null>(null);
   const [validationData, setValidationData] = useState<ValidationData | null>(null);
+  const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -195,8 +196,6 @@ const Index = () => {
           content: chunks[i],
           timestamp: new Date().toISOString(),
           id: `msg-${Date.now()}-${i}`,
-          showPathButtons: isLastChunk, // Attach buttons to last intro message
-          pathButtonsUsed: false,
         };
         setMessages(prev => [...prev, aiResponse]);
         
@@ -229,8 +228,6 @@ const Index = () => {
           content: chunks[i],
           timestamp: new Date().toISOString(),
           id: `msg-${Date.now()}-${i}`,
-          showPathButtons: isLastChunk, // Attach buttons to last intro message
-          pathButtonsUsed: false,
         };
         setMessages(prev => [...prev, aiResponse]);
         
