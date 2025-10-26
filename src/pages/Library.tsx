@@ -7,6 +7,16 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import AppLayout from '@/components/AppLayout';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface DbSavedItem {
   id: string;
@@ -35,6 +45,7 @@ const Library = () => {
   const [filter, setFilter] = useState<'all' | 'podcast' | 'book' | 'exercise' | 'story'>('all');
   const [loading, setLoading] = useState(true);
   const [selectedStory, setSelectedStory] = useState<DbSavedItem | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<DbSavedItem | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -71,21 +82,23 @@ const Library = () => {
     ? savedItems 
     : savedItems.filter(item => item.item_type === filter);
 
-  const handleRemove = async (id: string) => {
-    if (!user) return;
+  const confirmDelete = async () => {
+    if (!user || !itemToDelete) return;
 
     const { error } = await supabase
       .from('saved_items')
       .delete()
-      .eq('id', id)
+      .eq('id', itemToDelete.id)
       .eq('user_id', user.id);
 
     if (!error) {
-      setSavedItems(savedItems.filter(item => item.id !== id));
+      setSavedItems(savedItems.filter(item => item.id !== itemToDelete.id));
       toast.success('Removed from library');
     } else {
       toast.error('Failed to remove item');
     }
+    
+    setItemToDelete(null);
   };
 
   const handleAction = (item: DbSavedItem) => {
@@ -285,7 +298,7 @@ const Library = () => {
                         </Button>
                         <Button 
                           variant="ghost"
-                          onClick={() => handleRemove(item.id)}
+                          onClick={() => setItemToDelete(item)}
                           className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive rounded-full"
                           size="icon"
                         >
@@ -301,6 +314,27 @@ const Library = () => {
         </div>
       </div>
       
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!itemToDelete} onOpenChange={() => setItemToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove "{itemToDelete?.title}" from your library. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Story Viewer Dialog */}
       <Dialog open={!!selectedStory} onOpenChange={() => setSelectedStory(null)}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
