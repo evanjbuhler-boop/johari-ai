@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getMockAIResponse, generateMockResults } from '@/utils/mockAI';
 import { useAuth } from '@/hooks/useAuth';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
+import { useTherapyApproach } from '@/hooks/useTherapyApproach';
 
 type AppState = 'landing' | 'chat' | 'venting' | 'processing' | 'validation' | 'profile' | 'results';
 
@@ -27,6 +28,7 @@ const Index = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { settings } = useNeurodiveritySettings();
+  const { settings: therapySettings } = useTherapyApproach();
 
   // Load user profile from database if authenticated, otherwise check localStorage
   useEffect(() => {
@@ -262,7 +264,8 @@ const Index = () => {
           messages: updatedMessages, 
           type: 'conversation',
           conversationPath: pathSelection,
-          neurodiveritySettings: settings
+          neurodiveritySettings: settings,
+          therapyApproach: therapySettings.approach
         }
       });
 

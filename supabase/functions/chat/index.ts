@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { getSystemPrompt, type TherapyApproach } from './therapy-prompts.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -78,7 +79,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, type, conversationPath, validationData, neurodiveritySettings, ventText } = await req.json();
+    const { messages, type, conversationPath, validationData, neurodiveritySettings, ventText, therapyApproach } = await req.json();
     const truthy = (v: unknown) => typeof v === 'string' ? ['true','1','yes','y','on'].includes(v.toLowerCase().trim()) : !!v;
     const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(messages?.[0]?.mock);
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
@@ -493,8 +494,10 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
         `${m.role === 'user' ? 'User' : 'You'}: ${m.content}`
       ).join('\n');
 
-      // Determine conversation mode
-      let systemPrompt = '';
+      // Determine conversation mode and load appropriate system prompt
+      const approach: TherapyApproach = therapyApproach || 'blended';
+      const baseSystemPrompt = getSystemPrompt(approach);
+      console.log('Using therapy approach:', approach);
       
       // Analyze user message complexity for language adaptation
       const userMessages = messages.filter((m: any) => m.role === 'user');
@@ -502,6 +505,8 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       const languageInstructions = getLanguageInstructions(complexity);
       
       console.log('Detected complexity level:', complexity);
+      
+      let systemPrompt = baseSystemPrompt;
       
       // Build neurodiversity-specific instructions
       let neuroInstructions = '';
@@ -538,11 +543,12 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       console.log('Neurodiversity settings applied:', neurodiveritySettings);
       
       if (conversationPath === 'nightly_routine') {
-        // Structured 5-question routine
+        // Structured 5-question routine - append to therapy-specific base prompt
         const userExchanges = messages.filter((m: any) => m.role === 'user').length;
         const questionNum = Math.min(5, userExchanges);
         
-        systemPrompt = `You are guiding a structured nightly routine check-in. Ask questions ONE AT A TIME.
+        systemPrompt += `\n\n# CURRENT CONVERSATION MODE: NIGHTLY ROUTINE
+You are guiding a structured nightly routine check-in. Ask questions ONE AT A TIME.
 
 ${previousExchanges ? `Previous conversation:\n${previousExchanges}\n` : ''}
 
@@ -580,8 +586,9 @@ RESPONSE STYLE RULES:
 - Ask multiple questions at once`;
 
       } else if (conversationPath === 'venting_session') {
-        // Free-form venting mode
-        systemPrompt = `You are listening to someone vent. User selected venting session.
+        // Free-form venting mode - append to therapy-specific base prompt
+        systemPrompt += `\n\n# CURRENT CONVERSATION MODE: VENTING SESSION
+You are listening to someone vent. User selected venting session.
 
 ${previousExchanges ? `Previous conversation:\n${previousExchanges}\n` : ''}
 
@@ -618,8 +625,9 @@ RESPONSE STYLE RULES:
 - Focus on understanding, not solving`;
 
       } else {
-        // Initial conversation before path selection
-        systemPrompt = `You are a compassionate evening check-in coach. This is the first interaction.
+        // Initial conversation before path selection - append to therapy-specific base prompt
+        systemPrompt += `\n\n# CURRENT CONVERSATION MODE: INITIAL CHECK-IN
+You are a compassionate evening check-in coach. This is the first interaction.
 
 ${languageInstructions}
 ${neuroInstructions}
