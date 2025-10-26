@@ -115,7 +115,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Your conversations disappear</h3>
-                    <p className="text-sm text-muted-foreground">We never store your chat messages, period. The moment your session ends, your conversations are permanently deleted from our servers. We cannot see, retrieve, or access anything you share during your check-in.</p>
+                    <p className="text-sm text-muted-foreground">We never store your chat messages, period. The moment your session ends, your conversations are permanently deleted from our servers. We cannot see, retrieve or access anything you share during your check-in.</p>
                   </div>
                 </div>
 
@@ -125,7 +125,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">We only track patterns</h3>
-                    <p className="text-sm text-muted-foreground">The only data we retain is lightweight session metadata: timestamp, duration, therapy modality used, and completion status. This helps us improve the experience without ever storing your personal thoughts or feelings.</p>
+                    <p className="text-sm text-muted-foreground">The only data we retain is lightweight session metadata: timestamp, duration, therapy modality used, and completion status.</p>
                   </div>
                 </div>
 
