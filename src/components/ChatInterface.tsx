@@ -585,7 +585,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                 <Button
                   onClick={onPause}
                   variant="outline"
-                  className="w-full py-6 text-base"
+                  size="sm"
+                  className="w-auto mx-auto block text-sm"
                 >
                   Pause & Save for Later
                 </Button>
