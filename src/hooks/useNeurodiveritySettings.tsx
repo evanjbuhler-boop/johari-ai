@@ -47,6 +47,26 @@ export const useNeurodiveritySettings = () => {
     localStorage.setItem('neurodiveritySettings', JSON.stringify(settings));
   }, [settings]);
 
+  // Runtime migration guard (handles hot reload without remount)
+  useEffect(() => {
+    const saved = localStorage.getItem('neurodiveritySettings');
+    if (!saved) return;
+    try {
+      const parsed = JSON.parse(saved);
+      if ('oneQuestionPerMessage' in parsed || 'showVisualProgress' in parsed) {
+        const validSettings: NeurodiveritySettings = {
+          usePlainLanguage: parsed.usePlainLanguage ?? DEFAULT_SETTINGS.usePlainLanguage,
+          includeContentWarnings: parsed.includeContentWarnings ?? DEFAULT_SETTINGS.includeContentWarnings,
+          explainQuestions: parsed.explainQuestions ?? DEFAULT_SETTINGS.explainQuestions,
+          offerVisualCues: parsed.offerVisualCues ?? DEFAULT_SETTINGS.offerVisualCues,
+          geniusMode: parsed.geniusMode ?? DEFAULT_SETTINGS.geniusMode,
+        };
+        setSettings(validSettings);
+        localStorage.setItem('neurodiveritySettings', JSON.stringify(validSettings));
+      }
+    } catch {}
+  }, []);
+
   const updateSetting = (key: keyof NeurodiveritySettings, value: boolean) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };

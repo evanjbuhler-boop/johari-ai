@@ -214,6 +214,7 @@ const Index = () => {
 
     try {
       console.log('🌐 API call initiated - handleLandingSubmit');
+      console.log('🧩 Neurodiversity settings sent (landing):', settings);
       const { data, error } = await supabase.functions.invoke('chat', {
         body: { 
           messages: [userMessage], 
@@ -332,6 +333,7 @@ const Index = () => {
     }
 
     try {
+      console.log('🧩 Neurodiversity settings sent (chat):', settings);
       const { data, error } = await supabase.functions.invoke('chat', {
         body: { 
           messages: updatedMessages, 
