@@ -501,7 +501,12 @@ const Index = () => {
     
     try {
       const { data: resultsData, error } = await supabase.functions.invoke('chat', {
-        body: { messages, validationData: data, type: 'results' }
+        body: { 
+          messages, 
+          validationData: data, 
+          type: 'results',
+          userId: user?.id  // Pass user ID for exercise selection
+        }
       });
 
       if (error) throw error;

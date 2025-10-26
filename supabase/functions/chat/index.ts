@@ -1,11 +1,90 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { getSystemPrompt, type TherapyApproach } from './therapy-prompts.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Initialize Supabase client
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Helper function to select appropriate exercise from library
+async function selectExercise(userId: string, userTags: string[]): Promise<any> {
+  try {
+    // Get exercises user received in last 7 days
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const { data: recentHistory } = await supabase
+      .from('user_exercise_history')
+      .select('exercise_id')
+      .eq('user_id', userId)
+      .gte('recommended_at', sevenDaysAgo.toISOString());
+    
+    const recentExerciseIds = recentHistory?.map(h => h.exercise_id) || [];
+    
+    // Get matching exercises that user hasn't seen in 7 days
+    let query = supabase
+      .from('exercises')
+      .select('*');
+    
+    // Filter out recently seen exercises if there are any
+    if (recentExerciseIds.length > 0 && recentExerciseIds.length < 50) {
+      query = query.not('id', 'in', `(${recentExerciseIds.map(id => `'${id}'`).join(',')})`);
+    }
+    
+    // Try to match tags if provided
+    if (userTags.length > 0) {
+      query = query.overlaps('tags', userTags);
+    }
+    
+    const { data: exercises, error } = await query;
+    
+    // If no matches or user has seen all exercises in 7 days, get oldest recommended
+    if (!exercises || exercises.length === 0) {
+      console.log('No unviewed exercises, selecting oldest');
+      const { data: oldestExercise } = await supabase
+        .from('exercises')
+        .select('*')
+        .limit(1)
+        .order('created_at');
+      
+      if (oldestExercise && oldestExercise.length > 0) {
+        return oldestExercise[0];
+      }
+      return null;
+    }
+    
+    // Randomly select from available exercises
+    const selected = exercises[Math.floor(Math.random() * exercises.length)];
+    console.log(`Selected exercise: ${selected.title}, Tags: ${selected.tags}`);
+    
+    return selected;
+  } catch (error) {
+    console.error('Error selecting exercise:', error);
+    return null;
+  }
+}
+
+// Helper function to record exercise recommendation
+async function recordExerciseRecommendation(userId: string, exerciseId: string) {
+  try {
+    await supabase
+      .from('user_exercise_history')
+      .insert({
+        user_id: userId,
+        exercise_id: exerciseId
+      });
+    console.log('Recorded exercise recommendation');
+  } catch (error) {
+    console.error('Error recording exercise:', error);
+  }
+}
 
 // Helper function to analyze user message complexity
 function analyzeComplexity(userMessages: any[]): 'simple' | 'moderate' | 'complex' {
@@ -79,17 +158,17 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, type, conversationPath, validationData, neurodiveritySettings, ventText, therapyApproach } = await req.json();
-    const truthy = (v: unknown) => typeof v === 'string' ? ['true','1','yes','y','on'].includes(v.toLowerCase().trim()) : !!v;
-    const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(messages?.[0]?.mock);
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
-    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
-    
-    if (!useMockAI && !openaiApiKey && !anthropicApiKey) {
-      throw new Error('OPENAI_API_KEY or ANTHROPIC_API_KEY is not configured');
-    }
+      const { messages, type, conversationPath, validationData, neurodiveritySettings, ventText, therapyApproach, userId } = await req.json();
+      const truthy = (v: unknown) => typeof v === 'string' ? ['true','1','yes','y','on'].includes(v.toLowerCase().trim()) : !!v;
+      const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(messages?.[0]?.mock);
+      const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+      const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
+      
+      if (!useMockAI && !openaiApiKey && !anthropicApiKey) {
+        throw new Error('OPENAI_API_KEY or ANTHROPIC_API_KEY is not configured');
+      }
 
-    console.log('Processing chat request, type:', type, 'path:', conversationPath, 'messages:', messages?.length, 'mock mode:', useMockAI);
+      console.log('Processing chat request, type:', type, 'path:', conversationPath, 'messages:', messages?.length, 'mock mode:', useMockAI, 'userId:', userId);
 
     // Handle venting summary
     if (type === 'venting_summary') {
@@ -896,7 +975,7 @@ const systemPrompt = `You are an expert psychological counselor. Based on the co
 
 CRITICAL: Use their own words, not therapy-speak. If they said "I'm drowning," use that.
 
-YOU MUST include ALL sections below. Do not skip podcast, book, exercise, or story sections.
+YOU MUST include ALL sections below. Do not skip podcast, book, or story sections.
 
 Format as JSON with this EXACT structure:
 {
@@ -939,12 +1018,7 @@ Format as JSON with this EXACT structure:
     "sampleUrl": "https://www.amazon.com/LINK_HERE",
     "purchaseUrl": "https://www.amazon.com/LINK_HERE"
   },
-  "exercise": {
-    "title": "Exercise Name",
-    "description": "Brief description",
-    "duration": "5-10 minutes",
-    "steps": ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"]
-  },
+  "exerciseTags": ["anxiety", "stress", "mindfulness"],
   "story": {
     "title": "Story Title",
     "culturalOrigin": "Cultural tradition (e.g., 'Buddhist Parable', 'African Folktale')",
@@ -955,9 +1029,9 @@ Format as JSON with this EXACT structure:
 }
 
 REQUIREMENTS:
-- ALL fields must be present (podcast, book, exercise, story)
+- ALL fields must be present (podcast, book, exerciseTags, story)
 - Recommend REAL podcasts and books that exist
-- Make sure exercise has at least 5 steps
+- exerciseTags should be 1-3 relevant tags from: anxiety, depression, stress, worry, grounding, mindfulness, self-compassion, values, emotions, etc.
 - Story should be meaningful and relevant`;
 
     const conversationSummary = messages.map((m: any) =>
@@ -1006,6 +1080,24 @@ REQUIREMENTS:
       // With json_object mode, response should be pure JSON
       results = JSON.parse(resultsText);
       console.log('Successfully parsed results JSON');
+      
+      // Select exercise from our library
+      if (userId && results.exerciseTags) {
+        const selectedExercise = await selectExercise(userId, results.exerciseTags);
+        if (selectedExercise) {
+          results.exercise = {
+            title: selectedExercise.title,
+            description: selectedExercise.description,
+            duration: selectedExercise.duration,
+            steps: selectedExercise.steps
+          };
+          
+          // Record the recommendation
+          await recordExerciseRecommendation(userId, selectedExercise.id);
+          console.log('Injected exercise from library:', selectedExercise.title);
+        }
+      }
+      
       console.log('📦 Results structure check:', {
         hasWhatsHappening: !!results.whatsHappening,
         hasQuotes: !!results.quotes,
