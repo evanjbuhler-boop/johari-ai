@@ -542,298 +542,232 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       
       console.log('Neurodiversity settings applied:', neurodiveritySettings);
       
-      if (conversationPath === 'nightly_routine') {
-        // Structured 5-question routine - append to therapy-specific base prompt
-        const userExchanges = messages.filter((m: any) => m.role === 'user').length;
-        const questionNum = Math.min(5, userExchanges);
-        
-        systemPrompt += `\n\n# CURRENT CONVERSATION MODE: NIGHTLY ROUTINE
-You are guiding a structured nightly routine check-in. Ask questions ONE AT A TIME.
+     // Build conversation context (minimal append)
+let conversationContext = '';
 
-${previousExchanges ? `Previous conversation:\n${previousExchanges}\n` : ''}
+if (conversationPath === 'nightly_routine') {
+  const userExchanges = messages.filter((m: any) => m.role === 'user').length;
+  conversationContext = `
 
-QUESTION ${questionNum} OF 5:
-${questionNum === 1 ? 'Q1: Ask "How much sleep did you get last night?" - Keep it simple, just ask for hours.' : ''}
-${questionNum === 2 ? 'Q2: Ask "Did you move your body today?" - Brief response, then move on.' : ''}
-${questionNum === 3 ? 'Q3: Ask "What was your biggest stressor today?" - Let them share, reflect briefly.' : ''}
-${questionNum === 4 ? 'Q4: Ask "Any conflicts or tension with people?" - Brief acknowledgment only.' : ''}
-${questionNum === 5 ? 'Q5: Ask "On a scale 1-10, how stressed do you feel?" - Final question, acknowledge their answer warmly then say "Thanks for checking in tonight. Give me a sec to pull some thoughts together for you."' : ''}
+# CURRENT CONTEXT:
+This is a nightly routine check-in (structured format).
+User has sent ${userExchanges} message(s).
 
-${languageInstructions}
-${neuroInstructions}
+${previousExchanges ? `Previous conversation:\n${previousExchanges}` : ''}
 
-RESPONSE STYLE RULES:
-✅ DO:
-- VARY YOUR RESPONSE TYPES to avoid interrogation feel:
-  * Reflective statement: "That connection with your brother sounds really meaningful." [No question]
-  * Open invitation: "I'd love to hear more about that, if you want to share."
-  * Direct question: "What made that moment stick with you?" [Only when truly needed]
-- REFLECT FIRST, THEN ASK: Acknowledge what they said before moving forward
-  Example: "That sounds exhausting." [pause] "What made it feel that way?"
-- ASK OPEN-ENDED FOLLOW-UPS: "What's the part making you most anxious?" NOT "Did that stress you out?"
-- CONNECT DOTS: If they mention multiple things, link them: "It sounds like A and B drained you, so you didn't have energy for C"
-- VALIDATE COLLABORATIVELY: Reflect back and check: "So it sounds like [X]—does that feel right?"
-- KEEP IT CONVERSATIONAL: Use "Got it" / "That makes sense" / "I hear you"
-- SHORT RESPONSES: 1-2 sentences per turn
-- USE "..." to invite continuation without asking a question
+Guide them through the routine while using your therapeutic framework.`;
 
-❌ DON'T:
-- End every message with a question—alternate with statements and invitations
-- Give advice: "You should try to get more sleep"
-- Ask yes/no questions: "Did the stress affect your focus?"
-- Use therapy jargon: "Let's unpack that" / "How does that land?"
-- Be overly effusive: "That's amazing!" / "I'm so sorry!"
-- Ask multiple questions at once`;
+} else if (conversationPath === 'venting_session') {
+  conversationContext = `
 
-      } else if (conversationPath === 'venting_session') {
-        // Free-form venting mode - append to therapy-specific base prompt
-        systemPrompt += `\n\n# CURRENT CONVERSATION MODE: VENTING SESSION
-You are listening to someone vent. User selected venting session.
+# CURRENT CONTEXT:
+This is a venting session - user chose to express freely.
 
-${previousExchanges ? `Previous conversation:\n${previousExchanges}\n` : ''}
+${previousExchanges ? `Previous conversation:\n${previousExchanges}` : ''}
 
-YOUR ROLE:
-- Let them talk freely
-- Don't interrupt or ask questions initially
-- Track emotions, stressors, and worries mentioned
-- After they finish (or pause), reflect: "So it sounds like you're carrying [summarize]... What's the main thing weighing on you most?"
+Listen actively using your therapeutic approach. Minimal interruption until they finish.`;
 
-${languageInstructions}
-${neuroInstructions}
+} else {
+  conversationContext = `
 
-RESPONSE STYLE RULES:
-✅ DO:
-- VARY YOUR RESPONSE TYPES to avoid interrogation feel:
-  * Reflective statement: "That sounds painful" [No question]
-  * Open invitation: "I'm here if you want to talk more about that"
-  * Direct question: "What's the part that's making you most anxious?" [Only when needed]
-- REFLECT FIRST: "That sounds painful" or "Got it—work was rough"
-- ASK OPEN-ENDED FOLLOW-UPS: "What's the part that's making you most anxious?"
-- CONNECT DOTS: "It sounds like work stress and date anxiety drained you—you didn't have energy for your workout. Which one feels heavier?"
-- VALIDATE COLLABORATIVELY: "So it sounds like the real worry is being seen as not good enough—does that feel right?"
-- KEEP IT CONVERSATIONAL: Use "Got it" / "That makes sense" / "I hear you"
-- SHORT RESPONSES: 1-2 sentences per turn
-- USE "..." to invite continuation without asking
+# CURRENT CONTEXT:
+This is the initial check-in (first interaction).
 
-❌ DON'T:
-- End every message with a question—use statements and invitations too
-- Give advice: "It's important to take care of it" / "You should..."
-- Ask yes/no questions: "Did that stress you out?" / "Were you able to relax?"
-- Use therapy jargon: "Let's unpack that" / "What's coming up for you?"
-- Be overly effusive: "That's amazing!" / "I'm so sorry you're going through this!"
-- Ask multiple questions at once
-- Focus on understanding, not solving`;
+After reflecting warmly on what they shared, offer:
+"Would you like to:
+→ Do your nightly routine (helps you process and wind down)
+→ Just vent right now (I'm here to listen)"`;
+}
 
+// Combine everything
+systemPrompt = baseSystemPrompt + 
+               '\n' + languageInstructions + 
+               neuroInstructions + 
+               conversationContext;
+
+const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${openaiApiKey}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'gpt-4o-mini',
+    max_tokens: 300,
+    temperature: 0.7,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      ...messages
+    ],
+  }),
+});
+
+if (!response.ok) {
+  const error = await response.text();
+  console.error('OpenAI API error:', response.status, error);
+  
+  if (useMockAI) {
+    const userMessage = messages[messages.length - 1].content.toLowerCase();
+    let mockResponse = '';
+    
+    if (exchangeCount === 1) {
+      if (userMessage.includes('stress') || userMessage.includes('anxious') || userMessage.includes('overwhelmed')) {
+        mockResponse = "I hear that you're feeling stressed. That sounds really challenging. Can you tell me more about what's been weighing on you the most?";
       } else {
-        // Initial conversation before path selection - append to therapy-specific base prompt
-        systemPrompt += `\n\n# CURRENT CONVERSATION MODE: INITIAL CHECK-IN
-You are a compassionate evening check-in coach. This is the first interaction.
-
-${languageInstructions}
-${neuroInstructions}
-
-FIRST RESPONSE ONLY:
-1. Give empathetic reflection of what they shared (1-2 sentences)
-   - Use conversational language: "That sounds exhausting" NOT "I hear you're feeling stressed"
-   - Avoid therapy-speak and overly effusive language
-   - VARY RESPONSE TYPE: Sometimes end with a reflective statement, sometimes with an open invitation, rarely with a direct question
-2. Then offer path selection:
-   "Would you like to:
-   → Do your nightly routine (helps you process and wind down)
-   → Just vent right now (I'm here to listen)"
-
-STYLE:
-- Warm but not clinical
-- Brief reflection (1-2 sentences max)
-- Natural conversational tone
-- Don't end every message with a question`;
+        mockResponse = "Thank you for sharing that with me. I'm here to listen. What aspect of your day has been on your mind the most?";
       }
+    } else if (exchangeCount === 2) {
+      mockResponse = "I appreciate you opening up about that. How have you been taking care of yourself lately? Have you been getting enough rest?";
+    } else if (exchangeCount === 3) {
+      mockResponse = "That's helpful to know. How about your daily routines - have you been able to maintain healthy eating habits and physical activity?";
+    } else if (exchangeCount === 4) {
+      mockResponse = "I see. And one last question - have there been any particular conflicts or difficult interactions that stood out to you recently?";
+    } else {
+      mockResponse = "Thank you for sharing all of that with me. I have a good understanding now.";
+    }
+    
+    return new Response(
+      JSON.stringify({ content: mockResponse }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+  
+  throw new Error(`OpenAI API error: ${response.status}`);
+}
 
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${openaiApiKey}`,
-          'Content-Type': 'application/json',
+const data = await response.json();
+console.log('OpenAI response received:', JSON.stringify(data));
+console.log('Choices:', data.choices);
+console.log('Message content:', data.choices?.[0]?.message?.content);
+
+let content = data.choices?.[0]?.message?.content as string | undefined;
+
+if (!content || !content.trim()) {
+  const lastUser = [...messages].reverse().find((m: any) => m.role === 'user')?.content ?? '';
+  content = lastUser
+    ? `I hear you. It sounds like ${lastUser.slice(0, 120)}... Can you tell me a bit more about what's feeling heaviest right now?`
+    : "I'm here. Can you share a bit more about what's on your mind?";
+  console.warn('Assistant content was empty. Returning safe fallback instead of empty string.');
+}
+
+return new Response(
+  JSON.stringify({ content }),
+  { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+);
+
+   }
+
+  // For results generation
+  if (type === 'results') {
+    // Mock mode - return realistic psychological analysis
+    if (useMockAI) {
+      const mockResults = {
+        byline: "You're carrying the weight of uncertainty while trying to perform at your best",
+        whatsHappening: {
+          summary: "You're experiencing what psychologists call 'anticipatory anxiety' - the stress of waiting for an outcome you can't control.",
+          themes: ["Career pressure", "Uncertainty", "Social comparison"],
+          fullExplanation: "When we face uncertainty about important outcomes, our brain's threat detection system stays activated...",
+          citations: [
+            { author: "Grupe & Nitschke", year: "2013", title: "Uncertainty and anticipation in anxiety" }
+          ]
         },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          max_tokens: 300,
-          temperature: 0.7,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            ...messages
-          ],
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        console.error('OpenAI API error:', response.status, error);
-        if (useMockAI) {
-          const userMessage = messages[messages.length - 1].content.toLowerCase();
-          let mockResponse = '';
-
-          if (exchangeCount === 1) {
-            if (userMessage.includes('stress') || userMessage.includes('anxious') || userMessage.includes('overwhelmed')) {
-              mockResponse = "I hear that you're feeling stressed. That sounds really challenging. Can you tell me more about what's been weighing on you the most?";
-            } else {
-              mockResponse = "Thank you for sharing that with me. I'm here to listen. What aspect of your day has been on your mind the most?";
-            }
-          } else if (exchangeCount === 2) {
-            mockResponse = "I appreciate you opening up about that. How have you been taking care of yourself lately? Have you been getting enough rest?";
-          } else if (exchangeCount === 3) {
-            mockResponse = "That's helpful to know. How about your daily routines - have you been able to maintain healthy eating habits and physical activity?";
-          } else if (exchangeCount === 4) {
-            mockResponse = "I see. And one last question - have there been any particular conflicts or difficult interactions that stood out to you recently?";
-          } else {
-            mockResponse = "Thank you for sharing all of that with me. I have a good understanding now.";
+        quotes: [
+          { text: "Not knowing if I'll get the promotion or not!", sentiment: "negative" as const }
+        ],
+        reframing: {
+          content: "The silence from uncertainty feels personal - and that makes sense..."
+        },
+        podcast: {
+          title: "The Anxiety Coaches Podcast",
+          host: "Gina Ryan",
+          episode: "Managing Workplace Anxiety",
+          duration: "42 min",
+          description: "Practical strategies for handling career uncertainty",
+          whyThisHelps: "This episode addresses promotion anxiety specifically",
+          thumbnail: "https://via.placeholder.com/400x400?text=Podcast",
+          urls: {
+            spotify: "https://open.spotify.com/show/4fTTVSTrgXKhZTgjxiF5kp",
+            applePodcasts: "https://podcasts.apple.com/us/podcast/the-anxiety-coaches-podcast/id1439613688"
           }
+        },
+        book: {
+          title: "The Upside of Stress",
+          author: "Kelly McGonigal",
+          byline: "Why Stress Is Good for You",
+          length: "304 pages / 6-hour read",
+          description: "A groundbreaking look at transforming stress",
+          whyThisHelps: "This book will help you reframe promotion stress",
+          coverImage: "https://via.placeholder.com/300x450?text=Book",
+          sampleUrl: "https://www.amazon.com/...",
+          purchaseUrl: "https://www.amazon.com/..."
+        },
+        exercise: {
+          title: "Box Breathing for Sleep",
+          description: "A simple breathing technique to calm your nervous system",
+          duration: "5-10 minutes",
+          steps: [
+            "Lie in bed and close your eyes",
+            "Breathe in for 4 counts",
+            "Hold for 4 counts",
+            "Exhale for 4 counts",
+            "Repeat 8-10 times"
+          ]
+        },
+        story: {
+          title: "The Farmer and the Horse",
+          culturalOrigin: "Chinese Taoist Parable",
+          content: "There's an old story of a farmer whose horse ran away...",
+          whyThisMatters: "Right now, not knowing about the promotion feels like 'bad luck'..."
+        },
+        cbt: {
+          distortion: "catastrophizing",
+          userThought: "Not knowing if I'll get the promotion means disaster",
+          reframe: "The uncertainty is uncomfortable, but it doesn't mean disaster",
+          practice: "Tonight: Write down 3 things you did well this week"
+        },
+        reflection: "You're experiencing the collision of high stakes and zero control",
+        patterns: [
+          "Promotion uncertainty → constant vigilance",
+          "Workplace competition → comparison anxiety",
+          "Chronic stress → poor sleep"
+        ]
+      };
 
-          return new Response(
-            JSON.stringify({ content: mockResponse }),
-            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-        throw new Error(`OpenAI API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('OpenAI response received:', JSON.stringify(data));
-      console.log('Choices:', data.choices);
-      console.log('Message content:', data.choices?.[0]?.message?.content);
-      
-      let content = data.choices?.[0]?.message?.content as string | undefined;
-      if (!content || !content.trim()) {
-        const lastUser = [...messages].reverse().find((m: any) => m.role === 'user')?.content ?? '';
-        content = lastUser
-          ? `I hear you. It sounds like ${lastUser.slice(0, 120)}... Can you tell me a bit more about what's feeling heaviest right now?`
-          : "I'm here. Can you share a bit more about what's on your mind?";
-        console.warn('Assistant content was empty. Returning safe fallback instead of empty string.');
-      }
-      
+      console.log('Returning mock results');
       return new Response(
-        JSON.stringify({ content }),
+        JSON.stringify(mockResults),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // For results generation
-    if (type === 'results') {
-      // Mock mode - return realistic psychological analysis
-      if (useMockAI) {
-      const mockResults = {
-          byline: "You're carrying the weight of uncertainty while trying to perform at your best",
-          whatsHappening: {
-            summary: "You're experiencing what psychologists call 'anticipatory anxiety' - the stress of waiting for an outcome you can't control. This is compounded by comparison with colleagues, creating a constant state of competitive vigilance that's exhausting your nervous system.",
-            themes: ["Career pressure", "Uncertainty", "Social comparison"],
-            fullExplanation: "When we face uncertainty about important outcomes, our brain's threat detection system stays activated, constantly scanning for signs of danger or failure. This is what you're experiencing with the promotion uncertainty.\n\nThe ambient competition you described is particularly draining because it creates a state called 'social comparison anxiety.' Your nervous system interprets every colleague's success as a potential threat to your own advancement, keeping you in a heightened state of stress.\n\nThis chronic stress directly impacts sleep quality through elevated cortisol levels, which then creates a feedback loop: poor sleep → increased anxiety → worse sleep. Your body is essentially stuck in 'fight or flight' mode, making it nearly impossible to relax even when you want to.",
-            citations: [
-              { author: "Grupe & Nitschke", year: "2013", title: "Uncertainty and anticipation in anxiety: an integrated neurobiological and psychological perspective" },
-              { author: "Buunk & Gibbons", year: "2007", title: "Social comparison: The end of a theory and the emergence of a field" }
-            ]
-          },
-          quotes: [
-            { text: "Not knowing if I'll get the promotion or not!", sentiment: "negative" as const },
-            { text: "Everyone else might get it", sentiment: "negative" as const }
-          ],
-          reframing: {
-            content: "The silence from uncertainty feels personal - and that makes sense. But uncertainty often says more about the situation than about your worthiness. Your colleagues aren't your enemies; they're fellow travelers in the same anxious waiting room.\n\nIn moments like these, it can be helpful to remember that we're all navigating similar challenges. Just as a storm can obscure the sun, our feelings can sometimes cloud our understanding of reality. Yet beyond the clouds, clarity still waits to break through.\n\nYour worth isn't determined by this one promotion. Your career is a long journey, and this is just one step. What you can control - your effort, your integrity, your growth - matters more than what you can't."
-          },
-          podcast: {
-            title: "The Anxiety Coaches Podcast",
-            host: "Gina Ryan",
-            episode: "Managing Workplace Anxiety and Career Pressure",
-            duration: "42 min",
-            description: "Practical strategies for handling career uncertainty and competitive work environments without burning out.",
-            whyThisHelps: "This episode specifically addresses the promotion anxiety you're experiencing and offers concrete tools for managing the waiting period while maintaining your performance.",
-            thumbnail: "https://via.placeholder.com/400x400?text=Anxiety+Coaches",
-            urls: {
-              spotify: "https://open.spotify.com/show/4fTTVSTrgXKhZTgjxiF5kp",
-              applePodcasts: "https://podcasts.apple.com/us/podcast/the-anxiety-coaches-podcast/id1439613688"
-            }
-          },
-          book: {
-            title: "The Upside of Stress",
-            author: "Kelly McGonigal",
-            byline: "Why Stress Is Good for You, and How to Get Good at It",
-            length: "304 pages / 6-hour read",
-            description: "A groundbreaking look at how changing your mindset about stress can transform it from something harmful into something that helps you thrive.",
-            whyThisHelps: "This book will help you reframe the promotion stress you're experiencing, turning it from something that's draining you into fuel for better performance.",
-            coverImage: "https://via.placeholder.com/300x450?text=The+Upside+of+Stress",
-            sampleUrl: "https://www.amazon.com/Upside-Stress-Why-Good-You-ebook/dp/B00PWCTP8Y",
-            purchaseUrl: "https://www.amazon.com/Upside-Stress-Why-Good-You/dp/1101982934"
-          },
-          exercise: {
-            title: "Box Breathing for Sleep",
-            description: "A simple breathing technique to calm your nervous system and prepare for restful sleep, especially effective when work anxiety is keeping you awake.",
-            duration: "5-10 minutes",
-            steps: [
-              "Lie in bed and close your eyes. Place one hand on your chest and one on your belly.",
-              "Breathe in slowly through your nose for 4 counts, feeling your belly rise.",
-              "Hold your breath for 4 counts, staying relaxed.",
-              "Exhale slowly through your mouth for 4 counts, letting your belly fall.",
-              "Hold empty for 4 counts.",
-              "Repeat this cycle 8-10 times, or until you feel your body relaxing.",
-              "If thoughts about work arise, acknowledge them and return to counting your breath."
-            ]
-          },
-          story: {
-            title: "The Farmer and the Horse",
-            culturalOrigin: "Chinese Taoist Parable",
-            content: "There's an old story of a farmer whose horse ran away. His neighbor said, 'Such bad luck!' The farmer replied, 'Maybe.'\n\nThe next day, the horse returned with three wild horses. 'How wonderful!' said the neighbor. 'Maybe,' said the farmer.\n\nWhen his son tried to tame one of the wild horses and broke his leg, the neighbor exclaimed, 'How terrible!' The farmer simply said, 'Maybe.'\n\nThe next week, officers came to draft young men into the army, but the son was excused because of his broken leg. The neighbor congratulated the farmer on his good fortune, to which the farmer responded, 'Maybe.'",
-            whyThisMatters: "Right now, not knowing about the promotion feels like 'bad luck' - but you don't yet know how this will unfold. Whether you get this promotion or not, you can't see the full picture of how it will affect your career path. The 'maybe' mindset helps you stay present instead of catastrophizing about unknown outcomes."
-          },
-          cbt: {
-            distortion: "catastrophizing",
-            userThought: "Not knowing if I'll get the promotion or not! It's tough, everyone else might get it.",
-            reframe: "The uncertainty is uncomfortable, but it doesn't mean disaster. You can't control the decision, but you can control how you prepare and perform. Your worth isn't determined by this one promotion - your career is a long game, and this is just one move.",
-            practice: "Tonight before bed: Write down 3 things you did well at work this week. Tomorrow: Identify one task you can complete that's fully within your control, and focus your energy there instead of the promotion outcome."
-          },
-          reflection: "You're experiencing the collision of high stakes (career advancement) and zero control (waiting for a decision). That combination is uniquely stressful, and it makes sense that it's affecting your sleep and nerves.",
-          patterns: [
-            "Promotion uncertainty → constant vigilance → nervous system activation",
-            "Workplace competition → comparison anxiety → feeling under threat",
-            "Chronic stress → poor sleep → heightened anxiety (feedback loop)",
-            "Loss of control → catastrophic thinking → more stress"
-          ]
-        };
+    const systemPrompt = `You are an expert psychological counselor. Based on the conversation, provide a personalized analysis using the user's EXACT language.
 
-        console.log('Returning mock results');
-        return new Response(
-          JSON.stringify(mockResults),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      const systemPrompt = `You are an expert psychological counselor. Based on the conversation, provide a personalized analysis using the user's EXACT language.
-
-CRITICAL: Use their own words, not therapy-speak. If they said "I'm drowning," use that. If they said "My boss is an asshole," quote it.
+CRITICAL: Use their own words, not therapy-speak. If they said "I'm drowning," use that.
 
 Format as JSON with this EXACT structure:
 {
   "byline": "One compelling sentence capturing their core challenge",
   "whatsHappening": {
-    "summary": "2-3 sentence empathetic explanation of what's happening psychologically (use warm, validating language)",
+    "summary": "2-3 sentence empathetic explanation",
     "themes": ["Theme 1", "Theme 2", "Theme 3"],
-    "fullExplanation": "Detailed 3-4 paragraph explanation connecting their experiences to psychological concepts. Use their specific situation.",
+    "fullExplanation": "Detailed 3-4 paragraph explanation",
     "citations": [
-      {"author": "Researcher Name", "year": "2020", "title": "Study Title relevant to their situation"}
+      {"author": "Researcher Name", "year": "2020", "title": "Study Title"}
     ]
   },
   "quotes": [
-    {"text": "Direct quote from user", "sentiment": "positive|negative|neutral"},
-    {"text": "Another impactful quote", "sentiment": "positive|negative|neutral"}
+    {"text": "Direct quote from user", "sentiment": "positive|negative|neutral"}
   ],
   "reframing": {
-    "content": "3-4 paragraphs offering a thoughtful perspective shift using CBT, ACT, and therapeutic methods. NOT preachy, but gently expansive. Use their specific details (names, situations, actual events they mentioned). Connect their experience to broader human themes. Make them feel seen AND appropriately challenged. Use their own language and references."
+    "content": "3-4 paragraphs offering perspective shift using CBT, ACT, therapeutic methods"
   },
   "podcast": {
     "title": "Podcast Name",
     "host": "Host Name",
-    "episode": "Episode Title (relevant to their issue)",
+    "episode": "Episode Title",
     "duration": "45 min",
     "description": "What this episode covers",
-    "whyThisHelps": "Specific reason this helps their situation",
+    "whyThisHelps": "Specific reason this helps",
     "thumbnail": "https://via.placeholder.com/400x400?text=Podcast",
     "urls": {
       "spotify": "https://open.spotify.com/show/...",
@@ -843,29 +777,25 @@ Format as JSON with this EXACT structure:
   "book": {
     "title": "Book Title",
     "author": "Author Name",
-    "byline": "One-line book description",
+    "byline": "One-line description",
     "length": "200 pages / 4-hour read",
     "description": "What this book covers",
-    "whyThisHelps": "Specific reason this helps their situation",
+    "whyThisHelps": "Specific reason this helps",
     "coverImage": "https://via.placeholder.com/300x450?text=Book",
     "sampleUrl": "https://www.amazon.com/...",
     "purchaseUrl": "https://www.amazon.com/..."
   },
   "exercise": {
     "title": "Exercise Name",
-    "description": "Brief description of the exercise",
+    "description": "Brief description",
     "duration": "5-10 minutes",
-    "steps": [
-      "Step 1 instruction",
-      "Step 2 instruction",
-      "Step 3 instruction"
-    ]
+    "steps": ["Step 1", "Step 2", "Step 3"]
   },
   "story": {
     "title": "Story Title",
-    "culturalOrigin": "Cultural tradition (e.g., 'Cherokee Nation', 'Buddhist Parable', 'West African Folktale', 'Greek Mythology')",
-    "content": "The full story text (2-3 paragraphs). Choose from diverse cultural traditions: African proverbs, Buddhist parables, Indigenous wisdom, Greek myths, Taoist stories, etc. Match the theme to their emotional situation.",
-    "whyThisMatters": "Connect the story's wisdom to their specific situation. Use their actual details and help them see their experience in a new light through the story's lens."
+    "culturalOrigin": "Cultural tradition",
+    "content": "The full story text (2-3 paragraphs)",
+    "whyThisMatters": "Connect the story to their situation"
   },
   "cbt": {
     "distortion": "Name of cognitive distortion",
@@ -875,154 +805,142 @@ Format as JSON with this EXACT structure:
   },
   "reflection": "2-3 sentence empathetic reflection",
   "patterns": ["Pattern 1", "Pattern 2", "Pattern 3"]
-}
+}`;
 
-IMPORTANT: 
-- All podcast/book URLs should be real and relevant (test that Spotify links go to Spotify, book links to Amazon/Bookshop.org)
-- Use placeholder images only for thumbnails/covers
-- Ensure diversity: No author should appear in multiple resource types
-- Include diverse perspectives and voices in recommendations
-- Make reframing SPECIFIC to their situation, not generic templates`;
+    const conversationSummary = messages.map((m: any) =>
+      `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
+    ).join('\n\n');
 
-      const conversationSummary = messages.map((m: any) => 
-        `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
-      ).join('\n\n');
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openaiApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        max_tokens: 2000,
+        temperature: 0.7,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          {
+            role: 'user',
+            content: `Based on this conversation, provide the psychological analysis and recommendations:\n\n${conversationSummary}`
+          }
+        ],
+      }),
+    });
 
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${openaiApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          max_tokens: 2000,
-          temperature: 0.7,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            {
-              role: 'user',
-              content: `Based on this conversation, provide the psychological analysis and recommendations:\n\n${conversationSummary}`
-            }
-          ],
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        console.error('OpenAI API error:', response.status, error);
-        throw new Error(`OpenAI API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Results generated');
-      
-      // Parse the JSON response from OpenAI
-      const resultsText = data.choices[0].message.content;
-      let results;
-      
-      try {
-        // Try to extract JSON from the response
-        const jsonMatch = resultsText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          results = JSON.parse(jsonMatch[0]);
-        } else {
-          throw new Error('No JSON found in response');
-        }
-      } catch (e) {
-        console.error('Failed to parse results:', e);
-        // Fallback to a basic structure matching the expected format
-        results = {
-          byline: "You're navigating a challenging time",
-          whatsHappening: {
-            summary: "You're experiencing stress from multiple sources that are compounding on each other. This is creating a pattern where each challenge makes the others feel heavier.",
-            themes: ["Stress", "Overwhelm", "Coping"],
-            fullExplanation: "When we face multiple stressors simultaneously, our capacity to cope becomes stretched. This isn't a sign of weakness - it's a natural response to being pulled in many directions at once.\n\nYour body and mind are signaling that they need support, which is why you're here tonight. That awareness is actually a strength, not a failure.\n\nThe key is understanding that you don't have to solve everything at once. Small, intentional steps toward rest and boundary-setting can create positive ripple effects across all areas of stress.",
-            citations: [
-              { author: "Lazarus & Folkman", year: "1984", title: "Stress, Appraisal, and Coping" }
-            ]
-          },
-          quotes: [
-            { text: "I'm struggling with a lot right now", sentiment: "negative" }
-          ],
-          reframing: {
-            content: "What you're feeling isn't weakness - it's your system saying it needs care. Just as a tree doesn't grow all at once but through countless small moments, you don't have to solve everything tonight.\n\nThe challenges you're facing are real, and they deserve acknowledgment. But so do your efforts to show up, even when it's hard. That takes courage.\n\nRemember: progress doesn't require perfection. It requires showing up with compassion for yourself, one day at a time."
-          },
-          podcast: {
-            title: "The Happiness Lab",
-            host: "Dr. Laurie Santos",
-            episode: "Managing Stress Through Self-Compassion",
-            duration: "38 min",
-            description: "Evidence-based strategies for handling overwhelming periods with kindness toward yourself.",
-            whyThisHelps: "This episode offers practical tools for managing stress when you're feeling stretched thin.",
-            thumbnail: "https://via.placeholder.com/400x400?text=Happiness+Lab",
-            urls: {
-              spotify: "https://open.spotify.com/show/3i5TCKhc6GY42pOWkpWveG",
-              applePodcasts: "https://podcasts.apple.com/us/podcast/the-happiness-lab-with-dr-laurie-santos/id1474244606"
-            }
-          },
-          book: {
-            title: "The Upside of Stress",
-            author: "Kelly McGonigal",
-            byline: "Why Stress Is Good for You, and How to Get Good at It",
-            length: "304 pages / 6-hour read",
-            description: "A science-backed approach to transforming your relationship with stress.",
-            whyThisHelps: "This book helps reframe stress as something that can strengthen you rather than just drain you.",
-            coverImage: "https://via.placeholder.com/300x450?text=Upside+of+Stress",
-            sampleUrl: "https://www.amazon.com/Upside-Stress-Why-Good-You-ebook/dp/B00PWCTP8Y",
-            purchaseUrl: "https://www.amazon.com/Upside-Stress-Why-Good-You/dp/1101982934"
-          },
-          exercise: {
-            title: "4-7-8 Breathing",
-            description: "A calming breath technique that helps activate your parasympathetic nervous system and prepare for sleep.",
-            duration: "5 minutes",
-            steps: [
-              "Sit or lie comfortably and place your tongue behind your upper front teeth.",
-              "Exhale completely through your mouth, making a whoosh sound.",
-              "Close your mouth and inhale quietly through your nose for 4 counts.",
-              "Hold your breath for 7 counts.",
-              "Exhale completely through your mouth for 8 counts, making a whoosh sound.",
-              "Repeat this cycle 3-4 times total.",
-              "Notice how your body feels more relaxed with each cycle."
-            ]
-          },
-          story: {
-            title: "The Cracked Pot",
-            culturalOrigin: "Buddhist Parable",
-            content: "A water bearer in India had two large pots, each hung on opposite ends of a pole he carried across his neck. One pot was perfect, while the other had a crack that leaked water along the path.\n\nFor two years, the water bearer made this trip daily. The perfect pot was proud of its accomplishments, but the cracked pot was ashamed of its imperfection. One day, it spoke to the bearer: 'I am ashamed of my flaw. I leak water, and you only get half of what I carry.'\n\nThe water bearer smiled and pointed to the path. 'Do you see the beautiful flowers on your side of the path? I've always known about your flaw, so I planted flower seeds on your side. Every day while we walk back, you water them. For two years, I've been able to pick these beautiful flowers to decorate my table. Without you being just the way you are, I wouldn't have this beauty.'",
-            whyThisMatters: "Right now, you might feel like that cracked pot - imperfect, struggling, not measuring up. But your challenges have taught you things others don't know. Your sensitivity, your awareness, your ability to feel deeply - these aren't flaws. They're part of what makes you uniquely able to understand, to connect, to grow. You don't have to be perfect to be valuable."
-          },
-          cbt: {
-            distortion: "All-or-nothing thinking",
-            userThought: "I have to handle everything perfectly or I'm failing",
-            reframe: "You can be doing your best while also struggling. Progress isn't about perfection - it's about taking the next right step, even when you're tired.",
-            practice: "Tonight, write down one thing you did well today, no matter how small. Then pick one thing you can let go of or delegate tomorrow."
-          },
-          reflection: "You're navigating a challenging time, and it's understandable to feel overwhelmed. The fact that you're here seeking support shows strength and self-awareness.",
-          patterns: [
-            "Multiple stressors creating cumulative load",
-            "Need for intentional rest and boundary-setting",
-            "Body and mind signaling need for support"
-          ]
-        };
-      }
-      
-      return new Response(
-        JSON.stringify(results),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('OpenAI API error:', response.status, error);
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
-    throw new Error('Invalid request type');
+    const data = await response.json();
+    console.log('Results generated');
 
-  } catch (error) {
-    console.error('Error in chat function:', error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
-      { 
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    const resultsText = data.choices[0].message.content;
+    let results;
+
+    try {
+      const jsonMatch = resultsText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        results = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error('No JSON found in response');
       }
+    } catch (e) {
+      console.error('Failed to parse results:', e);
+      results = {
+        byline: "You're navigating a challenging time",
+        whatsHappening: {
+          summary: "You're experiencing stress from multiple sources",
+          themes: ["Stress", "Overwhelm", "Coping"],
+          fullExplanation: "When we face multiple stressors simultaneously...",
+          citations: [
+            { author: "Lazarus & Folkman", year: "1984", title: "Stress, Appraisal, and Coping" }
+          ]
+        },
+        quotes: [
+          { text: "I'm struggling with a lot right now", sentiment: "negative" }
+        ],
+        reframing: {
+          content: "What you're feeling isn't weakness..."
+        },
+        podcast: {
+          title: "The Happiness Lab",
+          host: "Dr. Laurie Santos",
+          episode: "Managing Stress Through Self-Compassion",
+          duration: "38 min",
+          description: "Evidence-based strategies",
+          whyThisHelps: "Practical tools for managing stress",
+          thumbnail: "https://via.placeholder.com/400x400?text=Podcast",
+          urls: {
+            spotify: "https://open.spotify.com/show/3i5TCKhc6GY42pOWkpWveG",
+            applePodcasts: "https://podcasts.apple.com/us/podcast/the-happiness-lab-with-dr-laurie-santos/id1474244606"
+          }
+        },
+        book: {
+          title: "The Upside of Stress",
+          author: "Kelly McGonigal",
+          byline: "Why Stress Is Good for You",
+          length: "304 pages / 6-hour read",
+          description: "A science-backed approach",
+          whyThisHelps: "Helps reframe stress",
+          coverImage: "https://via.placeholder.com/300x450?text=Book",
+          sampleUrl: "https://www.amazon.com/...",
+          purchaseUrl: "https://www.amazon.com/..."
+        },
+        exercise: {
+          title: "4-7-8 Breathing",
+          description: "A calming breath technique",
+          duration: "5 minutes",
+          steps: [
+            "Sit comfortably",
+            "Inhale for 4 counts",
+            "Hold for 7 counts",
+            "Exhale for 8 counts",
+            "Repeat 3-4 times"
+          ]
+        },
+        story: {
+          title: "The Cracked Pot",
+          culturalOrigin: "Buddhist Parable",
+          content: "A water bearer in India had two pots...",
+          whyThisMatters: "Your challenges have taught you things..."
+        },
+        cbt: {
+          distortion: "All-or-nothing thinking",
+          userThought: "I have to handle everything perfectly",
+          reframe: "You can do your best while also struggling",
+          practice: "Write down one thing you did well today"
+        },
+        reflection: "You're navigating a challenging time",
+        patterns: [
+          "Multiple stressors creating cumulative load",
+          "Need for rest and boundary-setting",
+          "Body signaling need for support"
+        ]
+      };
+    }
+
+    return new Response(
+      JSON.stringify(results),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
-});
+
+  throw new Error('Invalid request type');
+
+} catch (error) {
+  console.error('Error in chat function:', error);
+  return new Response(
+    JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+    {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    }
+  );
+}
+});   
