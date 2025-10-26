@@ -47,7 +47,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="max-w-2xl p-0 gap-0 border-0">
-        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-xl min-h-[650px] flex flex-col">
+        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-xl h-[680px] flex flex-col">
           
           {/* Step 1: How It Works */}
           {step === 1 && (
@@ -63,7 +63,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
               </div>
 
               {/* Steps */}
-              <div className="p-8 space-y-6 flex-1">
+              <div className="p-8 space-y-6 flex-1 overflow-y-auto">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                     <MessageCircle className="w-6 h-6 text-primary" />
@@ -130,7 +130,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                 <p className="text-muted-foreground">Built with privacy-first design from the ground up</p>
               </div>
 
-              <div className="p-8 space-y-6 flex-1">
+              <div className="p-8 space-y-6 flex-1 overflow-y-auto">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
                     <Trash2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
@@ -181,7 +181,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                 <p className="text-muted-foreground">Make the most of your experience</p>
               </div>
 
-              <div className="p-8 space-y-6 flex-1">
+              <div className="p-8 space-y-6 flex-1 overflow-y-auto">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
                     <Compass className="w-6 h-6 text-amber-600 dark:text-amber-400" />
