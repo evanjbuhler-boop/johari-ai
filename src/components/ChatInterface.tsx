@@ -366,13 +366,25 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
               return null; // Hide AI's path prompt entirely
             }
             
+            const isLastAIMessage = msg.role === 'assistant' && idx === messages.length - 1;
+            
             return (
               <div key={`${msg.role}-${idx}-${msg.timestamp}`}>
                 <div
                   className={`animate-in fade-in slide-in-from-bottom-2 duration-500 ${
-                    msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'
+                    msg.role === 'user' ? 'flex justify-end' : 'flex justify-start items-end gap-3'
                   }`}
                 >
+                  {/* Your Turn Indicator - to the left of last AI message */}
+                  {isLastAIMessage && !isLoading && (
+                    <div className="animate-in fade-in duration-500 mb-1">
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 shadow-sm">
+                        <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                        <span className="text-xs text-gray-600 font-medium">Your turn</span>
+                      </div>
+                    </div>
+                  )}
+                  
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div
@@ -477,16 +489,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                   </div>
                   <span className="text-sm text-gray-600">AI is thinking...</span>
                 </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Your Turn Indicator */}
-          {!isLoading && messages.length > 0 && messages[messages.length - 1]?.role === 'assistant' && (
-            <div className="animate-in fade-in duration-500 flex justify-start mt-4">
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 shadow-sm">
-                <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
-                <span className="text-xs text-gray-600 font-medium">Your turn</span>
               </div>
             </div>
           )}
