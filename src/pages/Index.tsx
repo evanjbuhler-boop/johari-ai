@@ -28,6 +28,7 @@ import { getMockAIResponse, generateMockResults } from '@/utils/mockAI';
 import { useAuth } from '@/hooks/useAuth';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 import { useTherapyApproach } from '@/hooks/useTherapyApproach';
+import { useChatSession } from '@/hooks/useChatSession';
 
 import RecommendationsLoadingScreen from '@/components/RecommendationsLoadingScreen';
 
@@ -52,6 +53,7 @@ const Index = () => {
   const { user } = useAuth();
   const { settings } = useNeurodiveritySettings();
   const { settings: therapySettings } = useTherapyApproach();
+  const { currentSessionId, startSession, endSession } = useChatSession();
 
   // Load user profile from database if authenticated, otherwise check localStorage
   useEffect(() => {
@@ -207,6 +209,11 @@ const Index = () => {
     const userMessage: Message = { role: 'user', content: message, timestamp: new Date().toISOString() };
     setMessages([userMessage]);
     setIsLoading(true);
+    
+    // Start tracking session if user is logged in
+    if (user) {
+      await startSession(null);
+    }
     
     // Gentle fade transition to chat interface
     await new Promise(resolve => setTimeout(resolve, 400));
@@ -508,6 +515,11 @@ const Index = () => {
       setIsLoading(false);
       setState('results');
       
+      // Mark session as completed
+      if (currentSessionId) {
+        await endSession(currentSessionId, true);
+      }
+      
       // Save to localStorage
       const checkInData = {
         messages,
@@ -529,6 +541,11 @@ const Index = () => {
       setResults(mockResults);
       setIsLoading(false);
       setState('results');
+      
+      // Mark session as completed (even in offline mode)
+      if (currentSessionId) {
+        await endSession(currentSessionId, true);
+      }
       
       const checkInData = {
         messages,
@@ -567,6 +584,11 @@ const Index = () => {
   };
 
   const handlePause = () => {
+    // Mark session as incomplete (paused)
+    if (currentSessionId) {
+      endSession(currentSessionId, false);
+    }
+    
     // Save current conversation state
     localStorage.setItem('savedConversation', JSON.stringify({
       messages,

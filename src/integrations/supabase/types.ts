@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_sessions: {
+        Row: {
+          completed: boolean | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          session_type: string | null
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          session_type?: string | null
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          session_type?: string | null
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           age: string
