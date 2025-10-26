@@ -9,6 +9,8 @@ import GuidedExercise from '@/components/GuidedExercise';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import StageProgressBar from '@/components/StageProgressBar';
+import podcastPlaceholder from '@/assets/podcast-placeholder.png';
+import bookPlaceholder from '@/assets/book-placeholder.png';
 
 interface ResultsDisplayProps {
   results: CheckInResults;
@@ -328,7 +330,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <img
-                src={results.podcast.thumbnail}
+                src={results.podcast.thumbnail || podcastPlaceholder}
                 alt={`${results.podcast.title} artwork`}
                 className="w-full sm:w-[200px] h-[200px] object-cover rounded-lg shadow-md flex-shrink-0"
               />
@@ -384,7 +386,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <img
-                src={results.book.coverImage}
+                src={results.book.coverImage || bookPlaceholder}
                 alt={`${results.book.title} cover`}
                 className="w-full sm:w-[150px] h-[225px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border flex-shrink-0"
               />
@@ -443,7 +445,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
           <Card className="p-6 md:p-8 bg-gradient-to-br from-accent/10 to-primary/10 border-accent/20 shadow-lg">
             <div className="flex items-center gap-2 mb-4 pb-2 border-b-2 border-border">
               <span className="text-2xl">✨</span>
-              <h2 className="text-xl font-semibold text-foreground">Reading Materials</h2>
+              <h2 className="text-xl font-semibold text-foreground">Hands on Exercises</h2>
             </div>
 
             <div className="space-y-3">
