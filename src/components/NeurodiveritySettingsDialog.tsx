@@ -69,7 +69,7 @@ const NeurodiveritySettingsDialog = ({ variant = 'icon' }: NeurodiveritySettings
             Neurodiversity Toggles
           </DialogTitle>
           <DialogDescription>
-            Customize how the AI communicates with you. These settings help make conversations clearer and more comfortable.
+            Customize how the AI communicates with you. These settings help make conversations clearer, more comfortable and more personable.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
