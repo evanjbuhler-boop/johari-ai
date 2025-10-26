@@ -85,13 +85,29 @@ const Library = () => {
     
     // Generate preview from saved data
     if (item.item_type === 'podcast') {
-      return item.description || 'A podcast episode to support your wellbeing.';
+      const episode = item.podcast_episode ? `Episode: ${item.podcast_episode}. ` : '';
+      const desc = item.description || 'A podcast episode to support your wellbeing.';
+      return episode + desc;
     } else if (item.item_type === 'book') {
-      return item.description || 'A book recommendation for you.';
+      const author = item.book_author ? `By ${item.book_author}. ` : '';
+      const desc = item.description || 'A book recommendation for you.';
+      return author + desc;
     } else if (item.item_type === 'exercise') {
-      return item.description || 'A simple exercise to help you process your feelings and articulate them.';
+      const steps = item.exercise_steps ? ` It includes ${JSON.parse(item.exercise_steps as any).length} guided steps.` : '';
+      const desc = item.description || 'A simple exercise to help you process your feelings and articulate them.';
+      return desc + steps;
     } else if (item.item_type === 'story') {
       if (item.title === "What's Happening") {
+        try {
+          const content = typeof item.story_content === 'string' 
+            ? JSON.parse(item.story_content) 
+            : item.story_content;
+          if (content?.summary) {
+            return content.summary.slice(0, 200) + (content.summary.length > 200 ? '...' : '');
+          }
+        } catch (e) {
+          // Fall through to default
+        }
         return 'A summary of your check-in session and key insights.';
       }
       return item.description || 'A perspective to help you reflect on your experience.';

@@ -54,16 +54,25 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
   const generatePreview = (type: 'podcast' | 'book' | 'exercise' | 'story', title: string, content: any): string => {
     if (type === 'podcast' && results.podcast) {
-      return results.podcast.whyThisHelps || results.podcast.description.slice(0, 150) + '...';
+      const desc = results.podcast.description.slice(0, 120);
+      const why = results.podcast.whyThisHelps.slice(0, 120);
+      return `${desc}${desc.length === 120 ? '...' : ''} ${why}${why.length === 120 ? '...' : ''}`;
     } else if (type === 'book' && results.book) {
-      return results.book.whyThisHelps || results.book.description.slice(0, 150) + '...';
+      const desc = results.book.description.slice(0, 120);
+      const why = results.book.whyThisHelps.slice(0, 120);
+      return `${desc}${desc.length === 120 ? '...' : ''} ${why}${why.length === 120 ? '...' : ''}`;
     } else if (type === 'exercise' && results.exercise) {
-      return results.exercise.description || 'A guided exercise to support your wellbeing.';
+      const desc = results.exercise.description;
+      const stepsPreview = results.exercise.steps.length > 0 
+        ? ` It includes ${results.exercise.steps.length} guided steps.` 
+        : '';
+      return desc + stepsPreview;
     } else if (type === 'story') {
       if (title === "What's Happening" && results.whatsHappening) {
-        return results.whatsHappening.summary.slice(0, 150) + '...';
+        return results.whatsHappening.summary.slice(0, 200) + (results.whatsHappening.summary.length > 200 ? '...' : '');
       } else if (results.story) {
-        return results.story.whyThisMatters?.slice(0, 150) + '...' || 'A perspective to help you reflect.';
+        const why = results.story.whyThisMatters || '';
+        return why.slice(0, 200) + (why.length > 200 ? '...' : '');
       }
     }
     return '';
