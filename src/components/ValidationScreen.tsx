@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import StageProgressBar from '@/components/StageProgressBar';
 
 interface ValidationScreenProps {
   initialData: ValidationData;
@@ -170,10 +171,11 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
   };
 
   return (
-    <div 
-      className="relative min-h-screen flex items-center justify-center px-6 py-12 overflow-hidden"
-      onClick={handleSkip}
-    >
+    <>
+      <div 
+        className="relative min-h-screen flex items-center justify-center px-6 py-12 overflow-hidden pb-[calc(3rem+var(--stage-bar-height,96px))]"
+        onClick={handleSkip}
+      >
       {/* Flowing gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-violet-500"></div>
       
@@ -318,7 +320,11 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
           </p>
         )}
       </div>
-    </div>
+      </div>
+      
+      {/* Progress Bar */}
+      <StageProgressBar currentStage="validate" />
+    </>
   );
 };
 
