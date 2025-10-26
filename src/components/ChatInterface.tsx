@@ -8,12 +8,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import StageProgressBar from '@/components/StageProgressBar';
 import ChatInputBar from '@/components/ChatInputBar';
-import BreathingExerciseModal from '@/components/BreathingExerciseModal';
 import FinishChatButton from '@/components/FinishChatButton';
 import {
   detectEmotionFromMessage,
-  getEmotionGradient,
-  shouldTriggerBreathing
+  getEmotionGradient
 } from '@/components/EmotionDetector';
 import {
   Tooltip,
@@ -56,7 +54,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   
   // NEW: Emotion detection & adaptive UI
   const [detectedEmotion, setDetectedEmotion] = useState<EmotionState>('neutral');
-  const [showBreathingExercise, setShowBreathingExercise] = useState(false);
   const [showFinishButton, setShowFinishButton] = useState(false);
   const [conversationStartTime] = useState<number>(Date.now());
   const [conversationDuration, setConversationDuration] = useState(0);
@@ -129,13 +126,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     if (emotion !== 'neutral') {
       setDetectedEmotion(emotion);
     }
-    
-    // Check if breathing exercise should trigger
-    if (shouldTriggerBreathing(emotion, lastUserMessage.content) && !showBreathingExercise) {
-      const timer = setTimeout(() => setShowBreathingExercise(true), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [messages, isLoading, showBreathingExercise]);
+  }, [messages, isLoading]);
 
   // Separate effect for contextual educational tips
   useEffect(() => {
@@ -335,13 +326,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   
   return (
     <div className="min-h-screen flex flex-col relative animate-in fade-in duration-700">
-      {/* NEW: Breathing Exercise Modal */}
-      {showBreathingExercise && (
-        <BreathingExerciseModal 
-          onClose={() => setShowBreathingExercise(false)}
-        />
-      )}
-      
       {/* Educational Sidebar */}
       {sidebar.visible && sidebar.phase && (
         <EducationalSidebar 
