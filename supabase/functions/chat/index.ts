@@ -837,91 +837,48 @@ Format as JSON with this EXACT structure:
     }
 
     const data = await response.json();
-    console.log('Results generated');
+    console.log('Results API response received');
 
-    const resultsText = data.choices[0].message.content;
+    const resultsText = data.choices[0].message.content.trim();
+    console.log('Raw results text:', resultsText.substring(0, 200));
+    
     let results;
 
     try {
-      const jsonMatch = resultsText.match(/\{[\s\S]*\}/);
+      // Try to extract JSON - handle markdown code blocks
+      let jsonText = resultsText;
+      
+      // Remove markdown code blocks if present
+      if (jsonText.includes('```json')) {
+        jsonText = jsonText.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+      } else if (jsonText.includes('```')) {
+        jsonText = jsonText.replace(/```\s*/g, '');
+      }
+      
+      // Try to find JSON object
+      const jsonMatch = jsonText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         results = JSON.parse(jsonMatch[0]);
+        console.log('Successfully parsed results JSON');
       } else {
+        console.error('No JSON object found in response');
         throw new Error('No JSON found in response');
       }
     } catch (e) {
-      console.error('Failed to parse results:', e);
-      results = {
-        byline: "You're navigating a challenging time",
-        whatsHappening: {
-          summary: "You're experiencing stress from multiple sources",
-          themes: ["Stress", "Overwhelm", "Coping"],
-          fullExplanation: "When we face multiple stressors simultaneously...",
-          citations: [
-            { author: "Lazarus & Folkman", year: "1984", title: "Stress, Appraisal, and Coping" }
-          ]
-        },
-        quotes: [
-          { text: "I'm struggling with a lot right now", sentiment: "negative" }
-        ],
-        reframing: {
-          content: "What you're feeling isn't weakness..."
-        },
-        podcast: {
-          title: "The Happiness Lab",
-          host: "Dr. Laurie Santos",
-          episode: "Managing Stress Through Self-Compassion",
-          duration: "38 min",
-          description: "Evidence-based strategies",
-          whyThisHelps: "Practical tools for managing stress",
-          thumbnail: "https://via.placeholder.com/400x400?text=Podcast",
-          urls: {
-            spotify: "https://open.spotify.com/show/3i5TCKhc6GY42pOWkpWveG",
-            applePodcasts: "https://podcasts.apple.com/us/podcast/the-happiness-lab-with-dr-laurie-santos/id1474244606"
-          }
-        },
-        book: {
-          title: "The Upside of Stress",
-          author: "Kelly McGonigal",
-          byline: "Why Stress Is Good for You",
-          length: "304 pages / 6-hour read",
-          description: "A science-backed approach",
-          whyThisHelps: "Helps reframe stress",
-          coverImage: "https://via.placeholder.com/300x450?text=Book",
-          sampleUrl: "https://www.amazon.com/...",
-          purchaseUrl: "https://www.amazon.com/..."
-        },
-        exercise: {
-          title: "4-7-8 Breathing",
-          description: "A calming breath technique",
-          duration: "5 minutes",
-          steps: [
-            "Sit comfortably",
-            "Inhale for 4 counts",
-            "Hold for 7 counts",
-            "Exhale for 8 counts",
-            "Repeat 3-4 times"
-          ]
-        },
-        story: {
-          title: "The Cracked Pot",
-          culturalOrigin: "Buddhist Parable",
-          content: "A water bearer in India had two pots...",
-          whyThisMatters: "Your challenges have taught you things..."
-        },
-        cbt: {
-          distortion: "All-or-nothing thinking",
-          userThought: "I have to handle everything perfectly",
-          reframe: "You can do your best while also struggling",
-          practice: "Write down one thing you did well today"
-        },
-        reflection: "You're navigating a challenging time",
-        patterns: [
-          "Multiple stressors creating cumulative load",
-          "Need for rest and boundary-setting",
-          "Body signaling need for support"
-        ]
-      };
+      console.error('Failed to parse results JSON:', e);
+      console.error('Full response text:', resultsText);
+      
+      // Return error so we can see what's happening
+      return new Response(
+        JSON.stringify({ 
+          error: 'Failed to parse AI response',
+          rawResponse: resultsText.substring(0, 500)
+        }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
     }
 
     return new Response(
