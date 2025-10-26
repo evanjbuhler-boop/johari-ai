@@ -717,24 +717,88 @@ if (!content || !content.trim()) {
 
 // Post-process to enforce explanations after questions if enabled
 if (neurodiveritySettings?.explainQuestions && content) {
+  // Track used explanations to avoid repetition within same response
+  const usedExplanations = new Set<string>();
+  
+  const explanationVariants = {
+    feeling: [
+      "I want to understand the emotional impact",
+      "Your feelings matter here",
+      "This helps me understand what you're experiencing",
+      "I'm curious about your emotional response"
+    ],
+    what: [
+      "This helps me understand the specifics",
+      "I want to understand the details",
+      "This gives me important context",
+      "I'm interested in understanding this better"
+    ],
+    why: [
+      "This helps me understand the root cause",
+      "I want to understand what's driving this",
+      "Understanding the 'why' helps me support you",
+      "This context is important"
+    ],
+    how: [
+      "This helps me understand the process",
+      "I want to understand your experience of this",
+      "This helps me see the bigger picture",
+      "I'm curious about how this unfolds for you"
+    ],
+    when: [
+      "Timing matters here",
+      "This helps me understand the context",
+      "I want to understand when this happens"
+    ],
+    where: [
+      "This helps me understand the setting",
+      "Context about where matters"
+    ],
+    who: [
+      "Relationships are important context",
+      "I want to understand the people involved",
+      "This helps me see the relational dynamics"
+    ],
+    explore: [
+      "I want to understand this more deeply",
+      "This helps me support you better",
+      "I'm curious to learn more about this"
+    ]
+  };
+  
   const addReason = (q: string) => {
     const lower = q.toLowerCase();
-    let reason = "This helps me support you better";
-    if (lower.includes('feel')) reason = "I want to understand the emotional impact";
-    else if (lower.startsWith('what') || lower.includes(' what ')) reason = "This helps me understand the specifics";
-    else if (lower.startsWith('why') || lower.includes(' why ')) reason = "This helps me understand the root cause";
-    else if (lower.startsWith('how') || lower.includes(' how ')) reason = "This helps me understand the process";
-    else if (lower.startsWith('when') || lower.includes(' when ')) reason = "This helps me understand timing and context";
-    else if (lower.startsWith('where') || lower.includes(' where ')) reason = "This helps me understand the setting";
-    else if (lower.startsWith('who') || lower.includes(' who ')) reason = "This helps me understand the relationships involved";
+    let variants: string[] = explanationVariants.explore;
+    
+    // More specific matching to avoid over-matching common words
+    if (lower.match(/\b(feel|feeling|felt)\b/)) variants = explanationVariants.feeling;
+    else if (lower.startsWith('what') || lower.match(/\bwhat\s/)) variants = explanationVariants.what;
+    else if (lower.startsWith('why') || lower.match(/\bwhy\s/)) variants = explanationVariants.why;
+    else if (lower.startsWith('how') || lower.match(/\bhow\s/)) variants = explanationVariants.how;
+    else if (lower.startsWith('when') || lower.match(/\bwhen\s/)) variants = explanationVariants.when;
+    else if (lower.startsWith('where') || lower.match(/\bwhere\s/)) variants = explanationVariants.where;
+    else if (lower.startsWith('who') || lower.match(/\bwho\s/)) variants = explanationVariants.who;
+    
+    // Pick a variant that hasn't been used yet, or cycle through
+    let reason = variants[0];
+    for (const variant of variants) {
+      if (!usedExplanations.has(variant)) {
+        reason = variant;
+        usedExplanations.add(variant);
+        break;
+      }
+    }
+    
     return `${q} (${reason})`;
   };
+  
   const addExplanationsToQuestions = (text: string) => {
     // Add explanation to any question that doesn't already have a parenthetical right after it
     return text.split('\n').map(line =>
       line.replace(/([^?.!\n]{2,}\?)(?!\s*\()/g, (_m, q) => addReason(q as string))
     ).join('\n');
   };
+  
   content = addExplanationsToQuestions(content);
 }
 
