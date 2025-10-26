@@ -20,8 +20,8 @@ export type Database = {
           created_at: string
           ended_at: string | null
           id: string
-          session_type: string | null
           started_at: string
+          therapy_approach: string | null
           user_id: string
         }
         Insert: {
@@ -29,8 +29,8 @@ export type Database = {
           created_at?: string
           ended_at?: string | null
           id?: string
-          session_type?: string | null
           started_at?: string
+          therapy_approach?: string | null
           user_id: string
         }
         Update: {
@@ -38,8 +38,8 @@ export type Database = {
           created_at?: string
           ended_at?: string | null
           id?: string
-          session_type?: string | null
           started_at?: string
+          therapy_approach?: string | null
           user_id?: string
         }
         Relationships: []

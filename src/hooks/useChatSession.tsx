@@ -6,7 +6,7 @@ export const useChatSession = () => {
   const { user } = useAuth();
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
 
-  const startSession = async (sessionType?: 'nightly_routine' | 'venting_session' | null) => {
+  const startSession = async (therapyApproach?: string | null) => {
     if (!user) return null;
 
     try {
@@ -14,7 +14,7 @@ export const useChatSession = () => {
         .from('chat_sessions')
         .insert({
           user_id: user.id,
-          session_type: sessionType || null,
+          therapy_approach: therapyApproach || null,
           started_at: new Date().toISOString(),
           completed: false
         })

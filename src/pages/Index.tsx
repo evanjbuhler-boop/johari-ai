@@ -212,7 +212,7 @@ const Index = () => {
     
     // Start tracking session if user is logged in
     if (user) {
-      await startSession(null);
+      await startSession(therapySettings.approach);
     }
     
     // Gentle fade transition to chat interface
