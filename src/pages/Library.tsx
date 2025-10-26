@@ -313,6 +313,29 @@ const Library = () => {
                 ? JSON.parse(selectedStory.story_content) 
                 : selectedStory.story_content;
               
+              // Handle regular story format (content + whyThisMatters)
+              if (content?.content) {
+                return (
+                  <div className="space-y-6 py-4">
+                    <div>
+                      <p className="text-base leading-relaxed text-muted-foreground whitespace-pre-line">
+                        {content.content}
+                      </p>
+                    </div>
+                    
+                    {content?.whyThisMatters && (
+                      <div className="border-t pt-4">
+                        <h3 className="text-lg font-semibold mb-3">Why This Matters</h3>
+                        <p className="text-base leading-relaxed text-muted-foreground">
+                          {content.whyThisMatters}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              
+              // Handle "What's Happening" format (summary + fullExplanation + citations)
               return (
                 <div className="space-y-6 py-4">
                   {content?.summary && (
