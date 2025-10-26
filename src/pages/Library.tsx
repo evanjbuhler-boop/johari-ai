@@ -79,6 +79,26 @@ const Library = () => {
     }
   };
 
+  const generatePreviewFromItem = (item: DbSavedItem): string => {
+    // Return existing preview if available
+    if (item.preview) return item.preview;
+    
+    // Generate preview from saved data
+    if (item.item_type === 'podcast') {
+      return item.description || 'A podcast episode to support your wellbeing.';
+    } else if (item.item_type === 'book') {
+      return item.description || 'A book recommendation for you.';
+    } else if (item.item_type === 'exercise') {
+      return item.description || 'A simple exercise to help you process your feelings and articulate them.';
+    } else if (item.item_type === 'story') {
+      if (item.title === "What's Happening") {
+        return 'A summary of your check-in session and key insights.';
+      }
+      return item.description || 'A perspective to help you reflect on your experience.';
+    }
+    return '';
+  };
+
   const filteredItems = filter === 'all' 
     ? savedItems 
     : savedItems.filter(item => item.item_type === filter);
@@ -268,11 +288,9 @@ const Library = () => {
                           <h3 className="text-xl font-bold text-foreground mb-2 leading-tight">
                             {item.title}
                           </h3>
-                          {item.preview && (
-                            <p className="text-muted-foreground leading-relaxed text-sm">
-                              {item.preview}
-                            </p>
-                          )}
+                          <p className="text-muted-foreground leading-relaxed text-sm">
+                            {generatePreviewFromItem(item)}
+                          </p>
                         </div>
                         <div className="text-right flex-shrink-0">
                           <p className="text-xs text-muted-foreground font-medium">
