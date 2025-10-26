@@ -59,6 +59,39 @@ export type Database = {
         }
         Relationships: []
       }
+      exercises: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          duration: string
+          id: string
+          steps: Json
+          tags: string[]
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          duration: string
+          id?: string
+          steps: Json
+          tags?: string[]
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          duration?: string
+          id?: string
+          steps?: Json
+          tags?: string[]
+          title?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           age: string
@@ -172,6 +205,35 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_exercise_history: {
+        Row: {
+          exercise_id: string
+          id: string
+          recommended_at: string
+          user_id: string
+        }
+        Insert: {
+          exercise_id: string
+          id?: string
+          recommended_at?: string
+          user_id: string
+        }
+        Update: {
+          exercise_id?: string
+          id?: string
+          recommended_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_exercise_history_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercises"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       validation_feedback: {
         Row: {
