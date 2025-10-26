@@ -593,9 +593,16 @@ CRITICAL INSTRUCTIONS:
 - Use vocabulary appropriate for graduate-level discourse`;
       }
       
-      // Enforce visual cues format if enabled
+      // Enforce response style rules
       if (neurodiveritySettings?.offerVisualCues) {
-        responseStyleRules = `\n\nRESPONSE STYLE (VISUAL CUES ENABLED):\n- Include at least one emoji cue (e.g., 🔑, 💡, ⚡)\n- Include a short bullet list using • points when appropriate\n- Bold key phrases for emphasis when helpful\n`;
+        responseStyleRules += `\n\nRESPONSE STYLE (VISUAL CUES ENABLED):\n- Include at least one emoji cue (e.g., 🔑, 💡, ⚡)\n- Include a short bullet list using • points when appropriate\n- Bold key phrases for emphasis when helpful\n`;
+      } else {
+        // If visual cues are off, avoid emojis or decorative bullets
+        responseStyleRules += `\n\nRESPONSE STYLE (VISUAL CUES DISABLED):\n- Do not use emojis or decorative symbols\n- Keep formatting plain text paragraphs\n`;
+      }
+
+      if (neurodiveritySettings?.geniusMode) {
+        responseStyleRules += `\n\nRESPONSE STYLE (GENIUS MODE):\n- Maintain a formal, analytical tone suitable for graduate-level discourse\n- Prefer precise terminology (e.g., cognitive schema, affect regulation, locus of control)\n- When relevant, include a concise framework reference (e.g., CBT reappraisal, DBT distress tolerance, attachment patterns)\n- Avoid emojis unless visual cues are enabled\n`;
       }
       
       console.log('Neurodiversity settings applied:', neurodiveritySettings);
@@ -706,6 +713,29 @@ if (!content || !content.trim()) {
     ? `I hear you. It sounds like ${lastUser.slice(0, 120)}... Can you tell me a bit more about what's feeling heaviest right now?`
     : "I'm here. Can you share a bit more about what's on your mind?";
   console.warn('Assistant content was empty. Returning safe fallback instead of empty string.');
+}
+
+// Post-process to enforce explanations after questions if enabled
+if (neurodiveritySettings?.explainQuestions && content) {
+  const addReason = (q: string) => {
+    const lower = q.toLowerCase();
+    let reason = "This helps me support you better";
+    if (lower.includes('feel')) reason = "I want to understand the emotional impact";
+    else if (lower.startsWith('what') || lower.includes(' what ')) reason = "This helps me understand the specifics";
+    else if (lower.startsWith('why') || lower.includes(' why ')) reason = "This helps me understand the root cause";
+    else if (lower.startsWith('how') || lower.includes(' how ')) reason = "This helps me understand the process";
+    else if (lower.startsWith('when') || lower.includes(' when ')) reason = "This helps me understand timing and context";
+    else if (lower.startsWith('where') || lower.includes(' where ')) reason = "This helps me understand the setting";
+    else if (lower.startsWith('who') || lower.includes(' who ')) reason = "This helps me understand the relationships involved";
+    return `${q} (${reason})`;
+  };
+  const addExplanationsToQuestions = (text: string) => {
+    // Add explanation to any question that doesn't already have a parenthetical right after it
+    return text.split('\n').map(line =>
+      line.replace(/([^?.!\n]{2,}\?)(?!\s*\()/g, (_m, q) => addReason(q as string))
+    ).join('\n');
+  };
+  content = addExplanationsToQuestions(content);
 }
 
 return new Response(
