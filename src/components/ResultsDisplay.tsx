@@ -173,7 +173,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
       <div className="max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6">
         
         {/* What's Happening Section */}
-        <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-l-4 border-primary rounded-xl shadow-lg">
+        <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg">
           <div className="flex items-center justify-between gap-4 mb-6">
             <button
               onClick={() => setWhatsHappeningExpanded(!whatsHappeningExpanded)}
