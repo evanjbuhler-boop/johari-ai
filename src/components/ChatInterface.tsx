@@ -128,6 +128,46 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     }
   }, [conversationDuration, exchangeCount, conversationPath, showFinishButton]);
   
+  // Detect finish-intent keywords in user messages
+  useEffect(() => {
+    if (isLoading || showFinishButton) return;
+    
+    const recentUserMessages = messages.filter(m => m.role === 'user').slice(-2);
+    if (recentUserMessages.length === 0) return;
+    
+    const lastUserMessage = recentUserMessages[recentUserMessages.length - 1].content.toLowerCase();
+    
+    // Finish intent keywords
+    const finishKeywords = [
+      'show me recommendations',
+      'see my recommendations',
+      'want to see recommendations',
+      'ready for recommendations',
+      'give me recommendations',
+      'show recommendations',
+      'finish chat',
+      'finish this',
+      'i\'m done',
+      'i am done',
+      'done chatting',
+      'ready to finish',
+      'move on',
+      'next step',
+      'ready to move on',
+      'over this chat',
+      'done with this',
+      'wrap up',
+      'wrap this up'
+    ];
+    
+    const hasFinishIntent = finishKeywords.some(keyword => lastUserMessage.includes(keyword));
+    
+    if (hasFinishIntent && exchangeCount >= 3) {
+      // Ensure we have at least 3 exchanges for meaningful conversation
+      setShowFinishButton(true);
+    }
+  }, [messages, isLoading, showFinishButton, exchangeCount]);
+  
   // Separate effect for emotion detection - only runs when messages change
   useEffect(() => {
     if (isLoading) return; // Don't process while loading
