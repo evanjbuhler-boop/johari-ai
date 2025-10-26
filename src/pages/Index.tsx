@@ -346,8 +346,8 @@ const Index = () => {
     setState('processing');
     setIsLoading(true);
     
-    // Add minimum delay for better UX (show processing screen for at least 4 seconds to match progress bar)
-    const minDelay = new Promise(resolve => setTimeout(resolve, 4000));
+    // Add minimum delay for better UX (show processing screen for at least 2.5 seconds)
+    const minDelay = new Promise(resolve => setTimeout(resolve, 2500));
     
     try {
       // Ask AI to extract structured validation data from conversation
@@ -365,8 +365,9 @@ const Index = () => {
       // AI should return structured ValidationData with enhanced fields
       const extracted: ValidationData = data || extractValidationData(messages);
       
-      // Wait for minimum delay before showing validation
+      // Wait for minimum delay, then add smooth fade transition
       await minDelay;
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       setValidationData(extracted);
       setState('validation');
@@ -375,8 +376,9 @@ const Index = () => {
       // Fallback to keyword extraction
       const extracted = extractValidationData(messages);
       
-      // Wait for minimum delay before showing validation
+      // Wait for minimum delay, then add smooth fade transition
       await minDelay;
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       setValidationData(extracted);
       setState('validation');
