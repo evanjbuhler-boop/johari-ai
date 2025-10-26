@@ -15,10 +15,14 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
 import { useTherapyApproach } from '@/hooks/useTherapyApproach';
 
+import RecommendationsLoadingScreen from '@/components/RecommendationsLoadingScreen';
+
 type AppState = 'landing' | 'chat' | 'venting' | 'processing' | 'validation' | 'profile' | 'results';
+type ProcessingType = 'validation' | 'recommendations';
 
 const Index = () => {
   const [state, setState] = useState<AppState>('landing');
+  const [processingType, setProcessingType] = useState<ProcessingType>('validation');
   const [messages, setMessages] = useState<Message[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [results, setResults] = useState<CheckInResults | null>(null);
@@ -339,6 +343,7 @@ const Index = () => {
 
   const handleChatComplete = async () => {
     // Show processing state immediately with enhanced loading screen
+    setProcessingType('validation');
     setState('processing');
     setIsLoading(true);
     
@@ -387,11 +392,15 @@ const Index = () => {
   const handleValidationConfirm = async (data: ValidationData) => {
     setValidationData(data);
     
+    // Show loading immediately
+    setIsLoading(true);
+    
     // If user hasn't filled profile before, show profile form
     if (!profile) {
+      setIsLoading(false);
       setState('profile');
     } else {
-      // Generate results
+      // Generate results with loading state
       await generateResults(data);
     }
   };
@@ -402,6 +411,10 @@ const Index = () => {
   };
 
   const generateResults = async (data: ValidationData) => {
+    // Show a brief loading screen
+    setProcessingType('recommendations');
+    setState('processing');
+    
     try {
       const { data: resultsData, error } = await supabase.functions.invoke('chat', {
         body: { messages, validationData: data, type: 'results' }
@@ -410,6 +423,7 @@ const Index = () => {
       if (error) throw error;
 
       setResults(resultsData);
+      setIsLoading(false);
       setState('results');
       
       // Save to localStorage
@@ -431,6 +445,7 @@ const Index = () => {
       // Fallback to mock results
       const mockResults = generateMockResults(messages);
       setResults(mockResults);
+      setIsLoading(false);
       setState('results');
       
       const checkInData = {
@@ -523,7 +538,11 @@ const Index = () => {
   if (state === 'processing') {
     return (
       <AppLayout>
-        <ValidationLoadingScreen />
+        {processingType === 'validation' ? (
+          <ValidationLoadingScreen />
+        ) : (
+          <RecommendationsLoadingScreen />
+        )}
       </AppLayout>
     );
   }
