@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Brain, Heart, Moon, Sparkles } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 import { ValidationData } from '@/types/checkin';
-import StageProgressBar from '@/components/StageProgressBar';
+import { Button } from '@/components/ui/button';
 
 interface ValidationScreenProps {
   initialData: ValidationData;
@@ -10,308 +10,171 @@ interface ValidationScreenProps {
   onAdjust: () => void;
 }
 
-const ValidationScreen = ({ initialData, conversationPath, onConfirm }: ValidationScreenProps) => {
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
-  const [badgeIndex, setBadgeIndex] = useState(0);
+const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => {
+  const [visibleItems, setVisibleItems] = useState<number>(0);
+  const [showValidation, setShowValidation] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const [skipped, setSkipped] = useState(false);
 
-  const badgeMessages = [
-    { icon: '⚙️', text: 'Processing your insights' },
-    { icon: '🧠', text: 'Analyzing emotional patterns' },
-    { icon: '🔍', text: 'Researching your recommendations' },
-    { icon: '✨', text: 'Almost ready...' }
+  // Check for reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Get bullets and validation line from data
+  const bullets = initialData.validation_bullets || [
+    "You're feeling stressed about work demands",
+    "You're exhausted from lack of quality sleep",
+    "You're frustrated by relationship tensions",
+    "You want space to reset and find balance"
   ];
-
-  // Auto-advance to recommendations after 30 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onConfirm(initialData);
-    }, 30000);
-
-    return () => clearTimeout(timer);
-  }, [initialData, onConfirm]);
-
-  // Cycle through badge messages every 3.5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBadgeIndex((prev) => (prev + 1) % badgeMessages.length);
-    }, 3500);
-
-    return () => clearInterval(interval);
-  }, [badgeMessages.length]);
-
-  const parseReasoningToBullets = (reasoning?: string): string[] => {
-    if (!reasoning) return ['Based on your conversation patterns'];
-    
-    // Split by sentences and clean up
-    const sentences = reasoning
-      .split(/[.!?]+/)
-      .map(s => s.trim())
-      .filter(s => s.length > 0);
-    
-    return sentences.length > 0 ? sentences : ['Based on your conversation patterns'];
-  };
-
-  // Format insights from the data
-  const primaryEmotions = initialData.emotions[0] || 'Processing your emotional state';
-  const stressorsText = initialData.mainStressors.length > 0 
-    ? initialData.mainStressors.slice(0, 2).join(' + ') 
-    : 'General Life Pressure';
   
-  // Physical state - extract from sleepReasoning if available
-  const getPhysicalState = () => {
-    if (initialData.sleepHours) {
-      return `${initialData.sleepHours}h sleep (${initialData.sleepQuality?.toLowerCase() || 'moderate'})`;
+  const validationLine = initialData.validation_line || "These feelings make sense.";
+
+  // Sequential animation logic
+  useEffect(() => {
+    if (prefersReducedMotion || skipped) {
+      // Show everything immediately if reduced motion or skipped
+      setVisibleItems(bullets.length);
+      setShowValidation(true);
+      setShowButton(true);
+      return;
     }
-    // Try to extract from reasoning
-    if (initialData.sleepReasoning) {
-      return initialData.sleepReasoning.split('.')[0] || 'Assessing physical state';
+
+    // Icon + heading are visible immediately (handled by CSS)
+    
+    // Sequential bullet reveals
+    const bulletTimings = [
+      800,   // First bullet after 800ms (icon + heading fade in for 400ms)
+      1400,  // Second bullet after 1400ms (600ms pause)
+      2000,  // Third bullet after 2000ms (600ms pause)
+      2600,  // Fourth bullet after 2600ms (600ms pause)
+    ];
+
+    const timers: NodeJS.Timeout[] = [];
+
+    bulletTimings.forEach((timing, index) => {
+      const timer = setTimeout(() => {
+        setVisibleItems(index + 1);
+      }, timing);
+      timers.push(timer);
+    });
+
+    // Show validation line after last bullet
+    const validationTimer = setTimeout(() => {
+      setShowValidation(true);
+    }, 3200); // 2600ms + 600ms pause
+    timers.push(validationTimer);
+
+    // Show button last
+    const buttonTimer = setTimeout(() => {
+      setShowButton(true);
+    }, 3800); // 3200ms + 600ms pause
+    timers.push(buttonTimer);
+
+    return () => {
+      timers.forEach(timer => clearTimeout(timer));
+    };
+  }, [bullets.length, prefersReducedMotion, skipped]);
+
+  const handleSkip = () => {
+    if (!skipped && !prefersReducedMotion) {
+      setSkipped(true);
+      setVisibleItems(bullets.length);
+      setShowValidation(true);
+      setShowButton(true);
     }
-    return 'Assessing physical state';
   };
-  const sleepStatus = getPhysicalState();
-  
-  // Support approach based on conversation path
-  const getSupportApproach = () => {
-    if (conversationPath === 'nightly_routine') {
-      return 'Nightly routine & reflection';
-    } else if (conversationPath === 'venting_session') {
-      return 'Venting & emotional release';
-    }
-    return 'Personalized guidance';
+
+  const handleContinue = () => {
+    onConfirm(initialData);
   };
-  const supportApproach = getSupportApproach();
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 pb-32 relative overflow-hidden bg-background">
-      {/* Background gradient effect */}
-      <div className="absolute inset-0 opacity-30">
+    <div 
+      className="min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-br from-background via-muted/20 to-background"
+      onClick={handleSkip}
+    >
+      <div className="w-full max-w-[560px] flex flex-col items-center text-center">
+        {/* Icon - fades in immediately */}
         <div 
-          className="absolute inset-0 animated-gradient"
-          style={{ filter: 'blur(100px)' }}
-        />
-      </div>
-
-      {/* Main content */}
-      <div className="relative z-10 w-full max-w-3xl">
-        {/* Header */}
-        <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 transition-all duration-300">
-            <span className="text-base animate-pulse">{badgeMessages[badgeIndex].icon}</span>
-            <span className="text-sm font-medium text-primary">{badgeMessages[badgeIndex].text}</span>
+          className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-400"
+          style={{
+            color: '#8B5CF6',
+          }}
+        >
+          <div className="w-12 h-12 rounded-full bg-[#8B5CF6]/10 flex items-center justify-center">
+            <Check className="w-6 h-6" style={{ color: '#8B5CF6' }} />
           </div>
-          <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-            Here's What I'm Hearing
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Give me 30 seconds to prepare your recommendations...
+        </div>
+
+        {/* Heading - fades in immediately */}
+        <h1 
+          className="text-2xl sm:text-3xl font-semibold text-foreground mb-10 animate-in fade-in slide-in-from-bottom-2 duration-400"
+        >
+          Here's what I'm hearing
+        </h1>
+
+        {/* Bullets - appear sequentially */}
+        <div className="w-full mb-8 space-y-4 text-left">
+          {bullets.map((bullet, index) => (
+            <div
+              key={index}
+              className={`flex items-start gap-3 transition-all duration-300 ${
+                index < visibleItems || prefersReducedMotion || skipped
+                  ? 'opacity-100 translate-y-0'
+                  : 'opacity-0 translate-y-3'
+              }`}
+            >
+              <span 
+                className="flex-shrink-0 mt-1 text-lg font-bold"
+                style={{ color: '#8B5CF6' }}
+              >
+                •
+              </span>
+              <p className="text-base sm:text-lg text-foreground leading-relaxed">
+                {bullet}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Validation line - appears after bullets */}
+        <p 
+          className={`text-[15px] italic mb-10 transition-all duration-300 ${
+            showValidation || prefersReducedMotion || skipped
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-3'
+          }`}
+          style={{ color: '#666666' }}
+        >
+          {validationLine}
+        </p>
+
+        {/* Button - appears last */}
+        <Button
+          onClick={handleContinue}
+          className={`gap-2 px-8 py-6 text-base font-semibold rounded-lg transition-all duration-300 ${
+            showButton || prefersReducedMotion || skipped
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-3'
+          }`}
+          style={{
+            backgroundColor: '#8B5CF6',
+            color: '#FFFFFF',
+            boxShadow: '0px 2px 8px rgba(139, 92, 246, 0.15)',
+            minWidth: '200px',
+          }}
+        >
+          See what might help
+          <ChevronRight className="w-5 h-5" />
+        </Button>
+
+        {/* Skip hint (only visible during animation) */}
+        {!skipped && !prefersReducedMotion && !showButton && (
+          <p className="text-xs text-muted-foreground mt-6 opacity-50">
+            Tap anywhere to continue
           </p>
-        </div>
-
-        {/* Insights grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Emotional state */}
-          <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-red-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden min-h-[160px] flex flex-col"
-            style={{ animationDelay: '0ms', boxShadow: 'var(--shadow-soft)' }}
-            onClick={() => setExpandedCard(expandedCard === 'emotion' ? null : 'emotion')}
-            onMouseEnter={() => setExpandedCard('emotion')}
-            onMouseLeave={() => setExpandedCard(null)}
-          >
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-red-100/60 border border-red-200 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                <Heart className="h-6 w-6 text-rose-500" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                  Emotional State
-                </h3>
-                <p className="text-lg font-medium text-foreground leading-snug">
-                  {primaryEmotions}
-                </p>
-              </div>
-            </div>
-            
-            {/* Expanded content */}
-            <div 
-              className={`transition-all duration-500 ease-in-out ${
-                expandedCard === 'emotion' 
-                  ? 'max-h-96 opacity-100 mt-4' 
-                  : 'max-h-0 opacity-0 mt-0'
-              }`}
-            >
-              <div className="border-t border-border pt-4">
-                <p className="text-sm font-medium text-muted-foreground mb-3">Based on:</p>
-                <ul className="space-y-2">
-                  {parseReasoningToBullets(initialData.emotionReasoning).map((bullet, idx) => (
-                    <li key={idx} className="flex gap-2 text-sm text-muted-foreground">
-                      <span className="text-primary mt-1">•</span>
-                      <span className="flex-1">{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Main stressors */}
-          <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-orange-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden min-h-[160px] flex flex-col"
-            style={{ animationDelay: '200ms', boxShadow: 'var(--shadow-soft)' }}
-            onClick={() => setExpandedCard(expandedCard === 'stressor' ? null : 'stressor')}
-            onMouseEnter={() => setExpandedCard('stressor')}
-            onMouseLeave={() => setExpandedCard(null)}
-          >
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-orange-100/60 border border-orange-200 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                <Brain className="h-6 w-6 text-amber-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                  Key Stressors
-                </h3>
-                <p className="text-lg font-medium text-foreground leading-snug">
-                  {stressorsText}
-                </p>
-              </div>
-            </div>
-            
-            {/* Expanded content */}
-            <div 
-              className={`transition-all duration-500 ease-in-out ${
-                expandedCard === 'stressor' 
-                  ? 'max-h-96 opacity-100 mt-4' 
-                  : 'max-h-0 opacity-0 mt-0'
-              }`}
-            >
-              <div className="border-t border-border pt-4">
-                <p className="text-sm font-medium text-muted-foreground mb-3">Based on:</p>
-                <ul className="space-y-2">
-                  {parseReasoningToBullets(initialData.stressorReasoning).map((bullet, idx) => (
-                    <li key={idx} className="flex gap-2 text-sm text-muted-foreground">
-                      <span className="text-primary mt-1">•</span>
-                      <span className="flex-1">{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Sleep & physical */}
-          <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-blue-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden min-h-[160px] flex flex-col"
-            style={{ animationDelay: '400ms', boxShadow: 'var(--shadow-soft)' }}
-            onClick={() => setExpandedCard(expandedCard === 'sleep' ? null : 'sleep')}
-            onMouseEnter={() => setExpandedCard('sleep')}
-            onMouseLeave={() => setExpandedCard(null)}
-          >
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-100/60 border border-blue-200 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                <Moon className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                  Physical State
-                </h3>
-                <p className="text-lg font-medium text-foreground leading-snug">
-                  {sleepStatus}
-                </p>
-              </div>
-            </div>
-            
-            {/* Expanded content */}
-            <div 
-              className={`transition-all duration-500 ease-in-out ${
-                expandedCard === 'sleep' 
-                  ? 'max-h-96 opacity-100 mt-4' 
-                  : 'max-h-0 opacity-0 mt-0'
-              }`}
-            >
-              <div className="border-t border-border pt-4">
-                <p className="text-sm font-medium text-muted-foreground mb-3">Based on:</p>
-                <ul className="space-y-2">
-                  {parseReasoningToBullets(initialData.sleepReasoning).map((bullet, idx) => (
-                    <li key={idx} className="flex gap-2 text-sm text-muted-foreground">
-                      <span className="text-primary mt-1">•</span>
-                      <span className="flex-1">{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Support approach */}
-          <div 
-            className="group bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-green-400/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 cursor-help overflow-hidden min-h-[160px] flex flex-col"
-            style={{ animationDelay: '600ms', boxShadow: 'var(--shadow-soft)' }}
-            onClick={() => setExpandedCard(expandedCard === 'support' ? null : 'support')}
-            onMouseEnter={() => setExpandedCard('support')}
-            onMouseLeave={() => setExpandedCard(null)}
-          >
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-green-100/60 border border-green-200 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                <Sparkles className="h-6 w-6 text-emerald-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                  Support Focus
-                </h3>
-                <p className="text-lg font-medium text-foreground leading-snug">
-                  {supportApproach}
-                </p>
-              </div>
-            </div>
-            
-            {/* Expanded content */}
-            <div 
-              className={`transition-all duration-500 ease-in-out ${
-                expandedCard === 'support' 
-                  ? 'max-h-96 opacity-100 mt-4' 
-                  : 'max-h-0 opacity-0 mt-0'
-              }`}
-            >
-              <div className="border-t border-border pt-4">
-                <p className="text-sm font-medium text-muted-foreground mb-3">Based on:</p>
-                <ul className="space-y-2">
-                  {parseReasoningToBullets(initialData.supportReasoning).map((bullet, idx) => (
-                    <li key={idx} className="flex gap-2 text-sm text-muted-foreground">
-                      <span className="text-primary mt-1">•</span>
-                      <span className="flex-1">{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress indicator */}
-        <div className="mt-12 text-center animate-in fade-in duration-700 delay-700">
-          <div className="inline-flex flex-col items-center gap-3">
-            <div className="flex gap-1.5">
-              <div 
-                className="w-2 h-2 rounded-full bg-primary animate-pulse"
-                style={{ animationDelay: '0ms' }}
-              />
-              <div 
-                className="w-2 h-2 rounded-full bg-primary animate-pulse"
-                style={{ animationDelay: '200ms' }}
-              />
-              <div 
-                className="w-2 h-2 rounded-full bg-primary animate-pulse"
-                style={{ animationDelay: '400ms' }}
-              />
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Crafting your personalized recommendations...
-            </p>
-          </div>
-        </div>
+        )}
       </div>
-      
-      {/* Stage Progress Bar */}
-      <StageProgressBar currentStage="validate" />
     </div>
   );
 };

@@ -54,6 +54,10 @@ export interface ValidationData {
   stressorReasoning?: string;
   sleepReasoning?: string;
   supportReasoning?: string;
+  
+  // New validation screen fields
+  validation_bullets?: string[];
+  validation_line?: string;
 }
 
 // Emotion state for adaptive UI
