@@ -7,6 +7,7 @@ import ResultsDisplay from '@/components/ResultsDisplay';
 import ValidationScreen from '@/components/ValidationScreen';
 import ValidationLoadingScreen from '@/components/ValidationLoadingScreen';
 import AppLayout from '@/components/AppLayout';
+import WelcomeModal from '@/components/WelcomeModal';
 import { Message, UserProfile, CheckInResults, ValidationData } from '@/types/checkin';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -21,6 +22,7 @@ type AppState = 'landing' | 'chat' | 'venting' | 'processing' | 'validation' | '
 type ProcessingType = 'validation' | 'recommendations';
 
 const Index = () => {
+  const [showWelcome, setShowWelcome] = useState(true);
   const [state, setState] = useState<AppState>('landing');
   const [processingType, setProcessingType] = useState<ProcessingType>('validation');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -497,6 +499,7 @@ const Index = () => {
   if (state === 'landing') {
     return (
       <AppLayout>
+        {showWelcome && <WelcomeModal onClose={() => setShowWelcome(false)} />}
         <LandingPrompt onSubmit={handleLandingSubmit} />
       </AppLayout>
     );
