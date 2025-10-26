@@ -495,17 +495,9 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       ).join('\n');
 
       // Determine conversation mode and load appropriate system prompt
-      console.log('🔍 DEBUG - therapyApproach received:', therapyApproach);
-      console.log('🔍 DEBUG - typeof therapyApproach:', typeof therapyApproach);
-      console.log('🔍 DEBUG - Request body keys:', Object.keys(req.body || {}));
-
       const approach: TherapyApproach = therapyApproach || 'blended';
-
-      console.log('✅ Using therapy approach:', approach);
-      console.log('✅ Approach is blended?', approach === 'blended');
-      console.log('✅ Approach is CBT?', approach === 'cbt');
-
       const baseSystemPrompt = getSystemPrompt(approach);
+      console.log('Using therapy approach:', approach);
       
       // Analyze user message complexity for language adaptation
       const userMessages = messages.filter((m: any) => m.role === 'user');
@@ -549,42 +541,41 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       }
       
       console.log('Neurodiversity settings applied:', neurodiveritySettings);
-      
-     // Build conversation context (minimal append)
+
+      // Determine conversation context based on exchange count
 let conversationContext = '';
 
-if (conversationPath === 'nightly_routine') {
-  const userExchanges = messages.filter((m: any) => m.role === 'user').length;
+// Simple progression: start therapy immediately
+if (exchangeCount === 0) {
+  // First interaction - start therapy
   conversationContext = `
-
-# CURRENT CONTEXT:
-This is a nightly routine check-in (structured format).
-User has sent ${userExchanges} message(s).
-
-${previousExchanges ? `Previous conversation:\n${previousExchanges}` : ''}
-
-Guide them through the routine while using your therapeutic framework.`;
-
-} else if (conversationPath === 'venting_session') {
-  conversationContext = `
-
-# CURRENT CONTEXT:
-This is a venting session - user chose to express freely.
-
-${previousExchanges ? `Previous conversation:\n${previousExchanges}` : ''}
-
-Listen actively using your therapeutic approach. Minimal interruption until they finish.`;
-
-} else {
-  conversationContext = `
-
 # CURRENT CONTEXT:
 This is the initial check-in (first interaction).
 
-After reflecting warmly on what they shared, offer:
-"Would you like to:
-→ Do your nightly routine (helps you process and wind down)
-→ Just vent right now (I'm here to listen)"`;
+Begin the therapeutic conversation using your assigned approach.
+
+RESPONSE STRUCTURE:
+1. Brief empathetic reflection (1-2 sentences max)
+2. Ask your first therapeutic question to begin exploration
+
+Keep it natural and conversational.
+`;
+} else if (exchangeCount >= 1 && exchangeCount <= 5) {
+  conversationContext = `
+# CURRENT CONTEXT:
+Early exploration phase (exchange ${exchangeCount} of ~5-7 total).
+
+Continue deepening the exploration using your therapeutic approach.
+Build on what they've shared so far.
+`;
+} else if (exchangeCount >= 6) {
+  conversationContext = `
+# CURRENT CONTEXT:
+Deepening phase (exchange ${exchangeCount}).
+
+You've established good rapport. Continue with deeper therapeutic work.
+The conversation can naturally conclude after 7-8 exchanges.
+`;
 }
 
 // Combine everything
