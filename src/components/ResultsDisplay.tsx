@@ -170,13 +170,22 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
         
         {/* What's Happening Section */}
         <Card className="p-8 md:p-10 bg-gradient-to-br from-background via-muted/10 to-background border-l-4 border-primary rounded-xl shadow-lg">
-          <button
-            onClick={() => setWhatsHappeningExpanded(!whatsHappeningExpanded)}
-            className="w-full flex items-center justify-between gap-4 text-left"
-          >
-            <h2 className="text-2xl md:text-3xl font-medium text-foreground">What's Happening</h2>
-            {whatsHappeningExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          </button>
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <button
+              onClick={() => setWhatsHappeningExpanded(!whatsHappeningExpanded)}
+              className="flex items-center gap-4 text-left"
+            >
+              <h2 className="text-2xl md:text-3xl font-medium text-foreground">What's Happening</h2>
+              {whatsHappeningExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => toggleSave('whats-happening', 'story', "What's Happening", undefined, results.whatsHappening)}
+            >
+              {isSaved('whats-happening') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+            </Button>
+          </div>
 
           <div className="mt-6 space-y-4">
             <p className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-3xl">
@@ -225,15 +234,6 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                   </ul>
                 </div>
               )}
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleSave('whats-happening', 'story', "What's Happening", undefined, results.whatsHappening)}
-                className="mt-4"
-              >
-                {isSaved('whats-happening') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
             </div>
           )}
         </Card>
@@ -279,9 +279,18 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
         {/* Story Card */}
         {results.story && (
           <Card className="p-8 md:p-10 bg-gradient-to-br from-secondary/5 to-muted/30 shadow-lg">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-3xl">📖</span>
-              <h2 className="text-2xl font-semibold text-foreground">A Story for You</h2>
+            <div className="flex items-center justify-between gap-3 mb-6">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">📖</span>
+                <h2 className="text-2xl font-semibold text-foreground">A Story for You</h2>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
+              >
+                {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+              </Button>
             </div>
 
             <div className="space-y-6">
@@ -301,14 +310,6 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                   {results.story.whyThisMatters}
                 </p>
               </div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
-              >
-                {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
             </div>
           </Card>
         )}
@@ -321,9 +322,23 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
         {/* Podcast Recommendation */}
         {results.podcast && (
           <Card className="p-6 md:p-8 bg-card border border-border rounded-xl shadow-lg">
-            <div className="flex items-center gap-2 pb-2 mb-4 border-b-2 border-border">
-              <span className="text-2xl">🎧</span>
-              <h2 className="text-xl font-semibold text-foreground">Listen to This</h2>
+            <div className="flex items-center justify-between pb-2 mb-4 border-b-2 border-border">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">🎧</span>
+                <h2 className="text-xl font-semibold text-foreground">Listen to This</h2>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleSave('podcast-' + results.podcast!.episode, 'podcast', results.podcast!.title, results.podcast!.episode, results.podcast)}
+                >
+                  {isSaved('podcast-' + results.podcast.episode) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleShare(results.podcast!.title)}>
+                  <Share2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -361,15 +376,6 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                 <Play className="w-4 h-4" />
                 Play Episode
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => toggleSave('podcast-' + results.podcast!.episode, 'podcast', results.podcast!.title, results.podcast!.episode, results.podcast)}
-              >
-                {isSaved('podcast-' + results.podcast.episode) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
-              <Button variant="outline" onClick={() => handleShare(results.podcast!.title)}>
-                <Share2 className="w-4 h-4" />
-              </Button>
             </div>
           </Card>
         )}
@@ -377,9 +383,23 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
         {/* Book Recommendation */}
         {results.book && (
           <Card className="p-6 md:p-8 bg-card border border-border rounded-xl shadow-lg">
-            <div className="flex items-center gap-2 pb-2 mb-4 border-b-2 border-border">
-              <span className="text-2xl">📚</span>
-              <h2 className="text-xl font-semibold text-foreground">Books</h2>
+            <div className="flex items-center justify-between pb-2 mb-4 border-b-2 border-border">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">📚</span>
+                <h2 className="text-xl font-semibold text-foreground">Books</h2>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleSave('book-' + results.book!.title, 'book', results.book!.title, `By ${results.book!.author}`, results.book)}
+                >
+                  {isSaved('book-' + results.book.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleShare(results.book!.title)}>
+                  <Share2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -428,15 +448,6 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                   🛒 Get Book
                 </Button>
               )}
-              <Button
-                variant="outline"
-                onClick={() => toggleSave('book-' + results.book!.title, 'book', results.book!.title, `By ${results.book!.author}`, results.book)}
-              >
-                {isSaved('book-' + results.book.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
-              <Button variant="outline" onClick={() => handleShare(results.book!.title)}>
-                <Share2 className="w-4 h-4" />
-              </Button>
             </div>
           </Card>
         )}
@@ -444,9 +455,18 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
         {/* Exercise Card */}
         {results.exercise && (
           <Card className="p-6 md:p-8 bg-gradient-to-br from-accent/10 to-primary/10 border-accent/20 shadow-lg">
-            <div className="flex items-center gap-2 mb-4 pb-2 border-b-2 border-border">
-              <span className="text-2xl">✨</span>
-              <h2 className="text-xl font-semibold text-foreground">Hands on Exercises</h2>
+            <div className="flex items-center justify-between mb-4 pb-2 border-b-2 border-border">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">✨</span>
+                <h2 className="text-xl font-semibold text-foreground">Hands on Exercises</h2>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toggleSave('exercise-' + results.exercise!.title, 'exercise', results.exercise!.title, results.exercise!.description, results.exercise)}
+              >
+                {isSaved('exercise-' + results.exercise.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+              </Button>
             </div>
 
             <div className="space-y-3">
@@ -457,12 +477,6 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
             <div className="flex flex-wrap gap-3 mt-4">
               <Button onClick={() => setExerciseModalOpen(true)} className="flex-1 sm:flex-none">
                 Start Guided Exercise →
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => toggleSave('exercise-' + results.exercise!.title, 'exercise', results.exercise!.title, results.exercise!.description, results.exercise)}
-              >
-                {isSaved('exercise-' + results.exercise.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
               </Button>
             </div>
           </Card>
