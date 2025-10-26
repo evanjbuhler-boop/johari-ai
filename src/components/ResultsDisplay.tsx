@@ -353,7 +353,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                 <span>💬</span> Why this might help:
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400 leading-6 italic">
+              <p className="text-sm text-gray-600 dark:text-gray-400 italic line-clamp-1">
                 {results.podcast.whyThisHelps}
               </p>
             </div>
@@ -409,7 +409,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               <p className="text-sm font-semibold text-foreground/90 mb-2 flex items-center gap-2">
                 <span>💬</span> Why this might help:
               </p>
-              <p className="text-sm text-muted-foreground leading-6 italic">
+              <p className="text-sm text-muted-foreground italic line-clamp-1">
                 {results.book.whyThisHelps}
               </p>
             </div>
