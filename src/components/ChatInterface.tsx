@@ -128,43 +128,75 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     }
   }, [conversationDuration, exchangeCount, conversationPath, showFinishButton]);
   
-  // Detect finish-intent keywords in user messages
+  // Detect finish-intent keywords in user messages OR AI closing statements
   useEffect(() => {
     if (isLoading || showFinishButton) return;
     
+    const recentMessages = messages.slice(-3);
+    if (recentMessages.length === 0) return;
+    
+    // Check last user message for finish intent
     const recentUserMessages = messages.filter(m => m.role === 'user').slice(-2);
-    if (recentUserMessages.length === 0) return;
+    if (recentUserMessages.length > 0) {
+      const lastUserMessage = recentUserMessages[recentUserMessages.length - 1].content.toLowerCase();
+      
+      // Finish intent keywords
+      const finishKeywords = [
+        'show me recommendations',
+        'see my recommendations',
+        'want to see recommendations',
+        'ready for recommendations',
+        'give me recommendations',
+        'show recommendations',
+        'finish chat',
+        'finish this',
+        'i\'m done',
+        'i am done',
+        'done chatting',
+        'ready to finish',
+        'move on',
+        'next step',
+        'ready to move on',
+        'over this chat',
+        'done with this',
+        'wrap up',
+        'wrap this up',
+        'let\'s do it',
+        'ok',
+        'yes'
+      ];
+      
+      const hasFinishIntent = finishKeywords.some(keyword => lastUserMessage.includes(keyword));
+      
+      if (hasFinishIntent && exchangeCount >= 3) {
+        // Ensure we have at least 3 exchanges for meaningful conversation
+        setShowFinishButton(true);
+      }
+    }
     
-    const lastUserMessage = recentUserMessages[recentUserMessages.length - 1].content.toLowerCase();
-    
-    // Finish intent keywords
-    const finishKeywords = [
-      'show me recommendations',
-      'see my recommendations',
-      'want to see recommendations',
-      'ready for recommendations',
-      'give me recommendations',
-      'show recommendations',
-      'finish chat',
-      'finish this',
-      'i\'m done',
-      'i am done',
-      'done chatting',
-      'ready to finish',
-      'move on',
-      'next step',
-      'ready to move on',
-      'over this chat',
-      'done with this',
-      'wrap up',
-      'wrap this up'
-    ];
-    
-    const hasFinishIntent = finishKeywords.some(keyword => lastUserMessage.includes(keyword));
-    
-    if (hasFinishIntent && exchangeCount >= 3) {
-      // Ensure we have at least 3 exchanges for meaningful conversation
-      setShowFinishButton(true);
+    // Also check if AI is giving closing statements
+    const lastAIMessages = messages.filter(m => m.role === 'assistant').slice(-2);
+    if (lastAIMessages.length > 0) {
+      const recentAIText = lastAIMessages.map(m => m.content.toLowerCase()).join(' ');
+      
+      // AI closing statement patterns
+      const closingPhrases = [
+        'thank you for the conversation',
+        'thank you for sharing today',
+        'it\'s been great to explore',
+        'if you feel ready, we can wrap up',
+        'when we finish this conversation',
+        'personalized insights for you to consider',
+        'ready to reflect',
+        'wrap up',
+        'ready to move forward'
+      ];
+      
+      const hasClosingStatement = closingPhrases.some(phrase => recentAIText.includes(phrase));
+      
+      if (hasClosingStatement && exchangeCount >= 3) {
+        setShowFinishButton(true);
+      }
     }
   }, [messages, isLoading, showFinishButton, exchangeCount]);
   
