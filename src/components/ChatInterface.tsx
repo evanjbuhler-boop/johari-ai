@@ -394,6 +394,9 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
                     </TooltipContent>
                   </Tooltip>
                 </div>
+                
+                
+          </TooltipProvider>
           
           {/* Summary Offer */}
           {showSummaryOffer && !isLoading && !summaryLoading && (
