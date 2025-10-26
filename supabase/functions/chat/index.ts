@@ -495,9 +495,17 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       ).join('\n');
 
       // Determine conversation mode and load appropriate system prompt
+      console.log('🔍 DEBUG - therapyApproach received:', therapyApproach);
+      console.log('🔍 DEBUG - typeof therapyApproach:', typeof therapyApproach);
+      console.log('🔍 DEBUG - Request body keys:', Object.keys(req.body || {}));
+
       const approach: TherapyApproach = therapyApproach || 'blended';
+
+      console.log('✅ Using therapy approach:', approach);
+      console.log('✅ Approach is blended?', approach === 'blended');
+      console.log('✅ Approach is CBT?', approach === 'cbt');
+
       const baseSystemPrompt = getSystemPrompt(approach);
-      console.log('Using therapy approach:', approach);
       
       // Analyze user message complexity for language adaptation
       const userMessages = messages.filter((m: any) => m.role === 'user');
