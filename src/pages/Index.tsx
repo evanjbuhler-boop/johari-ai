@@ -2,6 +2,16 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import LandingPrompt from '@/components/LandingPrompt';
 import ChatInterface from '@/components/ChatInterface';
 import VentingMode from '@/components/VentingMode';
@@ -35,6 +45,8 @@ const Index = () => {
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSavedConversation, setHasSavedConversation] = useState(false);
+  const [showOverwriteDialog, setShowOverwriteDialog] = useState(false);
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -180,6 +192,18 @@ const Index = () => {
   };
 
   const handleLandingSubmit = async (message: string) => {
+    // Check if there's a saved conversation
+    if (hasSavedConversation) {
+      setPendingMessage(message);
+      setShowOverwriteDialog(true);
+      return;
+    }
+    
+    // Proceed with normal submission
+    startNewConversation(message);
+  };
+  
+  const startNewConversation = async (message: string) => {
     const userMessage: Message = { role: 'user', content: message, timestamp: new Date().toISOString() };
     setMessages([userMessage]);
     setIsLoading(true);
@@ -590,6 +614,48 @@ const Index = () => {
           isOpen={welcomeModalOpen}
           onOpenChange={setWelcomeModalOpen}
         />
+        
+        {/* Overwrite conversation confirmation dialog */}
+        <AlertDialog open={showOverwriteDialog} onOpenChange={setShowOverwriteDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Start new conversation?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You have a saved conversation that will be permanently deleted if you start a new one. 
+                Would you like to continue or resume your previous conversation instead?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setPendingMessage(null)}>
+                Cancel
+              </AlertDialogCancel>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowOverwriteDialog(false);
+                  setPendingMessage(null);
+                  handleResume();
+                }}
+              >
+                Resume Previous
+              </Button>
+              <AlertDialogAction
+                onClick={() => {
+                  setShowOverwriteDialog(false);
+                  if (pendingMessage) {
+                    // Clear saved conversation and start new one
+                    localStorage.removeItem('savedConversation');
+                    setHasSavedConversation(false);
+                    startNewConversation(pendingMessage);
+                    setPendingMessage(null);
+                  }
+                }}
+              >
+                Start New
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         
         {/* Info button in bottom left */}
         <Button

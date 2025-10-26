@@ -68,12 +68,12 @@ const LandingPrompt = ({ onSubmit, onResume, hasSavedConversation }: LandingProm
         {/* Resume conversation banner */}
         {hasSavedConversation && onResume && (
           <div className="mb-6 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
-            <div className="bg-white/90 dark:bg-card/90 backdrop-blur-xl rounded-2xl p-6 shadow-xl">
-              <p className="text-sm text-muted-foreground mb-3">You have a saved conversation</p>
+            <div className="bg-white/90 dark:bg-card/90 backdrop-blur-xl rounded-xl p-4 shadow-lg max-w-md mx-auto">
+              <p className="text-xs text-center text-muted-foreground mb-2">You have a saved conversation</p>
               <Button
                 onClick={onResume}
-                size="lg"
-                className="w-full text-lg h-12"
+                size="sm"
+                className="w-full text-sm h-10"
                 variant="outline"
               >
                 Resume Previous Conversation
