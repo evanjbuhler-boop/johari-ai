@@ -9,12 +9,10 @@ import { useToast } from '@/hooks/use-toast';
 import StageProgressBar from '@/components/StageProgressBar';
 import ChatInputBar from '@/components/ChatInputBar';
 import BreathingExerciseModal from '@/components/BreathingExerciseModal';
-import SupportivePromptOverlay from '@/components/SupportivePromptOverlay';
 import FinishChatButton from '@/components/FinishChatButton';
 import {
   detectEmotionFromMessage,
   getEmotionGradient,
-  getSupportivePrompt,
   shouldTriggerBreathing
 } from '@/components/EmotionDetector';
 import {
@@ -59,7 +57,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   // NEW: Emotion detection & adaptive UI
   const [detectedEmotion, setDetectedEmotion] = useState<EmotionState>('neutral');
   const [showBreathingExercise, setShowBreathingExercise] = useState(false);
-  const [supportivePrompt, setSupportivePrompt] = useState<string | null>(null);
   const [showFinishButton, setShowFinishButton] = useState(false);
   const [conversationStartTime] = useState<number>(Date.now());
   const [conversationDuration, setConversationDuration] = useState(0);
@@ -138,30 +135,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       const timer = setTimeout(() => setShowBreathingExercise(true), 2000);
       return () => clearTimeout(timer);
     }
-    
-    // Show supportive prompts contextually
-    if (supportivePrompt) return; // Don't show if already showing one
-    
-    const hasVulnerableLanguage = /feel|scared|afraid|ashamed|guilty|regret/i.test(lastUserMessage.content);
-    const hasDistressLanguage = /help|can't|dying|panic|crisis/.test(lastUserMessage.content.toLowerCase());
-    
-    if (hasVulnerableLanguage) {
-      const timer = setTimeout(() => {
-        setSupportivePrompt(getSupportivePrompt(emotion, 'vulnerable-share'));
-      }, 3000);
-      return () => clearTimeout(timer);
-    } else if (hasDistressLanguage) {
-      const timer = setTimeout(() => {
-        setSupportivePrompt(getSupportivePrompt(emotion, 'distress'));
-      }, 2000);
-      return () => clearTimeout(timer);
-    } else if (emotion === 'overwhelmed') {
-      const timer = setTimeout(() => {
-        setSupportivePrompt(getSupportivePrompt(emotion, 'overwhelmed'));
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [messages, isLoading, showBreathingExercise, supportivePrompt]);
+  }, [messages, isLoading, showBreathingExercise]);
 
   // Separate effect for contextual educational tips
   useEffect(() => {
@@ -365,14 +339,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       {showBreathingExercise && (
         <BreathingExerciseModal 
           onClose={() => setShowBreathingExercise(false)}
-        />
-      )}
-      
-      {/* NEW: Supportive Prompt Overlay */}
-      {supportivePrompt && (
-        <SupportivePromptOverlay 
-          message={supportivePrompt}
-          onDismiss={() => setSupportivePrompt(null)}
         />
       )}
       
