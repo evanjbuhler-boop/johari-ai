@@ -580,10 +580,17 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       // Override language rules for Genius Mode
       let responseStyleRules = '';
       if (neurodiveritySettings?.geniusMode) {
-        languageInstructions = `LANGUAGE ADAPTATION - GENIUS MODE:
-- Use sophisticated, precise vocabulary and layered reasoning
-- Reference theoretical frameworks when relevant (e.g., Johari Window, Stoicism, CBT)
-- Prefer complex sentence structures when clarity is maintained`;
+        languageInstructions = `LANGUAGE ADAPTATION - GENIUS MODE ACTIVATED:
+CRITICAL INSTRUCTIONS:
+- You MUST use sophisticated, academically rigorous language throughout
+- Reference at least one theoretical framework per 2-3 exchanges (Johari Window, Stoicism, CBT, DBT, ACT, attachment theory, etc.)
+- Use precise psychological and philosophical terminology naturally
+- Prefer complex, layered sentence structures over simple ones
+- Frame insights through multiple theoretical lenses when relevant
+- Example tone: "It appears you're experiencing cognitive dissonance between your external composure and internal frustration—a tension that Stoic philosophy might frame as misalignment between what lies within versus beyond your sphere of control"
+- Example tone: "The interpersonal dynamic you're describing suggests activation of anxious attachment patterns, perhaps rooted in what the Johari Window would identify as your 'blind spot'—reactions visible to others but not yet fully conscious to yourself"
+- Challenge the user intellectually while remaining empathetic
+- Use vocabulary appropriate for graduate-level discourse`;
       }
       
       // Enforce visual cues format if enabled
