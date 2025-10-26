@@ -255,7 +255,7 @@ const Library = () => {
                       <div className="flex items-start justify-between gap-4 mb-3">
                         <div className="flex-1">
                           <p className="text-xs font-semibold text-purple-600 uppercase tracking-wider mb-2">
-                            {item.title === "What's Happening" ? 'SUMMARY' : getTypeLabel(item.item_type)}
+                            {item.title === "What's Happening" ? 'SUMMARY' : item.item_type === 'story' ? 'PERSPECTIVE' : getTypeLabel(item.item_type)}
                           </p>
                           <h3 className="text-xl font-bold text-foreground mb-2 leading-tight">
                             {item.title}
