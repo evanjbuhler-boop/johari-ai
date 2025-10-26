@@ -66,30 +66,30 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
               <div className="p-8 space-y-6 flex-1 overflow-y-auto">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <MessageCircle className="w-6 h-6 text-primary" />
+                    <MessageCircle className="w-6 h-6 text-primary" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">1. Check-in & Chat</h3>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1 text-base">1. Check-in & Chat</h3>
                     <p className="text-sm text-muted-foreground">Share how you're feeling in a supportive, judgment-free environment</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <CheckSquare className="w-6 h-6 text-primary" />
+                    <CheckSquare className="w-6 h-6 text-primary" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">2. Validate Your Experience</h3>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1 text-base">2. Validate Your Experience</h3>
                     <p className="text-sm text-muted-foreground">Review and confirm the emotions and stressors we identified together</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-primary" />
+                    <Sparkles className="w-6 h-6 text-primary" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">3. Get Personalized Recommendations</h3>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1 text-base">3. Get Personalized Recommendations</h3>
                     <p className="text-sm text-muted-foreground">Receive curated exercises, podcasts and books tailored to your needs</p>
                   </div>
                 </div>
@@ -111,30 +111,30 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
               <div className="p-6 space-y-5 flex-1">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                    <Trash2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    <Trash2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Your conversations disappear</h3>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1 text-base">Your conversations disappear</h3>
                     <p className="text-sm text-muted-foreground">The moment your session ends, your conversations are permanently deleted from our servers. We cannot see, retrieve or access anything you share during your check-in.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                    <Lock className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    <Lock className="w-6 h-6 text-emerald-600 dark:text-emerald-400" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">We only track patterns</h3>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1 text-base">We only track patterns</h3>
                     <p className="text-sm text-muted-foreground">The only data we retain is lightweight session metadata: timestamp, duration, therapy modality used and completion status.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                    <Save className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    <Save className="w-6 h-6 text-emerald-600 dark:text-emerald-400" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">You control what stays</h3>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1 text-base">You control what stays</h3>
                     <p className="text-sm text-muted-foreground">We save resources you explicitly bookmark, but your library is entirely under your control - you can add or remove items at anytime.</p>
                   </div>
                 </div>
@@ -156,30 +156,30 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
               <div className="p-8 space-y-6 flex-1 overflow-y-auto">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <Compass className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    <Compass className="w-6 h-6 text-amber-600 dark:text-amber-400" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Pick your therapy modality first</h3>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1 text-base">Pick your therapy modality first</h3>
                     <p className="text-sm text-muted-foreground">Before sending your first message, choose your therapeutic approach (CBT, ACT, Stoicism, IFS, or Blended) using the compass icon in the top right. You can adjust neurodiversity settings anytime during chat.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <Pause className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    <Pause className="w-6 h-6 text-amber-600 dark:text-amber-400" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Go at your own pace</h3>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1 text-base">Go at your own pace</h3>
                     <p className="text-sm text-muted-foreground">You can pause and resume your conversation anytime. There is no rush - take breaks whenever you need them and pick up right where you left off.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <Library className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    <Library className="w-6 h-6 text-amber-600 dark:text-amber-400" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Save what resonates</h3>
+                  <div className="flex-1">
+                    <h3 className="font-semibold mb-1 text-base">Save what resonates</h3>
                     <p className="text-sm text-muted-foreground">Found a helpful podcast, book, or exercise? Click the bookmark icon on any recommendation to save it to your Library for easy access later.</p>
                   </div>
                 </div>
