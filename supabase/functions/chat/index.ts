@@ -175,14 +175,34 @@ Return ONLY valid JSON in this format:
     // Handle validation data extraction
     if (type === 'extract_validation') {
       const conversationText = messages.map((m: any) => `${m.role}: ${m.content}`).join('\n');
+      const therapyApproachUsed = therapyApproach || 'Person-Centered Therapy';
       
-      const extractionPrompt = `You are analyzing a mental health check-in conversation. Extract the following structured data from the conversation below.
+      const extractionPrompt = `You are analyzing a mental health check-in conversation. Extract structured data AND generate exactly 3 concise, impactful validation bullets.
 
 Conversation:
 ${conversationText}
 
+Therapy approach used during session: ${therapyApproachUsed}
+
+VALIDATION BULLETS REQUIREMENTS:
+- Generate EXACTLY 3 bullets (no more, no less)
+- Bullet 1: Primary feeling + nuanced layer (e.g., "You're feeling a mix of frustration and uncertainty about your sister's choice")
+- Bullet 2: Specific, actionable observation tied to context (e.g., "The family tension seems to amplify your self-doubt during her visit")
+- Bullet 3: Therapeutic insight based on the ${therapyApproachUsed} approach applied during the session
+- NO redundant emotions or overlapping descriptions
+- Each bullet must be unique and add value
+- Use empathetic but not generic phrasing
+- Be specific to their actual situation
+
 Please extract and return ONLY a valid JSON object with this exact structure (no markdown, no code blocks, just the JSON):
 {
+  "validation_bullets": [
+    "First bullet: Primary feeling + nuanced emotional layer",
+    "Second bullet: Specific observation about their context",
+    "Third bullet: Therapeutic insight from ${therapyApproachUsed}"
+  ],
+  "validation_line": "Empathetic validation line (e.g., 'These feelings make sense given what you're navigating')",
+  "therapy_modality_applied": "${therapyApproachUsed}",
   "emotions": ["array of emotions - use SPECIFIC 2-4 word descriptions like: 'Overwhelmed and anxious', 'Mix of hope and uncertainty', 'Frustrated but hopeful', 'Drained and defeated', 'Cautiously optimistic'"],
   "stressLevel": 7,
   "mainStressors": ["Capitalize Like Titles - e.g., 'Work-Related Stress', 'Interacting With Ex', 'Financial Concerns', 'Family Dynamics', 'Sleep Deprivation'"],
@@ -226,6 +246,13 @@ Important: Return ONLY the JSON object, no other text.`;
       // Mock mode
       if (useMockAI) {
         const mockValidation = {
+          validation_bullets: [
+            "You're feeling a mix of stress and exhaustion from juggling too many demands at once",
+            "The lack of quality sleep is making everything harder to manage emotionally",
+            "Your body is signaling that it needs rest, which aligns with how Acceptance and Commitment Therapy suggests honoring our physical limits"
+          ],
+          validation_line: "These feelings make sense given what you're navigating right now",
+          therapy_modality_applied: therapyApproach || 'Person-Centered Therapy',
           emotions: ['Overwhelmed and drained'],
           stressLevel: 7,
           mainStressors: ['Work-Related Stress', 'Sleep Deprivation', 'Relationship Tension'],

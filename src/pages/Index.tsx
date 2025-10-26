@@ -355,7 +355,8 @@ const Index = () => {
         body: { 
           messages, 
           type: 'extract_validation',
-          conversationPath
+          conversationPath,
+          therapyApproach: therapySettings.approach
         }
       });
 

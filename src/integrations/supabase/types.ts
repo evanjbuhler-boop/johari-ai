@@ -125,6 +125,33 @@ export type Database = {
         }
         Relationships: []
       }
+      validation_feedback: {
+        Row: {
+          created_at: string
+          feedback_text: string | null
+          feedback_type: string
+          id: string
+          session_data: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback_text?: string | null
+          feedback_type: string
+          id?: string
+          session_data: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback_text?: string | null
+          feedback_type?: string
+          id?: string
+          session_data?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

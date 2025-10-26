@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Check, ChevronRight } from 'lucide-react';
+import { Check, ChevronRight, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { ValidationData } from '@/types/checkin';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface ValidationScreenProps {
   initialData: ValidationData;
@@ -14,12 +17,17 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
   const [visibleItems, setVisibleItems] = useState<number>(0);
   const [showValidation, setShowValidation] = useState(false);
   const [showButton, setShowButton] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [skipped, setSkipped] = useState(false);
+  const [feedbackGiven, setFeedbackGiven] = useState(false);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [showFeedbackInput, setShowFeedbackInput] = useState(false);
+  const { toast } = useToast();
 
   // Check for reduced motion preference
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Generate bullets from the validation data
+  // Generate bullets from the validation data (fallback if AI doesn't provide them)
   const generateBullets = (data: ValidationData): string[] => {
     const bullets: string[] = [];
     
@@ -38,22 +46,15 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
       bullets.push(data.aiGeneratedPattern);
     }
     
-    // Add contributing factors
-    if (data.contributingFactors && data.contributingFactors.length > 0) {
-      const factors = data.contributingFactors.join(', ');
-      bullets.push(`${factors.charAt(0).toUpperCase() + factors.slice(1)} are playing a role`);
-    }
-    
-    return bullets.length > 0 ? bullets : [
+    return bullets.length > 0 ? bullets.slice(0, 3) : [
       "You're feeling stressed about work demands",
-      "You're exhausted from lack of quality sleep",
-      "You're frustrated by relationship tensions",
-      "You want space to reset and find balance"
+      "The lack of rest is making everything harder",
+      "Your body is signaling it needs recovery"
     ];
   };
   
   const bullets = initialData.validation_bullets || generateBullets(initialData);
-  const validationLine = initialData.validation_line || "These feelings make sense.";
+  const validationLine = initialData.validation_line || "These feelings make sense given what you're navigating.";
 
   // Sequential animation logic
   useEffect(() => {
@@ -62,6 +63,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
       setVisibleItems(bullets.length);
       setShowValidation(true);
       setShowButton(true);
+      setShowFeedback(true);
       return;
     }
 
@@ -69,10 +71,9 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
     
     // Sequential bullet reveals
     const bulletTimings = [
-      800,   // First bullet after 800ms (icon + heading fade in for 400ms)
-      1400,  // Second bullet after 1400ms (600ms pause)
-      2000,  // Third bullet after 2000ms (600ms pause)
-      2600,  // Fourth bullet after 2600ms (600ms pause)
+      800,   // First bullet after 800ms
+      1400,  // Second bullet after 1400ms
+      2000,  // Third bullet after 2000ms
     ];
 
     const timers: NodeJS.Timeout[] = [];
@@ -87,8 +88,14 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
     // Show validation line after last bullet
     const validationTimer = setTimeout(() => {
       setShowValidation(true);
-    }, 3200); // 2600ms + 600ms pause
+    }, 2600); // 2000ms + 600ms pause
     timers.push(validationTimer);
+
+    // Show feedback after validation
+    const feedbackTimer = setTimeout(() => {
+      setShowFeedback(true);
+    }, 3200); // 2600ms + 600ms pause
+    timers.push(feedbackTimer);
 
     // Show button last
     const buttonTimer = setTimeout(() => {
@@ -107,7 +114,55 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
       setVisibleItems(bullets.length);
       setShowValidation(true);
       setShowButton(true);
+      setShowFeedback(true);
     }
+  };
+
+  const handleFeedback = async (type: 'positive' | 'negative') => {
+    setFeedbackGiven(true);
+    setShowFeedbackInput(type === 'negative');
+    
+    // Save feedback immediately if positive (no text needed)
+    if (type === 'positive') {
+      await saveFeedback(type, '');
+    }
+  };
+
+  const saveFeedback = async (type: 'positive' | 'negative', text: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        console.log('No user logged in, skipping feedback save');
+        return;
+      }
+
+      // Direct insert - types will be updated after migration
+      const { error } = await (supabase as any)
+        .from('validation_feedback')
+        .insert({
+          user_id: user.id,
+          session_data: initialData,
+          feedback_type: type,
+          feedback_text: text || null
+        });
+
+      if (error) {
+        console.error('Error saving feedback:', error);
+      } else {
+        toast({
+          title: 'Thank you for your feedback!',
+          description: 'This helps us improve your experience'
+        });
+      }
+    } catch (error) {
+      console.error('Error saving feedback:', error);
+    }
+  };
+
+  const handleSubmitFeedback = async () => {
+    await saveFeedback('negative', feedbackText);
+    setShowFeedbackInput(false);
   };
 
   const handleContinue = () => {
@@ -173,7 +228,7 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
 
         {/* Validation line - appears after bullets */}
         <p 
-          className={`text-[15px] italic mb-10 transition-all duration-300 text-white/90 drop-shadow ${
+          className={`text-[15px] italic mb-8 transition-all duration-300 text-white/90 drop-shadow ${
             showValidation || prefersReducedMotion || skipped
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-3'
@@ -181,6 +236,63 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
         >
           {validationLine}
         </p>
+
+        {/* Feedback Section - appears after validation line */}
+        {!feedbackGiven && (
+          <div 
+            className={`mb-6 transition-all duration-300 ${
+              showFeedback || prefersReducedMotion || skipped
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-3'
+            }`}
+          >
+            <p className="text-sm text-white/80 mb-3 drop-shadow">
+              Does this reflect your mood and vibe?
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => handleFeedback('positive')}
+                className="flex items-center gap-2 px-5 py-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg transition-all text-white border border-white/30"
+              >
+                <ThumbsUp className="w-5 h-5" />
+                <span className="text-sm font-medium">Yes</span>
+              </button>
+              <button
+                onClick={() => handleFeedback('negative')}
+                className="flex items-center gap-2 px-5 py-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg transition-all text-white border border-white/30"
+              >
+                <ThumbsDown className="w-5 h-5" />
+                <span className="text-sm font-medium">Not quite</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Feedback Input - appears if user clicks thumbs down */}
+        {showFeedbackInput && (
+          <div className="w-full mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <p className="text-sm text-white/80 mb-2 drop-shadow">Tell us more (optional):</p>
+            <Textarea
+              value={feedbackText}
+              onChange={(e) => setFeedbackText(e.target.value)}
+              placeholder="What would make this more accurate?"
+              className="bg-white/20 backdrop-blur-sm border-white/30 text-white placeholder:text-white/50 min-h-[80px] mb-3"
+            />
+            <Button
+              onClick={handleSubmitFeedback}
+              className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
+            >
+              Submit Feedback
+            </Button>
+          </div>
+        )}
+
+        {/* Thank you message after feedback */}
+        {feedbackGiven && !showFeedbackInput && (
+          <p className="text-sm text-white/80 mb-6 animate-in fade-in duration-300 drop-shadow">
+            Thank you for your feedback! 🙏
+          </p>
+        )}
 
         {/* Button - appears last */}
         <Button
