@@ -360,7 +360,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   };
   
   return (
-    <div className={`min-h-screen flex flex-col relative animate-in fade-in duration-700 bg-gradient-to-br ${getEmotionGradient(detectedEmotion)} transition-all duration-[3000ms]`}>
+    <div className="min-h-screen flex flex-col relative animate-in fade-in duration-700">
       {/* NEW: Breathing Exercise Modal */}
       {showBreathingExercise && (
         <BreathingExerciseModal 
