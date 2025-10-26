@@ -406,7 +406,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               <img
                 src={bookPlaceholder}
                 alt={`${results.book.title} cover`}
-                className="w-full sm:w-[150px] h-[225px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border flex-shrink-0"
+                className="w-full sm:w-[180px] h-[270px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border flex-shrink-0"
               />
 
               <div className="flex-1 space-y-3">
