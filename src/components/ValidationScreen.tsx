@@ -153,18 +153,18 @@ const ValidationScreen = ({ initialData, onConfirm }: ValidationScreenProps) => 
           {bullets.map((bullet, index) => (
             <div
               key={index}
-              className={`flex items-center justify-center gap-3 transition-all duration-300 ${
+              className={`flex items-start gap-3 transition-all duration-300 ${
                 index < visibleItems || prefersReducedMotion || skipped
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-3'
               }`}
             >
               <span 
-                className="flex-shrink-0 text-lg font-bold text-white drop-shadow"
+                className="flex-shrink-0 text-lg font-bold text-white drop-shadow mt-0.5"
               >
                 •
               </span>
-              <p className="text-base sm:text-lg text-white leading-relaxed text-center drop-shadow">
+              <p className="text-base sm:text-lg text-white leading-relaxed text-left drop-shadow flex-1">
                 {bullet}
               </p>
             </div>
