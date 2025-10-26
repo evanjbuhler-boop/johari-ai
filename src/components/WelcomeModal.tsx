@@ -100,7 +100,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
           {/* Step 2: Privacy & Trust */}
           {step === 2 && (
             <>
-              <div className="p-8 text-center border-b border-border/50 flex-shrink-0">
+              <div className="p-6 text-center border-b border-border/50 flex-shrink-0">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 mb-4">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
@@ -108,7 +108,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                 <p className="text-muted-foreground">Built with privacy-first design from the ground up</p>
               </div>
 
-              <div className="p-8 space-y-6 flex-1 overflow-y-auto">
+              <div className="p-6 space-y-5 flex-1">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
                     <Trash2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
@@ -135,7 +135,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">You control what stays</h3>
-                    <p className="text-sm text-muted-foreground">The only things we save are resources you explicitly bookmark: podcasts, perspectives, books and exercises from your recommendations. Your library is entirely under your control - add or remove items at anytime.</p>
+                    <p className="text-sm text-muted-foreground">We save resources you explicitly bookmark, but your library is entirely under your control - you can add or remove items at anytime.</p>
                   </div>
                 </div>
               </div>
