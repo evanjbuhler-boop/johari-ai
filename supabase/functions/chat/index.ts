@@ -820,8 +820,12 @@ Format as JSON with this EXACT structure:
         model: 'gpt-4o-mini',
         max_tokens: 2000,
         temperature: 0.7,
+        response_format: { type: "json_object" },
         messages: [
-          { role: 'system', content: systemPrompt },
+          { 
+            role: 'system', 
+            content: systemPrompt + '\n\nYou MUST respond with valid JSON only. Do not include any markdown formatting or code blocks.'
+          },
           {
             role: 'user',
             content: `Based on this conversation, provide the psychological analysis and recommendations:\n\n${conversationSummary}`
@@ -840,30 +844,14 @@ Format as JSON with this EXACT structure:
     console.log('Results API response received');
 
     const resultsText = data.choices[0].message.content.trim();
-    console.log('Raw results text:', resultsText.substring(0, 200));
+    console.log('Raw results text (first 200 chars):', resultsText.substring(0, 200));
     
     let results;
 
     try {
-      // Try to extract JSON - handle markdown code blocks
-      let jsonText = resultsText;
-      
-      // Remove markdown code blocks if present
-      if (jsonText.includes('```json')) {
-        jsonText = jsonText.replace(/```json\s*/g, '').replace(/```\s*/g, '');
-      } else if (jsonText.includes('```')) {
-        jsonText = jsonText.replace(/```\s*/g, '');
-      }
-      
-      // Try to find JSON object
-      const jsonMatch = jsonText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        results = JSON.parse(jsonMatch[0]);
-        console.log('Successfully parsed results JSON');
-      } else {
-        console.error('No JSON object found in response');
-        throw new Error('No JSON found in response');
-      }
+      // With json_object mode, response should be pure JSON
+      results = JSON.parse(resultsText);
+      console.log('Successfully parsed results JSON');
     } catch (e) {
       console.error('Failed to parse results JSON:', e);
       console.error('Full response text:', resultsText);
@@ -872,7 +860,7 @@ Format as JSON with this EXACT structure:
       return new Response(
         JSON.stringify({ 
           error: 'Failed to parse AI response',
-          rawResponse: resultsText.substring(0, 500)
+          rawResponse: resultsText.substring(0, 1000)
         }),
         { 
           status: 500, 
