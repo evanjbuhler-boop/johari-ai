@@ -165,16 +165,8 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
       <div className="fixed bottom-0 left-0 w-80 h-80 rounded-full bg-pink-400 blur-3xl opacity-15 -z-10"></div>
       
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-end">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/library')}
-            className="gap-2"
-          >
-            <Library className="w-4 h-4" />
-            <span className="hidden sm:inline">Library</span>
-          </Button>
+      <header className="border-b border-white/10 bg-white/10 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 py-4">
         </div>
       </header>
 
@@ -253,58 +245,32 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
         {/* Quotes Section */}
         {results.quotes && results.quotes.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-foreground px-2 mb-8">Your Words</h2>
+            <h2 className="text-2xl font-semibold text-white px-2 mb-8 drop-shadow-lg">Your Words</h2>
             <div className="grid gap-8">
               {results.quotes.map((quote, idx) => (
                 <Card 
                   key={idx}
                   className="relative p-10 md:p-12 overflow-hidden border-none shadow-2xl"
                 >
-                  {/* Flowing wave background layers */}
-                  <div className={`absolute inset-0 opacity-90 ${
+                  {/* Dark flowing gradient background */}
+                  <div className={`absolute inset-0 ${
                     quote.sentiment === 'positive' 
-                      ? 'bg-gradient-to-br from-emerald-400 via-teal-300 to-cyan-400' 
+                      ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600' 
                       : quote.sentiment === 'negative' 
-                      ? 'bg-gradient-to-br from-rose-400 via-pink-400 to-fuchsia-400' 
-                      : 'bg-gradient-to-br from-purple-500 via-violet-400 to-indigo-400'
+                      ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700' 
+                      : 'bg-gradient-to-br from-gray-800 via-slate-700 to-gray-700'
                   }`}></div>
                   
-                  {/* Wave overlay 1 */}
-                  <div className={`absolute inset-0 opacity-40 ${
-                    quote.sentiment === 'positive' 
-                      ? 'bg-gradient-to-tl from-transparent via-green-300/50 to-emerald-200' 
-                      : quote.sentiment === 'negative' 
-                      ? 'bg-gradient-to-tl from-transparent via-rose-300/50 to-pink-200' 
-                      : 'bg-gradient-to-tl from-transparent via-purple-300/50 to-violet-200'
-                  }`} style={{ clipPath: 'ellipse(80% 60% at 20% 40%)' }}></div>
+                  {/* Subtle metallic overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-white/5 to-white/10 opacity-60" style={{ clipPath: 'ellipse(75% 55% at 25% 45%)' }}></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-white/5 opacity-40" style={{ clipPath: 'ellipse(65% 75% at 75% 55%)' }}></div>
                   
-                  {/* Wave overlay 2 */}
-                  <div className={`absolute inset-0 opacity-30 ${
-                    quote.sentiment === 'positive' 
-                      ? 'bg-gradient-to-br from-cyan-200 via-transparent to-teal-300' 
-                      : quote.sentiment === 'negative' 
-                      ? 'bg-gradient-to-br from-pink-200 via-transparent to-rose-300' 
-                      : 'bg-gradient-to-br from-indigo-200 via-transparent to-purple-300'
-                  }`} style={{ clipPath: 'ellipse(70% 80% at 80% 60%)' }}></div>
-                  
-                  {/* Soft blur orbs */}
-                  <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 ${
-                    quote.sentiment === 'positive' 
-                      ? 'bg-emerald-300' 
-                      : quote.sentiment === 'negative' 
-                      ? 'bg-rose-300' 
-                      : 'bg-violet-300'
-                  }`}></div>
-                  <div className={`absolute bottom-0 left-0 w-48 h-48 rounded-full blur-3xl opacity-25 ${
-                    quote.sentiment === 'positive' 
-                      ? 'bg-cyan-300' 
-                      : quote.sentiment === 'negative' 
-                      ? 'bg-pink-300' 
-                      : 'bg-indigo-300'
-                  }`}></div>
+                  {/* Soft blur orbs for depth */}
+                  <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/10 blur-3xl opacity-20"></div>
+                  <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-black/30 blur-3xl opacity-30"></div>
                   
                   {/* Large decorative quote mark */}
-                  <div className="absolute top-6 left-6 text-8xl opacity-15 font-serif text-white">
+                  <div className="absolute top-6 left-6 text-8xl opacity-10 font-serif text-white">
                     "
                   </div>
                   
@@ -316,7 +282,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                   </div>
                   
                   {/* Bottom accent glow */}
-                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/10 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/20 to-transparent"></div>
                 </Card>
               ))}
             </div>
