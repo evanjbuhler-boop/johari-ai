@@ -5,7 +5,7 @@ import { User, Library, Home, LogIn } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import FloatingParticles from '@/components/FloatingParticles';
 import NeurodiveritySettingsDialog from '@/components/NeurodiveritySettingsDialog';
-import FocusModeToggle from '@/components/FocusModeToggle';
+import TherapyApproachDialog from '@/components/TherapyApproachDialog';
 import ProfileSheet from '@/components/ProfileSheet';
 
 interface AppLayoutProps {
@@ -78,9 +78,9 @@ const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
         )}
       </div>
 
-      {/* Focus Mode and Neurodiversity settings - Top Right */}
+      {/* Therapy Approach and Neurodiversity settings - Top Right */}
       <div className="fixed top-6 right-6 z-50 flex gap-3 animate-in fade-in slide-in-from-right-5 duration-700">
-        <FocusModeToggle />
+        <TherapyApproachDialog variant="icon" />
         <NeurodiveritySettingsDialog variant="icon" />
       </div>
 

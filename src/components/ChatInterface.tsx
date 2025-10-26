@@ -4,7 +4,6 @@ import { Message, EmotionState } from '@/types/checkin';
 import { MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
 import EducationalSidebar from '@/components/EducationalSidebar';
 import { useNeurodiveritySettings } from '@/hooks/useNeurodiveritySettings';
-import { useFocusMode } from '@/hooks/useFocusMode';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import StageProgressBar from '@/components/StageProgressBar';
@@ -68,7 +67,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastEmotionUpdateRef = useRef<number>(0);
   const { settings } = useNeurodiveritySettings();
-  const { isEnabled: focusModeEnabled } = useFocusMode();
   const { toast } = useToast();
   const exchangeCount = Math.floor(messages.filter(m => m.role === 'user').length);
   
@@ -167,8 +165,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
 
   // Separate effect for contextual educational tips
   useEffect(() => {
-    // Contextual tips based on conversation content (disabled in focus mode)
-    if (!isLoading && !tipsDisabled && !focusModeEnabled) {
+    // Contextual tips based on conversation content
+    if (!isLoading && !tipsDisabled) {
       const userMessages = messages.filter(m => m.role === 'user');
       const recentUserMessages = userMessages.slice(-5); // Last 5 user messages
       const conversationText = recentUserMessages.map(m => m.content.toLowerCase()).join(' ');
@@ -223,8 +221,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       }
     }
 
-    // Educational sidebar triggers (only for nightly_routine path and if tips not disabled and focus mode off)
-    if (conversationPath === 'nightly_routine' && !isLoading && !tipsDisabled && !focusModeEnabled) {
+    // Educational sidebar triggers (only for nightly_routine path and if tips not disabled)
+    if (conversationPath === 'nightly_routine' && !isLoading && !tipsDisabled) {
       const lastMessage = messages[messages.length - 1];
       const isAIMessage = lastMessage?.role === 'assistant';
       
@@ -252,7 +250,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         return () => clearTimeout(timer);
       }
     }
-  }, [messages, exchangeCount, conversationPath, isLoading, sidebar.dismissedPhases, tipsDisabled, focusModeEnabled]);
+  }, [messages, exchangeCount, conversationPath, isLoading, sidebar.dismissedPhases, tipsDisabled]);
 
   const handlePathSelection = (path: 'nightly_routine' | 'venting_session') => {
     setConversationPath(path);
@@ -378,8 +376,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         />
       )}
       
-      {/* Educational Sidebar - hidden in focus mode */}
-      {sidebar.visible && sidebar.phase && !focusModeEnabled && (
+      {/* Educational Sidebar */}
+      {sidebar.visible && sidebar.phase && (
         <EducationalSidebar 
           phase={sidebar.phase}
           onDismiss={handleSidebarDismiss}
