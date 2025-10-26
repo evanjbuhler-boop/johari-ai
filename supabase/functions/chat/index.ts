@@ -529,7 +529,7 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
       // Analyze user message complexity for language adaptation
       const userMessages = messages.filter((m: any) => m.role === 'user');
       const complexity = analyzeComplexity(userMessages);
-      const languageInstructions = getLanguageInstructions(complexity);
+      let languageInstructions = getLanguageInstructions(complexity);
       
       console.log('Detected complexity level:', complexity);
       
@@ -577,6 +577,20 @@ Return ONLY the formatted summary with the emojis. Be specific and use their own
         }
       }
       
+      // Override language rules for Genius Mode
+      let responseStyleRules = '';
+      if (neurodiveritySettings?.geniusMode) {
+        languageInstructions = `LANGUAGE ADAPTATION - GENIUS MODE:
+- Use sophisticated, precise vocabulary and layered reasoning
+- Reference theoretical frameworks when relevant (e.g., Johari Window, Stoicism, CBT)
+- Prefer complex sentence structures when clarity is maintained`;
+      }
+      
+      // Enforce visual cues format if enabled
+      if (neurodiveritySettings?.offerVisualCues) {
+        responseStyleRules = `\n\nRESPONSE STYLE (VISUAL CUES ENABLED):\n- Include at least one emoji cue (e.g., 🔑, 💡, ⚡)\n- Include a short bullet list using • points when appropriate\n- Bold key phrases for emphasis when helpful\n`;
+      }
+      
       console.log('Neurodiversity settings applied:', neurodiveritySettings);
 
       // Determine conversation context based on exchange count
@@ -619,6 +633,7 @@ The conversation can naturally conclude after 7-8 exchanges.
 systemPrompt = baseSystemPrompt + 
                '\n' + languageInstructions + 
                neuroInstructions + 
+               responseStyleRules + 
                conversationContext;
 
 const response = await fetch('https://api.openai.com/v1/chat/completions', {
