@@ -481,6 +481,16 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
             </div>
           )}
           
+          {/* Your Turn Indicator */}
+          {!isLoading && messages.length > 0 && messages[messages.length - 1]?.role === 'assistant' && (
+            <div className="animate-in fade-in duration-500 flex justify-start mt-4">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 shadow-sm">
+                <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                <span className="text-xs text-gray-600 font-medium">Your turn</span>
+              </div>
+            </div>
+          )}
+          
           {/* NEW: Finish Chat Button */}
           {showFinishButton && (
             <div className="max-w-4xl mx-auto w-full px-4">
