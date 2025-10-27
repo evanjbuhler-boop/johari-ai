@@ -440,7 +440,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
             <div className="flex items-center justify-between pb-2 mb-4 border-b-2 border-border">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">🎧</span>
-                <h2 className="text-xl font-semibold text-foreground">Listen to This</h2>
+                <h2 className="text-xl font-semibold text-foreground">Listen ~</h2>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -519,7 +519,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
             <div className="flex items-center justify-between pb-2 mb-4 border-b-2 border-border">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📚</span>
-                <h2 className="text-xl font-semibold text-foreground">Books</h2>
+                <h2 className="text-xl font-semibold text-foreground">Read ~</h2>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -613,7 +613,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
             <div className="flex items-center justify-between mb-4 pb-2 border-b-2 border-border">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">✨</span>
-                <h2 className="text-xl font-semibold text-foreground">Practical Exercises</h2>
+                <h2 className="text-xl font-semibold text-foreground">Practice ~</h2>
               </div>
               <Button
                 variant="outline"
