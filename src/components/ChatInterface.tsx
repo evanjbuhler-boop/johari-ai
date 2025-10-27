@@ -30,11 +30,12 @@ interface ChatInterfaceProps {
   isLoading: boolean;
   onVentingModeSelected?: () => void;
   setMessages?: React.Dispatch<React.SetStateAction<Message[]>>;
+  conversationStartTime: number;
 }
 
 type SidebarPhase = 'highlight' | 'worry' | 'lifestyle' | 'uncertainty' | 'sleep' | 'conflict' | 'guilt' | 'rumination' | 'avoidance';
 
-const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, onPause, isLoading, onVentingModeSelected, setMessages }: ChatInterfaceProps) => {
+const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, onBack, onPause, isLoading, onVentingModeSelected, setMessages, conversationStartTime }: ChatInterfaceProps) => {
   const [input, setInput] = useState('');
   const [showEarlyExit, setShowEarlyExit] = useState(false);
   const [conversationPath, setConversationPath] = useState<'nightly_routine' | 'venting_session' | null>(null);
@@ -56,7 +57,6 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   // NEW: Emotion detection & adaptive UI
   const [detectedEmotion, setDetectedEmotion] = useState<EmotionState>('neutral');
   const [showFinishButton, setShowFinishButton] = useState(false);
-  const [conversationStartTime] = useState<number>(Date.now());
   const [conversationDuration, setConversationDuration] = useState(0);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);

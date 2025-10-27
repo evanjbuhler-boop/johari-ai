@@ -48,6 +48,7 @@ const Index = () => {
   const [hasSavedConversation, setHasSavedConversation] = useState(false);
   const [showOverwriteDialog, setShowOverwriteDialog] = useState(false);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
+  const [conversationStartTime, setConversationStartTime] = useState<number | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -209,6 +210,9 @@ const Index = () => {
     const userMessage: Message = { role: 'user', content: message, timestamp: new Date().toISOString() };
     setMessages([userMessage]);
     setIsLoading(true);
+    
+    // Initialize conversation start time
+    setConversationStartTime(Date.now());
     
     // Start tracking session if user is logged in
     if (user) {
@@ -723,6 +727,7 @@ const Index = () => {
           onPause={handlePause}
           isLoading={isLoading}
           onVentingModeSelected={handleVentingModeSelected}
+          conversationStartTime={conversationStartTime || Date.now()}
         />
       </AppLayout>
     );
