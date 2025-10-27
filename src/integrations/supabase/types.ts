@@ -206,6 +206,39 @@ export type Database = {
         }
         Relationships: []
       }
+      stories: {
+        Row: {
+          content: string
+          created_at: string
+          cultural_origin: string
+          id: string
+          source: string
+          tags: string[]
+          title: string
+          why_matters: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          cultural_origin: string
+          id?: string
+          source: string
+          tags?: string[]
+          title: string
+          why_matters: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          cultural_origin?: string
+          id?: string
+          source?: string
+          tags?: string[]
+          title?: string
+          why_matters?: string
+        }
+        Relationships: []
+      }
       user_exercise_history: {
         Row: {
           exercise_id: string
@@ -231,6 +264,35 @@ export type Database = {
             columns: ["exercise_id"]
             isOneToOne: false
             referencedRelation: "exercises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_story_history: {
+        Row: {
+          id: string
+          recommended_at: string
+          story_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          recommended_at?: string
+          story_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          recommended_at?: string
+          story_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_story_history_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
             referencedColumns: ["id"]
           },
         ]

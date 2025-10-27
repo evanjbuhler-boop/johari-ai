@@ -86,6 +86,79 @@ async function recordExerciseRecommendation(userId: string, exerciseId: string) 
   }
 }
 
+// Helper function to select a story from library based on tags
+async function selectStory(userId: string, userTags: string[]): Promise<any> {
+  try {
+    // Get stories user received in last 14 days (longer than exercises)
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+    
+    const { data: recentHistory } = await supabase
+      .from('user_story_history')
+      .select('story_id')
+      .eq('user_id', userId)
+      .gte('recommended_at', fourteenDaysAgo.toISOString());
+    
+    const recentStoryIds = recentHistory?.map(h => h.story_id) || [];
+    
+    // Get matching stories that user hasn't seen in 14 days
+    let query = supabase
+      .from('stories')
+      .select('*');
+    
+    // Filter out recently seen stories if there are any
+    if (recentStoryIds.length > 0 && recentStoryIds.length < 50) {
+      query = query.not('id', 'in', `(${recentStoryIds.map(id => `'${id}'`).join(',')})`);
+    }
+    
+    // Try to match tags if provided
+    if (userTags.length > 0) {
+      query = query.overlaps('tags', userTags);
+    }
+    
+    const { data: stories, error } = await query;
+    
+    // If no matches or user has seen all stories in 14 days, get oldest recommended
+    if (!stories || stories.length === 0) {
+      console.log('No unviewed stories, selecting oldest');
+      const { data: oldestStory } = await supabase
+        .from('stories')
+        .select('*')
+        .limit(1)
+        .order('created_at');
+      
+      if (oldestStory && oldestStory.length > 0) {
+        return oldestStory[0];
+      }
+      return null;
+    }
+    
+    // Randomly select from available stories
+    const selected = stories[Math.floor(Math.random() * stories.length)];
+    console.log(`Selected story: ${selected.title}, Tags: ${selected.tags}, Source: ${selected.source}`);
+    
+    return selected;
+  } catch (error) {
+    console.error('Error selecting story:', error);
+    return null;
+  }
+}
+
+// Helper function to record story recommendation
+async function recordStoryRecommendation(userId: string, storyId: string) {
+  try {
+    await supabase
+      .from('user_story_history')
+      .insert({
+        user_id: userId,
+        story_id: storyId
+      });
+    console.log('Recorded story recommendation');
+  } catch (error) {
+    console.error('Error recording story:', error);
+  }
+}
+
 // Helper function to analyze user message complexity
 function analyzeComplexity(userMessages: any[]): 'simple' | 'moderate' | 'complex' {
   if (userMessages.length === 0) return 'moderate';
@@ -975,7 +1048,15 @@ const systemPrompt = `You are an expert psychological counselor. Based on the co
 
 CRITICAL: Use their own words, not therapy-speak. If they said "I'm drowning," use that.
 
-YOU MUST include ALL sections below. Do not skip podcast, book, or story sections.
+YOU MUST include ALL sections below. Do not skip podcast or book sections.
+
+CRITICAL INSTRUCTIONS FOR STORIES:
+- DO NOT generate story content
+- DO NOT create or write stories
+- DO NOT make up parables or tales
+- ONLY provide an array of 2-3 relevant tags in the storyTags field
+- Tags should match themes from the conversation (e.g., ["resilience", "suffering"], ["courage", "fear"], ["acceptance", "change"], ["perspective", "judgment"], ["compassion", "understanding"])
+- The system will select an appropriate real story/parable from our curated library (Buddhist tales, Stoic wisdom, stories from historical figures like Frankl and Mandela, cultural parables, etc.)
 
 Format as JSON with this EXACT structure:
 {
@@ -1019,20 +1100,16 @@ Format as JSON with this EXACT structure:
     "purchaseUrl": "https://www.amazon.com/LINK_HERE"
   },
   "exerciseTags": ["anxiety", "stress", "mindfulness"],
-  "story": {
-    "title": "Story Title",
-    "culturalOrigin": "Cultural tradition (e.g., 'Buddhist Parable', 'African Folktale')",
-    "content": "The full story text (2-3 paragraphs)",
-    "whyThisMatters": "Connect the story to their situation"
-  },
+  "storyTags": ["resilience", "perspective"],
   "patterns": ["Pattern 1", "Pattern 2", "Pattern 3"]
 }
 
 REQUIREMENTS:
-- ALL fields must be present (podcast, book, exerciseTags, story)
+- ALL fields must be present (podcast, book, exerciseTags, storyTags)
 - Recommend REAL podcasts and books that exist
 - exerciseTags should be 1-3 relevant tags from: anxiety, depression, stress, worry, grounding, mindfulness, self-compassion, values, emotions, etc.
-- Story should be meaningful and relevant`;
+- storyTags should be 2-3 relevant tags that match the user's situation and emotional needs
+- DO NOT include a "story" object - only include "storyTags"`;
 
     const conversationSummary = messages.map((m: any) =>
       `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
@@ -1095,6 +1172,23 @@ REQUIREMENTS:
           // Record the recommendation
           await recordExerciseRecommendation(userId, selectedExercise.id);
           console.log('Injected exercise from library:', selectedExercise.title);
+        }
+      }
+      
+      // Select story from our library
+      if (userId && results.storyTags) {
+        const selectedStory = await selectStory(userId, results.storyTags);
+        if (selectedStory) {
+          results.story = {
+            title: selectedStory.title,
+            culturalOrigin: selectedStory.source,
+            content: selectedStory.content,
+            whyThisMatters: selectedStory.why_matters
+          };
+          
+          // Record the recommendation
+          await recordStoryRecommendation(userId, selectedStory.id);
+          console.log('Injected story from library:', selectedStory.title, 'from', selectedStory.source);
         }
       }
       

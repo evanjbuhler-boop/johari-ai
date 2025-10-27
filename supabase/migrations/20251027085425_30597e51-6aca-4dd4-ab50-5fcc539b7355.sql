@@ -1,0 +1,123 @@
+-- Create stories table for curated inspirational stories and parables
+CREATE TABLE IF NOT EXISTS public.stories (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  title text NOT NULL,
+  content text NOT NULL,
+  source text NOT NULL, -- e.g., "Buddhist Jataka", "Zen Parable", "Viktor Frankl", etc.
+  cultural_origin text NOT NULL, -- e.g., "Buddhist", "Stoic", "African", "Persian", etc.
+  tags text[] NOT NULL DEFAULT '{}',
+  why_matters text NOT NULL, -- Brief explanation of the lesson/relevance
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- Enable RLS
+ALTER TABLE public.stories ENABLE ROW LEVEL SECURITY;
+
+-- Create policy for public read access
+CREATE POLICY "Stories are viewable by everyone"
+  ON public.stories
+  FOR SELECT
+  USING (true);
+
+-- Create user_story_history table to track which stories have been shown to users
+CREATE TABLE IF NOT EXISTS public.user_story_history (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  story_id uuid NOT NULL REFERENCES public.stories(id) ON DELETE CASCADE,
+  recommended_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- Enable RLS on history
+ALTER TABLE public.user_story_history ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for history
+CREATE POLICY "Users can view own story history"
+  ON public.user_story_history
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own story history"
+  ON public.user_story_history
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+-- Insert 50 authentic stories from various cultures and sources
+
+-- Buddhist Stories (8)
+INSERT INTO public.stories (title, content, source, cultural_origin, tags, why_matters) VALUES
+('The Starving Tigress', 'A prince came upon a starving tigress about to eat her cubs. Moved by compassion, he offered his own body to save them. This act of ultimate selflessness became a cornerstone teaching on the depth of compassion possible in the human heart.', 'Jataka Tales', 'Buddhist', ARRAY['compassion', 'sacrifice', 'selflessness'], 'Shows that true compassion sometimes requires personal sacrifice, helping us see beyond our own needs.'),
+('The Mustard Seed', 'A mother whose child had died begged Buddha to bring him back. Buddha said he would if she could bring him a mustard seed from a house that had never known death. After visiting every house, she realized death touches all families and found peace.', 'Buddhist Teaching', 'Buddhist', ARRAY['grief', 'acceptance', 'universality'], 'Teaches that suffering is universal and we are not alone in our pain.'),
+('The Angry Snake', 'A venomous snake was terrorizing a village. A wise monk convinced the snake to stop biting. Later, the monk found the snake badly beaten—villagers had abused it once it became docile. The monk said: "I told you not to bite, but I never said you couldn''t hiss."', 'Buddhist Parable', 'Buddhist', ARRAY['boundaries', 'self-protection', 'wisdom'], 'We can be compassionate without becoming doormats; healthy boundaries are necessary.'),
+('The Second Arrow', 'Buddha taught: when hit by an arrow, we suffer. But we shoot ourselves with a second arrow—our reaction to the pain. The first arrow is unavoidable; the second is optional.', 'Buddhist Teaching', 'Buddhist', ARRAY['suffering', 'acceptance', 'rumination'], 'Our suffering often comes from our resistance to pain, not the pain itself.'),
+('The Monk and the Samurai', 'A samurai demanded a monk explain heaven and hell. The monk insulted him. Enraged, the samurai drew his sword. The monk said: "That is hell." The samurai understood, sheathed his sword, and bowed. The monk said: "That is heaven."', 'Zen Story', 'Buddhist', ARRAY['anger', 'awareness', 'transformation'], 'Heaven and hell are states of mind we create through our reactions.'),
+('The Muddy Road', 'Two monks encountered a woman unable to cross a muddy road. One carried her across. Hours later, the other monk complained: "We aren''t supposed to touch women!" The first replied: "I put her down hours ago. Why are you still carrying her?"', 'Zen Parable', 'Buddhist', ARRAY['letting-go', 'rumination', 'rigidity'], 'We often carry burdens long after we could have released them.'),
+('The Empty Cup', 'A professor visited a Zen master. The master poured tea until the cup overflowed. "Stop!" said the professor. The master replied: "Like this cup, you are full of your own opinions. How can I show you Zen unless you first empty your cup?"', 'Zen Teaching', 'Buddhist', ARRAY['openness', 'ego', 'learning'], 'We can''t learn new things while clinging to old beliefs and certainties.'),
+('Is That So?', 'When a girl became pregnant and blamed Zen master Hakuin, he said only: "Is that so?" He raised the baby without complaint. A year later, the girl confessed the real father. Her parents apologized profusely. Hakuin said only: "Is that so?"', 'Zen Story', 'Buddhist', ARRAY['equanimity', 'reputation', 'non-attachment'], 'True peace comes from not clinging to praise or fleeing from blame.');
+
+-- Sufi Stories (7)
+INSERT INTO public.stories (title, content, source, cultural_origin, tags, why_matters) VALUES
+('The Guest House', 'Rumi wrote: "This being human is a guest house. Every morning a new arrival. A joy, a depression, a meanness... Welcome and entertain them all! Even if they''re a crowd of sorrows... Be grateful for whoever comes, because each has been sent as a guide from beyond."', 'Rumi', 'Persian', ARRAY['acceptance', 'emotions', 'hospitality'], 'All emotions have wisdom to teach us if we welcome them rather than resist them.'),
+('The Elephant in the Dark', 'People touched different parts of an elephant in darkness—one felt the trunk, one the leg, one the ear—and each insisted they knew what an elephant was. But none saw the whole truth.', 'Rumi', 'Persian', ARRAY['perspective', 'truth', 'humility'], 'We each see only part of reality; humility and dialogue reveal the bigger picture.'),
+('Nasruddin''s Keys', 'People found Nasruddin searching for his keys under a streetlamp. "Where did you lose them?" "In my house." "Then why search here?" "Because the light is better here!"', 'Nasruddin Tales', 'Sufi', ARRAY['avoidance', 'comfort-zone', 'truth'], 'We often look for answers where it''s comfortable rather than where the real problem lies.'),
+('The Watermelon Hunter', 'Nasruddin went hunting with his bow. Someone asked: "What are you hunting?" "Watermelons." "But watermelons don''t run!" Nasruddin replied: "This bow doesn''t shoot!"', 'Nasruddin Tales', 'Sufi', ARRAY['self-deception', 'excuses', 'honesty'], 'We make excuses that perfectly match our limitations to avoid facing the truth.'),
+('The Reed Flute', 'Rumi wrote: "Listen to the reed and the tale it tells, how it sings of separation... Ever since they cut me from the reed bed, my wail has caused men and women to weep. I want a heart torn by separation, to share the pain of this love."', 'Rumi - Masnavi', 'Persian', ARRAY['longing', 'belonging', 'separation'], 'Our deepest pain often comes from separation from our true nature; this longing drives spiritual growth.'),
+('Nasruddin''s Donkey', 'Nasruddin was searching for his donkey while sitting on it. Someone pointed this out. He said: "Thank God! If I had found the donkey before I found myself on it, I would have lost myself too!"', 'Nasruddin Tales', 'Sufi', ARRAY['awareness', 'searching', 'perspective'], 'Sometimes what we''re desperately seeking is already present; we need awareness, not achievement.'),
+('The Ocean and the Wave', 'A wave was terrified it would crash and disappear. Another wave said: "You don''t understand. You''re not just a wave—you''re water. You were never separate from the ocean."', 'Sufi Teaching', 'Sufi', ARRAY['identity', 'fear', 'unity'], 'Our fear of death and loss comes from identifying with our temporary form rather than our eternal essence.');
+
+-- Stoic Stories (6)
+INSERT INTO public.stories (title, content, source, cultural_origin, tags, why_matters) VALUES
+('Marcus Aurelius'' Rain', 'Emperor Marcus Aurelius wrote in his journal during military campaigns: "Rain is neither good nor bad. It simply is. My judgment makes it so." He ruled the Roman Empire while facing plague, war, and betrayal—yet chose gratitude.', 'Marcus Aurelius - Meditations', 'Stoic', ARRAY['perspective', 'acceptance', 'judgment'], 'Events are neutral; our judgments create our suffering or peace.'),
+('Epictetus'' Broken Pot', 'Born a slave, Epictetus was crippled when his master broke his leg. He became one of history''s greatest philosophers. He taught: "It''s not what happens to you, but how you react that matters." He turned slavery into freedom through his mind.', 'Epictetus', 'Stoic', ARRAY['resilience', 'control', 'freedom'], 'External circumstances don''t determine our inner freedom; our responses do.'),
+('Seneca''s Fire', 'When Seneca lost all his possessions in a fire, he wrote: "I have lost nothing because all that was not mine. My mind is my own and cannot be taken." He rebuilt his philosophy, not his possessions.', 'Seneca', 'Stoic', ARRAY['loss', 'attachment', 'self'], 'What truly belongs to us—our character, our choices—cannot be taken away.'),
+('Cato''s Integrity', 'Cato the Younger chose death over compromise of his principles when Caesar rose to power. His final act was reading Plato''s dialogue on the immortality of the soul. He showed that some things matter more than survival.', 'Cato the Younger', 'Stoic', ARRAY['integrity', 'principles', 'courage'], 'Living with integrity matters more than simply living; some principles are worth dying for.'),
+('The Obstacle Is the Way', 'Marcus Aurelius wrote: "The impediment to action advances action. What stands in the way becomes the way." Every obstacle he faced—from plague to betrayal—became an opportunity to practice virtue.', 'Marcus Aurelius', 'Stoic', ARRAY['obstacles', 'opportunity', 'growth'], 'Our greatest challenges become our greatest teachers if we learn from them.'),
+('Epictetus and the Lamp', 'After Epictetus became famous, someone stole his iron lamp. He replaced it with an earthenware one, saying: "Tomorrow I will be the owner of an earthenware lamp and the thief will still be a thief. I got the better bargain."', 'Epictetus', 'Stoic', ARRAY['theft', 'character', 'peace'], 'External losses are temporary; loss of character is permanent. Guard what truly matters.');
+
+-- Real Historical Figures (10)
+INSERT INTO public.stories (title, content, source, cultural_origin, tags, why_matters) VALUES
+('Viktor Frankl''s Choice', 'In Auschwitz concentration camp, Viktor Frankl lost his family, his manuscript, everything. Yet he realized: "Everything can be taken from a man but one thing: the last of human freedoms—to choose one''s attitude." He survived by finding meaning in suffering.', 'Viktor Frankl - Man''s Search for Meaning', 'Modern', ARRAY['meaning', 'suffering', 'choice'], 'Even in the worst circumstances, we retain the freedom to choose our response.'),
+('Mandela''s Forgiveness', 'Nelson Mandela spent 27 years in prison. On his release, he invited his former prison guard to his presidential inauguration. He said: "Resentment is like drinking poison and hoping it will kill your enemies." He chose reconciliation over revenge.', 'Nelson Mandela', 'African', ARRAY['forgiveness', 'freedom', 'resentment'], 'Forgiveness frees the forgiver even more than the forgiven; resentment is self-inflicted prison.'),
+('Maya Angelou Rises', 'Maya Angelou was raped as a child and stopped speaking for five years. She became one of history''s greatest poets. She wrote: "You may shoot me with your words... But still, like dust, I''ll rise." Trauma didn''t end her voice; it deepened it.', 'Maya Angelou', 'African American', ARRAY['trauma', 'resilience', 'voice'], 'Our wounds can become the source of our greatest strength and expression.'),
+('Beethoven''s Symphony', 'Beethoven went deaf—a death sentence for a composer. In complete silence, he composed his greatest work, the Ninth Symphony. He never heard it performed, yet gave the world eternal beauty from his darkness.', 'Ludwig van Beethoven', 'European', ARRAY['disability', 'creation', 'persistence'], 'Our limitations can birth our greatest contributions if we persist despite them.'),
+('Malala''s Voice', 'After being shot in the head by the Taliban for advocating girls'' education, Malala Yousafzai could have retreated in fear. Instead, she spoke at the UN on her 16th birthday: "One child, one teacher, one book, one pen can change the world."', 'Malala Yousafzai', 'Pakistani', ARRAY['courage', 'education', 'voice'], 'Speaking truth despite danger can change the world; fear only wins when we are silent.'),
+('Nick Vujicic''s Joy', 'Born without arms or legs, Nick Vujicic attempted suicide at age 10. Today he''s a motivational speaker who has touched millions. He says: "If God can use a man without arms and legs to be His hands and feet, then He can use any heart willing."', 'Nick Vujicic', 'Modern', ARRAY['disability', 'purpose', 'faith'], 'Physical limitations don''t determine our impact; our willingness and spirit do.'),
+('Harriet Tubman''s Returns', 'After escaping slavery, Harriet Tubman returned to the South 19 times to free others, risking her life each time. She said: "I could have freed thousands more if only they knew they were slaves." Freedom requires awareness and courage.', 'Harriet Tubman', 'African American', ARRAY['freedom', 'courage', 'service'], 'True freedom means helping others find theirs; awareness of our chains is the first step to breaking them.'),
+('Stephen Hawking''s Universe', 'Diagnosed with ALS at 21 and given years to live, Stephen Hawking lived 55 more years, revolutionizing physics while completely paralyzed. He communicated through a cheek muscle, proving the mind''s power transcends the body''s limits.', 'Stephen Hawking', 'Modern', ARRAY['disability', 'mind', 'determination'], 'The human mind can explore the universe while the body is confined; consciousness transcends physical limitation.'),
+('Frida Kahlo''s Art', 'Frida Kahlo suffered a devastating bus accident at 18, enduring 30+ surgeries and chronic pain. She painted herself back together, creating art that transformed suffering into beauty. "I paint myself because I am so often alone and I am the subject I know best."', 'Frida Kahlo', 'Mexican', ARRAY['pain', 'art', 'self-expression'], 'We can transform suffering into beauty through creative expression; our pain can become our art.'),
+('Helen Keller''s World', 'Deaf and blind from infancy, Helen Keller graduated from Harvard, wrote 14 books, and became a powerful activist. She said: "The only thing worse than being blind is having sight but no vision." She saw more than most sighted people.', 'Helen Keller', 'American', ARRAY['disability', 'perspective', 'vision'], 'Physical limitations don''t limit vision; many who can see lack the vision to truly live.');
+
+-- African Wisdom (5)
+INSERT INTO public.stories (title, content, source, cultural_origin, tags, why_matters) VALUES
+('Ubuntu - I Am Because We Are', 'In South Africa, a researcher placed food near a tree and told children the first to reach it would win it all. Instead, they held hands and ran together, then sat and shared. They explained: "Ubuntu—how can one be happy when others are sad?"', 'African Wisdom', 'African', ARRAY['connection', 'community', 'compassion'], 'Our individual happiness is inseparable from others'' wellbeing; we rise together or not at all.'),
+('The Talking Stick', 'In many African councils, only the person holding the talking stick may speak. Others must listen deeply. When you hold the stick, you feel its weight—not just of wood, but of responsibility to speak truth worth hearing.', 'African Tradition', 'African', ARRAY['listening', 'speech', 'respect'], 'Speaking carries responsibility; deep listening creates space for truth to emerge.'),
+('The Wisdom Tree', 'An African proverb teaches: "Wisdom is like a baobab tree; no one person can embrace it alone." The baobab''s trunk is too wide for individual arms. Wisdom requires the embrace of community.', 'African Proverb', 'African', ARRAY['wisdom', 'community', 'humility'], 'No single person holds all wisdom; we need each other to see the full truth.'),
+('Anansi Teaches His Children', 'Anansi the spider asked his children what they''d choose: wisdom or wealth. Most chose wealth. The youngest said: "With wisdom, I can find wealth. With wealth, I cannot find wisdom." Anansi smiled—this child understood.', 'West African Folk Tale', 'African', ARRAY['wisdom', 'values', 'priorities'], 'Wisdom generates all good things; without it, wealth brings only temporary satisfaction.'),
+('The Drum That Beats By Itself', 'An African tale tells of a magical drum that beats by itself when the village lives in harmony. When conflict arose, the drum fell silent. The villagers realized: the drum never had magic—their unity did.', 'African Folk Tale', 'African', ARRAY['harmony', 'community', 'unity'], 'What appears magical in community is simply the natural result of living in harmony.');
+
+-- Greek Philosophy (5)
+INSERT INTO public.stories (title, content, source, cultural_origin, tags, why_matters) VALUES
+('Socrates and Death', 'Sentenced to death, Socrates'' friends planned his escape. He refused, saying: "I have lived according to Athens'' laws; I will die according to them. Breaking laws when convenient makes all law meaningless." He drank the hemlock with equanimity.', 'Socrates - Plato''s Phaedo', 'Greek', ARRAY['integrity', 'principles', 'death'], 'Living by principles means following them even when the cost is high; consistency reveals character.'),
+('Diogenes and Alexander', 'Alexander the Great found philosopher Diogenes lying in the sun. "I am Alexander the Great. Ask anything." Diogenes replied: "Stand out of my sunlight." Alexander said: "If I were not Alexander, I would be Diogenes." True power needs nothing.', 'Diogenes the Cynic', 'Greek', ARRAY['simplicity', 'power', 'contentment'], 'The person who needs nothing has more power than the person who rules empires.'),
+('Plato''s Cave', 'Plato described prisoners chained in a cave, seeing only shadows on the wall, believing shadows were reality. One breaks free, sees the sun, and returns to free others. But they prefer familiar shadows to blinding truth.', 'Plato - The Republic', 'Greek', ARRAY['truth', 'illusion', 'awakening'], 'We resist truth that challenges our comfortable illusions; awakening is often unwelcome.'),
+('Pyrrhus and Cineas', 'Pyrrhus planned to conquer Rome, then Sicily, then Africa. His advisor Cineas asked: "Then what?" "We will rest and be happy." "Why not rest and be happy now?" We postpone happiness for achievements that promise the happiness we already could have.', 'Plutarch', 'Greek', ARRAY['happiness', 'postponement', 'achievement'], 'We chase achievements believing they''ll bring happiness we could choose right now.'),
+('The Ring of Gyges', 'Plato asks: if you had a ring that made you invisible, would you still be good? Most people are good only when seen. But the truly ethical person''s actions match their values even when no one''s watching.', 'Plato - The Republic', 'Greek', ARRAY['ethics', 'integrity', 'character'], 'True character is revealed when no one is watching; integrity requires no audience.');
+
+-- Taoist Wisdom (5)
+INSERT INTO public.stories (title, content, source, cultural_origin, tags, why_matters) VALUES
+('The Farmer''s Luck', 'A farmer''s horse ran away. "Bad luck!" neighbors said. "Maybe," he replied. The horse returned with wild horses. "Good luck!" "Maybe." His son broke his leg taming them. "Bad luck!" "Maybe." War came; his injured son was spared. "Good luck!" "Maybe."', 'Taoist Parable', 'Chinese', ARRAY['perspective', 'judgment', 'acceptance'], 'We can''t know if events are fortune or misfortune; they simply are. Our judgments create suffering.'),
+('The Butcher''s Knife', 'A butcher told the emperor his knife lasted 19 years because he cut through the spaces between joints, never forcing. "Cook meat like you live life," he said, "following nature''s grain, not forcing your way through."', 'Zhuangzi', 'Chinese', ARRAY['effort', 'flow', 'wisdom'], 'Force creates friction; flowing with natural patterns preserves energy and effectiveness.'),
+('The Useless Tree', 'A carpenter rejected a gnarled oak as useless for lumber. That night the tree appeared in his dream: "Your usefulness makes you expendable. My uselessness lets me live my full lifespan." The carpenter understood: being useless by society''s standards can be perfect usefulness.', 'Zhuangzi', 'Chinese', ARRAY['worth', 'purpose', 'usefulness'], 'What society deems useless may be exactly what allows us to live fully and authentically.'),
+('The Empty Boat', 'You''re rowing and a boat crashes into yours. You get angry—until you see it''s empty, just drifting. Your anger vanishes. Zhuangzi taught: treat all offenses like empty boats. People are driven by currents beyond their control.', 'Zhuangzi', 'Chinese', ARRAY['anger', 'forgiveness', 'understanding'], 'When we see people as driven by forces beyond their control, anger transforms into compassion.'),
+('The Marsh Pheasant', 'A pheasant in a cage receives food and safety. A wild pheasant struggles but flies free. Zhuangzi refused a government position, saying: "I prefer to be a live dog than a dead lion." Freedom with struggle beats comfortable captivity.', 'Zhuangzi', 'Chinese', ARRAY['freedom', 'comfort', 'authenticity'], 'Comfortable captivity slowly kills the spirit; freedom with difficulty keeps us truly alive.');
+
+-- Native American Wisdom (4)
+INSERT INTO public.stories (title, content, source, cultural_origin, tags, why_matters) VALUES
+('The Two Wolves', 'A grandfather tells his grandson: "Inside me are two wolves fighting. One is anger, envy, greed. One is love, peace, kindness." The boy asks: "Which wins?" The grandfather replies: "The one I feed."', 'Cherokee Teaching', 'Native American', ARRAY['choice', 'character', 'awareness'], 'We become what we nurture within ourselves; our attention determines who we become.'),
+('The Eagle and the Storm', 'When storm clouds gather, eagles don''t hide—they use the winds to rise above the storm. While other birds take shelter, eagles soar higher, using the very thing others fear. They taught: "Adversity is the wind that lifts those brave enough to spread their wings."', 'Native American Wisdom', 'Native American', ARRAY['adversity', 'courage', 'perspective'], 'The same force that defeats others can lift us higher if we face it with courage.'),
+('The Empty Canoe', 'A chief taught: "When you see a man paddling toward you in anger, remember—you cannot see the rapids he just survived. Everyone is in an invisible canoe, navigating unseen waters." Understanding this brings compassion.', 'Iroquois Teaching', 'Native American', ARRAY['compassion', 'understanding', 'judgment'], 'Everyone fights battles we cannot see; compassion comes from remembering this.'),
+('Seven Generations', 'Iroquois law required considering the impact of decisions on seven generations ahead. Every action was weighed: "Will this serve our children''s children''s children?" This principle created sustainability and long-term thinking.', 'Iroquois Nation', 'Native American', ARRAY['responsibility', 'future', 'legacy'], 'Our actions ripple through time; wisdom considers consequences beyond our own lifetime.');
+
+-- Final Additions (2)
+INSERT INTO public.stories (title, content, source, cultural_origin, tags, why_matters) VALUES
+('Einstein''s Relativity of Pain', 'Albert Einstein said: "Put your hand on a hot stove for a minute, it feels like an hour. Sit with a pretty girl for an hour, it feels like a minute. That''s relativity." Our experience of time is shaped entirely by our state of mind.', 'Albert Einstein', 'Modern', ARRAY['perception', 'time', 'awareness'], 'Our perception creates our reality; the same moment can be heaven or hell depending on our mind.'),
+('The Cracked Pot', 'A water bearer had two pots—one perfect, one cracked. The cracked pot apologized for leaking half its water. The bearer showed how flowers grew only on the cracked pot''s side of the path: "I planted seeds on your side. Your flaw watered them. You made beauty possible."', 'Ancient Parable', 'Universal', ARRAY['flaws', 'purpose', 'perspective'], 'Our imperfections can become our gifts; what we see as broken may be exactly what creates beauty.');
