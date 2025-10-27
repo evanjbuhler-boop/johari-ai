@@ -1172,6 +1172,7 @@ REQUIREMENTS:
             title: selectedExercise.title,
             description: selectedExercise.description,
             duration: selectedExercise.duration,
+            whyHelps: selectedExercise.why_helps,
             steps: selectedExercise.steps
           };
           

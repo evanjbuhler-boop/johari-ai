@@ -69,6 +69,7 @@ export type Database = {
           steps: Json
           tags: string[]
           title: string
+          why_helps: string | null
         }
         Insert: {
           category: string
@@ -79,6 +80,7 @@ export type Database = {
           steps: Json
           tags?: string[]
           title: string
+          why_helps?: string | null
         }
         Update: {
           category?: string
@@ -89,6 +91,7 @@ export type Database = {
           steps?: Json
           tags?: string[]
           title?: string
+          why_helps?: string | null
         }
         Relationships: []
       }

@@ -615,13 +615,18 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                 <span className="text-2xl">✨</span>
                 <h2 className="text-xl font-semibold text-foreground">Practice ~</h2>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleSave('exercise-' + results.exercise!.title, 'exercise', results.exercise!.title, results.exercise!.description, results.exercise)}
-              >
-                {isSaved('exercise-' + results.exercise.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleSave('exercise-' + results.exercise!.title, 'exercise', results.exercise!.title, results.exercise!.description, results.exercise)}
+                >
+                  {isSaved('exercise-' + results.exercise.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleShare(results.exercise!.title)}>
+                  <Share2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -634,15 +639,27 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               <div className="flex-1 space-y-3">
                 <div>
                   <h3 className="text-lg font-medium text-foreground">{results.exercise.title}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">⏱ {results.exercise.duration}</p>
                   <p className="text-base text-foreground/80 leading-relaxed mt-2">{results.exercise.description}</p>
                 </div>
-              </div>
-            </div>
 
-            <div className="flex flex-wrap gap-3 mt-4">
-              <Button onClick={() => setExerciseModalOpen(true)} className="flex-1 sm:flex-none">
-                Start Guided Exercise →
-              </Button>
+                {results.exercise.whyHelps && (
+                  <div className="pt-3 border-t border-border">
+                    <p className="text-sm font-semibold text-foreground/90 mb-2 flex items-center gap-2">
+                      <span>💬</span> Why this might help:
+                    </p>
+                    <p className="text-sm text-muted-foreground italic">
+                      {results.exercise.whyHelps}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <Button onClick={() => setExerciseModalOpen(true)} className="gap-2">
+                    Start Guided Exercise →
+                  </Button>
+                </div>
+              </div>
             </div>
           </Card>
         )}

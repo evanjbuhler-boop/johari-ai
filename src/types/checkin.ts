@@ -152,6 +152,7 @@ export interface CheckInResults {
     title: string;
     description: string;
     duration: string;
+    whyHelps?: string;
     steps: {
       stepNumber: number;
       title: string;
