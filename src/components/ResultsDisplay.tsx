@@ -456,28 +456,14 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-[300px_1fr] gap-6">
-              {/* Left column: Embed player */}
-              <div className="space-y-4">
-                {getSpotifyEmbedUrl(results.podcast.urls.spotify) ? (
-                  <div className="w-full">
-                    <iframe
-                      src={getSpotifyEmbedUrl(results.podcast.urls.spotify)!}
-                      width="100%"
-                      height="232"
-                      frameBorder="0"
-                      allow="encrypted-media"
-                      title={`${results.podcast.title} - Spotify Player`}
-                      className="rounded-lg"
-                    />
-                  </div>
-                ) : (
-                  <img
-                    src={podcastPlaceholder}
-                    alt={`${results.podcast.title} artwork`}
-                    className="w-full h-[232px] object-cover rounded-lg shadow-md"
-                  />
-                )}
+            <div className="flex flex-col sm:flex-row gap-6">
+              {/* Podcast artwork */}
+              <div className="flex-shrink-0">
+                <img
+                  src={podcastPlaceholder}
+                  alt={`${results.podcast.title} artwork`}
+                  className="w-full sm:w-[200px] h-[300px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border"
+                />
               </div>
 
               {/* Right column: Details */}
