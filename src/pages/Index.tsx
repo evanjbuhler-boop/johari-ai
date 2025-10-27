@@ -886,9 +886,19 @@ const Index = () => {
   }
 
   if (state === 'results' && results) {
+    // Extract session theme from validation data themes or first main stressor
+    const sessionTheme = validationData?.mainStressors?.[0] 
+      || results.whatsHappening?.themes?.[0] 
+      || 'your reflections';
+    
     return (
       <AppLayout showBackground={false}>
-        <ResultsDisplay results={results} onNewCheckIn={handleNewCheckIn} />
+        <ResultsDisplay 
+          results={results} 
+          onNewCheckIn={handleNewCheckIn} 
+          sessionId={currentSessionId || undefined}
+          sessionTheme={sessionTheme}
+        />
       </AppLayout>
     );
   }

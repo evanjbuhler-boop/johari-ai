@@ -112,7 +112,12 @@ const mockResults: CheckInResults = {
 export default function ResultsPreview() {
   return (
     <AppLayout showBackground={false}>
-      <ResultsDisplay results={mockResults} onNewCheckIn={() => {}} />
+      <ResultsDisplay 
+        results={mockResults} 
+        onNewCheckIn={() => {}} 
+        sessionId="preview-session"
+        sessionTheme="work stress"
+      />
     </AppLayout>
   );
 }

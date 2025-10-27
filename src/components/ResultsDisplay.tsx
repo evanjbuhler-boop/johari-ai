@@ -1,7 +1,7 @@
 import { CheckInResults, SavedItem } from '@/types/checkin';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, BookOpen, Share2, Library, ExternalLink, Music } from 'lucide-react';
+import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, BookOpen, Share2, Library, ExternalLink, Music, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -22,15 +22,21 @@ import exercisePlaceholder from '@/assets/exercise-placeholder.png';
 interface ResultsDisplayProps {
   results: CheckInResults;
   onNewCheckIn: () => void;
+  sessionId?: string; // Add sessionId for rating tracking
+  sessionTheme?: string; // Add session theme for personalization
 }
 
-const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
+const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: ResultsDisplayProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(false);
   const [storyExpanded, setStoryExpanded] = useState(false);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
+  const [ratings, setRatings] = useState<Record<string, 'up' | 'down'>>({});
+  
+  // Generate a session ID if not provided (for testing)
+  const currentSessionId = sessionId || `session-${Date.now()}`;
 
   // Fetch saved items from database
   useEffect(() => {
@@ -50,7 +56,97 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
     fetchSavedItems();
   }, [user]);
 
+  // Fetch ratings from database
+  useEffect(() => {
+    const fetchRatings = async () => {
+      if (!user || !currentSessionId) return;
+      
+      const { data, error } = await supabase
+        .from('recommendation_ratings')
+        .select('recommendation_type, rating')
+        .eq('user_id', user.id)
+        .eq('session_id', currentSessionId);
+      
+      if (!error && data) {
+        const ratingsMap: Record<string, 'up' | 'down'> = {};
+        data.forEach(item => {
+          ratingsMap[item.recommendation_type] = item.rating as 'up' | 'down';
+        });
+        setRatings(ratingsMap);
+      }
+    };
+
+    fetchRatings();
+  }, [user, currentSessionId]);
+
   const isSaved = (id: string) => savedItems.has(id);
+
+  // Rating functionality
+  const handleRating = async (
+    type: 'podcast' | 'book' | 'exercise' | 'story',
+    title: string,
+    rating: 'up' | 'down'
+  ) => {
+    if (!user) {
+      toast.error('Please sign in to rate recommendations');
+      navigate('/auth');
+      return;
+    }
+
+    // Optimistic update
+    const currentRating = ratings[type];
+    const newRating = currentRating === rating ? null : rating;
+    
+    setRatings(prev => {
+      const updated = { ...prev };
+      if (newRating) {
+        updated[type] = newRating;
+      } else {
+        delete updated[type];
+      }
+      return updated;
+    });
+
+    try {
+      if (newRating === null) {
+        // Delete rating
+        await supabase
+          .from('recommendation_ratings')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('session_id', currentSessionId)
+          .eq('recommendation_type', type);
+        toast.success('Rating removed');
+      } else {
+        // Upsert rating
+        await supabase
+          .from('recommendation_ratings')
+          .upsert({
+            user_id: user.id,
+            session_id: currentSessionId,
+            recommendation_type: type,
+            recommendation_title: title,
+            rating: newRating,
+          }, {
+            onConflict: 'user_id,session_id,recommendation_type'
+          });
+        toast.success(`Rated ${newRating === 'up' ? '👍' : '👎'}`);
+      }
+    } catch (error) {
+      // Revert optimistic update
+      setRatings(prev => {
+        const reverted = { ...prev };
+        if (currentRating) {
+          reverted[type] = currentRating;
+        } else {
+          delete reverted[type];
+        }
+        return reverted;
+      });
+      toast.error('Failed to save rating');
+      console.error('Rating error:', error);
+    }
+  };
 
   const generatePreview = (type: 'podcast' | 'book' | 'exercise' | 'story', title: string, content: any): string => {
     if (type === 'podcast' && results.podcast) {
@@ -152,28 +248,76 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
     }
   };
 
-  const addUTMParams = (url: string) => {
-    const utmParams = 'utm_source=johari&utm_medium=web';
+  const addUTMParams = (url: string, source: string = 'johari', medium: string = 'recs') => {
+    const utmParams = `utm_source=${source}&utm_medium=${medium}&utm_campaign=${currentSessionId}`;
     return url.includes('?') ? `${url}&${utmParams}` : `${url}?${utmParams}`;
   };
 
-  const handlePodcastPlay = (platform: 'spotify' | 'apple' | 'direct' = 'spotify') => {
+  // Verified hardcoded links for testing
+  // TODO: Replace with dynamic session data when API provides episodeID, ISBN, etc.
+  const VERIFIED_LINKS = {
+    podcast: {
+      // Example: "Treating the Pain of a Broken Heart" from The Happiness Lab
+      spotify: 'https://open.spotify.com/episode/6wxSMYOmM6ZjpiuJt5d9Rh',
+      apple: 'https://podcasts.apple.com/us/podcast/treating-the-pain-of-a-broken-heart/id1474245040?i=1000531508628',
+      universal: 'https://podcastindex.org/universal-link?feed=https://feeds.simplecast.com/2z9hQ7jT&episode=6wxSMYOmM6ZjpiuJt5d9Rh',
+    },
+    book: {
+      // Example: "Attached" by Amir Levine
+      bookshop: 'https://bookshop.org/p/books/attached-the-new-science-of-adult-attachment-and-how-it-can-help-you-find-and-keep-love-amir-levine/9781585429134',
+      barnesNoble: 'https://www.barnesandnoble.com/w/attached-amir-levine/1102355415?ean=9781585429134',
+      amazon: 'https://amazon.com/dp/1585429139',
+    }
+  };
+
+  // Error handling for link navigation
+  const openLinkWithFallback = async (
+    primaryUrl: string,
+    fallbackUrl?: string,
+    linkName: string = 'this link'
+  ) => {
+    const urlWithUTM = addUTMParams(primaryUrl);
+    
+    try {
+      // Test if link is accessible (HEAD request)
+      const response = await fetch(urlWithUTM, { method: 'HEAD', mode: 'no-cors' });
+      window.open(urlWithUTM, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      console.error(`Failed to open ${linkName}:`, error);
+      
+      if (fallbackUrl) {
+        toast.error(`${linkName} unavailable—trying alternative`);
+        const fallbackWithUTM = addUTMParams(fallbackUrl);
+        window.open(fallbackWithUTM, '_blank', 'noopener,noreferrer');
+      } else {
+        toast.error(`${linkName} is currently unavailable. Please try again later.`);
+      }
+    }
+  };
+
+  const handlePodcastPlay = async (platform: 'spotify' | 'apple' | 'universal' = 'spotify') => {
     if (!results.podcast) return;
     
-    let url = '';
-    if (platform === 'spotify' && results.podcast.urls.spotify) {
-      url = results.podcast.urls.spotify;
-    } else if (platform === 'apple' && results.podcast.urls.applePodcasts) {
-      url = results.podcast.urls.applePodcasts;
-    } else if (platform === 'direct' && results.podcast.urls.direct) {
-      url = results.podcast.urls.direct;
+    // Use verified hardcoded links for testing
+    // TODO: Replace with dynamic links from results.podcast.urls when API provides episodeID
+    let primaryUrl = '';
+    let fallbackUrl = '';
+    let linkName = '';
+    
+    if (platform === 'spotify') {
+      primaryUrl = VERIFIED_LINKS.podcast.spotify;
+      fallbackUrl = VERIFIED_LINKS.podcast.universal;
+      linkName = 'Spotify link';
+    } else if (platform === 'apple') {
+      primaryUrl = VERIFIED_LINKS.podcast.apple;
+      fallbackUrl = VERIFIED_LINKS.podcast.universal;
+      linkName = 'Apple Podcasts link';
+    } else {
+      primaryUrl = VERIFIED_LINKS.podcast.universal;
+      linkName = 'Podcast link';
     }
     
-    if (url) {
-      window.open(addUTMParams(url), '_blank', 'noopener,noreferrer');
-    } else {
-      toast.error('Link unavailable, please try another platform');
-    }
+    await openLinkWithFallback(primaryUrl, fallbackUrl, linkName);
   };
 
   const handleBookRead = () => {
@@ -182,15 +326,26 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
     }
   };
 
-  const handleBookPurchase = (store: 'bookshop' | 'bn' | 'amazon' = 'bookshop') => {
+  const handleBookPurchase = async (store: 'bookshop' | 'bn' | 'amazon' = 'bookshop') => {
     if (!results.book) return;
     
-    // For now, use purchaseUrl as primary - in production, you'd want different URLs per store
-    if (results.book.purchaseUrl) {
-      window.open(addUTMParams(results.book.purchaseUrl), '_blank', 'noopener noreferrer');
+    // Use verified hardcoded links for testing
+    // TODO: Replace with dynamic links based on ISBN from results.book when API provides it
+    let primaryUrl = '';
+    let storeName = '';
+    
+    if (store === 'bookshop') {
+      primaryUrl = VERIFIED_LINKS.book.bookshop;
+      storeName = 'Bookshop.org';
+    } else if (store === 'bn') {
+      primaryUrl = VERIFIED_LINKS.book.barnesNoble;
+      storeName = 'Barnes & Noble';
     } else {
-      toast.error('Purchase link unavailable');
+      primaryUrl = VERIFIED_LINKS.book.amazon;
+      storeName = 'Amazon';
     }
+    
+    await openLinkWithFallback(primaryUrl, VERIFIED_LINKS.book.bookshop, `${storeName} link`);
   };
 
   const getSpotifyEmbedUrl = (spotifyUrl: string | undefined): string | null => {
@@ -388,13 +543,15 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                 <h2 className="text-2xl font-semibold text-foreground">A Story for You</h2>
                 {storyExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
               </button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
-              >
-                {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
+                >
+                  {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                </Button>
+              </div>
             </div>
 
             {!storyExpanded && (
@@ -418,11 +575,31 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
                 <div className="pt-4">
                   <p className="text-sm font-semibold text-foreground/90 mb-3 flex items-center gap-2">
-                    <span>💭</span> Why this speaks to your experience:
+                    <span>💭</span> Why this speaks to {sessionTheme ? sessionTheme : 'your experience'}:
                   </p>
                   <p className="text-base text-foreground/80 leading-relaxed">
                     {results.story.whyThisMatters}
                   </p>
+                </div>
+
+                {/* Rating buttons */}
+                <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-border">
+                  <Button
+                    variant={ratings.story === 'up' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => handleRating('story', results.story!.title, 'up')}
+                    className="gap-1"
+                  >
+                    <ThumbsUp className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={ratings.story === 'down' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => handleRating('story', results.story!.title, 'down')}
+                    className="gap-1"
+                  >
+                    <ThumbsDown className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             )}
@@ -481,32 +658,50 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
                 <div className="pt-3 border-t border-border">
                   <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                    <span>💬</span> Why this might help:
+                    <span>💬</span> Why this might help {sessionTheme ? `for ${sessionTheme}` : ''}:
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400 italic">
                     {results.podcast.whyThisHelps}
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-3 pt-2">
-                  <Button onClick={() => handlePodcastPlay('spotify')} className="gap-2">
-                    <Music className="w-4 h-4" />
-                    Play on Spotify
-                  </Button>
-                  
-                  {results.podcast.urls.applePodcasts && (
+                <div className="flex items-center justify-between gap-3 pt-4 border-t border-border">
+                  <div className="flex flex-wrap gap-3">
+                    <Button onClick={() => handlePodcastPlay('spotify')} className="gap-2">
+                      <Music className="w-4 h-4" />
+                      Open in Spotify
+                    </Button>
+                    
                     <Button onClick={() => handlePodcastPlay('apple')} variant="outline" className="gap-2">
                       <ExternalLink className="w-4 h-4" />
-                      Apple Podcasts
+                      Open in Apple Podcasts
                     </Button>
-                  )}
-                  
-                  {results.podcast.urls.direct && (
-                    <Button onClick={() => handlePodcastPlay('direct')} variant="outline" className="gap-2">
+                    
+                    <Button onClick={() => handlePodcastPlay('universal')} variant="outline" className="gap-2">
                       <ExternalLink className="w-4 h-4" />
-                      Open in Browser
+                      Listen Elsewhere
                     </Button>
-                  )}
+                  </div>
+
+                  {/* Rating buttons */}
+                  <div className="flex gap-2 ml-auto">
+                    <Button
+                      variant={ratings.podcast === 'up' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => handleRating('podcast', results.podcast!.title, 'up')}
+                      className="gap-1"
+                    >
+                      <ThumbsUp className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant={ratings.podcast === 'down' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => handleRating('podcast', results.podcast!.title, 'down')}
+                      className="gap-1"
+                    >
+                      <ThumbsDown className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -560,47 +755,62 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
 
                 <div className="pt-3 border-t border-border">
                   <p className="text-sm font-semibold text-foreground/90 mb-2 flex items-center gap-2">
-                    <span>💬</span> Why this might help:
+                    <span>💬</span> Why this might help {sessionTheme ? `for ${sessionTheme}` : ''}:
                   </p>
                   <p className="text-sm text-muted-foreground italic">
                     {results.book.whyThisHelps}
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-3 pt-2">
-                  {results.book.purchaseUrl && (
-                    <>
-                      <Button 
-                        onClick={() => handleBookPurchase('bookshop')} 
-                        className="gap-2"
-                      >
-                        🛒 Get Book
-                      </Button>
-                      
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline" className="gap-2">
-                            Alternatives
-                            <ChevronDown className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem onClick={() => handleBookPurchase('bookshop')}>
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Bookshop.org
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleBookPurchase('bn')}>
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Barnes & Noble
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleBookPurchase('amazon')}>
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Amazon
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </>
-                  )}
+                <div className="flex items-center justify-between gap-3 pt-4 border-t border-border mt-4">
+                  <div className="flex flex-wrap gap-3">
+                    <Button 
+                      onClick={() => handleBookPurchase('bookshop')} 
+                      className="gap-2"
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      Get on Bookshop.org
+                    </Button>
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="gap-2">
+                          Alternatives
+                          <ChevronDown className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48 bg-popover z-50">
+                        <DropdownMenuItem onClick={() => handleBookPurchase('bn')}>
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Barnes & Noble
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleBookPurchase('amazon')}>
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Amazon
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  {/* Rating buttons */}
+                  <div className="flex gap-2 ml-auto">
+                    <Button
+                      variant={ratings.book === 'up' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => handleRating('book', results.book!.title, 'up')}
+                      className="gap-1"
+                    >
+                      <ThumbsUp className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant={ratings.book === 'down' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => handleRating('book', results.book!.title, 'down')}
+                      className="gap-1"
+                    >
+                      <ThumbsDown className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -646,7 +856,7 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                 {results.exercise.whyHelps && (
                   <div className="pt-3 border-t border-border">
                     <p className="text-sm font-semibold text-foreground/90 mb-2 flex items-center gap-2">
-                      <span>💬</span> Why this might help:
+                      <span>💬</span> Why this might help {sessionTheme ? `for ${sessionTheme}` : ''}:
                     </p>
                     <p className="text-sm text-muted-foreground italic">
                       {results.exercise.whyHelps}
@@ -654,10 +864,30 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-3 pt-2">
+                <div className="flex items-center justify-between gap-3 pt-4 border-t border-border mt-4">
                   <Button onClick={() => setExerciseModalOpen(true)} className="gap-2">
                     Start Guided Exercise →
                   </Button>
+
+                  {/* Rating buttons */}
+                  <div className="flex gap-2 ml-auto">
+                    <Button
+                      variant={ratings.exercise === 'up' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => handleRating('exercise', results.exercise!.title, 'up')}
+                      className="gap-1"
+                    >
+                      <ThumbsUp className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant={ratings.exercise === 'down' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => handleRating('exercise', results.exercise!.title, 'down')}
+                      className="gap-1"
+                    >
+                      <ThumbsDown className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

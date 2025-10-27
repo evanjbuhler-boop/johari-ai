@@ -128,6 +128,36 @@ export type Database = {
         }
         Relationships: []
       }
+      recommendation_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          rating: string
+          recommendation_title: string
+          recommendation_type: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rating: string
+          recommendation_title: string
+          recommendation_type: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rating?: string
+          recommendation_title?: string
+          recommendation_type?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       saved_items: {
         Row: {
           book_author: string | null
