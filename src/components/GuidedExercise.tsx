@@ -73,12 +73,7 @@ const GuidedExercise = ({ open, onClose, title, steps }: GuidedExerciseProps) =>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="border-b border-border pb-4 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-semibold text-foreground">{title}</h2>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
+          <h2 className="text-2xl font-semibold text-foreground mb-4">{title}</h2>
           
           {/* Progress */}
           <div className="space-y-2">
