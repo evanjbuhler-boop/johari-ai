@@ -568,13 +568,6 @@ const ResultsDisplay = ({ results, onNewCheckIn }: ResultsDisplayProps) => {
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-2">
-                  {results.book.sampleUrl && (
-                    <Button onClick={handleBookRead} variant="outline" className="gap-2">
-                      <BookOpen className="w-4 h-4" />
-                      Read Sample
-                    </Button>
-                  )}
-                  
                   {results.book.purchaseUrl && (
                     <>
                       <Button 
