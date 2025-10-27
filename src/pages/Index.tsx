@@ -59,7 +59,9 @@ const Index = () => {
   // Check for preview mode in URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    console.log('Checking for preview mode, URL params:', window.location.search);
     if (urlParams.get('preview') === 'results') {
+      console.log('Preview mode detected, loading mock results');
       const mockResults: CheckInResults = {
         byline: "Navigating work pressure while managing perfectionism and self-doubt",
         whatsHappening: {
@@ -155,8 +157,10 @@ const Index = () => {
           "Difficulty accepting mistakes"
         ]
       };
+      console.log('Setting results and state to results');
       setResults(mockResults);
       setState('results');
+      console.log('Preview mode setup complete');
     }
   }, []);
 
