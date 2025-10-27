@@ -1056,11 +1056,14 @@ CRITICAL INSTRUCTIONS FOR STORIES:
 - DO NOT make up parables or tales
 - ONLY provide an array of 2-3 relevant tags in the storyTags field
 - Tags should match themes from the conversation (e.g., ["resilience", "suffering"], ["courage", "fear"], ["acceptance", "change"], ["perspective", "judgment"], ["compassion", "understanding"])
+- BE CREATIVE with tag selection - choose tags that capture the deeper emotional or philosophical themes, not just surface-level emotions
 - The system will select an appropriate real story/parable from our curated library (Buddhist tales, Stoic wisdom, stories from historical figures like Frankl and Mandela, cultural parables, etc.)
-- You MUST also provide a "storyWhyMatters" field: A personalized 3-sentence explanation following this exact structure:
-  * Sentence 1: State the general principle or wisdom from the story
-  * Sentence 2: Apply it specifically to their situation from the conversation
+- Stories will not repeat for the same user within 14 days, so your tag selection should be thoughtful and varied
+- You MUST also provide a "storyWhyMatters" field: A personalized 3-4 sentence explanation following this structure:
+  * Sentence 1: State the general principle or wisdom that will come from the story
+  * Sentence 2: Apply it creatively and specifically to their unique situation from the conversation - make unexpected but insightful connections
   * Sentence 3: Provide universal perspective - show how others struggle with this too, offering comfort through shared human experience
+  * Sentence 4 (optional): Offer a forward-looking insight about how this wisdom could shift their relationship to the challenge
 
 Format as JSON with this EXACT structure:
 {
@@ -1068,7 +1071,7 @@ Format as JSON with this EXACT structure:
   "whatsHappening": {
     "summary": "2-3 sentence empathetic explanation",
     "themes": ["Theme 1", "Theme 2", "Theme 3"],
-    "fullExplanation": "Detailed 3-4 paragraph explanation",
+    "fullExplanation": "MINIMUM 3 FULL PARAGRAPHS (5-7 sentences each) of detailed clinical psychological explanation. Be thorough and specific about the psychological mechanisms at play. Cite research when relevant. Go deep into the neuroscience, cognitive processes, or emotional patterns. This should feel comprehensive and educational, not surface-level.",
     "citations": [
       {"author": "Researcher Name", "year": 2020, "title": "Study Title"}
     ]
@@ -1077,7 +1080,7 @@ Format as JSON with this EXACT structure:
     {"text": "Direct quote from user", "sentiment": "positive|negative|neutral"}
   ],
   "reframing": {
-    "content": "3-4 paragraphs offering perspective shift using CBT, ACT, therapeutic methods"
+    "content": "MINIMUM 3-4 SUBSTANTIAL PARAGRAPHS offering a different therapeutic lens or perspective shift. Use clinical frameworks (CBT, ACT, psychodynamic, etc.) to provide depth. Be thorough - go into the mechanisms of why this reframe helps, cite therapeutic principles, and provide concrete examples of how to apply this perspective."
   },
   "podcast": {
     "title": "Real Podcast Name (research and recommend an actual podcast)",
@@ -1105,7 +1108,7 @@ Format as JSON with this EXACT structure:
   },
   "exerciseTags": ["anxiety", "stress", "mindfulness"],
   "storyTags": ["resilience", "perspective"],
-  "storyWhyMatters": "Three sentences: (1) general principle; (2) specific application to their situation; (3) universal perspective showing others struggle with this",
+  "storyWhyMatters": "3-4 sentences: (1) general principle; (2) creative and specific application to their unique situation with unexpected but insightful connections; (3) universal perspective showing others struggle with this; (4) optional forward-looking insight",
   "patterns": ["Pattern 1", "Pattern 2", "Pattern 3"]
 }
 
@@ -1113,8 +1116,10 @@ REQUIREMENTS:
 - ALL fields must be present (podcast, book, exerciseTags, storyTags, storyWhyMatters)
 - Recommend REAL podcasts and books that exist
 - exerciseTags should be 1-3 relevant tags from: anxiety, depression, stress, worry, grounding, mindfulness, self-compassion, values, emotions, etc.
-- storyTags should be 2-3 relevant tags that match the user's situation and emotional needs
-- storyWhyMatters must be exactly 3 sentences following the structure: general principle, specific application, universal perspective
+- storyTags should be 2-3 CREATIVE and VARIED tags that capture deeper emotional/philosophical themes, not just surface emotions
+- storyWhyMatters must be 3-4 sentences with creative, unexpected but insightful connections to their situation
+- whatsHappening.fullExplanation must be MINIMUM 3 FULL PARAGRAPHS - be clinical, thorough, and educational
+- reframing.content must be MINIMUM 3-4 SUBSTANTIAL PARAGRAPHS with clinical depth and therapeutic frameworks
 - DO NOT include a "story" object - only include "storyTags" and "storyWhyMatters"`;
 
     const conversationSummary = messages.map((m: any) =>
@@ -1129,7 +1134,7 @@ REQUIREMENTS:
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
-        max_tokens: 5000,
+        max_tokens: 8000,
         temperature: 0.7,
         response_format: { type: "json_object" },
         messages: [
