@@ -1052,11 +1052,15 @@ YOU MUST include ALL sections below. Do not skip podcast or book sections.
 
 CRITICAL INSTRUCTIONS FOR STORIES:
 - DO NOT generate story content
-- DO NOT create or write stories
+- DO NOT create or write stories  
 - DO NOT make up parables or tales
 - ONLY provide an array of 2-3 relevant tags in the storyTags field
 - Tags should match themes from the conversation (e.g., ["resilience", "suffering"], ["courage", "fear"], ["acceptance", "change"], ["perspective", "judgment"], ["compassion", "understanding"])
 - The system will select an appropriate real story/parable from our curated library (Buddhist tales, Stoic wisdom, stories from historical figures like Frankl and Mandela, cultural parables, etc.)
+- You MUST also provide a "storyWhyMatters" field: A personalized 3-sentence explanation following this exact structure:
+  * Sentence 1: State the general principle or wisdom from the story
+  * Sentence 2: Apply it specifically to their situation from the conversation
+  * Sentence 3: Provide universal perspective - show how others struggle with this too, offering comfort through shared human experience
 
 Format as JSON with this EXACT structure:
 {
@@ -1101,15 +1105,17 @@ Format as JSON with this EXACT structure:
   },
   "exerciseTags": ["anxiety", "stress", "mindfulness"],
   "storyTags": ["resilience", "perspective"],
+  "storyWhyMatters": "Three sentences: (1) general principle; (2) specific application to their situation; (3) universal perspective showing others struggle with this",
   "patterns": ["Pattern 1", "Pattern 2", "Pattern 3"]
 }
 
 REQUIREMENTS:
-- ALL fields must be present (podcast, book, exerciseTags, storyTags)
+- ALL fields must be present (podcast, book, exerciseTags, storyTags, storyWhyMatters)
 - Recommend REAL podcasts and books that exist
 - exerciseTags should be 1-3 relevant tags from: anxiety, depression, stress, worry, grounding, mindfulness, self-compassion, values, emotions, etc.
 - storyTags should be 2-3 relevant tags that match the user's situation and emotional needs
-- DO NOT include a "story" object - only include "storyTags"`;
+- storyWhyMatters must be exactly 3 sentences following the structure: general principle, specific application, universal perspective
+- DO NOT include a "story" object - only include "storyTags" and "storyWhyMatters"`;
 
     const conversationSummary = messages.map((m: any) =>
       `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
@@ -1183,7 +1189,7 @@ REQUIREMENTS:
             title: selectedStory.title,
             culturalOrigin: selectedStory.source,
             content: selectedStory.content,
-            whyThisMatters: selectedStory.why_matters
+            whyThisMatters: results.storyWhyMatters || selectedStory.why_matters // Use personalized explanation if provided
           };
           
           // Record the recommendation
