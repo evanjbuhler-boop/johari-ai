@@ -175,7 +175,24 @@ const Index = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const isPreviewMode = urlParams.get('preview') === 'results';
     
-    if (!isPreviewMode) {
+    // Restore active chat session state if component remounts during chat
+    const activeChat = sessionStorage.getItem('activeChatState');
+    if (activeChat && !isPreviewMode) {
+      try {
+        const { state: savedState, messages: savedMessages, conversationPath: savedPath } = JSON.parse(activeChat);
+        if (savedState === 'chat' && savedMessages && savedMessages.length > 0) {
+          console.log('Restoring active chat after remount');
+          setMessages(savedMessages);
+          setState('chat');
+          if (savedPath) setConversationPath(savedPath);
+        }
+      } catch (e) {
+        console.error('Error restoring active chat:', e);
+        sessionStorage.removeItem('activeChatState');
+      }
+    }
+    
+    if (!isPreviewMode && !activeChat) {
       const savedResults = localStorage.getItem('currentResults');
       if (savedResults) {
         try {
@@ -238,6 +255,17 @@ const Index = () => {
 
     loadProfile();
   }, [user, toast]);
+
+  // Persist active chat state whenever messages change during a chat session
+  useEffect(() => {
+    if (state === 'chat' && messages.length > 0) {
+      sessionStorage.setItem('activeChatState', JSON.stringify({
+        state: 'chat',
+        messages,
+        conversationPath
+      }));
+    }
+  }, [messages, state, conversationPath]);
 
   // Extract validation data from conversation
   const extractValidationData = (messages: Message[]): ValidationData => {
@@ -469,6 +497,13 @@ const Index = () => {
     if (pathSelection && (pathSelection === 'nightly_routine' || pathSelection === 'venting_session')) {
       setConversationPath(pathSelection as 'nightly_routine' | 'venting_session');
     }
+    
+    // Persist active chat state to prevent loss during window resizes or remounts
+    sessionStorage.setItem('activeChatState', JSON.stringify({
+      state: 'chat',
+      messages: updatedMessages,
+      conversationPath: pathSelection || conversationPath
+    }));
 
     try {
       console.log('🧩 Neurodiversity settings sent (chat):', settings);
@@ -552,6 +587,7 @@ const Index = () => {
   const handleChatComplete = async () => {
     // Clear any saved conversation since we're completing it
     localStorage.removeItem('savedConversation');
+    sessionStorage.removeItem('activeChatState'); // Clear active chat state
     setHasSavedConversation(false);
     
     // Show processing state immediately with enhanced loading screen
@@ -719,6 +755,7 @@ const Index = () => {
     // Clear any saved conversation and results
     localStorage.removeItem('savedConversation');
     localStorage.removeItem('currentResults');
+    sessionStorage.removeItem('activeChatState'); // Clear active chat state
     setHasSavedConversation(false);
   };
 
@@ -734,6 +771,7 @@ const Index = () => {
       conversationPath,
       timestamp: Date.now()
     }));
+    sessionStorage.removeItem('activeChatState'); // Clear active chat state since pausing
     setHasSavedConversation(true);
     setState('landing');
     toast({

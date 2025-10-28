@@ -24,15 +24,20 @@ const AnimatedRoutes = () => {
     }
   }, [location, displayLocation]);
 
+  // Use requestAnimationFrame to prevent animation interruption during resizes
+  const handleAnimationEnd = () => {
+    if (transitionStage === "fade-out") {
+      requestAnimationFrame(() => {
+        setTransitionStage("fade-in");
+        setDisplayLocation(location);
+      });
+    }
+  };
+
   return (
     <div
       className={`route-transition ${transitionStage}`}
-      onAnimationEnd={() => {
-        if (transitionStage === "fade-out") {
-          setTransitionStage("fade-in");
-          setDisplayLocation(location);
-        }
-      }}
+      onAnimationEnd={handleAnimationEnd}
     >
       <Routes location={displayLocation}>
         <Route path="/" element={<Index />} />
