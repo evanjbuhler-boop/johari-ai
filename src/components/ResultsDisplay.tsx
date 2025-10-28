@@ -677,18 +677,13 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                 <h2 className="text-2xl font-semibold text-foreground">A Story for You</h2>
                 {storyExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
               </button>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
-                >
-                  {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleShare(results.story!.title)}>
-                  <Share2 className="w-4 h-4" />
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
+              >
+                {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+              </Button>
             </div>
 
             {!storyExpanded && (
