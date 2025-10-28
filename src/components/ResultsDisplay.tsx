@@ -166,6 +166,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
     } else if (type === 'story') {
       if (title === "What's Happening" && results.whatsHappening) {
         return results.whatsHappening.summary.slice(0, 200) + (results.whatsHappening.summary.length > 200 ? '...' : '');
+      } else if (title === "A Different Lens" && results.reframing) {
+        return results.reframing.content.slice(0, 200) + (results.reframing.content.length > 200 ? '...' : '');
       } else if (results.story) {
         const why = results.story.whyThisMatters || '';
         return why.slice(0, 200) + (why.length > 200 ? '...' : '');
@@ -519,13 +521,29 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
         {/* Reframing Section */}
         {results.reframing && (
           <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-none shadow-lg">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">🔄</span>
-              <h2 className="text-2xl font-semibold text-foreground">A Different Lens</h2>
+            <div className="flex items-center justify-between gap-3 mb-6">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🔄</span>
+                <h2 className="text-2xl font-semibold text-foreground">A Different Lens</h2>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toggleSave('reframing', 'story', "A Different Lens", undefined, results.reframing)}
+              >
+                {isSaved('reframing') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+              </Button>
             </div>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p className="text-base md:text-lg text-foreground/90 leading-relaxed whitespace-pre-line">
-                {results.reframing.content}
+                {sessionTheme ? (
+                  <>
+                    <span className="font-medium">For your {sessionTheme}:</span>{' '}
+                    {results.reframing.content}
+                  </>
+                ) : (
+                  results.reframing.content
+                )}
               </p>
             </div>
           </Card>
