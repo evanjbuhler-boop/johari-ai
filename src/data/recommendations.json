@@ -72,7 +72,7 @@
           "label": "Get on Bookshop.org",
           "url": "https://bookshop.org/book/9780140275407"
         },
-        "alternatives": {
+        "alternatives": [
           { "label": "Amazon", "url": "https://amazon.com/dp/0140275401" },
           { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780140275407" }
         ]

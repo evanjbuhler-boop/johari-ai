@@ -1,6 +1,13 @@
 import AppLayout from '@/components/AppLayout';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import { CheckInResults } from '@/types/checkin';
+import recommendationsData from '@/data/recommendations.json';
+import { useMemo } from 'react';
+
+// Helper to randomly select an item from array
+const getRandomItem = <T,>(array: T[]): T => {
+  return array[Math.floor(Math.random() * array.length)];
+};
 
 const mockResults: CheckInResults = {
   byline: "Navigating work pressure while managing perfectionism and self-doubt",
@@ -110,10 +117,45 @@ const mockResults: CheckInResults = {
 };
 
 export default function ResultsPreview() {
+  // Randomly select a podcast and book from recommendations on each render
+  const dynamicResults = useMemo(() => {
+    const selectedPodcast = getRandomItem(recommendationsData.podcasts);
+    const selectedBook = getRandomItem(recommendationsData.books);
+
+    return {
+      ...mockResults,
+      podcast: {
+        title: selectedPodcast.show,
+        host: selectedPodcast.host,
+        episode: selectedPodcast.title,
+        duration: selectedPodcast.duration,
+        description: selectedPodcast.description,
+        whyThisHelps: selectedPodcast.whyThisHelps,
+        thumbnail: selectedPodcast.coverImage,
+        urls: {
+          spotify: selectedPodcast.links.primary.url,
+          applePodcasts: selectedPodcast.links.alternatives.find(
+            (alt: any) => alt.label.includes('Apple')
+          )?.url || selectedPodcast.links.primary.url,
+        },
+      },
+      book: {
+        title: selectedBook.title,
+        author: selectedBook.author,
+        byline: selectedBook.helpsWith.slice(0, 3).join(', '),
+        description: selectedBook.description,
+        length: selectedBook.readTime,
+        whyThisHelps: selectedBook.whyThisHelps,
+        coverImage: selectedBook.coverImage,
+        purchaseUrl: selectedBook.links.primary.url,
+      },
+    };
+  }, []);
+
   return (
     <AppLayout showBackground={false} hideSettingsIcons>
       <ResultsDisplay 
-        results={mockResults} 
+        results={dynamicResults} 
         onNewCheckIn={() => {}} 
         sessionId="preview-session"
         sessionTheme="work stress"
