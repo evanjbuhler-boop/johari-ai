@@ -33,6 +33,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
   const { user } = useAuth();
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(false);
   const [theoryExpanded, setTheoryExpanded] = useState(false);
+  const [reframingExpanded, setReframingExpanded] = useState(false);
   const [storyExpanded, setStoryExpanded] = useState(false);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
@@ -737,10 +738,14 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
         {results.reframing && (
           <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-none shadow-lg">
             <div className="flex items-center justify-between gap-3 mb-6">
-              <div className="flex items-center gap-3">
+              <button
+                onClick={() => setReframingExpanded(!reframingExpanded)}
+                className="flex items-center gap-3 text-left"
+              >
                 <span className="text-2xl">🔄</span>
                 <h2 className="text-2xl font-semibold text-foreground">A Different Lens</h2>
-              </div>
+                {reframingExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+              </button>
               <Button
                 variant="outline"
                 size="sm"
@@ -749,7 +754,19 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                 {isSaved('reframing') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
               </Button>
             </div>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
+
+            {!reframingExpanded && (
+              <button
+                onClick={() => setReframingExpanded(true)}
+                className="text-primary font-medium hover:underline text-sm"
+              >
+                See a different perspective →
+              </button>
+            )}
+
+            {reframingExpanded && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="prose prose-lg dark:prose-invert max-w-none">
               <div className="text-base md:text-lg text-foreground/90 leading-relaxed space-y-6">
                 {sessionTheme && (
                   <p>
@@ -795,27 +812,29 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                   return <div className="whitespace-pre-line">{content}</div>;
                 })()}
               </div>
-            </div>
+                </div>
 
-            {/* Rating buttons */}
-            <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
-              <Button
-                variant={ratings['reframing'] === 'up' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => handleRating('story', "A Different Lens", 'up')}
-                className="gap-1"
-              >
-                <ThumbsUp className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={ratings['reframing'] === 'down' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => handleRating('story', "A Different Lens", 'down')}
-                className="gap-1"
-              >
-                <ThumbsDown className="w-4 h-4" />
-              </Button>
-            </div>
+                {/* Rating buttons */}
+                <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
+                  <Button
+                    variant={ratings['reframing'] === 'up' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => handleRating('story', "A Different Lens", 'up')}
+                    className="gap-1"
+                  >
+                    <ThumbsUp className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={ratings['reframing'] === 'down' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => handleRating('story', "A Different Lens", 'down')}
+                    className="gap-1"
+                  >
+                    <ThumbsDown className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </Card>
         )}
 
