@@ -37,7 +37,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
   };
 
   const handleNext = () => {
-    if (step < 3) {
+    if (step < 4) {
       setStep(step + 1);
     } else {
       handleClose();
@@ -187,6 +187,62 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
             </>
           )}
 
+          {/* Step 4: Important Notice */}
+          {step === 4 && (
+            <>
+              <div className="p-8 text-center border-b border-border/50 flex-shrink-0">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-rose-500 mb-4">
+                  <Shield className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-3xl font-semibold mb-2">Important Notice</h2>
+                <p className="text-muted-foreground">Please read before getting started</p>
+              </div>
+
+              <div className="p-8 space-y-6 flex-1 overflow-y-auto">
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-5">
+                  <h3 className="font-semibold mb-3 text-base flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                    Not a Replacement for Professional Care
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    Johari AI is designed to complement, not replace, professional mental health care. While we offer supportive guidance and evidence-based recommendations, we are not a substitute for licensed therapy or medical treatment.
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    <strong>This tool is especially useful:</strong> Between therapy sessions, while on waitlists, or as a supplement to ongoing professional care.
+                  </p>
+                </div>
+
+                <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-5">
+                  <h3 className="font-semibold mb-3 text-base flex items-center gap-2 text-red-600 dark:text-red-400">
+                    <MessageCircle className="w-5 h-5" />
+                    In Crisis? Get Immediate Help
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    If you're experiencing a mental health crisis or having thoughts of self-harm, please contact a professional immediately:
+                  </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold min-w-fit">988 Lifeline:</span>
+                      <span className="text-muted-foreground">Call or text 988 (US)</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold min-w-fit">Crisis Text Line:</span>
+                      <span className="text-muted-foreground">Text HOME to 741741</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold min-w-fit">Emergency:</span>
+                      <span className="text-muted-foreground">Call 911 or go to your nearest ER</span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-sm text-center text-muted-foreground italic">
+                  By continuing, you acknowledge that Johari AI is designed to work alongside therapy, not instead of it.
+                </p>
+              </div>
+            </>
+          )}
+
           {/* Footer with step indicator and button */}
           <div className="p-8 pt-4 space-y-4 flex-shrink-0">
             {/* Step dots */}
@@ -194,6 +250,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
               <div className={`h-2 w-2 rounded-full transition-all ${step === 1 ? 'bg-primary w-6' : 'bg-muted-foreground/30'}`} />
               <div className={`h-2 w-2 rounded-full transition-all ${step === 2 ? 'bg-primary w-6' : 'bg-muted-foreground/30'}`} />
               <div className={`h-2 w-2 rounded-full transition-all ${step === 3 ? 'bg-primary w-6' : 'bg-muted-foreground/30'}`} />
+              <div className={`h-2 w-2 rounded-full transition-all ${step === 4 ? 'bg-primary w-6' : 'bg-muted-foreground/30'}`} />
             </div>
 
             <Button 
@@ -205,13 +262,13 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                 boxShadow: '0 4px 20px rgba(255, 138, 180, 0.4)'
               }}
             >
-              {step < 3 ? (
+              {step < 4 ? (
                 <>
                   Next
                   <ChevronRight className="w-5 h-5" />
                 </>
               ) : (
-                "Let's Get Started"
+                "I Understand - Let's Get Started"
               )}
             </Button>
           </div>
