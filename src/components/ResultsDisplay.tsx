@@ -694,11 +694,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                       <ExternalLink className="w-4 h-4" />
                       Open in Apple Podcasts
                     </Button>
-                    
-                    <Button onClick={() => handlePodcastPlay('universal')} variant="outline" className="gap-2">
-                      <ExternalLink className="w-4 h-4" />
-                      Listen Elsewhere
-                    </Button>
                   </div>
 
                   {/* Rating buttons */}
