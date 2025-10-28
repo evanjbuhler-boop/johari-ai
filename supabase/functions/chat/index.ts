@@ -1084,36 +1084,36 @@ STRUCTURE:
    - Use "you" language that reflects their actual experience
    - Example: "You're exhausted. Not just tired from working hard, but from the constant vigilance - monitoring every detail, bracing for criticism, never quite believing you're good enough even when the work is excellent."
 
-2. **Name the patterns simply (1-2 sentences)**
-   - Introduce concepts naturally, like a wise friend connecting dots
-   - Example: "This is what psychologists call perfectionism (or [concept]), but that word doesn't capture how it really feels - like you're perpetually one mistake away from everything falling apart."
+2. **Name what's happening simply (2-3 sentences)**
+   - Just NAME the pattern or concept without deep explanation
+   - Connect it to their specific situation with minimal theory
+   - Example: "You've built an equation in your head: doing poorly in school means you're stupid, and being stupid means no one will want to marry you. That's not anxiety warping your thinking - that's a belief system operating exactly as designed."
 
-3. **Explain the mechanism clearly (2-3 sentences)**
-   - Use everyday language to explain the psychology
-   - Connect it to their specific situation
-   - Example: "Here's the cruel irony: your brain learned that mistakes equal danger, so it puts you on high alert. But that constant stress actually makes it harder to think clearly, be creative, or do your best work. You're trying to achieve your way out of anxiety, but the anxiety is what's getting in the way."
+3. **Personal analysis focused on their experience (2-3 sentences)**
+   - Focus on THEIR specific situation and how it manifests for them
+   - Keep it practical and observational, not academic
+   - Save the academic depth for THE THEORY section
+   - Example: "You're caught in an exhausting loop where every test feels like proof of your worth. The pressure that's supposed to motivate you is actually making it harder to think clearly."
 
-4. **Optional: Add deeper layer (1-2 sentences if relevant)**
-   - Only include developmental/historical context when truly relevant
-   - Keep it compassionate, not clinical
-   - Example: "Often this pattern starts early - maybe achievement was how you earned approval, or mistakes brought criticism. Over time, you internalized both voices: the demanding one and the scared one."
+CRITICAL: This section is about THEIR EXPERIENCE, not the psychology behind it. Save mechanisms, theories, neuroscience, and developmental explanations for THE THEORY section.
 
 TONE GUIDELINES:
-- ✅ "Your brain has learned to treat imperfection as danger"
-- ❌ "The brain's threat detection system has learned to interpret imperfection as danger"
-- ✅ "You're caught in an exhausting loop"  
-- ❌ "This pattern reflects high-functioning anxiety"
-- ✅ "The anxiety that's supposed to help you perform is actually what's making it harder"
-- ❌ "This creates a self-fulfilling prophecy where anxiety about performance actively undermines ability"
+- ✅ "You've built an equation in your head: doing poorly means you're stupid, and being stupid means no one will want to marry you"
+- ✅ "You're caught in an exhausting loop where every test feels like proof of your worth"
+- ❌ "The brain's threat detection system has learned to interpret imperfection as danger" (save this for THE THEORY)
+- ✅ "The pressure that's supposed to help you perform is actually making it harder"
+- ❌ "This creates a self-fulfilling prophecy where anxiety about performance actively undermines ability" (too academic for this section)
 
-REMOVE THESE PHRASES:
+REMOVE THESE PHRASES FROM WHAT'S HAPPENING:
 - "This pattern reflects..."
 - "Neurologically..."
 - "The result is a self-fulfilling prophecy where..."
 - "This dynamic..."
+- "Research shows..."
+- "Psychologists have found..."
 - NO "I" statements ("I notice", "I'm curious")
 - NO questions in the fullExplanation
-- Citations at END only
+- Save all mechanisms, neuroscience, and theory for THE THEORY section
 
 **The Theory Section - Pure Academic Teaching:**
 
@@ -1181,8 +1181,8 @@ STRUCTURE:
 3. **Make it practical and specific (2-3 sentences)**
    - Ground the reframe in something they can observe or try
    - Apply the theoretical concepts to their actual situation
-   - Connect to their actual situation
-   - Example: "Think about someone you respect who's also struggling with something difficult. You probably wouldn't tell them they're failing—you'd help them see their effort, name the obstacles, remind them of their strengths. That same perspective shift isn't lowering your standards; it's seeing the whole picture instead of just the gaps."
+   - Connect back to the mechanisms from THE THEORY without re-explaining them
+   - Example: "The anxiety is trying to protect you by making you perform. But notice: the pressure isn't helping you learn. It's creating that positive feedback loop we discussed - making every test feel like your entire future is on the line, which makes it harder to think clearly."
 
 4. **End with questions that open rather than assign (1-2 questions)**
    - Questions should feel like gentle invitations to notice, not therapy homework
@@ -1190,10 +1190,12 @@ STRUCTURE:
    - Format: End with "**💭 Questions to consider:**\n• Question 1\n• Question 2"
 
 TONE GUIDELINES:
-- ✅ "The voice telling you you're not good enough is trying to protect you - it just hasn't updated its threat assessment since you were younger"
-- ❌ "The internal voice that constantly anticipates failure isn't neutral - it actively shapes both perception and capability"
+- ✅ "Given what you now understand about contingent self-worth, you can see how..."
+- ✅ "Remember that threat-detection system we discussed - that's what's activating when..."
+- ✅ "The positive feedback loop from THE THEORY section is exactly what's happening here..."
+- ❌ "The internal voice that constantly anticipates failure isn't neutral..." (don't re-explain theory)
 - ✅ "What if the exhaustion is the real problem, not your standards?"
-- ❌ "Being kinder to oneself isn't about lowering standards - it's about creating the psychological conditions where those standards become achievable"
+- ❌ "Being kinder to oneself isn't about lowering standards - it's about creating the psychological conditions..." (too academic, already covered in THEORY)
 
 QUESTION GUIDELINES:
 ❌ BAD (feels like homework):
@@ -1270,7 +1272,7 @@ Format as JSON with this EXACT structure:
   "whatsHappening": {
     "summary": "2-3 sentence empathetic explanation",
     "themes": ["Theme 1", "Theme 2", "Theme 3"],
-    "fullExplanation": "MINIMUM 3 FULL PARAGRAPHS (5-7 sentences each). Academic but accessible tone. NO 'I' statements. NO questions. Describe the psychological mechanisms, neuroscience, cognitive processes, emotional patterns. Be thorough and specific. This should feel comprehensive and educational. Citations at the END only.",
+    "fullExplanation": "3-4 PARAGRAPHS (4-6 sentences each) focused on THEIR EXPERIENCE. Name what's happening but DON'T explain the deep psychology - that goes in THE THEORY section. Keep this practical and personal. Use their language. Connect patterns to their specific situation. NO academic mechanisms here. NO 'I' statements. NO questions. Citations at END only if relevant.",
     "citations": [
       {"author": "Researcher Name", "year": 2020, "title": "Study Title"}
     ]
@@ -1320,9 +1322,9 @@ REQUIREMENTS:
 - exerciseTags should be 1-3 relevant tags from: anxiety, depression, stress, worry, grounding, mindfulness, self-compassion, values, emotions, etc.
 - storyTags should be 2-3 CREATIVE and VARIED tags that capture deeper emotional/philosophical themes
 - storyWhyMatters must be 6-8 sentences with NO QUESTIONS following the 3-part structure
-- whatsHappening.fullExplanation: MINIMUM 3 PARAGRAPHS, NO "I" statements, NO questions, citations at END
+- whatsHappening.fullExplanation: 3-4 PARAGRAPHS focused on THEIR EXPERIENCE with minimal academic theory, NO "I" statements, NO questions, citations at END if relevant
 - theTheory.content: MINIMUM 3-5 PARAGRAPHS of pure academic teaching, each paragraph = ONE theoretical concept, name theories/researchers/studies, NO personal application, NO questions
-- reframing.content: MINIMUM 3-4 PARAGRAPHS, REFERENCE and APPLY theory from theTheory section, apply theory of mind, questions aggregated at END in bullet format
+- reframing.content: MINIMUM 3-4 PARAGRAPHS that REFERENCE and APPLY theory from theTheory section using phrases like "Given what you now understand about [theory]..." or "Remember that [mechanism]...", apply theory of mind, questions aggregated at END in bullet format with 💭 emoji
 - DO NOT include a "story" object - only include "storyTags" and "storyWhyMatters"`;
 
     const conversationSummary = messages.map((m: any) =>
