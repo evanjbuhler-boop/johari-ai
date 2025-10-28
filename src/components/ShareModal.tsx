@@ -49,9 +49,9 @@ ${content.text}
 
 ---
 
-Johari AI: AI-Powered Mental Wellness
+Johari AI
 
-Engage with cutting-edge therapeutic modalities and receive tailored content recommendations.
+AI that gently reveals your blindspots and recommends exactly what you need - books, practices, tools, etc.
 
 Sign up at www.johari.ai`;
 
