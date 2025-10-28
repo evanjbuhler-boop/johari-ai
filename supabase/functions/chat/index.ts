@@ -89,7 +89,7 @@ async function recordExerciseRecommendation(userId: string, exerciseId: string) 
 // Helper function to select a story from library based on tags
 async function selectStory(userId: string, userTags: string[]): Promise<any> {
   try {
-    // Get stories user received in last 14 days (longer than exercises)
+    // Get stories user received in last 14 days
     const fourteenDaysAgo = new Date();
     fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
     
@@ -101,59 +101,67 @@ async function selectStory(userId: string, userTags: string[]): Promise<any> {
     
     const recentStoryIds = recentHistory?.map(h => h.story_id) || [];
     
-    // Get matching stories that user hasn't seen in 14 days
-    let query = supabase
+    // TIER 1: Try to find relevant stories (matching tags) that haven't been seen in 14 days
+    if (userTags.length > 0) {
+      let query = supabase
+        .from('stories')
+        .select('*')
+        .overlaps('tags', userTags);
+      
+      if (recentStoryIds.length > 0 && recentStoryIds.length < 50) {
+        query = query.not('id', 'in', `(${recentStoryIds.map(id => `'${id}'`).join(',')})`);
+      }
+      
+      const { data: relevantUnseenStories } = await query;
+      
+      if (relevantUnseenStories && relevantUnseenStories.length > 0) {
+        const selected = relevantUnseenStories[Math.floor(Math.random() * relevantUnseenStories.length)];
+        console.log(`TIER 1: Selected relevant unseen story: ${selected.title}`);
+        return selected;
+      }
+    }
+    
+    // TIER 2: If no relevant unseen stories, try stories without tag matching that haven't been seen
+    if (recentStoryIds.length > 0 && recentStoryIds.length < 50) {
+      const { data: unseenStories } = await supabase
+        .from('stories')
+        .select('*')
+        .not('id', 'in', `(${recentStoryIds.map(id => `'${id}'`).join(',')})`);
+      
+      if (unseenStories && unseenStories.length > 0) {
+        const selected = unseenStories[Math.floor(Math.random() * unseenStories.length)];
+        console.log(`TIER 2: Selected unseen story (no tag match): ${selected.title}`);
+        return selected;
+      }
+    }
+    
+    // TIER 3: If user has seen everything recently, prioritize relevance over recency
+    if (userTags.length > 0) {
+      const { data: relevantStories } = await supabase
+        .from('stories')
+        .select('*')
+        .overlaps('tags', userTags);
+      
+      if (relevantStories && relevantStories.length > 0) {
+        const selected = relevantStories[Math.floor(Math.random() * relevantStories.length)];
+        console.log(`TIER 3: Selected relevant story (seen recently): ${selected.title}`);
+        return selected;
+      }
+    }
+    
+    // TIER 4: Last resort - pick any random story
+    console.log('TIER 4: No matches found, selecting random story');
+    const { data: allStories } = await supabase
       .from('stories')
       .select('*');
     
-    // Filter out recently seen stories if there are any
-    if (recentStoryIds.length > 0 && recentStoryIds.length < 50) {
-      query = query.not('id', 'in', `(${recentStoryIds.map(id => `'${id}'`).join(',')})`);
+    if (allStories && allStories.length > 0) {
+      const selected = allStories[Math.floor(Math.random() * allStories.length)];
+      console.log(`Random story: ${selected.title}`);
+      return selected;
     }
     
-    // Try to match tags if provided
-    if (userTags.length > 0) {
-      query = query.overlaps('tags', userTags);
-    }
-    
-    const { data: stories, error } = await query;
-    
-    // If no unviewed stories with matching tags, try matching tags from ALL stories
-    if (!stories || stories.length === 0) {
-      console.log('No unviewed stories with matching tags, searching all stories for tag match');
-      
-      if (userTags.length > 0) {
-        const { data: allMatchingStories } = await supabase
-          .from('stories')
-          .select('*')
-          .overlaps('tags', userTags);
-        
-        if (allMatchingStories && allMatchingStories.length > 0) {
-          const selected = allMatchingStories[Math.floor(Math.random() * allMatchingStories.length)];
-          console.log(`Selected story from all stories based on tags: ${selected.title}`);
-          return selected;
-        }
-      }
-      
-      // If still no matches or no tags provided, pick randomly from all
-      console.log('No tag matches found, selecting random story from all');
-      const { data: allStories } = await supabase
-        .from('stories')
-        .select('*');
-      
-      if (allStories && allStories.length > 0) {
-        const randomStory = allStories[Math.floor(Math.random() * allStories.length)];
-        console.log(`Randomly selected story: ${randomStory.title}`);
-        return randomStory;
-      }
-      return null;
-    }
-    
-    // Randomly select from available stories
-    const selected = stories[Math.floor(Math.random() * stories.length)];
-    console.log(`Selected story: ${selected.title}, Tags: ${selected.tags}, Source: ${selected.source}`);
-    
-    return selected;
+    return null;
   } catch (error) {
     console.error('Error selecting story:', error);
     return null;
