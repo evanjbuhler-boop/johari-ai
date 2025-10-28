@@ -118,9 +118,25 @@ async function selectStory(userId: string, userTags: string[]): Promise<any> {
     
     const { data: stories, error } = await query;
     
-    // If no matches or user has seen all stories in 14 days, get all stories and pick randomly
+    // If no unviewed stories with matching tags, try matching tags from ALL stories
     if (!stories || stories.length === 0) {
-      console.log('No unviewed stories, selecting random story from all');
+      console.log('No unviewed stories with matching tags, searching all stories for tag match');
+      
+      if (userTags.length > 0) {
+        const { data: allMatchingStories } = await supabase
+          .from('stories')
+          .select('*')
+          .overlaps('tags', userTags);
+        
+        if (allMatchingStories && allMatchingStories.length > 0) {
+          const selected = allMatchingStories[Math.floor(Math.random() * allMatchingStories.length)];
+          console.log(`Selected story from all stories based on tags: ${selected.title}`);
+          return selected;
+        }
+      }
+      
+      // If still no matches or no tags provided, pick randomly from all
+      console.log('No tag matches found, selecting random story from all');
       const { data: allStories } = await supabase
         .from('stories')
         .select('*');
