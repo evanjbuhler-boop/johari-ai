@@ -69,9 +69,6 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 bg-clip-text text-transparent leading-tight">
                     Welcome to Johari AI
                   </h1>
-                  <p className="text-2xl md:text-3xl font-semibold text-foreground">
-                    Your Mental Wellness Journey Starts Here
-                  </p>
                   <p className="text-xl md:text-2xl text-muted-foreground font-medium">
                     Identify your blindspots in days, not years
                   </p>
