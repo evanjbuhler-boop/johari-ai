@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { X, Clipboard, Check } from 'lucide-react';
@@ -92,26 +93,29 @@ Sign up at www.johari.ai`;
     }, 300);
   };
 
-  return (
+  return createPortal(
     <div
-      className={`fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[1000] flex items-center justify-center p-4 transition-opacity duration-300 ${
         isClosing ? 'opacity-0' : 'opacity-100'
       }`}
       onClick={handleClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="share-modal-title"
     >
       {/* Overlay */}
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
 
       {/* Modal - with max height and scrolling */}
       <Card
-        className={`relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 my-auto ${
+        className={`relative z-[1001] w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 my-auto ${
           isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
         }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
-          <h2 className="text-xl font-semibold text-foreground">Share Recommendation</h2>
+          <h2 id="share-modal-title" className="text-xl font-semibold text-foreground">Share Recommendation</h2>
           <Button
             variant="ghost"
             size="sm"
@@ -167,7 +171,8 @@ Sign up at www.johari.ai`;
           </Button>
         </div>
       </Card>
-    </div>
+    </div>,
+    document.body
   );
 };
 
