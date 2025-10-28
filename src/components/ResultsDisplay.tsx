@@ -69,14 +69,21 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
       
       const { data, error } = await supabase
         .from('recommendation_ratings')
-        .select('recommendation_type, rating')
+        .select('recommendation_type, recommendation_title, rating')
         .eq('user_id', user.id)
         .eq('session_id', currentSessionId);
       
       if (!error && data) {
         const ratingsMap: Record<string, 'up' | 'down'> = {};
         data.forEach(item => {
-          ratingsMap[item.recommendation_type] = item.rating as 'up' | 'down';
+          // Use title-based keys for What's Happening and Different Lens
+          if (item.recommendation_title === "What's Happening") {
+            ratingsMap['whats-happening'] = item.rating as 'up' | 'down';
+          } else if (item.recommendation_title === "A Different Lens") {
+            ratingsMap['reframing'] = item.rating as 'up' | 'down';
+          } else {
+            ratingsMap[item.recommendation_type] = item.rating as 'up' | 'down';
+          }
         });
         setRatings(ratingsMap);
       }
@@ -121,15 +128,23 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
   ) => {
     if (!user) return;
 
+    // Determine the rating key for local state
+    let ratingKey: string = type;
+    if (title === "What's Happening") {
+      ratingKey = 'whats-happening';
+    } else if (title === "A Different Lens") {
+      ratingKey = 'reframing';
+    }
+
     // Optimistic update
-    const currentRating = ratings[type];
+    const currentRating = ratings[ratingKey];
     
     setRatings(prev => {
       const updated = { ...prev };
       if (rating) {
-        updated[type] = rating;
+        updated[ratingKey] = rating;
       } else {
-        delete updated[type];
+        delete updated[ratingKey];
       }
       return updated;
     });
@@ -142,7 +157,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
           .delete()
           .eq('user_id', user.id)
           .eq('session_id', currentSessionId)
-          .eq('recommendation_type', type);
+          .eq('recommendation_type', type)
+          .eq('recommendation_title', title);
         toast.success('Rating removed');
       } else {
         // Fetch user profile for ML context
@@ -185,9 +201,9 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
       setRatings(prev => {
         const reverted = { ...prev };
         if (currentRating) {
-          reverted[type] = currentRating;
+          reverted[ratingKey] = currentRating;
         } else {
-          delete reverted[type];
+          delete reverted[ratingKey];
         }
         return reverted;
       });
@@ -532,6 +548,26 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                   </ul>
                 </div>
               )}
+
+              {/* Rating buttons */}
+              <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
+                <Button
+                  variant={ratings['whats-happening'] === 'up' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => handleRating('story', "What's Happening", 'up')}
+                  className="gap-1"
+                >
+                  <ThumbsUp className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={ratings['whats-happening'] === 'down' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => handleRating('story', "What's Happening", 'down')}
+                  className="gap-1"
+                >
+                  <ThumbsDown className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           )}
         </Card>
@@ -606,6 +642,26 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                 )}
               </p>
             </div>
+
+            {/* Rating buttons */}
+            <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
+              <Button
+                variant={ratings['reframing'] === 'up' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleRating('story', "A Different Lens", 'up')}
+                className="gap-1"
+              >
+                <ThumbsUp className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={ratings['reframing'] === 'down' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleRating('story', "A Different Lens", 'down')}
+                className="gap-1"
+              >
+                <ThumbsDown className="w-4 h-4" />
+              </Button>
+            </div>
           </Card>
         )}
 
@@ -628,6 +684,9 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                   onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
                 >
                   {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleShare(results.story!.title)}>
+                  <Share2 className="w-4 h-4" />
                 </Button>
               </div>
             </div>
