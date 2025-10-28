@@ -122,6 +122,19 @@ export default function ResultsPreview() {
     const selectedPodcast = getRandomItem(recommendationsData.podcasts);
     const selectedBook = getRandomItem(recommendationsData.books);
 
+    // Find Spotify and Apple Podcasts links
+    const spotifyLink = 
+      selectedPodcast.links.primary.label.includes('Spotify') 
+        ? selectedPodcast.links.primary.url
+        : selectedPodcast.links.alternatives.find((alt: any) => alt.label.includes('Spotify'))?.url 
+        || selectedPodcast.links.primary.url;
+    
+    const applePodcastsLink = 
+      selectedPodcast.links.primary.label.includes('Apple') 
+        ? selectedPodcast.links.primary.url
+        : selectedPodcast.links.alternatives.find((alt: any) => alt.label.includes('Apple'))?.url 
+        || selectedPodcast.links.primary.url;
+
     return {
       ...mockResults,
       podcast: {
@@ -133,10 +146,8 @@ export default function ResultsPreview() {
         whyThisHelps: selectedPodcast.whyThisHelps,
         thumbnail: selectedPodcast.coverImage,
         urls: {
-          spotify: selectedPodcast.links.primary.url,
-          applePodcasts: selectedPodcast.links.alternatives.find(
-            (alt: any) => alt.label.includes('Apple')
-          )?.url || selectedPodcast.links.primary.url,
+          spotify: spotifyLink,
+          applePodcasts: applePodcastsLink,
         },
       },
       book: {
