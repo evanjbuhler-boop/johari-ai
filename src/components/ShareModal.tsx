@@ -47,7 +47,13 @@ ${content.text}
 
 🔗 ${content.link}
 
-Source: ${content.source}`;
+---
+
+Johari AI: AI-Powered Mental Wellness
+
+Engage with cutting-edge therapeutic modalities and receive tailored content recommendations.
+
+Sign up at www.johari.ai`;
 
   const handleCopy = async () => {
     try {
