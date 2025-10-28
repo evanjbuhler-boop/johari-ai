@@ -94,18 +94,17 @@ Sign up at www.johari.ai`;
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300 overflow-y-auto ${
+      className={`fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300 ${
         isClosing ? 'opacity-0' : 'opacity-100'
       }`}
       onClick={handleClose}
-      style={{ position: 'fixed' }}
     >
       {/* Overlay */}
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
 
-      {/* Modal */}
+      {/* Modal - with max height and scrolling */}
       <Card
-        className={`relative z-10 w-full max-w-lg bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 ${
+        className={`relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 my-auto ${
           isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
         }`}
         onClick={(e) => e.stopPropagation()}
