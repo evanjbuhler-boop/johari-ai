@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, CheckSquare, Sparkles, Library, Compass, Brain, Shield, Lock, Trash2, Save, ChevronRight, Lightbulb, Pause, Settings } from 'lucide-react';
+import { MessageCircle, CheckSquare, Sparkles, Library, Shield, Lock, Trash2, Bookmark, ChevronRight, Lightbulb, Heart, LifeBuoy, RefreshCw } from 'lucide-react';
+import welcomeHero from '@/assets/welcome-hero.jpg';
 
 interface WelcomeModalProps {
   isOpen?: boolean;
@@ -37,7 +38,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
   };
 
   const handleNext = () => {
-    if (step < 4) {
+    if (step < 5) {
       setStep(step + 1);
     } else {
       handleClose();
@@ -49,56 +50,82 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
       <DialogContent className="max-w-2xl p-0 gap-0 border-0">
         <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-purple-500/10 backdrop-blur-xl h-[680px] flex flex-col">
           
-          {/* Step 1: How It Works */}
+          {/* Screen 1: Hero Welcome */}
           {step === 1 && (
+            <>
+              <div className="relative h-full flex flex-col items-center justify-center p-8 text-center">
+                {/* Hero Image */}
+                <div className="relative w-full max-w-lg mb-8 rounded-2xl overflow-hidden shadow-2xl">
+                  <img 
+                    src={welcomeHero} 
+                    alt="Mental wellness journey" 
+                    className="w-full h-auto object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent"></div>
+                </div>
+
+                {/* Hero Text */}
+                <div className="space-y-4 max-w-xl">
+                  <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+                    Your Mental Wellness Journey Starts Here
+                  </h1>
+                  <p className="text-xl md:text-2xl text-muted-foreground font-medium">
+                    Identify your blindspots in days, not years
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Screen 2: How It Works */}
+          {step === 2 && (
             <>
               {/* Header */}
               <div className="p-8 text-center border-b border-border/50 flex-shrink-0">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 mb-4">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-3xl font-semibold mb-2">Welcome to Johari AI</h2>
-                <p className="text-xl text-foreground mb-2">Your Mental Wellness Companion</p>
-                <p className="text-muted-foreground">Here's how it works</p>
+                <h2 className="text-3xl font-semibold mb-2">How It Works</h2>
+                <p className="text-muted-foreground">Three simple steps to support your mental wellness</p>
               </div>
 
               {/* Steps */}
               <div className="p-8 space-y-6 flex-1 overflow-y-auto">
                 <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <MessageCircle className="w-6 h-6 text-primary" strokeWidth={2} />
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center">
+                    <MessageCircle className="w-6 h-6 text-purple-600 dark:text-purple-400" strokeWidth={2} />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1 text-base">1. Check-in & Chat</h3>
-                    <p className="text-sm text-muted-foreground">Share how you're feeling in a supportive, judgment-free environment</p>
+                    <p className="text-sm text-muted-foreground">Tell me what's on your mind - I'll listen, educate you and challenge you, all without judgment.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <CheckSquare className="w-6 h-6 text-primary" strokeWidth={2} />
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center">
+                    <CheckSquare className="w-6 h-6 text-purple-600 dark:text-purple-400" strokeWidth={2} />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1 text-base">2. Validate Your Experience</h3>
-                    <p className="text-sm text-muted-foreground">Review and confirm the emotions and stressors we identified together</p>
+                    <p className="text-sm text-muted-foreground">Review and confirm the emotions and stressors we identified together.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-primary" strokeWidth={2} />
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-purple-600 dark:text-purple-400" strokeWidth={2} />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1 text-base">3. Get Personalized Recommendations</h3>
-                    <p className="text-sm text-muted-foreground">Receive curated exercises, podcasts and books tailored to your needs</p>
+                    <p className="text-sm text-muted-foreground">Receive curated insights, exercises, podcasts and books tailored to your needs.</p>
                   </div>
                 </div>
               </div>
             </>
           )}
 
-          {/* Step 2: Privacy & Trust */}
-          {step === 2 && (
+          {/* Screen 3: Privacy Matters */}
+          {step === 3 && (
             <>
               <div className="p-6 text-center border-b border-border/50 flex-shrink-0">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 mb-4">
@@ -131,7 +158,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
 
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                    <Save className="w-6 h-6 text-emerald-600 dark:text-emerald-400" strokeWidth={2} />
+                    <Bookmark className="w-6 h-6 text-emerald-600 dark:text-emerald-400" strokeWidth={2} />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1 text-base">You control what stays</h3>
@@ -142,8 +169,8 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
             </>
           )}
 
-          {/* Step 3: Quick Start Tips */}
-          {step === 3 && (
+          {/* Screen 4: Tips for Success */}
+          {step === 4 && (
             <>
               <div className="p-8 text-center border-b border-border/50 flex-shrink-0">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 mb-4">
@@ -156,21 +183,21 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
               <div className="p-8 space-y-6 flex-1 overflow-y-auto">
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <Compass className="w-6 h-6 text-amber-600 dark:text-amber-400" strokeWidth={2} />
+                    <Heart className="w-6 h-6 text-amber-600 dark:text-amber-400" strokeWidth={2} />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-1 text-base">Pick your therapy modality first</h3>
-                    <p className="text-sm text-muted-foreground">Before sending your first message, choose your therapeutic approach (CBT, ACT, Stoicism, IFS, or Blended) using the compass icon in the top right. You can adjust neurodiversity settings anytime during chat.</p>
+                    <h3 className="font-semibold mb-1 text-base">Be honest about how you're feeling</h3>
+                    <p className="text-sm text-muted-foreground">The more you share, the better I can support you.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-start">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <Pause className="w-6 h-6 text-amber-600 dark:text-amber-400" strokeWidth={2} />
+                    <RefreshCw className="w-6 h-6 text-amber-600 dark:text-amber-400" strokeWidth={2} />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-1 text-base">Go at your own pace</h3>
-                    <p className="text-sm text-muted-foreground">You can pause and resume your conversation anytime. There is no rush - take breaks whenever you need them and pick up right where you left off.</p>
+                    <h3 className="font-semibold mb-1 text-base">Try different approaches</h3>
+                    <p className="text-sm text-muted-foreground">Not sure what works? We'll explore together. The default setting will blend modalities based on your mood and input.</p>
                   </div>
                 </div>
 
@@ -179,19 +206,19 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                     <Library className="w-6 h-6 text-amber-600 dark:text-amber-400" strokeWidth={2} />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-1 text-base">Save what resonates</h3>
-                    <p className="text-sm text-muted-foreground">Found a helpful podcast, book, or exercise? Click the bookmark icon on any recommendation to save it to your Library for easy access later.</p>
+                    <h3 className="font-semibold mb-1 text-base">Come back anytime</h3>
+                    <p className="text-sm text-muted-foreground">Your progress is always here when you need it.</p>
                   </div>
                 </div>
               </div>
             </>
           )}
 
-          {/* Step 4: Important Notice */}
-          {step === 4 && (
+          {/* Screen 5: Important Notice */}
+          {step === 5 && (
             <>
               <div className="p-8 text-center border-b border-border/50 flex-shrink-0">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-rose-500 mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 mb-4">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
                 <h2 className="text-3xl font-semibold mb-2">Important Notice</h2>
@@ -202,43 +229,31 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                 <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-5">
                   <h3 className="font-semibold mb-3 text-base flex items-center gap-2">
                     <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                    Not a Replacement for Professional Care
+                    Johari AI is Not a Replacement for Therapy
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                    Johari AI is designed to complement, not replace, professional mental health care. While we offer supportive guidance and evidence-based recommendations, we are not a substitute for licensed therapy or medical treatment.
-                  </p>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    <strong>This tool is especially useful:</strong> Between therapy sessions, while on waitlists, or as a supplement to ongoing professional care.
+                    I'm designed to complement professional mental health care - not replace it. I'm most helpful between therapy sessions or as a supplement to ongoing care.
                   </p>
                 </div>
 
                 <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-5">
                   <h3 className="font-semibold mb-3 text-base flex items-center gap-2 text-red-600 dark:text-red-400">
-                    <MessageCircle className="w-5 h-5" />
+                    <LifeBuoy className="w-5 h-5" />
                     In Crisis? Get Immediate Help
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                    If you're experiencing a mental health crisis or having thoughts of self-harm, please contact a professional immediately:
+                    If you're experiencing a mental health crisis or having thoughts of self-harm, please reach out immediately:
                   </p>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-start gap-2">
-                      <span className="font-semibold min-w-fit">988 Lifeline:</span>
-                      <span className="text-muted-foreground">Call or text 988 (US)</span>
+                      <span className="font-semibold min-w-fit">988 Suicide & Crisis Lifeline</span>
                     </div>
                     <div className="flex items-start gap-2">
                       <span className="font-semibold min-w-fit">Crisis Text Line:</span>
                       <span className="text-muted-foreground">Text HOME to 741741</span>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <span className="font-semibold min-w-fit">Emergency:</span>
-                      <span className="text-muted-foreground">Call 911 or go to your nearest ER</span>
-                    </div>
                   </div>
                 </div>
-
-                <p className="text-sm text-center text-muted-foreground italic">
-                  By continuing, you acknowledge that Johari AI is designed to work alongside therapy, not instead of it.
-                </p>
               </div>
             </>
           )}
@@ -251,6 +266,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
               <div className={`h-2 w-2 rounded-full transition-all ${step === 2 ? 'bg-primary w-6' : 'bg-muted-foreground/30'}`} />
               <div className={`h-2 w-2 rounded-full transition-all ${step === 3 ? 'bg-primary w-6' : 'bg-muted-foreground/30'}`} />
               <div className={`h-2 w-2 rounded-full transition-all ${step === 4 ? 'bg-primary w-6' : 'bg-muted-foreground/30'}`} />
+              <div className={`h-2 w-2 rounded-full transition-all ${step === 5 ? 'bg-primary w-6' : 'bg-muted-foreground/30'}`} />
             </div>
 
             <Button 
@@ -262,7 +278,9 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                 boxShadow: '0 4px 20px rgba(255, 138, 180, 0.4)'
               }}
             >
-              {step < 4 ? (
+              {step === 1 ? (
+                "Get Started"
+              ) : step < 5 ? (
                 <>
                   Next
                   <ChevronRight className="w-5 h-5" />
