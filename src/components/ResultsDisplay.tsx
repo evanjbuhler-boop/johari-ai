@@ -663,16 +663,51 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
               </Button>
             </div>
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p className="text-base md:text-lg text-foreground/90 leading-relaxed whitespace-pre-line">
-                {sessionTheme ? (
-                  <>
-                    <span className="font-medium">For your {sessionTheme}:</span>{' '}
-                    {results.reframing.content}
-                  </>
-                ) : (
-                  results.reframing.content
+              <div className="text-base md:text-lg text-foreground/90 leading-relaxed space-y-6">
+                {sessionTheme && (
+                  <p>
+                    <span className="font-medium">For your {sessionTheme}:</span>
+                  </p>
                 )}
-              </p>
+                {/* Split content to handle questions section specially */}
+                {(() => {
+                  const content = results.reframing.content;
+                  const questionsMatch = content.match(/\*\*Questions to consider:\*\*\s*([\s\S]*?)$/);
+                  
+                  if (questionsMatch) {
+                    const mainContent = content.substring(0, questionsMatch.index).trim();
+                    const questions = questionsMatch[1]
+                      .split('\n')
+                      .filter(q => q.trim().startsWith('•'))
+                      .map(q => q.replace(/^•\s*/, '').trim());
+                    
+                    return (
+                      <>
+                        <div className="whitespace-pre-line">{mainContent}</div>
+                        
+                        {questions.length > 0 && (
+                          <div className="mt-8 pt-6 border-t border-border/50">
+                            <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                              <span className="text-primary">💭</span>
+                              Questions to consider:
+                            </h3>
+                            <ul className="space-y-3">
+                              {questions.map((question, idx) => (
+                                <li key={idx} className="flex items-start gap-3">
+                                  <span className="text-primary font-semibold mt-0.5">•</span>
+                                  <span className="text-foreground/90 leading-relaxed">{question}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </>
+                    );
+                  }
+                  
+                  return <div className="whitespace-pre-line">{content}</div>;
+                })()}
+              </div>
             </div>
 
             {/* Rating buttons */}
