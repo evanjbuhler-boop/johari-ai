@@ -107,6 +107,7 @@ export interface CheckInResults {
   // Section 2.5: The Theory (Academic Teaching)
   theTheory?: {
     content: string;
+    tags?: string[]; // Specific psychological concepts like "catastrophizing", "anxious attachment", etc.
   };
   
   // Section 3: Quotes from conversation

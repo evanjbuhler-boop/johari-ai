@@ -38,6 +38,10 @@ export const generateMockResults = (messages: Message[]): CheckInResults => {
         { author: "Killgore, W. D.", year: 2010, title: "Effects of Sleep Deprivation on Cognition. Progress in Brain Research" }
       ]
     },
+    theTheory: {
+      content: "The concept of ego depletion, pioneered by Roy Baumeister, explains why our self-control and decision-making capabilities diminish throughout the day. When we engage in tasks requiring self-regulation—like controlling emotions, making decisions, or resisting impulses—we draw from a limited cognitive reservoir. Sleep deprivation compounds this effect by reducing the brain's prefrontal cortex activity, the region responsible for executive functions and emotional regulation.\n\nNeurologically, sleep serves as a critical period for the consolidation of emotional memories and the recalibration of neural circuits involved in stress responses. Research by Matthew Walker demonstrates that even modest sleep restriction (reducing sleep by 2-3 hours) significantly increases amygdala reactivity while decreasing connectivity with the prefrontal regulatory regions. This neurobiological shift creates a perfect storm for heightened emotional reactivity and impaired judgment.\n\nThe concept of allostatic load, developed by Bruce McEwen, describes how chronic stress creates a cumulative physiological burden on the body. When multiple stressors overlap—work demands, sleep deprivation, relationship tension—the body's stress response systems remain chronically activated, leading to dysregulation of cortisol patterns, inflammatory responses, and eventual burnout. This isn't weakness; it's a predictable physiological response to sustained demand without adequate recovery.",
+      tags: ["ego depletion", "amygdala hijack", "window of tolerance", "emotional regulation"]
+    },
     podcast: {
       title: "The Happiness Lab",
       host: "Dr. Laurie Santos",

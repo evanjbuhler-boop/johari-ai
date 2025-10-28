@@ -1278,7 +1278,8 @@ Format as JSON with this EXACT structure:
     ]
   },
   "theTheory": {
-    "content": "MINIMUM 3-5 FULL PARAGRAPHS (5-7 sentences each). Pure academic teaching. Explain psychological/neurological mechanisms. Each paragraph = ONE theoretical concept. Name specific theories, researchers, and studies. Reference research domains (cognitive psychology, neuroscience, developmental psychology). Include researchers by name. Explain mechanisms precisely (brain regions, neural pathways, system interactions). Draw from: social comparison theory, confirmation bias, catastrophic thinking, contingent self-worth, shame vs guilt neural pathways, introjection, positive feedback loops, threat-detection systems, identity-level threats, self-fulfilling prophecies. Educational and authoritative but accessible tone. NO personal application. NO questions. This is PURE teaching that will be applied in the next section."
+    "content": "MINIMUM 3-5 FULL PARAGRAPHS (5-7 sentences each). Pure academic teaching. Explain psychological/neurological mechanisms. Each paragraph = ONE theoretical concept. Name specific theories, researchers, and studies. Reference research domains (cognitive psychology, neuroscience, developmental psychology). Include researchers by name. Explain mechanisms precisely (brain regions, neural pathways, system interactions). Draw from: social comparison theory, confirmation bias, catastrophic thinking, contingent self-worth, shame vs guilt neural pathways, introjection, positive feedback loops, threat-detection systems, identity-level threats, self-fulfilling prophecies. Educational and authoritative but accessible tone. NO personal application. NO questions. This is PURE teaching that will be applied in the next section.",
+    "tags": ["2-4 specific psychological concepts from the list below that are MOST relevant to their situation"]
   },
   "quotes": [
     {"text": "Direct quote from user", "sentiment": "positive|negative|neutral"}
@@ -1317,10 +1318,11 @@ Format as JSON with this EXACT structure:
 }
 
 REQUIREMENTS:
-- ALL fields must be present (podcast, book, exerciseTags, storyTags, storyWhyMatters, theTheory)
+- ALL fields must be present (podcast, book, exerciseTags, storyTags, storyWhyMatters, theTheory with tags)
 - Recommend REAL podcasts and books that exist
 - exerciseTags should be 1-3 relevant tags from: anxiety, depression, stress, worry, grounding, mindfulness, self-compassion, values, emotions, etc.
 - storyTags should be 2-3 CREATIVE and VARIED tags that capture deeper emotional/philosophical themes
+- theTheory.tags should be 2-4 SPECIFIC psychological concepts most relevant to their situation. Choose from: catastrophizing, black-and-white thinking, overgeneralization, mind reading, fortune telling, personalization, should statements, emotional reasoning, fearful-avoidant attachment, disorganized attachment, anxious preoccupation, deactivating strategies, protest behavior, codependency, enmeshment, differentiation, rupture and repair, stonewalling, complex PTSD, developmental trauma, hypervigilance, dissociation, fawn response, freeze response, window of tolerance, emotional flashbacks, learned helplessness, compulsive caregiving, self-abandonment, emotional labor, spiritual bypassing, vagal tone, polyvagal theory, amygdala hijack, interoception, mirror neurons, impostor syndrome, false self vs authentic self, ego depletion, identity foreclosure
 - storyWhyMatters must be 6-8 sentences with NO QUESTIONS following the 3-part structure
 - whatsHappening.fullExplanation: 3-4 PARAGRAPHS focused on THEIR EXPERIENCE with minimal academic theory, NO "I" statements, NO questions, citations at END if relevant
 - theTheory.content: MINIMUM 3-5 PARAGRAPHS of pure academic teaching, each paragraph = ONE theoretical concept, name theories/researchers/studies, NO personal application, NO questions

@@ -638,29 +638,19 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                 {results.theTheory.content.split('.').slice(0, 2).join('.') + '.'}
               </p>
               
-              {/* Generate tags from theory content */}
-              <div className="flex flex-wrap gap-2 pt-2">
-                {results.theTheory.content.toLowerCase().includes('attachment') && (
-                  <span className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20">
-                    attachment theory
-                  </span>
-                )}
-                {results.theTheory.content.toLowerCase().includes('cognitive') && (
-                  <span className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20">
-                    cognitive patterns
-                  </span>
-                )}
-                {(results.theTheory.content.toLowerCase().includes('stress') || results.theTheory.content.toLowerCase().includes('cortisol')) && (
-                  <span className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20">
-                    stress response
-                  </span>
-                )}
-                {results.theTheory.content.toLowerCase().includes('research') && (
-                  <span className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20">
-                    evidence-based
-                  </span>
-                )}
-              </div>
+              {/* Theory tags - specific psychological concepts */}
+              {results.theTheory.tags && results.theTheory.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {results.theTheory.tags.map((tag, idx) => (
+                    <span 
+                      key={idx}
+                      className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
             {!theoryExpanded && (
