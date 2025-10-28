@@ -103,10 +103,19 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
   };
 
   const handleChangePassword = async () => {
+    if (!currentPassword) {
+      toast({
+        title: 'Error',
+        description: 'Please enter your current password',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       toast({
         title: 'Error',
-        description: 'Passwords do not match',
+        description: 'New passwords do not match',
         variant: 'destructive',
       });
       return;
@@ -115,7 +124,7 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
     if (newPassword.length < 6) {
       toast({
         title: 'Error',
-        description: 'Password must be at least 6 characters',
+        description: 'New password must be at least 6 characters',
         variant: 'destructive',
       });
       return;
@@ -123,25 +132,50 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
 
     setIsChangingPassword(true);
 
-    const { error } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
+    try {
+      // Verify current password by attempting to sign in
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user?.email!,
+        password: currentPassword,
+      });
 
-    if (error) {
+      if (signInError) {
+        toast({
+          title: 'Error',
+          description: 'Current password is incorrect',
+          variant: 'destructive',
+        });
+        setIsChangingPassword(false);
+        return;
+      }
+
+      // Update to new password
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) {
+        toast({
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Success',
+          description: 'Password changed successfully',
+        });
+        setPasswordDialogOpen(false);
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      }
+    } catch (error) {
       toast({
         title: 'Error',
-        description: error.message,
+        description: 'An unexpected error occurred',
         variant: 'destructive',
       });
-    } else {
-      toast({
-        title: 'Success',
-        description: 'Password changed successfully',
-      });
-      setPasswordDialogOpen(false);
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
     }
 
     setIsChangingPassword(false);
@@ -274,10 +308,20 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
               <DialogHeader>
                 <DialogTitle>Change Password</DialogTitle>
                 <DialogDescription>
-                  Enter your new password below
+                  Enter your current password and choose a new one
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="current-password">Current Password</Label>
+                  <Input
+                    id="current-password"
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter current password"
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="new-password">New Password</Label>
                   <Input
@@ -289,7 +333,7 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirm Password</Label>
+                  <Label htmlFor="confirm-password">Confirm New Password</Label>
                   <Input
                     id="confirm-password"
                     type="password"
@@ -300,7 +344,7 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
                 </div>
                 <Button
                   onClick={handleChangePassword}
-                  disabled={isChangingPassword || !newPassword || !confirmPassword}
+                  disabled={isChangingPassword || !currentPassword || !newPassword || !confirmPassword}
                   className="w-full"
                 >
                   {isChangingPassword ? 'Changing...' : 'Change Password'}
