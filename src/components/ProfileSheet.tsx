@@ -50,6 +50,9 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   useEffect(() => {
     if (user && open) {
@@ -154,6 +157,78 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
     });
   };
 
+  const handleDeleteAccount = async () => {
+    if (!user || !deletePassword) {
+      toast({
+        title: 'Error',
+        description: 'Please enter your password',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsDeletingAccount(true);
+
+    try {
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: 'Error',
+          description: 'Session expired. Please log in again.',
+          variant: 'destructive',
+        });
+        setIsDeletingAccount(false);
+        return;
+      }
+
+      // Call the edge function to delete the account
+      const { data, error } = await supabase.functions.invoke('delete-account', {
+        body: { password: deletePassword },
+      });
+
+      if (error) {
+        console.error('Error deleting account:', error);
+        toast({
+          title: 'Error',
+          description: error.message || 'Failed to delete account',
+          variant: 'destructive',
+        });
+        setIsDeletingAccount(false);
+        return;
+      }
+
+      if (data?.error) {
+        toast({
+          title: 'Error',
+          description: data.error,
+          variant: 'destructive',
+        });
+        setIsDeletingAccount(false);
+        return;
+      }
+
+      // Sign out and redirect
+      await signOut();
+      setOpen(false);
+      navigate('/auth');
+      toast({
+        title: 'Account Deleted',
+        description: 'Your account has been permanently deleted',
+      });
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      toast({
+        title: 'Error',
+        description: 'An unexpected error occurred',
+        variant: 'destructive',
+      });
+    }
+
+    setIsDeletingAccount(false);
+  };
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -256,6 +331,62 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+
+          {/* Delete Account Section */}
+          <div className="pt-6 border-t border-border/50">
+            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                >
+                  Delete Account
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-background/95 backdrop-blur-md">
+                <DialogHeader>
+                  <DialogTitle className="text-destructive">Delete Account</DialogTitle>
+                  <DialogDescription className="space-y-2 pt-2">
+                    <p className="font-semibold">This action cannot be undone.</p>
+                    <p>This will permanently delete your account and remove all your data from our servers.</p>
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 mt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="delete-password">Confirm your password</Label>
+                    <Input
+                      id="delete-password"
+                      type="password"
+                      value={deletePassword}
+                      onChange={(e) => setDeletePassword(e.target.value)}
+                      placeholder="Enter your password"
+                      className="bg-background"
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setDeleteDialogOpen(false);
+                        setDeletePassword('');
+                      }}
+                      className="flex-1"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      onClick={handleDeleteAccount}
+                      disabled={isDeletingAccount || !deletePassword}
+                      className="flex-1"
+                    >
+                      {isDeletingAccount ? 'Deleting...' : 'Delete Account'}
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </SheetContent>
     </Sheet>
