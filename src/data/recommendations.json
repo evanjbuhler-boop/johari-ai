@@ -1,310 +1,1389 @@
 {
   "books": [
     {
-      "id": "feeling-good-burns",
+      "id": "man-who-mistook-wife-for-hat-sacks",
       "type": "book",
-      "title": "Feeling Good: The New Mood Therapy",
-      "author": "David D. Burns",
-      "isbn": "9780380810338",
-      "description": "The classic CBT book that revolutionized depression treatment. Teaches practical techniques to identify and change distorted thinking patterns that fuel negative emotions.",
-      "pageCount": 736,
-      "readTime": "12-hour read",
-      "therapyModality": ["CBT"],
-      "helpsWith": ["depression", "anxiety", "negative-thinking", "self-esteem"],
-      "whyThisHelps": "Introduces cognitive distortions and provides concrete exercises to challenge automatic negative thoughts, proven effective in clinical trials for depression.",
-      "difficulty": "beginner",
+      "title": "The Man Who Mistook His Wife for a Hat",
+      "author": "Oliver Sacks",
+      "isbn": "9780684853949",
+      "description": "Clinical tales exploring neurological oddities and what they reveal about consciousness, perception, and the construction of self. Beautiful exploration of how mind creates reality.",
+      "pageCount": 256,
+      "readTime": "5-hour read",
+      "therapyModality": ["Neuropsychology", "Phenomenological"],
+      "helpsWith": ["theory-of-mind", "self-awareness", "perspective-taking", "cognitive-patterns"],
+      "whyThisHelps": "Reveals how profoundly our neurology shapes our reality, building empathy for different minds and understanding that everyone's reality is constructed.",
+      "difficulty": "intermediate",
       "impactType": "deep-work",
       "coverImage": "gradient-blue-teal",
       "links": {
         "primary": {
           "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9780380810338"
+          "url": "https://bookshop.org/book/9780684853949"
         },
         "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/0380810336" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780380810338" }
+          { "label": "Amazon", "url": "https://amazon.com/dp/0684853949" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780684853949" }
         ]
       }
     },
     {
-      "id": "body-keeps-score-van-der-kolk",
+      "id": "house-of-cards-dawkins",
       "type": "book",
-      "title": "The Body Keeps the Score",
-      "author": "Bessel van der Kolk",
-      "isbn": "9780143127741",
-      "description": "Groundbreaking exploration of how trauma reshapes body and brain. Integrates neuroscience with somatic approaches to healing trauma through body-based interventions.",
-      "pageCount": 464,
-      "readTime": "9-hour read",
-      "therapyModality": ["Somatic", "Trauma-Focused"],
-      "helpsWith": ["trauma", "ptsd", "anxiety", "body-awareness"],
-      "whyThisHelps": "Explains the neuroscience of trauma and offers multiple pathways to healing, including yoga, EMDR, and neurofeedback, validating the body's role in recovery.",
-      "difficulty": "intermediate",
+      "title": "House of Cards: Psychology and Psychotherapy Built on Myth",
+      "author": "Robyn M. Dawes",
+      "isbn": "9780684830919",
+      "description": "Clinical psychologist challenges therapeutic assumptions with research showing many common practices lack evidence. Critical examination of the therapy industry.",
+      "pageCount": 336,
+      "readTime": "7-hour read",
+      "therapyModality": ["Research-Based", "Critical"],
+      "helpsWith": ["critical-thinking", "therapy-literacy", "self-advocacy"],
+      "whyThisHelps": "Empowers you to evaluate therapeutic approaches critically, understand what actually works vs. what's popular, and advocate for evidence-based care.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-red-orange",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780684830919"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0684830914" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780684830919" }
+        ]
+      }
+    },
+    {
+      "id": "madness-explained-bentall",
+      "type": "book",
+      "title": "Madness Explained: Psychosis and Human Nature",
+      "author": "Richard P. Bentall",
+      "isbn": "9780140275407",
+      "description": "Clinical psychologist argues psychotic experiences exist on a continuum with normal experience. Explores delusions, hallucinations, and paranoia as extreme versions of ordinary mental processes.",
+      "pageCount": 688,
+      "readTime": "14-hour read",
+      "therapyModality": ["Cognitive", "Clinical"],
+      "helpsWith": ["theory-of-mind", "psychosis", "paranoia", "reality-testing"],
+      "whyThisHelps": "Helps understand how all minds construct reality and how psychosis represents an extension of normal cognitive processes, reducing stigma and building empathy.",
+      "difficulty": "advanced",
       "impactType": "deep-work",
       "coverImage": "gradient-purple-indigo",
       "links": {
         "primary": {
           "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9780143127741"
+          "url": "https://bookshop.org/book/9780140275407"
         },
-        "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/0143127748" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780143127741" }
+        "alternatives": {
+          { "label": "Amazon", "url": "https://amazon.com/dp/0140275401" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780140275407" }
         ]
       }
     },
     {
-      "id": "happiness-trap-harris",
+      "id": "remembered-rapture-hooks",
       "type": "book",
-      "title": "The Happiness Trap",
-      "author": "Russ Harris",
-      "isbn": "9781590305843",
-      "description": "Practical introduction to ACT that challenges the pursuit of happiness. Teaches psychological flexibility through acceptance, defusion, and values-based action.",
-      "pageCount": 240,
+      "title": "Remembered Rapture: The Writer at Work",
+      "author": "bell hooks",
+      "isbn": "9780805050431",
+      "description": "Memoir-essays on writing, creativity, and intellectual work as healing practice. Explores how creative expression connects to liberation and wholeness.",
+      "pageCount": 256,
       "readTime": "5-hour read",
-      "therapyModality": ["ACT"],
-      "helpsWith": ["anxiety", "stress", "perfectionism", "avoidance"],
-      "whyThisHelps": "Offers counterintuitive approach: instead of fighting difficult thoughts and feelings, learn to accept them while taking action toward what matters most.",
-      "difficulty": "beginner",
-      "impactType": "quick-impact",
+      "therapyModality": ["Creative", "Liberation"],
+      "helpsWith": ["self-expression", "identity", "creative-blocks", "meaning-making"],
+      "whyThisHelps": "Frames creative work as essential to psychological health and political resistance, particularly for marginalized people reclaiming voice and story.",
+      "difficulty": "intermediate",
+      "impactType": "ongoing-growth",
       "coverImage": "gradient-yellow-orange",
       "links": {
         "primary": {
           "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9781590305843"
+          "url": "https://bookshop.org/book/9780805050431"
         },
         "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/1590305841" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781590305843" }
+          { "label": "Amazon", "url": "https://amazon.com/dp/0805050434" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780805050431" }
         ]
       }
     },
     {
-      "id": "no-bad-parts-schwartz",
+      "id": "interpersonal-world-infant-stern",
       "type": "book",
-      "title": "No Bad Parts",
-      "author": "Richard Schwartz",
-      "isbn": "9781683646679",
-      "description": "Accessible introduction to Internal Family Systems therapy. Explores how our psyche contains different 'parts' and how to heal by accessing the Self.",
-      "pageCount": 240,
-      "readTime": "5-hour read",
-      "therapyModality": ["IFS"],
-      "helpsWith": ["inner-critic", "self-compassion", "trauma", "parts-work"],
-      "whyThisHelps": "Helps you understand internal conflicts as conversations between parts of yourself, reducing shame and increasing self-compassion through the IFS model.",
+      "title": "The Interpersonal World of the Infant",
+      "author": "Daniel N. Stern",
+      "isbn": "9781855753969",
+      "description": "Groundbreaking developmental research on how infants develop sense of self through relationships. Foundation for understanding attachment, attunement, and relational patterns.",
+      "pageCount": 304,
+      "readTime": "8-hour read",
+      "therapyModality": ["Psychodynamic", "Developmental"],
+      "helpsWith": ["attachment", "relational-patterns", "theory-of-mind", "self-development"],
+      "whyThisHelps": "Reveals how early relational experiences shape your capacity to understand yourself and others, providing framework for healing developmental wounds.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-pink-rose",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781855753969"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1855753960" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781855753969" }
+        ]
+      }
+    },
+    {
+      "id": "interior-castle-welwood",
+      "type": "book",
+      "title": "Toward a Psychology of Awakening",
+      "author": "John Welwood",
+      "isbn": "9781570629600",
+      "description": "Psychotherapist integrates Buddhism with Western psychology. Explores spiritual bypassing, psychological work, and awakening as intertwined processes.",
+      "pageCount": 352,
+      "readTime": "7-hour read",
+      "therapyModality": ["Contemplative", "Integrative"],
+      "helpsWith": ["spiritual-bypassing", "mindfulness", "self-awareness", "integration"],
+      "whyThisHelps": "Addresses how spiritual practice can be used to avoid psychological work, while showing how genuine awakening requires both psychological and contemplative development.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-violet-purple",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781570629600"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1570629609" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781570629600" }
+        ]
+      }
+    },
+    {
+      "id": "spinning-dyer",
+      "type": "book",
+      "title": "Spinning: A Memoir",
+      "author": "Tillie Walden",
+      "isbn": "9781250166227",
+      "description": "Graphic memoir about competitive figure skating, sexuality, and finding yourself. Explores trauma, perfectionism, and escaping environments that demand you perform rather than be.",
+      "pageCount": 400,
+      "readTime": "3-hour read",
+      "therapyModality": ["Narrative", "Creative"],
+      "helpsWith": ["identity", "perfectionism", "authenticity", "trauma"],
+      "whyThisHelps": "Visual storytelling shows how performance demands can disconnect you from yourself, and what it looks like to choose authenticity over achievement.",
       "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-blue-indigo",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781250166227"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1250166225" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781250166227" }
+        ]
+      }
+    },
+    {
+      "id": "social-intelligence-goleman",
+      "type": "book",
+      "title": "Social Intelligence: The New Science of Human Relationships",
+      "author": "Daniel Goleman",
+      "isbn": "9780553384499",
+      "description": "Explores neuroscience of empathy, mirror neurons, and how we're wired for connection. Shows how relationships literally reshape our brains.",
+      "pageCount": 416,
+      "readTime": "8-hour read",
+      "therapyModality": ["Neuroscience", "Relational"],
+      "helpsWith": ["theory-of-mind", "empathy", "relationships", "social-anxiety"],
+      "whyThisHelps": "Explains biological basis of connection and how understanding others' minds is hardwired into us, providing hope for improving social skills.",
+      "difficulty": "intermediate",
       "impactType": "deep-work",
       "coverImage": "gradient-green-teal",
       "links": {
         "primary": {
           "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9781683646679"
+          "url": "https://bookshop.org/book/9780553384499"
         },
         "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/1683646673" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781683646679" }
+          { "label": "Amazon", "url": "https://amazon.com/dp/0553384490" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780553384499" }
         ]
       }
     },
     {
-      "id": "self-compassion-neff",
+      "id": "maybe-you-should-talk-to-someone-gottlieb",
       "type": "book",
-      "title": "Self-Compassion: The Proven Power of Being Kind to Yourself",
-      "author": "Kristin Neff",
-      "isbn": "9780061733512",
-      "description": "Research-backed guide to treating yourself with the same kindness you'd offer a friend. Introduces the three components: self-kindness, common humanity, and mindfulness.",
-      "pageCount": 320,
-      "readTime": "6-hour read",
-      "therapyModality": ["Mindfulness", "Self-Compassion"],
-      "helpsWith": ["self-criticism", "perfectionism", "shame", "self-esteem"],
-      "whyThisHelps": "Provides scientifically validated alternative to self-esteem that's more stable and doesn't require comparison to others, with practical exercises.",
+      "title": "Maybe You Should Talk to Someone",
+      "author": "Lori Gottlieb",
+      "isbn": "9781538759776",
+      "description": "Therapist's memoir interweaving stories of her patients with her own therapy journey. Honest look at the humanity behind the therapeutic relationship.",
+      "pageCount": 432,
+      "readTime": "8-hour read",
+      "therapyModality": ["Psychodynamic", "Narrative"],
+      "helpsWith": ["therapy-process", "self-awareness", "relationships", "life-transitions"],
+      "whyThisHelps": "Demystifies therapy by showing both sides, reveals how therapists are human too, and models vulnerability in the healing process.",
       "difficulty": "beginner",
       "impactType": "quick-impact",
-      "coverImage": "gradient-pink-rose",
+      "coverImage": "gradient-teal-cyan",
       "links": {
         "primary": {
           "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9780061733512"
+          "url": "https://bookshop.org/book/9781538759776"
         },
         "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/0061733512" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780061733512" }
+          { "label": "Amazon", "url": "https://amazon.com/dp/1538759772" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781538759776" }
         ]
       }
     },
     {
-      "id": "set-boundaries-find-peace-tawwab",
+      "id": "drama-gifted-child-miller",
       "type": "book",
-      "title": "Set Boundaries, Find Peace",
-      "author": "Nedra Glover Tawwab",
-      "isbn": "9780593192092",
-      "description": "Practical, culturally-informed guide to establishing healthy boundaries in relationships. Addresses guilt, people-pleasing, and communication strategies.",
-      "pageCount": 256,
-      "readTime": "5-hour read",
-      "therapyModality": ["Relational", "CBT"],
-      "helpsWith": ["boundaries", "relationships", "people-pleasing", "codependency"],
-      "whyThisHelps": "Offers clear scripts and examples for setting boundaries without guilt, especially valuable for people from marginalized communities navigating family dynamics.",
-      "difficulty": "beginner",
-      "impactType": "quick-impact",
-      "coverImage": "gradient-violet-purple",
-      "links": {
-        "primary": {
-          "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9780593192092"
-        },
-        "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/0593192095" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780593192092" }
-        ]
-      }
-    },
-    {
-      "id": "complex-ptsd-walker",
-      "type": "book",
-      "title": "Complex PTSD: From Surviving to Thriving",
-      "author": "Pete Walker",
-      "isbn": "9781492871842",
-      "description": "Comprehensive guide to healing from childhood trauma and emotional neglect. Addresses the 4Fs (fight, flight, freeze, fawn) and flashback management.",
-      "pageCount": 372,
-      "readTime": "7-hour read",
-      "therapyModality": ["Trauma-Focused", "Psychodynamic"],
-      "helpsWith": ["complex-trauma", "childhood-trauma", "emotional-flashbacks", "toxic-shame"],
-      "whyThisHelps": "Specifically addresses developmental trauma that doesn't fit PTSD diagnosis, with practical tools for managing emotional flashbacks and reparenting yourself.",
+      "title": "The Drama of the Gifted Child",
+      "author": "Alice Miller",
+      "isbn": "9780465016907",
+      "description": "Psychoanalyst explores how children learn to disconnect from their true selves to meet parental needs. Classic on narcissistic wounding and recovery.",
+      "pageCount": 144,
+      "readTime": "3-hour read",
+      "therapyModality": ["Psychodynamic", "Trauma-Focused"],
+      "helpsWith": ["childhood-trauma", "people-pleasing", "authenticity", "narcissistic-abuse"],
+      "whyThisHelps": "Explains how early adaptation to parental needs creates false self and chronic emptiness, offering path to reclaiming authentic feelings.",
       "difficulty": "intermediate",
       "impactType": "deep-work",
-      "coverImage": "gradient-blue-indigo",
-      "links": {
-        "primary": {
-          "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9781492871842"
-        },
-        "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/1492871842" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781492871842" }
-        ]
-      }
-    },
-    {
-      "id": "attached-levine-heller",
-      "type": "book",
-      "title": "Attached: The New Science of Adult Attachment",
-      "author": "Amir Levine and Rachel Heller",
-      "isbn": "9781585429134",
-      "description": "Accessible guide to attachment theory in adult relationships. Identifies secure, anxious, and avoidant attachment styles with relationship advice.",
-      "pageCount": 304,
-      "readTime": "6-hour read",
-      "therapyModality": ["Attachment-Based"],
-      "helpsWith": ["relationships", "attachment", "intimacy", "relationship-anxiety"],
-      "whyThisHelps": "Helps identify your attachment style and understand relationship patterns, providing concrete strategies for building secure attachments.",
-      "difficulty": "beginner",
-      "impactType": "quick-impact",
-      "coverImage": "gradient-red-pink",
-      "links": {
-        "primary": {
-          "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9781585429134"
-        },
-        "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/1585429139" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781585429134" }
-        ]
-      }
-    },
-    {
-      "id": "dbt-skills-workbook-mckay",
-      "type": "book",
-      "title": "The Dialectical Behavior Therapy Skills Workbook",
-      "author": "Matthew McKay, Jeffrey C. Wood, Jeffrey Brantley",
-      "isbn": "9781684034581",
-      "description": "Comprehensive workbook teaching DBT's four core skills: mindfulness, distress tolerance, emotion regulation, and interpersonal effectiveness.",
-      "pageCount": 232,
-      "readTime": "5-hour read",
-      "therapyModality": ["DBT"],
-      "helpsWith": ["emotion-regulation", "crisis", "self-harm", "interpersonal-conflict"],
-      "whyThisHelps": "Provides practical exercises for managing intense emotions and crisis situations, originally developed for borderline personality disorder but helpful for many issues.",
-      "difficulty": "beginner",
-      "impactType": "crisis-support",
       "coverImage": "gradient-orange-red",
       "links": {
         "primary": {
           "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9781684034581"
+          "url": "https://bookshop.org/book/9780465016907"
         },
         "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/1684034582" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781684034581" }
+          { "label": "Amazon", "url": "https://amazon.com/dp/0465016901" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780465016907" }
         ]
       }
     },
     {
-      "id": "myth-of-normal-mate",
+      "id": "lost-connections-hari",
       "type": "book",
-      "title": "The Myth of Normal: Trauma, Illness & Healing in a Toxic Culture",
-      "author": "Gabor Maté",
-      "isbn": "9780593083888",
-      "description": "Explores how modern society creates conditions for chronic illness and trauma. Challenges individualistic views of health and mental wellness.",
-      "pageCount": 576,
-      "readTime": "11-hour read",
-      "therapyModality": ["Somatic", "Trauma-Focused"],
-      "helpsWith": ["trauma", "chronic-illness", "systemic-oppression", "mind-body-connection"],
-      "whyThisHelps": "Offers compassionate framework for understanding how personal struggles connect to larger systems, reducing self-blame while validating lived experience.",
-      "difficulty": "intermediate",
-      "impactType": "deep-work",
-      "coverImage": "gradient-teal-green",
+      "title": "Lost Connections: Uncovering the Real Causes of Depression",
+      "author": "Johann Hari",
+      "isbn": "9781632868312",
+      "description": "Investigative journalist explores social and environmental causes of depression beyond chemical imbalance. Challenges pharmaceutical narrative with research and personal story.",
+      "pageCount": 336,
+      "readTime": "7-hour read",
+      "therapyModality": ["Social", "Critical"],
+      "helpsWith": ["depression", "meaning-making", "connection", "systemic-factors"],
+      "whyThisHelps": "Reframes depression as often rooted in disconnection from people, meaningful work, and values rather than individual pathology, reducing shame.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-blue-purple",
       "links": {
         "primary": {
           "label": "Get on Bookshop.org",
-          "url": "https://bookshop.org/book/9780593083888"
+          "url": "https://bookshop.org/book/9781632868312"
         },
         "alternatives": [
-          { "label": "Amazon", "url": "https://amazon.com/dp/0593083881" },
-          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780593083888" }
+          { "label": "Amazon", "url": "https://amazon.com/dp/163286831X" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781632868312" }
+        ]
+      }
+    },
+    {
+      "id": "affect-regulation-schore",
+      "type": "book",
+      "title": "Affect Regulation and the Origin of the Self",
+      "author": "Allan N. Schore",
+      "isbn": "9780805816006",
+      "description": "Dense neuroscientific exploration of how early caregiver interactions shape brain development and emotional regulation capacity. Foundation of interpersonal neurobiology.",
+      "pageCount": 608,
+      "readTime": "16-hour read",
+      "therapyModality": ["Neuroscience", "Developmental"],
+      "helpsWith": ["emotion-regulation", "attachment", "development", "neuroscience"],
+      "whyThisHelps": "Provides scientific understanding of how early relationships literally wire the brain for emotion regulation, validating relational approaches to healing.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-indigo-violet",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780805816006"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0805816003" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780805816006" }
+        ]
+      }
+    },
+    {
+      "id": "my-grandmother-hands-menakem",
+      "type": "book",
+      "title": "My Grandmother's Hands: Racialized Trauma and the Pathway to Mending Our Hearts and Bodies",
+      "author": "Resmaa Menakem",
+      "isbn": "9781942094470",
+      "description": "Somatic therapist explores how racial trauma lives in the body across generations. Offers body-based practices for healing racialized trauma in Black, white, and police bodies.",
+      "pageCount": 308,
+      "readTime": "6-hour read",
+      "therapyModality": ["Somatic", "Cultural"],
+      "helpsWith": ["racial-trauma", "intergenerational-trauma", "body-awareness", "cultural-healing"],
+      "whyThisHelps": "Centers the body in understanding racial trauma, offering concrete somatic practices for processing trauma that lives beyond cognitive awareness.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-warm-brown",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781942094470"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1942094477" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781942094470" }
+        ]
+      }
+    },
+    {
+      "id": "will-i-ever-be-good-enough-mcbride",
+      "type": "book",
+      "title": "Will I Ever Be Good Enough? Healing the Daughters of Narcissistic Mothers",
+      "author": "Karyl McBride",
+      "isbn": "9781439129432",
+      "description": "Clinical guide to recognizing and healing from maternal narcissistic abuse. Explores how daughters internalize criticism and develop recovery path.",
+      "pageCount": 288,
+      "readTime": "6-hour read",
+      "therapyModality": ["Psychodynamic", "Trauma-Focused"],
+      "helpsWith": ["narcissistic-abuse", "mother-daughter", "self-esteem", "toxic-family"],
+      "whyThisHelps": "Validates specific pain of narcissistic mothering and provides framework for grieving the mother you needed while building self-worth.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-rose-pink",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781439129432"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1439129436" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781439129432" }
+        ]
+      }
+    },
+    {
+      "id": "polyvagal-theory-porges",
+      "type": "book",
+      "title": "The Polyvagal Theory: Neurophysiological Foundations of Emotions",
+      "author": "Stephen W. Porges",
+      "isbn": "9780393707007",
+      "description": "Technical explanation of how the autonomic nervous system mediates safety, danger, and connection. Foundation for understanding trauma responses and nervous system healing.",
+      "pageCount": 368,
+      "readTime": "10-hour read",
+      "therapyModality": ["Somatic", "Neuroscience"],
+      "helpsWith": ["trauma", "nervous-system", "safety", "connection"],
+      "whyThisHelps": "Explains physiological basis of fight/flight/freeze/fawn responses and how feeling safe enables connection and healing.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-cyan-blue",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780393707007"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0393707008" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780393707007" }
+        ]
+      }
+    },
+    {
+      "id": "trauma-and-recovery-herman",
+      "type": "book",
+      "title": "Trauma and Recovery: The Aftermath of Violence",
+      "author": "Judith Herman",
+      "isbn": "9780465061716",
+      "description": "Seminal clinical work on trauma recovery, particularly from sexual and domestic violence. Established three-stage model of trauma healing still used today.",
+      "pageCount": 336,
+      "readTime": "7-hour read",
+      "therapyModality": ["Trauma-Focused", "Feminist"],
+      "helpsWith": ["trauma", "sexual-violence", "domestic-violence", "recovery-stages"],
+      "whyThisHelps": "Provides roadmap for trauma recovery through safety, remembrance/mourning, and reconnection that validates the complexity of healing.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-purple-blue",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780465061716"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0465061710" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780465061716" }
+        ]
+      }
+    },
+    {
+      "id": "in-an-unspoken-voice-levine",
+      "type": "book",
+      "title": "In an Unspoken Voice: How the Body Releases Trauma",
+      "author": "Peter A. Levine",
+      "isbn": "9781556439438",
+      "description": "Founder of Somatic Experiencing explains how trauma gets stuck in the body and how to release it through physiological completion.",
+      "pageCount": 368,
+      "readTime": "8-hour read",
+      "therapyModality": ["Somatic", "Trauma-Focused"],
+      "helpsWith": ["trauma", "somatic-healing", "nervous-system", "body-awareness"],
+      "whyThisHelps": "Teaches how to track body sensations and complete defensive responses that were interrupted during trauma, allowing physiological resolution.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-forest-green",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781556439438"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/155643943X" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781556439438" }
+        ]
+      }
+    },
+    {
+      "id": "existential-psychotherapy-yalom",
+      "type": "book",
+      "title": "Existential Psychotherapy",
+      "author": "Irvin D. Yalom",
+      "isbn": "9780465021475",
+      "description": "Comprehensive clinical text on existential approach to therapy, addressing death, freedom, isolation, and meaninglessness as core human concerns.",
+      "pageCount": 544,
+      "readTime": "12-hour read",
+      "therapyModality": ["Existential", "Psychodynamic"],
+      "helpsWith": ["meaning-making", "existential-anxiety", "mortality", "freedom"],
+      "whyThisHelps": "Addresses fundamental anxieties about existence itself, helping understand psychological distress as often rooted in existential concerns.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-gray-slate",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780465021475"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0465021476" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780465021475" }
+        ]
+      }
+    },
+    {
+      "id": "hunger-gay",
+      "type": "book",
+      "title": "Hunger: A Memoir of (My) Body",
+      "author": "Roxane Gay",
+      "isbn": "9780062362605",
+      "description": "Powerful memoir about body, trauma, and how we carry pain. Explores relationship between sexual violence and body as protection.",
+      "pageCount": 320,
+      "readTime": "6-hour read",
+      "therapyModality": ["Narrative", "Trauma-Focused"],
+      "helpsWith": ["trauma", "body-image", "sexual-violence", "self-acceptance"],
+      "whyThisHelps": "Honest exploration of how bodies hold trauma and the complexity of healing from assault, challenging simple narratives about recovery.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-red-pink",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780062362605"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0062362607" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780062362605" }
+        ]
+      }
+    },
+    {
+      "id": "developing-mind-siegel",
+      "type": "book",
+      "title": "The Developing Mind: How Relationships and the Brain Interact to Shape Who We Are",
+      "author": "Daniel J. Siegel",
+      "isbn": "9781462549047",
+      "description": "Interpersonal neurobiology textbook exploring how relationships shape brain development across lifespan. Integration of neuroscience, attachment, and mindfulness.",
+      "pageCount": 608,
+      "readTime": "15-hour read",
+      "therapyModality": ["Neuroscience", "Developmental"],
+      "helpsWith": ["attachment", "brain-development", "mindfulness", "integration"],
+      "whyThisHelps": "Shows how relationships literally change brain structure and how mindfulness can promote neural integration for better regulation.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-teal-blue",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781462549047"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1462549047" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781462549047" }
+        ]
+      }
+    },
+    {
+      "id": "psychopath-inside-fallon",
+      "type": "book",
+      "title": "The Psychopath Inside: A Neuroscientist's Personal Journey",
+      "author": "James Fallon",
+      "isbn": "9781617230158",
+      "description": "Neuroscientist discovers he has brain scan of psychopath. Memoir exploring nature vs. nurture, empathy, and what makes someone dangerous.",
+      "pageCount": 256,
+      "readTime": "5-hour read",
+      "therapyModality": ["Neuroscience", "Narrative"],
+      "helpsWith": ["theory-of-mind", "empathy", "personality", "neuroscience"],
+      "whyThisHelps": "Explores how brain differences affect behavior and empathy, while showing environment matters as much as biology in outcomes.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-red-orange",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781617230158"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1617230154" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781617230158" }
+        ]
+      }
+    },
+    {
+      "id": "scattered-minds-mate",
+      "type": "book",
+      "title": "Scattered Minds: The Origins and Healing of Attention Deficit Disorder",
+      "author": "Gabor Maté",
+      "isbn": "9780452279636",
+      "description": "Physician with ADHD explores how sensitive temperament meets stressful environment to create attention difficulties. Challenges purely genetic models.",
+      "pageCount": 368,
+      "readTime": "8-hour read",
+      "therapyModality": ["Developmental", "Integrative"],
+      "helpsWith": ["adhd", "attention", "sensitivity", "childhood-environment"],
+      "whyThisHelps": "Reframes ADHD as adaptive response to environment rather than defect, reducing shame while addressing root causes.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-orange-yellow",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780452279636"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0452279631" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780452279636" }
+        ]
+      }
+    },
+    {
+      "id": "far-from-tree-solomon",
+      "type": "book",
+      "title": "Far from the Tree: Parents, Children, and the Search for Identity",
+      "author": "Andrew Solomon",
+      "isbn": "9780743236720",
+      "description": "Exploration of families with children who are different from parents - deaf, autistic, prodigies, transgender, etc. About identity formation and acceptance.",
+      "pageCount": 976,
+      "readTime": "20-hour read",
+      "therapyModality": ["Narrative", "Identity"],
+      "helpsWith": ["identity", "difference", "family-dynamics", "acceptance"],
+      "whyThisHelps": "Builds empathy for different ways of being human and explores how families navigate profound difference, relevant to anyone feeling misunderstood.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-green-blue",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780743236720"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0743236726" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780743236720" }
+        ]
+      }
+    },
+    {
+      "id": "mindsight-siegel",
+      "type": "book",
+      "title": "Mindsight: The New Science of Personal Transformation",
+      "author": "Daniel J. Siegel",
+      "isbn": "9780553386394",
+      "description": "Accessible introduction to using awareness to literally reshape the brain. Clinical stories showing how insight and mindfulness create neural change.",
+      "pageCount": 336,
+      "readTime": "7-hour read",
+      "therapyModality": ["Neuroscience", "Mindfulness"],
+      "helpsWith": ["self-awareness", "neuroplasticity", "mindfulness", "transformation"],
+      "whyThisHelps": "Shows how developing capacity to observe your own mind can change brain structure, offering hope through neuroplasticity.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-blue-cyan",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780553386394"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0553386395" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780553386394" }
+        ]
+      }
+    },
+    {
+      "id": "tell-me-im-here-deveson",
+      "type": "book",
+      "title": "Tell Me I'm Here: One Family's Experience of Schizophrenia",
+      "author": "Anne Deveson",
+      "isbn": "9780140230659",
+      "description": "Mother's memoir of her son's schizophrenia and eventual death. Honest account of mental illness, stigma, and inadequate care systems.",
+      "pageCount": 336,
+      "readTime": "7-hour read",
+      "therapyModality": ["Narrative", "Family-Systems"],
+      "helpsWith": ["serious-mental-illness", "family-impact", "grief", "stigma"],
+      "whyThisHelps": "Humanizes severe mental illness and its impact on families, building compassion while critiquing systems that fail people in crisis.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-gray-blue",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780140230659"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0140230653" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780140230659" }
+        ]
+      }
+    },
+    {
+      "id": "compassion-focused-therapy-gilbert",
+      "type": "book",
+      "title": "The Compassionate Mind",
+      "author": "Paul Gilbert",
+      "isbn": "9781849010986",
+      "description": "Clinical introduction to Compassion-Focused Therapy. Explains how our brains evolved for threat detection and how to cultivate compassion as antidote.",
+      "pageCount": 576,
+      "readTime": "12-hour read",
+      "therapyModality": ["CFT", "Evolutionary"],
+      "helpsWith": ["self-criticism", "shame", "compassion", "threat-response"],
+      "whyThisHelps": "Uses evolutionary psychology to understand self-criticism and provides exercises to activate compassion system in the brain.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-pink-purple",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781849010986"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1849010986" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781849010986" }
+        ]
+      }
+    },
+    {
+      "id": "when-breath-becomes-air-kalanithi",
+      "type": "book",
+      "title": "When Breath Becomes Air",
+      "author": "Paul Kalanithi",
+      "isbn": "9780812988406",
+      "description": "Neurosurgeon's memoir written while dying of lung cancer. Explores meaning, mortality, and what makes life worth living.",
+      "pageCount": 256,
+      "readTime": "5-hour read",
+      "therapyModality": ["Existential", "Narrative"],
+      "helpsWith": ["mortality", "meaning-making", "grief", "existential-questions"],
+      "whyThisHelps": "Confronts death directly while exploring how facing mortality can illuminate what matters, relevant to anyone wrestling with existential questions.",
+      "difficulty": "beginner",
+      "impactType": "deep-work",
+      "coverImage": "gradient-sky-blue",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780812988406"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/081298840X" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780812988406" }
+        ]
+      }
+    },
+    {
+      "id": "conscious-uncoupling-thomas",
+      "type": "book",
+      "title": "Conscious Uncoupling: 5 Steps to Living Happily Even After",
+      "author": "Katherine Woodward Thomas",
+      "isbn": "9780451495006",
+      "description": "Therapist's guide to ending relationships with minimal damage. Focuses on completing emotional cycles and learning from partnership.",
+      "pageCount": 304,
+      "readTime": "6-hour read",
+      "therapyModality": ["Relational", "Attachment-Based"],
+      "helpsWith": ["breakups", "divorce", "relationships", "closure"],
+      "whyThisHelps": "Provides framework for ending relationships that honors both people and extracts learning, preventing repetition of patterns.",
+      "difficulty": "beginner",
+      "impactType": "crisis-support",
+      "coverImage": "gradient-coral-pink",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780451495006"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0451495004" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780451495006" }
+        ]
+      }
+    },
+    {
+      "id": "seeking-wisdom-of-uncertainty-bateson",
+      "type": "book",
+      "title": "Composing a Life",
+      "author": "Mary Catherine Bateson",
+      "isbn": "9780802138040",
+      "description": "Anthropologist explores how women create coherent lives from interrupted careers and changing roles. About improvisation and adaptation as creative acts.",
+      "pageCount": 256,
+      "readTime": "5-hour read",
+      "therapyModality": ["Narrative", "Feminist"],
+      "helpsWith": ["life-transitions", "identity", "meaning-making", "adaptation"],
+      "whyThisHelps": "Reframes disruption and change as opportunities for creative composition rather than failure, especially relevant for non-linear lives.",
+      "difficulty": "intermediate",
+      "impactType": "ongoing-growth",
+      "coverImage": "gradient-sage-green",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780802138040"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0802138047" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780802138040" }
+        ]
+      }
+    },
+    {
+      "id": "courage-to-be-disliked-kishimi",
+      "type": "book",
+      "title": "The Courage to Be Disliked",
+      "author": "Ichiro Kishimi and Fumitake Koga",
+      "isbn": "9781501197277",
+      "description": "Dialogue format exploring Adlerian psychology. Challenges need for approval and explores freedom through accepting others' opinions aren't your concern.",
+      "pageCount": 288,
+      "readTime": "6-hour read",
+      "therapyModality": ["Adlerian", "Existential"],
+      "helpsWith": ["people-pleasing", "approval-seeking", "freedom", "relationships"],
+      "whyThisHelps": "Radical reframe that your life task is not to meet others' expectations but to live according to your own values, regardless of judgment.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-yellow-gold",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781501197277"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1501197274" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781501197277" }
+        ]
+      }
+    },
+    {
+      "id": "gifts-imperfection-brown",
+      "type": "book",
+      "title": "The Gifts of Imperfection",
+      "author": "Brené Brown",
+      "isbn": "9781592858491",
+      "description": "Research-based guide to letting go of who you think you should be. Explores wholehearted living through courage, compassion, and connection.",
+      "pageCount": 160,
+      "readTime": "3-hour read",
+      "therapyModality": ["Shame-Resilience", "Relational"],
+      "helpsWith": ["perfectionism", "shame", "authenticity", "self-acceptance"],
+      "whyThisHelps": "Provides research-backed permission to be imperfect and framework for building shame resilience through vulnerability.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-amber-orange",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781592858491"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/159285849X" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781592858491" }
+        ]
+      }
+    },
+    {
+      "id": "emergent-strategy-brown",
+      "type": "book",
+      "title": "Emergent Strategy: Shaping Change, Changing Worlds",
+      "author": "adrienne maree brown",
+      "isbn": "9781849352604",
+      "description": "Organizer and facilitator explores how nature's patterns can guide social change and personal transformation. About small changes creating large shifts.",
+      "pageCount": 208,
+      "readTime": "4-hour read",
+      "therapyModality": ["Liberation", "Systems"],
+      "helpsWith": ["change", "activism", "burnout", "collective-healing"],
+      "whyThisHelps": "Offers framework for personal and political transformation that honors small steps and interdependence, preventing activist burnout.",
+      "difficulty": "intermediate",
+      "impactType": "ongoing-growth",
+      "coverImage": "gradient-forest-teal",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781849352604"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1849352607" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781849352604" }
+        ]
+      }
+    },
+    {
+      "id": "how-emotions-are-made-barrett",
+      "type": "book",
+      "title": "How Emotions Are Made: The Secret Life of the Brain",
+      "author": "Lisa Feldman Barrett",
+      "isbn": "9780544133310",
+      "description": "Neuroscientist challenges classical view of emotions as universal and hardwired. Argues emotions are constructed by brain predictions based on context and culture.",
+      "pageCount": 448,
+      "readTime": "9-hour read",
+      "therapyModality": ["Neuroscience", "Constructivist"],
+      "helpsWith": ["emotion-understanding", "theory-of-mind", "emotional-awareness", "neuroscience"],
+      "whyThisHelps": "Empowers you to understand emotions as creations rather than reactions, increasing agency in emotional experience and regulation.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-purple-pink",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780544133310"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0544133315" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780544133310" }
+        ]
+      }
+    },
+    {
+      "id": "ordinary-people-as-monks-and-mystics-kass",
+      "type": "book",
+      "title": "Ordinary People as Monks and Mystics",
+      "author": "Marsha Sinetar",
+      "isbn": "9780809131433",
+      "description": "Psychologist explores people who've withdrawn from conventional life to pursue inner development. About solitude, simplicity, and spiritual maturation.",
+      "pageCount": 256,
+      "readTime": "5-hour read",
+      "therapyModality": ["Existential", "Contemplative"],
+      "helpsWith": ["meaning-making", "solitude", "simplicity", "spiritual-development"],
+      "whyThisHelps": "Validates unconventional paths and explores psychology of people who prioritize inner life over external achievement.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-slate-gray",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780809131433"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0809131439" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780809131433" }
+        ]
+      }
+    },
+    {
+      "id": "waking-the-tiger-levine",
+      "type": "book",
+      "title": "Waking the Tiger: Healing Trauma",
+      "author": "Peter A. Levine",
+      "isbn": "9781556432330",
+      "description": "Accessible introduction to Somatic Experiencing. Explains why animals in wild don't get traumatized and how humans can learn to discharge survival energy.",
+      "pageCount": 288,
+      "readTime": "6-hour read",
+      "therapyModality": ["Somatic", "Trauma-Focused"],
+      "helpsWith": ["trauma", "somatic-healing", "nervous-system", "body-awareness"],
+      "whyThisHelps": "Offers gentle somatic practices for releasing trauma energy trapped in the body, accessible to those new to body-based healing.",
+      "difficulty": "beginner",
+      "impactType": "deep-work",
+      "coverImage": "gradient-orange-amber",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781556432330"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/155643233X" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781556432330" }
+        ]
+      }
+    },
+    {
+      "id": "neurodharma-hanson",
+      "type": "book",
+      "title": "Neurodharma: New Science, Ancient Wisdom, and Seven Practices of the Highest Happiness",
+      "author": "Rick Hanson",
+      "isbn": "9780593083499",
+      "description": "Neuropsychologist integrates Buddhism with brain science. Practical guide to rewiring brain through contemplative practice.",
+      "pageCount": 304,
+      "readTime": "7-hour read",
+      "therapyModality": ["Neuroscience", "Contemplative"],
+      "helpsWith": ["mindfulness", "neuroplasticity", "well-being", "meditation"],
+      "whyThisHelps": "Bridges ancient wisdom with modern neuroscience, showing how meditation practices create lasting changes in brain structure and function.",
+      "difficulty": "intermediate",
+      "impactType": "ongoing-growth",
+      "coverImage": "gradient-indigo-purple",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780593083499"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0593083490" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780593083499" }
+        ]
+      }
+    },
+    {
+      "id": "radical-acceptance-brach",
+      "type": "book",
+      "title": "Radical Acceptance: Embracing Your Life With the Heart of a Buddha",
+      "author": "Tara Brach",
+      "isbn": "9780553380996",
+      "description": "Psychologist and meditation teacher on accepting yourself and your life as they are. Combines Western psychology with Buddhist practice.",
+      "pageCount": 336,
+      "readTime": "7-hour read",
+      "therapyModality": ["Mindfulness", "Self-Compassion"],
+      "helpsWith": ["self-acceptance", "shame", "mindfulness", "self-criticism"],
+      "whyThisHelps": "Teaches radical acceptance as alternative to constant self-improvement, reducing suffering that comes from resisting reality.",
+      "difficulty": "beginner",
+      "impactType": "deep-work",
+      "coverImage": "gradient-lotus-pink",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780553380996"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0553380990" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780553380996" }
+        ]
+      }
+    },
+    {
+      "id": "anatomy-of-epidemic-whitaker",
+      "type": "book",
+      "title": "Anatomy of an Epidemic: Magic Bullets, Psychiatric Drugs, and the Astonishing Rise of Mental Illness",
+      "author": "Robert Whitaker",
+      "isbn": "9780307452429",
+      "description": "Medical journalist investigates why mental illness rates rise despite increasing medication use. Critical examination of pharmaceutical approaches.",
+      "pageCount": 432,
+      "readTime": "9-hour read",
+      "therapyModality": ["Critical", "Research-Based"],
+      "helpsWith": ["medication-literacy", "critical-thinking", "iatrogenic-harm"],
+      "whyThisHelps": "Provides research-backed critique of over-medication and helps make informed decisions about pharmaceutical treatment.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-red-burgundy",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9780307452429"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/0307452425" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9780307452429" }
+        ]
+      }
+    },
+    {
+      "id": "untethered-soul-singer",
+      "type": "book",
+      "title": "The Untethered Soul: The Journey Beyond Yourself",
+      "author": "Michael A. Singer",
+      "isbn": "9781572245372",
+      "description": "Spiritual teacher explores consciousness and the voice inside your head. About identifying with awareness rather than thoughts.",
+      "pageCount": 200,
+      "readTime": "4-hour read",
+      "therapyModality": ["Contemplative", "Mindfulness"],
+      "helpsWith": ["mindfulness", "self-awareness", "thought-observation", "inner-peace"],
+      "whyThisHelps": "Teaches distinction between the observer and the observed, reducing identification with anxious thoughts and painful emotions.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-sky-cyan",
+      "links": {
+        "primary": {
+          "label": "Get on Bookshop.org",
+          "url": "https://bookshop.org/book/9781572245372"
+        },
+        "alternatives": [
+          { "label": "Amazon", "url": "https://amazon.com/dp/1572245379" },
+          { "label": "Find at Library", "url": "https://www.worldcat.org/isbn/9781572245372" }
         ]
       }
     }
   ],
   "podcasts": [
     {
-      "id": "unlocking-us-brown-shame-resilience",
+      "id": "invisibilia-emotions-episode",
       "type": "podcast",
-      "title": "Brené on Shame and Accountability",
+      "title": "Emotions (Parts 1 & 2)",
+      "show": "Invisibilia",
+      "host": "Alix Spiegel and Hanna Rosin",
+      "duration": "90 min (2 parts)",
+      "description": "NPR series investigating Lisa Feldman Barrett's theory that emotions are constructed, not universal. Includes fascinating cases and research challenging everything you know about feelings.",
+      "therapyModality": ["Neuroscience", "Constructivist"],
+      "helpsWith": ["emotion-understanding", "theory-of-mind", "emotional-awareness"],
+      "whyThisHelps": "Mind-bending exploration of how emotions are predictions your brain makes, not reactions you have, completely reframing emotional agency.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-purple-pink",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/2VzyP0JLhdkpSLPYEziNTl"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/invisibilia/id953290300" },
+          { "label": "NPR", "url": "https://www.npr.org/podcasts/510307/invisibilia" }
+        ]
+      }
+    },
+    {
+      "id": "polyvagal-podcast-porges",
+      "type": "podcast",
+      "title": "Understanding Polyvagal Theory",
+      "show": "The Polyvagal Podcast",
+      "host": "Dr. Stephen Porges",
+      "duration": "50 min",
+      "description": "Creator of Polyvagal Theory explains how autonomic nervous system creates safety, connection, and trauma responses. Dense but essential for understanding body-based healing.",
+      "therapyModality": ["Somatic", "Neuroscience"],
+      "helpsWith": ["trauma", "nervous-system", "safety", "theory"],
+      "whyThisHelps": "Direct from source on why feeling safe in your body is foundation for healing and connection, explaining vagal pathways science.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-cyan-blue",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/0aJrKDn6L8JqoqnNYx7aH9"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/the-polyvagal-podcast/id1515576844" },
+          { "label": "Website", "url": "https://www.polyvagalinstitute.org/podcast" }
+        ]
+      }
+    },
+    {
+      "id": "ezra-klein-keltner-awe",
+      "type": "podcast",
+      "title": "Dacher Keltner on the Science of Awe",
+      "show": "The Ezra Klein Show",
+      "host": "Ezra Klein",
+      "duration": "75 min",
+      "description": "Psychologist who studies positive emotions discusses research on awe, wonder, and how they reshape self-perception and decrease narcissism.",
+      "therapyModality": ["Positive Psychology", "Neuroscience"],
+      "helpsWith": ["meaning-making", "self-transcendence", "perspective", "well-being"],
+      "whyThisHelps": "Explores how experiencing awe reduces focus on self and increases sense of connection to something larger, backed by research.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-gold-amber",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/3oB5noYIwEB2dMAREj2F7S"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/the-ezra-klein-show/id1548604447" },
+          { "label": "NYTimes", "url": "https://www.nytimes.com/column/ezra-klein-podcast" }
+        ]
+      }
+    },
+    {
+      "id": "this-jungian-life-shadow",
+      "type": "podcast",
+      "title": "The Shadow",
+      "show": "This Jungian Life",
+      "host": "Lisa Marchiano, Joseph Lee, Deborah Stewart",
+      "duration": "55 min",
+      "description": "Three Jungian analysts discuss shadow material - the parts of ourselves we disown and project onto others. Clinical and accessible exploration.",
+      "therapyModality": ["Jungian", "Depth Psychology"],
+      "helpsWith": ["shadow-work", "projection", "self-awareness", "integration"],
+      "whyThisHelps": "Explains how disowned parts of yourself create problems in relationships and how reclaiming shadow leads to wholeness.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-dark-purple",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/1W9ijV5vyRGCXnPHJfJaQL"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/this-jungian-life/id1150599645" },
+          { "label": "Website", "url": "https://thisjungianlife.com/" }
+        ]
+      }
+    },
+    {
+      "id": "tim-ferriss-gabor-mate",
+      "type": "podcast",
+      "title": "Dr. Gabor Maté on Trauma, Addiction, and Ayahuasca",
+      "show": "The Tim Ferriss Show",
+      "host": "Tim Ferriss",
+      "duration": "150 min",
+      "description": "Deep conversation with physician exploring trauma, compassionate inquiry, addiction as adaptation, and psychedelic healing. Popular show with clinical depth.",
+      "therapyModality": ["Trauma-Focused", "Integrative"],
+      "helpsWith": ["trauma", "addiction", "compassion", "psychedelics"],
+      "whyThisHelps": "Maté reframes addiction and difficult behaviors as adaptive responses to pain, increasing self-compassion while addressing root causes.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-forest-green",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/5qSUyCrk9KR69lEiXbjwXM"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/the-tim-ferriss-show/id863897795" },
+          { "label": "Website", "url": "https://tim.blog/podcast/" }
+        ]
+      }
+    },
+    {
+      "id": "being-well-siegel-mindsight",
+      "type": "podcast",
+      "title": "Dan Siegel on Mindsight and Integration",
+      "show": "Being Well",
+      "host": "Forrest Hanson and Dr. Rick Hanson",
+      "duration": "60 min",
+      "description": "Interpersonal neurobiology expert discusses how awareness changes brain structure and integration as key to mental health. Clinical but accessible.",
+      "therapyModality": ["Neuroscience", "Mindfulness"],
+      "helpsWith": ["neuroplasticity", "mindfulness", "integration", "brain-development"],
+      "whyThisHelps": "Shows how developing capacity to observe your mind literally rewires your brain for better regulation and connection.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-teal-blue",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/0vQ9Q1pmLCKImfLlJFdLrd"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/being-well/id1489428084" },
+          { "label": "Website", "url": "https://www.rickhanson.net/being-well-podcast/" }
+        ]
+      }
+    },
+    {
+      "id": "radiolab-blame",
+      "type": "podcast",
+      "title": "Blame",
+      "show": "Radiolab",
+      "host": "Jad Abumrad and Robert Krulwich",
+      "duration": "60 min",
+      "description": "Explores free will, moral responsibility, and what happens when neuroscience shows brain tumors caused violent behavior. Questions nature of blame.",
+      "therapyModality": ["Neuroscience", "Philosophical"],
+      "helpsWith": ["theory-of-mind", "compassion", "moral-responsibility", "free-will"],
+      "whyThisHelps": "Challenges assumptions about choice and responsibility, building compassion for how biology shapes behavior while preserving accountability.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-red-orange",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/2hmkzUtix0qTqvtpPcMzEL"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/radiolab/id152249110" },
+          { "label": "WNYC", "url": "https://radiolab.org/" }
+        ]
+      }
+    },
+    {
+      "id": "psychologists-off-the-clock-ifs",
+      "type": "podcast",
+      "title": "Internal Family Systems with Richard Schwartz",
+      "show": "Psychologists Off the Clock",
+      "host": "Debbie Sorensen, Yael Schonbrun, Jill Stoddard, Diana Hill",
+      "duration": "50 min",
+      "description": "Four psychologists interview IFS founder about parts work, Self energy, and healing through internal dialogue. Clinical podcast by practicing therapists.",
+      "therapyModality": ["IFS", "Clinical"],
+      "helpsWith": ["parts-work", "self-compassion", "inner-critic", "trauma"],
+      "whyThisHelps": "Direct explanation from IFS creator on how to work with conflicting parts of yourself to access healing Self energy.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-green-teal",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/36ZLxOzvKIp5mHNdAMXOow"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/psychologists-off-the-clock/id1358032414" },
+          { "label": "Website", "url": "https://www.offtheclockpsych.com/" }
+        ]
+      }
+    },
+    {
+      "id": "mental-illness-happy-hour-shame",
+      "type": "podcast",
+      "title": "Shame and Self-Loathing",
+      "show": "The Mental Illness Happy Hour",
+      "host": "Paul Gilmartin",
+      "duration": "120 min",
+      "description": "Comedian creates safe space for guests to discuss mental health struggles with honesty and dark humor. Long-form intimate conversations.",
+      "therapyModality": ["Narrative", "Peer-Support"],
+      "helpsWith": ["shame", "mental-illness", "vulnerability", "isolation"],
+      "whyThisHelps": "Raw, unfiltered conversations reduce shame through shared experience and normalize struggles often hidden from view.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-gray-blue",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/0XKnWdz0SqNmpFcCaQJMoB"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/the-mental-illness-happy-hour/id427570195" },
+          { "label": "Website", "url": "https://mentalpod.com/" }
+        ]
+      }
+    },
+    {
+      "id": "terrible-thanks-hot-young-widows",
+      "type": "podcast",
+      "title": "Hot Young Widows Club",
+      "show": "Terrible, Thanks for Asking",
+      "host": "Nora McInerny",
+      "duration": "38 min",
+      "description": "Widow talks with other young widows about grief, dating, identity after loss. Honest, funny, devastating conversations about carrying on.",
+      "therapyModality": ["Grief", "Narrative"],
+      "helpsWith": ["grief", "loss", "identity", "life-after-trauma"],
+      "whyThisHelps": "Validates ongoing grief and shows how loss permanently changes you without destroying you, permission to be both devastated and okay.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-rose-gray",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/0SrVP6LB0sdBYpZQy5J0oL"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/terrible-thanks-for-asking/id1126119288" },
+          { "label": "Website", "url": "https://www.ttfapodcast.com/" }
+        ]
+      }
+    },
+    {
+      "id": "speaking-of-psychology-emotion-regulation",
+      "type": "podcast",
+      "title": "How to Regulate Your Emotions",
+      "show": "Speaking of Psychology",
+      "host": "American Psychological Association",
+      "duration": "30 min",
+      "description": "APA's podcast interviewing researchers on emotion regulation strategies. Clinical, evidence-based, brief format covering latest research.",
+      "therapyModality": ["Clinical", "Research-Based"],
+      "helpsWith": ["emotion-regulation", "research", "evidence-based"],
+      "whyThisHelps": "Research-backed strategies from actual studies on what works for emotion regulation, cutting through pop psychology.",
+      "difficulty": "intermediate",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-blue-indigo",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/4RMQ8RZebp24OPtTCTc0dT"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/speaking-of-psychology/id892098559" },
+          { "label": "APA", "url": "https://www.apa.org/news/podcasts/speaking-of-psychology" }
+        ]
+      }
+    },
+    {
+      "id": "on-being-van-der-kolk",
+      "type": "podcast",
+      "title": "Bessel van der Kolk: How Trauma Lodges in the Body",
+      "show": "On Being with Krista Tippett",
+      "host": "Krista Tippett",
+      "duration": "52 min",
+      "description": "Trauma researcher discusses how body keeps score and various healing modalities beyond talk therapy. Accessible introduction to somatic approaches.",
+      "therapyModality": ["Somatic", "Trauma-Focused"],
+      "helpsWith": ["trauma", "body-awareness", "somatic-healing", "ptsd"],
+      "whyThisHelps": "Van der Kolk explains why trauma can't be healed through talk alone and introduces body-based approaches like yoga, EMDR, theater.",
+      "difficulty": "beginner",
+      "impactType": "deep-work",
+      "coverImage": "gradient-forest-green",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/150oBLXDpndIMqrImXFNSl"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/on-being-with-krista-tippett/id150892556" },
+          { "label": "Website", "url": "https://onbeing.org/" }
+        ]
+      }
+    },
+    {
+      "id": "huberman-lab-trauma",
+      "type": "podcast",
+      "title": "Erasing Fears & Traumas Based on the Modern Neuroscience of Fear",
+      "show": "Huberman Lab",
+      "host": "Dr. Andrew Huberman",
+      "duration": "90 min",
+      "description": "Neuroscientist explains neural circuits of fear and evidence-based protocols for fear extinction. Dense neuroscience made accessible.",
+      "therapyModality": ["Neuroscience", "Clinical"],
+      "helpsWith": ["trauma", "fear", "anxiety", "neuroscience"],
+      "whyThisHelps": "Scientific explanation of how fear memories form and specific protocols for extinguishing them, including optimal timing and techniques.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-red-orange",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/79CkJF3UJTHFV8Dse3Oy0P"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/huberman-lab/id1545953110" },
+          { "label": "YouTube", "url": "https://www.youtube.com/@hubermanlab" }
+        ]
+      }
+    },
+    {
+      "id": "unlocking-us-brown-ffts",
+      "type": "podcast",
+      "title": "FFTs: Day 2",
       "show": "Unlocking Us with Brené Brown",
       "host": "Brené Brown",
-      "duration": "42 min",
-      "description": "Explores the difference between shame and guilt, why shame is toxic, and how to build shame resilience through empathy and vulnerability.",
+      "duration": "55 min",
+      "description": "Shame researcher discusses 'F*cking First Times' - the vulnerability of doing something new and how it connects to shame resilience.",
       "therapyModality": ["Shame-Resilience", "Relational"],
-      "helpsWith": ["shame", "self-compassion", "vulnerability", "perfectionism"],
-      "whyThisHelps": "Brené Brown's research-based insights help listeners identify shame triggers and develop language to talk about shame, which reduces its power.",
+      "helpsWith": ["shame", "vulnerability", "courage", "growth"],
+      "whyThisHelps": "Normalizes discomfort of being a beginner and connects it to shame triggers, offering permission to be bad at things while learning.",
       "difficulty": "beginner",
       "impactType": "quick-impact",
       "coverImage": "gradient-warm-brown",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/episode/3KFeVH1MFihFjsLgrnJfb0"
+          "url": "https://open.spotify.com/show/4P86ZzHf7EOlRG7do9LkKZ"
         },
         "alternatives": [
           { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/unlocking-us-with-bren%C3%A9-brown/id1494350511" },
-          { "label": "Website", "url": "https://brenebrown.com/podcast/brene-on-shame-and-accountability/" }
+          { "label": "Website", "url": "https://brenebrown.com/podcast/" }
         ]
       }
     },
     {
-      "id": "therapy-for-black-girls-boundaries",
+      "id": "therapy-for-black-girls-code-switching",
       "type": "podcast",
-      "title": "Session 1: Let's Talk About Boundaries",
+      "title": "Code-Switching",
       "show": "Therapy for Black Girls",
       "host": "Dr. Joy Harden Bradford",
-      "duration": "28 min",
-      "description": "Culturally-informed discussion about setting boundaries, particularly for Black women navigating expectations around strength and caregiving.",
-      "therapyModality": ["Relational", "Culturally-Responsive"],
-      "helpsWith": ["boundaries", "people-pleasing", "cultural-expectations", "self-care"],
-      "whyThisHelps": "Addresses unique cultural dynamics around boundaries for Black women, including the strong Black woman stereotype and community expectations.",
+      "duration": "32 min",
+      "description": "Psychologist discusses code-switching, cultural identity navigation, and psychological cost of constantly adjusting presentation. Culturally-specific content.",
+      "therapyModality": ["Cultural", "Identity"],
+      "helpsWith": ["identity", "code-switching", "cultural-stress", "authenticity"],
+      "whyThisHelps": "Validates exhaustion of navigating multiple cultural contexts and explores psychological impact of suppressing authentic self.",
       "difficulty": "beginner",
       "impactType": "quick-impact",
       "coverImage": "gradient-purple-blue",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/episode/6w7QqfNYNRmBHKXJJvZjqY"
+          "url": "https://open.spotify.com/show/37xiqSjbYtNlDdPVZpbdBS"
         },
         "alternatives": [
           { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/therapy-for-black-girls/id1326098070" },
@@ -313,123 +1392,273 @@
       }
     },
     {
-      "id": "hidden-brain-dont-fear-all-anxiety",
+      "id": "how-to-with-john-wilson-anxiety",
       "type": "podcast",
-      "title": "Don't Fear All Anxiety. Some of It Can Actually Help You",
-      "show": "Hidden Brain",
-      "host": "Shankar Vedantam",
-      "duration": "52 min",
-      "description": "Science-based exploration of when anxiety is helpful versus harmful, featuring research on optimal anxiety levels for performance.",
-      "therapyModality": ["CBT", "Neuroscience"],
-      "helpsWith": ["anxiety", "performance-anxiety", "worry", "stress"],
-      "whyThisHelps": "Reframes relationship with anxiety by explaining its evolutionary purpose and when it becomes problematic, reducing fear of the emotion itself.",
+      "title": "How To Deal With Anxiety",
+      "show": "How To! with Charles Duhigg",
+      "host": "Charles Duhigg",
+      "duration": "45 min",
+      "description": "Journalist helps listener apply behavioral psychology and habit formation to manage anxiety. Practical problem-solving approach.",
+      "therapyModality": ["CBT", "Behavioral"],
+      "helpsWith": ["anxiety", "habits", "behavior-change", "coping"],
+      "whyThisHelps": "Shows how to apply habit science to anxiety management, creating concrete behavioral changes rather than just understanding.",
       "difficulty": "beginner",
       "impactType": "quick-impact",
-      "coverImage": "gradient-blue-cyan",
+      "coverImage": "gradient-yellow-orange",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/episode/4wQrwAdDKsQDBMvTl9dD41"
+          "url": "https://open.spotify.com/show/2TpS4F8aSdWp4OFZZPy8dR"
         },
         "alternatives": [
-          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/hidden-brain/id1028908750" },
-          { "label": "NPR", "url": "https://www.npr.org/series/423302056/hidden-brain" }
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/how-to-with-charles-duhigg/id1103936870" },
+          { "label": "Website", "url": "https://slate.com/podcasts/how-to" }
         ]
       }
     },
     {
-      "id": "on-being-levine-trauma-body",
+      "id": "where-should-we-begin-esther-perel",
       "type": "podcast",
-      "title": "Peter Levine: Healing Trauma",
-      "show": "On Being with Krista Tippett",
-      "host": "Krista Tippett",
+      "title": "The Secret Life of Secrets",
+      "show": "Where Should We Begin?",
+      "host": "Esther Perel",
       "duration": "50 min",
-      "description": "Founder of Somatic Experiencing discusses how trauma lives in the body and how to release it through physiological awareness.",
-      "therapyModality": ["Somatic", "Trauma-Focused"],
-      "helpsWith": ["trauma", "body-awareness", "ptsd", "somatic-healing"],
-      "whyThisHelps": "Offers gentle introduction to somatic trauma healing, explaining how completing defensive responses can resolve trauma stored in the nervous system.",
+      "description": "Couples therapist records actual therapy sessions exploring secrets, betrayal, and what we hide from partners. Intimate window into therapy process.",
+      "therapyModality": ["Relational", "Systemic"],
+      "helpsWith": ["relationships", "intimacy", "secrets", "trust"],
+      "whyThisHelps": "Real therapy sessions reveal dynamics of secrecy and how couples navigate trust, offering insight into your own relationship patterns.",
       "difficulty": "intermediate",
       "impactType": "deep-work",
-      "coverImage": "gradient-green-forest",
+      "coverImage": "gradient-red-pink",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/episode/5Jd5zwQMUKkMiJt7MBrLKd"
+          "url": "https://open.spotify.com/show/5DZzhQb42kf2AjO7RzDhQg"
         },
         "alternatives": [
-          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/on-being-with-krista-tippett/id150892556" },
-          { "label": "Website", "url": "https://onbeing.org/programs/peter-levine-healing-trauma/" }
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/where-should-we-begin-with-esther-perel/id1237931798" },
+          { "label": "Website", "url": "https://www.estherperel.com/podcast" }
         ]
       }
     },
     {
-      "id": "terrible-thanks-for-asking-grief",
+      "id": "shrink-rappers-maladaptive-daydreaming",
       "type": "podcast",
-      "title": "I'm Not Over It",
-      "show": "Terrible, Thanks for Asking",
-      "host": "Nora McInerny",
-      "duration": "35 min",
-      "description": "Raw conversation about grief that validates how loss continues to shape us rather than something we 'get over.'",
-      "therapyModality": ["Grief", "Narrative"],
-      "helpsWith": ["grief", "loss", "complicated-grief", "life-transitions"],
-      "whyThisHelps": "Normalizes ongoing grief and challenges timeline expectations, offering permission to carry loss forward rather than leave it behind.",
+      "title": "Maladaptive Daydreaming",
+      "show": "Shrink Rappers",
+      "host": "Dr. Jessica Zucker and Dr. Anna Sale",
+      "duration": "40 min",
+      "description": "Two psychologists discuss lesser-known condition of compulsive fantasy as escape. Niche clinical content made accessible.",
+      "therapyModality": ["Clinical", "Dissociative"],
+      "helpsWith": ["dissociation", "escapism", "fantasy", "avoidance"],
+      "whyThisHelps": "Explores understudied phenomenon of excessive daydreaming as coping mechanism, validating experience and offering clinical perspective.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-lavender-purple",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/search/shrink%20rappers%20maladaptive"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/shrink-rappers/id1456119128" },
+          { "label": "Website", "url": "https://www.pushkin.fm/podcasts/shrink-rappers" }
+        ]
+      }
+    },
+    {
+      "id": "maintenance-phase-wellness",
+      "type": "podcast",
+      "title": "The Wellness Industrial Complex",
+      "show": "Maintenance Phase",
+      "host": "Michael Hobbes and Aubrey Gordon",
+      "duration": "60 min",
+      "description": "Journalists debunk wellness trends and diet culture with research. Critical examination of popular health advice.",
+      "therapyModality": ["Critical", "Anti-Diet"],
+      "helpsWith": ["body-image", "diet-culture", "critical-thinking", "health-literacy"],
+      "whyThisHelps": "Challenges harmful wellness narratives and diet culture using research, reducing shame around bodies and health behaviors.",
       "difficulty": "beginner",
       "impactType": "quick-impact",
-      "coverImage": "gradient-gray-blue",
+      "coverImage": "gradient-coral-pink",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/show/2fvH0GuLO9d7qfjaQhFNwY"
+          "url": "https://open.spotify.com/show/1kDbhv5rqKPzTvMgx9H89j"
         },
         "alternatives": [
-          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/terrible-thanks-for-asking/id1126119288" },
-          { "label": "Website", "url": "https://www.ttfa.org/" }
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/maintenance-phase/id1535408667" },
+          { "label": "Website", "url": "https://www.maintenancephase.com/" }
         ]
       }
     },
     {
-      "id": "tim-ferriss-show-gabor-mate",
+      "id": "sounds-true-tara-brach-rain",
       "type": "podcast",
-      "title": "Dr. Gabor Maté on Trauma, Addiction, and Healing",
-      "show": "The Tim Ferriss Show",
-      "host": "Tim Ferriss",
-      "duration": "98 min",
-      "description": "Deep dive into childhood trauma's role in addiction and chronic illness, with compassionate framework for understanding self-destructive patterns.",
-      "therapyModality": ["Trauma-Focused", "Addiction"],
-      "helpsWith": ["trauma", "addiction", "self-compassion", "childhood-wounds"],
-      "whyThisHelps": "Reframes addiction and self-sabotage as adaptations to trauma rather than character flaws, opening path to compassionate self-understanding.",
-      "difficulty": "intermediate",
+      "title": "The RAIN Practice with Tara Brach",
+      "show": "Insights at the Edge",
+      "host": "Tami Simon",
+      "duration": "55 min",
+      "description": "Meditation teacher explains RAIN technique (Recognize, Allow, Investigate, Nurture) for working with difficult emotions. Contemplative practice.",
+      "therapyModality": ["Mindfulness", "Self-Compassion"],
+      "helpsWith": ["emotion-regulation", "mindfulness", "self-compassion", "meditation"],
+      "whyThisHelps": "Practical mindfulness technique for turning toward pain rather than away, combining awareness with compassion for healing.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-lotus-pink",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/0T5p4TXkiOrn9TauLLa7y4"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/insights-at-the-edge/id151491212" },
+          { "label": "Sounds True", "url": "https://www.soundstrue.com/podcasts/insights-at-the-edge/" }
+        ]
+      }
+    },
+    {
+      "id": "against-the-rules-contempt",
+      "type": "podcast",
+      "title": "The Magic Words",
+      "show": "Against the Rules with Michael Lewis",
+      "host": "Michael Lewis",
+      "duration": "50 min",
+      "description": "Author investigates referee figure in society. This episode explores contempt in relationships with Gottman research. Social psychology through storytelling.",
+      "therapyModality": ["Research-Based", "Relational"],
+      "helpsWith": ["relationships", "contempt", "communication", "conflict"],
+      "whyThisHelps": "Explains research on contempt as relationship killer and explores repair attempts, applicable beyond romantic relationships.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-slate-gray",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/5IuDGhYXBuMWfCJPUZgIXH"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/against-the-rules-with-michael-lewis/id1455379351" },
+          { "label": "Pushkin", "url": "https://www.pushkin.fm/podcasts/against-the-rules" }
+        ]
+      }
+    },
+    {
+      "id": "ologies-thanatology",
+      "type": "podcast",
+      "title": "Thanatology (DEATH) with Sarah Chavez",
+      "show": "Ologies",
+      "host": "Alie Ward",
+      "duration": "90 min",
+      "description": "Science communicator interviews death expert about mortality, grief, death positivity. Accessible, funny exploration of heavy topic.",
+      "therapyModality": ["Existential", "Narrative"],
+      "helpsWith": ["mortality", "grief", "existential-anxiety", "death"],
+      "whyThisHelps": "Normalizes talking about death and explores how death awareness can enhance life, reducing existential anxiety through curiosity.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-black-gray",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/5nyWU1O1K8ZgugDGN9Z6oH"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/ologies-with-alie-ward/id1278815668" },
+          { "label": "Website", "url": "https://www.alieward.com/ologies" }
+        ]
+      }
+    },
+    {
+      "id": "love-me-that-podcast-attachment",
+      "type": "podcast",
+      "title": "Understanding Your Attachment Style",
+      "show": "Love Me That",
+      "host": "Dr. Alexandra Solomon",
+      "duration": "45 min",
+      "description": "Relationship psychologist discusses attachment theory and how early patterns show up in adult relationships. Clinically informed, accessible.",
+      "therapyModality": ["Attachment-Based", "Relational"],
+      "helpsWith": ["attachment", "relationships", "intimacy", "patterns"],
+      "whyThisHelps": "Explains how childhood attachment shapes adult relationships and offers path toward earned secure attachment.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-rose-pink",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/search/love%20me%20that%20attachment"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/love-me-that/id1517201238" },
+          { "label": "Website", "url": "https://www.dralexandrasolomon.com/podcast" }
+        ]
+      }
+    },
+    {
+      "id": "call-your-girlfriend-boundaries",
+      "type": "podcast",
+      "title": "Setting Boundaries",
+      "show": "Call Your Girlfriend",
+      "host": "Ann Friedman and Aminatou Sow",
+      "duration": "55 min",
+      "description": "Friends discuss boundaries in friendships, work, family with personal stories and expert input. Relatable, intimate conversation.",
+      "therapyModality": ["Relational", "Feminist"],
+      "helpsWith": ["boundaries", "friendships", "communication", "relationships"],
+      "whyThisHelps": "Models how to talk about boundaries in real relationships with messiness and care, making abstract concept concrete.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-violet-purple",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/search/call%20your%20girlfriend%20boundaries"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/call-your-girlfriend/id592412386" },
+          { "label": "Website", "url": "https://www.callyourgirlfriend.com/" }
+        ]
+      }
+    },
+    {
+      "id": "mindful-cranks-cognitive-fusion",
+      "type": "podcast",
+      "title": "Cognitive Fusion vs. Defusion in ACT",
+      "show": "The Mindful Cranks",
+      "host": "Dr. Jason Luoma and Dr. Tobias Lundgren",
+      "duration": "40 min",
+      "description": "Two ACT therapists discuss clinical concept of cognitive fusion - being stuck to thoughts as truth. Niche therapeutic content.",
+      "therapyModality": ["ACT", "Clinical"],
+      "helpsWith": ["cognitive-fusion", "thought-defusion", "mindfulness", "act"],
+      "whyThisHelps": "Explains how to relate to thoughts differently through defusion, creating distance from unhelpful narratives without fighting them.",
+      "difficulty": "advanced",
       "impactType": "deep-work",
-      "coverImage": "gradient-orange-yellow",
+      "coverImage": "gradient-mint-green",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/episode/2fBxEVaMGQKcq7k4VqVGNv"
+          "url": "https://open.spotify.com/search/mindful%20cranks%20fusion"
         },
         "alternatives": [
-          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/the-tim-ferriss-show/id863897795" },
-          { "label": "Website", "url": "https://tim.blog/2022/08/17/dr-gabor-mate/" }
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/the-mindful-cranks/id1434033314" },
+          { "label": "Website", "url": "https://www.functionallymindful.com/podcast" }
         ]
       }
     },
     {
-      "id": "armchair-expert-esther-perel",
+      "id": "armchair-expert-lori-gottlieb",
       "type": "podcast",
-      "title": "Esther Perel on Relationships and Desire",
-      "show": "Armchair Expert",
+      "title": "Lori Gottlieb",
+      "show": "Armchair Expert with Dax Shepard",
       "host": "Dax Shepard",
-      "duration": "73 min",
-      "description": "Renowned couples therapist discusses maintaining desire in long-term relationships, infidelity, and modern relationship dynamics.",
-      "therapyModality": ["Relational", "Psychodynamic"],
-      "helpsWith": ["relationships", "intimacy", "desire", "communication"],
-      "whyThisHelps": "Offers nuanced perspective on relationship challenges that goes beyond simplistic advice, normalizing complexity and ambiguity in partnerships.",
-      "difficulty": "intermediate",
-      "impactType": "ongoing-growth",
-      "coverImage": "gradient-red-rose",
+      "duration": "110 min",
+      "description": "Actor in recovery interviews therapist about her book, therapy process, and her own therapy. Popular show with clinical depth.",
+      "therapyModality": ["Psychodynamic", "Narrative"],
+      "helpsWith": ["therapy-process", "vulnerability", "relationships", "self-awareness"],
+      "whyThisHelps": "Demystifies therapy by showing therapist as human who also needs help, models vulnerability and growth.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-navy-blue",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/episode/6ydXqEqrLnIJNqYJqvqWWl"
+          "url": "https://open.spotify.com/show/6kAsbP8pxwaU2kPibKTuHE"
         },
         "alternatives": [
           { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/armchair-expert-with-dax-shepard/id1345682353" },
@@ -438,23 +1667,48 @@
       }
     },
     {
-      "id": "ten-percent-happier-kristin-neff",
+      "id": "you-are-not-so-smart-dunning-kruger",
       "type": "podcast",
-      "title": "Kristin Neff: Self-Compassion",
-      "show": "Ten Percent Happier",
-      "host": "Dan Harris",
-      "duration": "49 min",
-      "description": "Leading self-compassion researcher explains the three components and how it differs from self-esteem, with practical exercises.",
-      "therapyModality": ["Self-Compassion", "Mindfulness"],
-      "helpsWith": ["self-criticism", "perfectionism", "mindfulness", "self-esteem"],
-      "whyThisHelps": "Provides evidence-based alternative to harsh self-criticism with specific practices for treating yourself with kindness during difficult moments.",
+      "title": "The Dunning-Kruger Effect",
+      "show": "You Are Not So Smart",
+      "host": "David McRaney",
+      "duration": "50 min",
+      "description": "Journalist explores cognitive biases and self-delusion. This episode on not knowing what you don't know, with humility and humor.",
+      "therapyModality": ["Cognitive", "Social Psychology"],
+      "helpsWith": ["self-awareness", "cognitive-biases", "humility", "theory-of-mind"],
+      "whyThisHelps": "Explores how we systematically misunderstand ourselves and others, building intellectual humility and compassion for human limitation.",
       "difficulty": "beginner",
       "impactType": "quick-impact",
-      "coverImage": "gradient-pink-purple",
+      "coverImage": "gradient-orange-red",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/episode/2YvKKNGUBaLxUKsFU7U7y8"
+          "url": "https://open.spotify.com/show/0SkXIEJNtQjR7sVX0fxLWU"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/you-are-not-so-smart/id521594713" },
+          { "label": "Website", "url": "https://youarenotsosmart.com/podcast/" }
+        ]
+      }
+    },
+    {
+      "id": "ten-percent-happier-joseph-goldstein",
+      "type": "podcast",
+      "title": "Joseph Goldstein on Meditation and the Mind",
+      "show": "Ten Percent Happier",
+      "host": "Dan Harris",
+      "duration": "60 min",
+      "description": "Meditation teacher discusses Vipassana practice, observing mind, and path to liberation. Contemplative practice made accessible.",
+      "therapyModality": ["Mindfulness", "Contemplative"],
+      "helpsWith": ["meditation", "mindfulness", "self-observation", "equanimity"],
+      "whyThisHelps": "Deep dive into meditation practice from experienced teacher, showing how observing mind creates freedom from reactive patterns.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-gold-yellow",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/2YVODPIKWqGQBbBrO3Xfey"
         },
         "alternatives": [
           { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/ten-percent-happier-with-dan-harris/id1087147821" },
@@ -463,52 +1717,177 @@
       }
     },
     {
-      "id": "we-can-do-hard-things-glennon-doyle",
+      "id": "atp-project-childhood-trauma-inflammation",
       "type": "podcast",
-      "title": "How to Set Boundaries Without Losing Yourself",
-      "show": "We Can Do Hard Things",
-      "host": "Glennon Doyle, Abby Wambach, Amanda Doyle",
-      "duration": "56 min",
-      "description": "Vulnerable conversation about boundary-setting as people-pleasers, including family dynamics and challenging cultural expectations.",
-      "therapyModality": ["Relational", "Narrative"],
-      "helpsWith": ["boundaries", "people-pleasing", "family-dynamics", "authenticity"],
-      "whyThisHelps": "Personal stories make boundary work feel accessible and normalize the discomfort of disappointing others while honoring yourself.",
-      "difficulty": "beginner",
-      "impactType": "quick-impact",
-      "coverImage": "gradient-yellow-green",
+      "title": "Childhood Trauma and Inflammation",
+      "show": "The ATP Project",
+      "host": "Jeff Mitchell and Steve Eddey",
+      "duration": "65 min",
+      "description": "Naturopaths discuss research linking childhood trauma to chronic inflammation and autoimmune conditions. Integrative medicine perspective.",
+      "therapyModality": ["Integrative", "Somatic"],
+      "helpsWith": ["trauma", "inflammation", "chronic-illness", "mind-body"],
+      "whyThisHelps": "Explains physiological pathways between childhood stress and adult illness, validating mind-body connection with science.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-red-pink",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/show/4SalkTFpSUpFUZ7wYcHVCP"
+          "url": "https://open.spotify.com/search/atp%20project%20trauma%20inflammation"
         },
         "alternatives": [
-          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/we-can-do-hard-things/id1564530722" },
-          { "label": "Website", "url": "https://momastery.com/podcast/" }
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/au/podcast/the-atp-project/id904153608" },
+          { "label": "Website", "url": "https://www.atpscience.com/podcast/" }
         ]
       }
     },
     {
-      "id": "polyvagal-podcast-porges",
+      "id": "still-processing-grief-pandemic",
       "type": "podcast",
-      "title": "Stephen Porges: The Science of Safety",
-      "show": "The Polyvagal Podcast",
-      "host": "Stephen Porges",
-      "duration": "45 min",
-      "description": "Creator of Polyvagal Theory explains how nervous system states drive behavior and how to cultivate physiological safety.",
-      "therapyModality": ["Somatic", "Polyvagal", "Neuroscience"],
-      "helpsWith": ["nervous-system-regulation", "trauma", "anxiety", "safety"],
-      "whyThisHelps": "Understanding autonomic nervous system states helps you recognize when you're in fight/flight/freeze and use tools to return to safety and connection.",
-      "difficulty": "advanced",
-      "impactType": "deep-work",
+      "title": "How Do We Grieve?",
+      "show": "Still Processing",
+      "host": "Wesley Morris and Jenna Wortham",
+      "duration": "50 min",
+      "description": "Cultural critics discuss collective grief, loss, and processing through culture. Intelligent, intimate conversation about navigating hard times.",
+      "therapyModality": ["Narrative", "Cultural"],
+      "helpsWith": ["grief", "collective-trauma", "meaning-making", "culture"],
+      "whyThisHelps": "Explores how culture helps process grief and validates collective mourning, connecting personal loss to shared experience.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
       "coverImage": "gradient-indigo-violet",
       "links": {
         "primary": {
           "label": "Open in Spotify",
-          "url": "https://open.spotify.com/show/6gCVlEHfFOOVTj51WN5LiJ"
+          "url": "https://open.spotify.com/show/0gOp1dNxwsROnwR7cwAmLr"
         },
         "alternatives": [
-          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/the-polyvagal-podcast-with-dr-stephen-porges/id1534504833" },
-          { "label": "Website", "url": "https://www.polyvagalinstitute.org/podcast" }
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/still-processing/id1151436460" },
+          { "label": "NYTimes", "url": "https://www.nytimes.com/column/still-processing-podcast" }
+        ]
+      }
+    },
+    {
+      "id": "savvy-psychologist-imposter-syndrome",
+      "type": "podcast",
+      "title": "Understanding Imposter Syndrome",
+      "show": "The Savvy Psychologist's Quick and Dirty Tips",
+      "host": "Dr. Monica Johnson",
+      "duration": "15 min",
+      "description": "Clinical psychologist offers brief, evidence-based tips on mental health topics. This episode tackles imposter phenomenon.",
+      "therapyModality": ["CBT", "Clinical"],
+      "helpsWith": ["imposter-syndrome", "self-doubt", "perfectionism", "achievement"],
+      "whyThisHelps": "Quick, actionable strategies for recognizing and working with imposter thoughts based on clinical research.",
+      "difficulty": "beginner",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-teal-cyan",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/2mz1kV1yWr0Bh3Ly6C6iql"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/the-savvy-psychologist/id415281163" },
+          { "label": "Quick and Dirty Tips", "url": "https://www.quickanddirtytips.com/savvy-psychologist" }
+        ]
+      }
+    },
+    {
+      "id": "heavyweight-gregor",
+      "type": "podcast",
+      "title": "Gregor",
+      "show": "Heavyweight",
+      "host": "Jonathan Goldstein",
+      "duration": "45 min",
+      "description": "Host helps people resolve moments from their past. This episode about confronting father decades after abandonment. Narrative therapy in action.",
+      "therapyModality": ["Narrative", "Relational"],
+      "helpsWith": ["family-trauma", "closure", "forgiveness", "unresolved-past"],
+      "whyThisHelps": "Shows process of confronting painful past and seeking closure, modeling vulnerability and complexity of family healing.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-sepia-brown",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/38eWcPB5C59yAhYFxW54nH"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/heavyweight/id1150800298" },
+          { "label": "Spotify Studios", "url": "https://open.spotify.com/show/38eWcPB5C59yAhYFxW54nH" }
+        ]
+      }
+    },
+    {
+      "id": "for-the-wild-ecological-grief",
+      "type": "podcast",
+      "title": "Ecological Grief with Bayo Akomolafe",
+      "show": "For the Wild",
+      "host": "Ayana Young",
+      "duration": "75 min",
+      "description": "Environmental podcast exploring grief about planetary destruction. Deep conversation about loss, meaning, and staying present to pain.",
+      "therapyModality": ["Existential", "Eco-Psychology"],
+      "helpsWith": ["ecological-grief", "existential-anxiety", "meaning-making", "climate-distress"],
+      "whyThisHelps": "Validates grief about environmental destruction and explores how to hold despair while continuing to act, preventing paralysis or denial.",
+      "difficulty": "advanced",
+      "impactType": "deep-work",
+      "coverImage": "gradient-earth-green",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/3vN31TpKYR1Pv4a3CPOLaB"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/for-the-wild/id1253747371" },
+          { "label": "Website", "url": "https://forthewild.world/podcast" }
+        ]
+      }
+    },
+    {
+      "id": "happy-hour-paul-gilmartin-freeze-response",
+      "type": "podcast",
+      "title": "Freeze Response and Dissociation",
+      "show": "The Mental Illness Happy Hour",
+      "host": "Paul Gilmartin",
+      "duration": "100 min",
+      "description": "Deep dive into freeze response, shutdown, dissociation with trauma therapist. Long-form clinical conversation accessible to lay audience.",
+      "therapyModality": ["Trauma-Focused", "Somatic"],
+      "helpsWith": ["dissociation", "freeze-response", "trauma", "shutdown"],
+      "whyThisHelps": "Explains often-overlooked freeze response in trauma, validating shutdown as protective and exploring path to nervous system healing.",
+      "difficulty": "intermediate",
+      "impactType": "deep-work",
+      "coverImage": "gradient-ice-blue",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/show/0XKnWdz0SqNmpFcCaQJMoB"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/the-mental-illness-happy-hour/id427570195" },
+          { "label": "Website", "url": "https://mentalpod.com/" }
+        ]
+      }
+    },
+    {
+      "id": "inquiry-inquiry-with-michele",
+      "type": "podcast",
+      "title": "The Work of Byron Katie",
+      "show": "Inquiry with Michele",
+      "host": "Michele Christensen",
+      "duration": "35 min",
+      "description": "Facilitator explains Byron Katie's method for questioning stressful thoughts. Niche modality-specific content on cognitive inquiry.",
+      "therapyModality": ["Inquiry", "Cognitive"],
+      "helpsWith": ["thought-patterns", "cognitive-inquiry", "stress", "belief-examination"],
+      "whyThisHelps": "Teaches systematic method for questioning thoughts causing suffering, creating space between belief and reality.",
+      "difficulty": "intermediate",
+      "impactType": "quick-impact",
+      "coverImage": "gradient-sage-mint",
+      "links": {
+        "primary": {
+          "label": "Open in Spotify",
+          "url": "https://open.spotify.com/search/inquiry%20michele%20byron%20katie"
+        },
+        "alternatives": [
+          { "label": "Apple Podcasts", "url": "https://podcasts.apple.com/us/podcast/inquiry-with-michele/id1438801343" },
+          { "label": "Website", "url": "https://thework.com/" }
         ]
       }
     }
