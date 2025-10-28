@@ -118,17 +118,17 @@ async function selectStory(userId: string, userTags: string[]): Promise<any> {
     
     const { data: stories, error } = await query;
     
-    // If no matches or user has seen all stories in 14 days, get oldest recommended
+    // If no matches or user has seen all stories in 14 days, get all stories and pick randomly
     if (!stories || stories.length === 0) {
-      console.log('No unviewed stories, selecting oldest');
-      const { data: oldestStory } = await supabase
+      console.log('No unviewed stories, selecting random story from all');
+      const { data: allStories } = await supabase
         .from('stories')
-        .select('*')
-        .limit(1)
-        .order('created_at');
+        .select('*');
       
-      if (oldestStory && oldestStory.length > 0) {
-        return oldestStory[0];
+      if (allStories && allStories.length > 0) {
+        const randomStory = allStories[Math.floor(Math.random() * allStories.length)];
+        console.log(`Randomly selected story: ${randomStory.title}`);
+        return randomStory;
       }
       return null;
     }
