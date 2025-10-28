@@ -67,8 +67,11 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                 {/* Hero Text */}
                 <div className="space-y-4 max-w-xl">
                   <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-                    Your Mental Wellness Journey Starts Here
+                    Welcome to Johari AI
                   </h1>
+                  <p className="text-2xl md:text-3xl font-semibold text-foreground">
+                    Your Mental Wellness Journey Starts Here
+                  </p>
                   <p className="text-xl md:text-2xl text-muted-foreground font-medium">
                     Identify your blindspots in days, not years
                   </p>
@@ -232,7 +235,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                     Johari AI is Not a Replacement for Therapy
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    I'm designed to complement professional mental health care - not replace it. I'm most helpful between therapy sessions or as a supplement to ongoing care.
+                    I'm most helpful between therapy sessions or as a supplement to ongoing care.
                   </p>
                 </div>
 
@@ -245,13 +248,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                     If you're experiencing a mental health crisis or having thoughts of self-harm, please reach out immediately:
                   </p>
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-start gap-2">
-                      <span className="font-semibold min-w-fit">988 Suicide & Crisis Lifeline</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="font-semibold min-w-fit">Crisis Text Line:</span>
-                      <span className="text-muted-foreground">Text HOME to 741741</span>
-                    </div>
+                    <div className="font-semibold">988 Suicide & Crisis Lifeline | Crisis Text Line: Text HOME to 741741</div>
                   </div>
                 </div>
               </div>
@@ -286,7 +283,7 @@ const WelcomeModal = ({ isOpen = false, onOpenChange }: WelcomeModalProps) => {
                   <ChevronRight className="w-5 h-5" />
                 </>
               ) : (
-                "I Understand - Let's Get Started"
+                "I Understand"
               )}
             </Button>
           </div>
