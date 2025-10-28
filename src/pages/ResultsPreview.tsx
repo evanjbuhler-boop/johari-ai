@@ -17,7 +17,11 @@ const mockResults: CheckInResults = {
     themes: ["Perfectionism", "Work Anxiety", "Self-Worth"],
     fullExplanation:
       "This pattern is classic high-functioning anxiety—a psychological phenomenon where the very mechanisms that once helped you succeed have become sources of distress. You've likely built your identity and self-worth around achieving exceptional standards, creating what psychologists call a \"contingent self-esteem\" framework. When your value depends on flawless performance, every task becomes weighted with existential significance. The fear of failure isn't just about the task itself; it represents a threat to your core sense of worthiness.\n\nWhat's happening neurologically is that your amygdala—the brain's threat detection system—has learned to interpret imperfection as danger. Each time you face a challenging work situation, your nervous system activates the same fight-or-flight response it would use for physical threats. This floods your prefrontal cortex (responsible for complex thinking and decision-making) with stress hormones like cortisol, which actually impairs the cognitive functions you need most. The irony is brutal: your anxiety about performing well literally makes it harder to perform well, creating the self-fulfilling prophecy you're experiencing.\n\nFrom a psychodynamic perspective, perfectionism often develops as an adaptive strategy—perhaps you learned early that achievement brought approval, or that mistakes led to criticism or withdrawal of love. These early experiences create what attachment theorists call \"conditional regard,\" where you internalize the belief that you must earn acceptance through performance. Now, as an adult, you've internalized this dynamic: you've become both the demanding parent and the striving child, locked in an exhausting internal relationship where rest and self-compassion feel dangerous because they might lead to the rejection you're trying so hard to prevent.",
-    citations: [{ author: 'Brené Brown', year: 2010, title: 'The Gifts of Imperfection' }],
+    citations: [
+      { author: 'Nolen-Hoeksema, S.', year: 2001, title: 'Gender differences in depression' },
+      { author: 'Mikulincer, M. & Shaver, P.R.', year: 2007, title: 'Attachment in Adulthood: Structure, Dynamics, and Change' },
+      { author: 'Teasdale, J.D. et al.', year: 2002, title: 'Metacognitive awareness and prevention of relapse in depression' },
+    ],
   },
   quotes: [
     { text: "I feel like I'm always one mistake away from being found out", sentiment: 'negative' },
