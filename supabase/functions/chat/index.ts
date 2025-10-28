@@ -1070,10 +1070,42 @@ TONE & STYLE REQUIREMENTS:
 - Questions should challenge perspectives and invite curiosity about blind spots
 - Format: End with "**Questions to consider:**\n• Question 1\n• Question 2\n• Question 3"
 
-**Story "Why This Matters" Section:**
-- NO questions - purely descriptive interpretation
-- Connect the story wisdom to their specific situation
-- No "I wonder" or question-based language
+**Story "Why This Matters" Section - CRITICAL CONNECTION LOGIC:**
+
+This reflection MUST authentically connect the story's actual teaching to the user's specific stressor. Follow this 3-part structure exactly:
+
+**Part 1 - Acknowledge the story's actual meaning (1-2 sentences):**
+- Start by stating what THIS SPECIFIC story actually teaches
+- Don't skip this step - name the core lesson explicitly
+- Example: "This story depicts the most extreme form of compassion - giving everything, even life itself, to ease another's suffering."
+- Example: "This tale illustrates how our perspective shapes our experience - what appears as a curse may later reveal itself as a gift."
+
+**Part 2 - Bridge to their specific stressor (2-3 sentences):**
+- Explicitly connect the story's core theme to their ACTUAL situation
+- Use "In your [specific stressor]..." to make the connection concrete
+- Create an honest, logical bridge between what the story teaches and what they're experiencing
+- Be specific about HOW the story's wisdom applies to THEIR challenge
+- Example: "In your relationship conflict, both people may be acting from their own 'starvation' - unmet needs, past wounds, or deep fears. When someone hurts you, they're often desperately trying to survive their own pain."
+
+**Part 3 - Actionable insight (2-3 sentences):**
+- End with something specific they can think about or do
+- Tie it directly to BOTH the story AND their specific challenge
+- Be practical and grounded, not vague
+- Example: "While you don't need to sacrifice yourself, you can practice seeing beneath the hurtful behavior to the suffering that drives it. This doesn't mean accepting mistreatment - it means understanding the pain, setting boundaries from compassion rather than anger, and recognizing when someone's 'starvation' isn't yours to fix."
+
+**AVOID THESE PHRASES ENTIRELY:**
+- "The exploration of identity"
+- "Deep emotional currents" 
+- "Shared experience"
+- "Foster resilience"
+- "Navigate with confidence and clarity"
+- Any generic therapy-speak that could apply to anything
+- NO "I wonder" or question-based language
+
+**TEST YOUR CONNECTION:**
+- Could you remove the story title and still know which story this refers to? If no, be more specific about the story's teaching.
+- Could you remove the stressor and still know what problem this addresses? If no, be more specific about their situation.
+- Does it feel like generic self-help advice or a genuine insight connecting THIS story to THEIR problem?
 
 CRITICAL INSTRUCTIONS FOR STORIES:
 - DO NOT generate story content
@@ -1084,11 +1116,7 @@ CRITICAL INSTRUCTIONS FOR STORIES:
 - BE CREATIVE with tag selection - choose tags that capture the deeper emotional or philosophical themes, not just surface-level emotions
 - The system will select an appropriate real story/parable from our curated library (Buddhist tales, Stoic wisdom, stories from historical figures like Frankl and Mandela, cultural parables, etc.)
 - Stories will not repeat for the same user within 14 days, so your tag selection should be thoughtful and varied
-- You MUST also provide a "storyWhyMatters" field: A personalized 3-4 sentence explanation with NO QUESTIONS following this structure:
-  * Sentence 1: State the general principle or wisdom that will come from the story
-  * Sentence 2: Apply it creatively and specifically to their unique situation from the conversation - make unexpected but insightful connections
-  * Sentence 3: Provide universal perspective - show how others struggle with this too, offering comfort through shared human experience
-  * Sentence 4 (optional): Offer a forward-looking insight about how this wisdom could shift their relationship to the challenge
+- You MUST provide a "storyWhyMatters" field following the 3-part structure above (6-8 sentences total with NO QUESTIONS)
 
 Format as JSON with this EXACT structure:
 {
@@ -1133,7 +1161,7 @@ Format as JSON with this EXACT structure:
   },
   "exerciseTags": ["anxiety", "stress", "mindfulness"],
   "storyTags": ["resilience", "perspective"],
-  "storyWhyMatters": "3-4 sentences with NO QUESTIONS: (1) general principle; (2) creative and specific application to their unique situation with unexpected but insightful connections; (3) universal perspective showing others struggle with this; (4) optional forward-looking insight",
+  "storyWhyMatters": "6-8 sentences with NO QUESTIONS following 3-part structure: (1) 1-2 sentences acknowledging what THIS story actually teaches; (2) 2-3 sentences bridging to their SPECIFIC stressor using 'In your [stressor]...' format; (3) 2-3 sentences with actionable insight tied to both story AND their challenge",
   "patterns": ["Pattern 1", "Pattern 2", "Pattern 3"]
 }
 
@@ -1142,7 +1170,7 @@ REQUIREMENTS:
 - Recommend REAL podcasts and books that exist
 - exerciseTags should be 1-3 relevant tags from: anxiety, depression, stress, worry, grounding, mindfulness, self-compassion, values, emotions, etc.
 - storyTags should be 2-3 CREATIVE and VARIED tags that capture deeper emotional/philosophical themes
-- storyWhyMatters must be 3-4 sentences with NO QUESTIONS
+- storyWhyMatters must be 6-8 sentences with NO QUESTIONS following the 3-part structure
 - whatsHappening.fullExplanation: MINIMUM 3 PARAGRAPHS, NO "I" statements, NO questions, citations at END
 - reframing.content: MINIMUM 3-4 PARAGRAPHS, apply theory of mind, questions aggregated at END in bullet format
 - DO NOT include a "story" object - only include "storyTags" and "storyWhyMatters"`;
