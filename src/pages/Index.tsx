@@ -179,12 +179,13 @@ const Index = () => {
     const activeChat = sessionStorage.getItem('activeChatState');
     if (activeChat && !isPreviewMode) {
       try {
-        const { state: savedState, messages: savedMessages, conversationPath: savedPath } = JSON.parse(activeChat);
+        const { state: savedState, messages: savedMessages, conversationPath: savedPath, conversationStartTime: savedStartTime } = JSON.parse(activeChat);
         if (savedState === 'chat' && savedMessages && savedMessages.length > 0) {
           console.log('Restoring active chat after remount');
           setMessages(savedMessages);
           setState('chat');
           if (savedPath) setConversationPath(savedPath);
+          if (savedStartTime) setConversationStartTime(savedStartTime);
         }
       } catch (e) {
         console.error('Error restoring active chat:', e);
@@ -258,14 +259,15 @@ const Index = () => {
 
   // Persist active chat state whenever messages change during a chat session
   useEffect(() => {
-    if (state === 'chat' && messages.length > 0) {
+    if (state === 'chat' && messages.length > 0 && conversationStartTime) {
       sessionStorage.setItem('activeChatState', JSON.stringify({
         state: 'chat',
         messages,
-        conversationPath
+        conversationPath,
+        conversationStartTime
       }));
     }
-  }, [messages, state, conversationPath]);
+  }, [messages, state, conversationPath, conversationStartTime]);
 
   // Extract validation data from conversation
   const extractValidationData = (messages: Message[]): ValidationData => {
@@ -502,7 +504,8 @@ const Index = () => {
     sessionStorage.setItem('activeChatState', JSON.stringify({
       state: 'chat',
       messages: updatedMessages,
-      conversationPath: pathSelection || conversationPath
+      conversationPath: pathSelection || conversationPath,
+      conversationStartTime
     }));
 
     try {
