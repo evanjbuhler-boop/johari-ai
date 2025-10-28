@@ -892,7 +892,7 @@ const Index = () => {
       || 'your reflections';
     
     return (
-      <AppLayout showBackground={false}>
+      <AppLayout showBackground={false} hideSettingsIcons>
         <ResultsDisplay 
           results={results} 
           onNewCheckIn={handleNewCheckIn} 

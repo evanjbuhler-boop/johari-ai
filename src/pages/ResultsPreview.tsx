@@ -111,7 +111,7 @@ const mockResults: CheckInResults = {
 
 export default function ResultsPreview() {
   return (
-    <AppLayout showBackground={false}>
+    <AppLayout showBackground={false} hideSettingsIcons>
       <ResultsDisplay 
         results={mockResults} 
         onNewCheckIn={() => {}} 

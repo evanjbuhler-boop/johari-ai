@@ -11,9 +11,10 @@ import ProfileSheet from '@/components/ProfileSheet';
 interface AppLayoutProps {
   children: ReactNode;
   showBackground?: boolean;
+  hideSettingsIcons?: boolean;
 }
 
-const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
+const AppLayout = ({ children, showBackground = true, hideSettingsIcons = false }: AppLayoutProps) => {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -79,10 +80,12 @@ const AppLayout = ({ children, showBackground = true }: AppLayoutProps) => {
       </div>
 
       {/* Therapy Approach and Neurodiversity settings - Top Right */}
-      <div className="fixed top-6 right-6 z-50 flex gap-3 animate-in fade-in slide-in-from-right-5 duration-700">
-        <TherapyApproachDialog variant="icon" />
-        <NeurodiveritySettingsDialog variant="icon" />
-      </div>
+      {!hideSettingsIcons && (
+        <div className="fixed top-6 right-6 z-50 flex gap-3 animate-in fade-in slide-in-from-right-5 duration-700">
+          <TherapyApproachDialog variant="icon" />
+          <NeurodiveritySettingsDialog variant="icon" />
+        </div>
+      )}
 
       {/* Main content */}
       <div className="relative z-10">
