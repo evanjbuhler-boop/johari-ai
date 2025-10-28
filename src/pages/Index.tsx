@@ -171,6 +171,24 @@ const Index = () => {
     const savedConversation = localStorage.getItem('savedConversation');
     setHasSavedConversation(!!savedConversation);
     
+    // Restore results if available (but not in preview mode)
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPreviewMode = urlParams.get('preview') === 'results';
+    
+    if (!isPreviewMode) {
+      const savedResults = localStorage.getItem('currentResults');
+      if (savedResults) {
+        try {
+          const parsedResults = JSON.parse(savedResults);
+          setResults(parsedResults);
+          setState('results');
+        } catch (e) {
+          console.error('Error parsing saved results:', e);
+          localStorage.removeItem('currentResults');
+        }
+      }
+    }
+    
     const loadProfile = async () => {
       if (user) {
         // Fetch from database for authenticated users
@@ -630,6 +648,7 @@ const Index = () => {
       console.log('🧘 Has exercise?', !!resultsData?.exercise);
       
       setResults(resultsData);
+      localStorage.setItem('currentResults', JSON.stringify(resultsData));
       setIsLoading(false);
       setState('results');
       
@@ -657,6 +676,7 @@ const Index = () => {
       // Fallback to mock results
       const mockResults = generateMockResults(messages);
       setResults(mockResults);
+      localStorage.setItem('currentResults', JSON.stringify(mockResults));
       setIsLoading(false);
       setState('results');
       
@@ -696,8 +716,9 @@ const Index = () => {
     setResults(null);
     setValidationData(null);
     setState('landing');
-    // Clear any saved conversation
+    // Clear any saved conversation and results
     localStorage.removeItem('savedConversation');
+    localStorage.removeItem('currentResults');
     setHasSavedConversation(false);
   };
 
