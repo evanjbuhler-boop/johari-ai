@@ -88,13 +88,14 @@ Source: ${content.source}`;
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300 overflow-y-auto ${
         isClosing ? 'opacity-0' : 'opacity-100'
       }`}
       onClick={handleClose}
+      style={{ position: 'fixed' }}
     >
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
 
       {/* Modal */}
       <Card
