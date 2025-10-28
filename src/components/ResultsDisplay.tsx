@@ -528,6 +528,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
               onClick={() => setWhatsHappeningExpanded(!whatsHappeningExpanded)}
               className="flex items-center gap-4 text-left"
             >
+              <span className="text-3xl">🔍</span>
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">What's Happening</h2>
               {whatsHappeningExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
             </button>
@@ -611,7 +612,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
           )}
         </Card>
 
-        {/* The Theory Section */}
+        {/* What the Research Says Section */}
         {results.theTheory && (
           <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg">
             <div className="flex items-center justify-between gap-4 mb-6">
@@ -619,23 +620,53 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                 onClick={() => setTheoryExpanded(!theoryExpanded)}
                 className="flex items-center gap-4 text-left"
               >
-                <span className="text-2xl">🧠</span>
-                <h2 className="text-2xl md:text-3xl font-medium text-foreground">The Theory</h2>
+                <span className="text-3xl">🧠</span>
+                <h2 className="text-2xl md:text-3xl font-medium text-foreground">What the Research Says</h2>
                 {theoryExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
               </button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => toggleSave('the-theory', 'story', "The Theory", undefined, results.theTheory)}
+                onClick={() => toggleSave('the-theory', 'story', "What the Research Says", undefined, results.theTheory)}
               >
                 {isSaved('the-theory') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
               </Button>
             </div>
 
+            <div className="mt-6 space-y-4">
+              <p className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-3xl">
+                {results.theTheory.content.split('.').slice(0, 2).join('.') + '.'}
+              </p>
+              
+              {/* Generate tags from theory content */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                {results.theTheory.content.toLowerCase().includes('attachment') && (
+                  <span className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20">
+                    attachment theory
+                  </span>
+                )}
+                {results.theTheory.content.toLowerCase().includes('cognitive') && (
+                  <span className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20">
+                    cognitive patterns
+                  </span>
+                )}
+                {(results.theTheory.content.toLowerCase().includes('stress') || results.theTheory.content.toLowerCase().includes('cortisol')) && (
+                  <span className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20">
+                    stress response
+                  </span>
+                )}
+                {results.theTheory.content.toLowerCase().includes('research') && (
+                  <span className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20">
+                    evidence-based
+                  </span>
+                )}
+              </div>
+            </div>
+
             {!theoryExpanded && (
               <button
                 onClick={() => setTheoryExpanded(true)}
-                className="text-primary font-medium hover:underline text-sm"
+                className="text-primary font-medium hover:underline mt-4 text-sm"
               >
                 Read the academic explanation →
               </button>
@@ -647,12 +678,11 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                   {results.theTheory.content}
                 </p>
 
-                {/* Rating buttons */}
                 <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
                   <Button
                     variant={ratings['the-theory'] === 'up' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => handleRating('story', "The Theory", 'up')}
+                    onClick={() => handleRating('story', "What the Research Says", 'up')}
                     className="gap-1"
                   >
                     <ThumbsUp className="w-4 h-4" />
@@ -660,7 +690,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                   <Button
                     variant={ratings['the-theory'] === 'down' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => handleRating('story', "The Theory", 'down')}
+                    onClick={() => handleRating('story', "What the Research Says", 'down')}
                     className="gap-1"
                   >
                     <ThumbsDown className="w-4 h-4" />
@@ -983,7 +1013,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
             <div className="flex items-center justify-between pb-2 mb-4 border-b-2 border-border">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📚</span>
-                <h2 className="text-xl font-semibold text-foreground">Read ~</h2>
+                <h2 className="text-xl font-semibold text-foreground">Read</h2>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -1100,7 +1130,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
             <div className="flex items-center justify-between mb-4 pb-2 border-b-2 border-border">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">✨</span>
-                <h2 className="text-xl font-semibold text-foreground">Practice ~</h2>
+                <h2 className="text-xl font-semibold text-foreground">Practice</h2>
               </div>
               <div className="flex gap-2">
                 <Button
