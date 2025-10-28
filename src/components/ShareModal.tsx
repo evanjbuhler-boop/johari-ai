@@ -49,9 +49,9 @@ ${content.text}
 
 ---
 
-Johari AI
+Johari - AI-Powered Mental Wellness
 
-AI that gently reveals your blindspots and recommends exactly what you need - books, practices, tools, etc.
+Gently reveal your blindspots and receive recommendations for exactly what you need, when you need it - books, practices, tools, etc.
 
 Sign up at www.johari.ai`;
 
