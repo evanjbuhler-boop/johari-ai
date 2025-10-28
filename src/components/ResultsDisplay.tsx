@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import GuidedExercise from '@/components/GuidedExercise';
+import RatingFeedbackDialog from '@/components/RatingFeedbackDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import StageProgressBar from '@/components/StageProgressBar';
@@ -34,6 +35,11 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
   const [ratings, setRatings] = useState<Record<string, 'up' | 'down'>>({});
+  const [feedbackDialog, setFeedbackDialog] = useState<{
+    open: boolean;
+    type: 'podcast' | 'book' | 'exercise' | 'story';
+    title: string;
+  } | null>(null);
   
   // Generate a session ID if not provided (for testing)
   const currentSessionId = sessionId || `session-${Date.now()}`;
@@ -93,14 +99,35 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
       return;
     }
 
-    // Optimistic update
     const currentRating = ratings[type];
     const newRating = currentRating === rating ? null : rating;
     
+    // If downvoting (and not un-downvoting), show feedback dialog
+    if (newRating === 'down') {
+      setFeedbackDialog({ open: true, type, title });
+      return;
+    }
+
+    // For upvotes or removing ratings, proceed directly
+    await submitRating(type, title, newRating, '', undefined);
+  };
+
+  const submitRating = async (
+    type: 'podcast' | 'book' | 'exercise' | 'story',
+    title: string,
+    rating: 'up' | 'down' | null,
+    feedbackReason?: string,
+    quickReason?: string
+  ) => {
+    if (!user) return;
+
+    // Optimistic update
+    const currentRating = ratings[type];
+    
     setRatings(prev => {
       const updated = { ...prev };
-      if (newRating) {
-        updated[type] = newRating;
+      if (rating) {
+        updated[type] = rating;
       } else {
         delete updated[type];
       }
@@ -108,7 +135,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
     });
 
     try {
-      if (newRating === null) {
+      if (rating === null) {
         // Delete rating
         await supabase
           .from('recommendation_ratings')
@@ -118,7 +145,14 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
           .eq('recommendation_type', type);
         toast.success('Rating removed');
       } else {
-        // Upsert rating
+        // Fetch user profile for ML context
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('age, location, life_stage')
+          .eq('id', user.id)
+          .single();
+
+        // Upsert rating with rich context
         await supabase
           .from('recommendation_ratings')
           .upsert({
@@ -126,11 +160,25 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
             session_id: currentSessionId,
             recommendation_type: type,
             recommendation_title: title,
-            rating: newRating,
+            rating: rating,
+            feedback_reason: feedbackReason || null,
+            session_theme: sessionTheme || null,
+            user_profile_context: profileData ? {
+              age: profileData.age,
+              location: profileData.location,
+              life_stage: profileData.life_stage,
+              quick_reason: quickReason || null,
+              timestamp: new Date().toISOString()
+            } : null,
           }, {
             onConflict: 'user_id,session_id,recommendation_type'
           });
-        toast.success(`Rated ${newRating === 'up' ? '👍' : '👎'}`);
+        
+        if (rating === 'up') {
+          toast.success('👍 Thanks for your feedback!');
+        } else {
+          toast.success('👎 Thanks for helping us improve!');
+        }
       }
     } catch (error) {
       // Revert optimistic update
@@ -146,6 +194,18 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
       toast.error('Failed to save rating');
       console.error('Rating error:', error);
     }
+  };
+
+  const handleFeedbackSubmit = (feedbackReason: string, quickReason?: string) => {
+    if (!feedbackDialog) return;
+    submitRating(
+      feedbackDialog.type, 
+      feedbackDialog.title, 
+      'down', 
+      feedbackReason, 
+      quickReason
+    );
+    setFeedbackDialog(null);
   };
 
   const generatePreview = (type: 'podcast' | 'book' | 'exercise' | 'story', title: string, content: any): string => {
@@ -926,6 +986,17 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
           onClose={() => setExerciseModalOpen(false)}
           title={results.exercise.title}
           steps={results.exercise.steps}
+        />
+      )}
+
+      {/* Rating Feedback Dialog */}
+      {feedbackDialog && (
+        <RatingFeedbackDialog
+          open={feedbackDialog.open}
+          onClose={() => setFeedbackDialog(null)}
+          onSubmit={handleFeedbackSubmit}
+          recommendationType={feedbackDialog.type}
+          recommendationTitle={feedbackDialog.title}
         />
       )}
       

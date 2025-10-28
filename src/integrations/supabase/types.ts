@@ -131,30 +131,39 @@ export type Database = {
       recommendation_ratings: {
         Row: {
           created_at: string
+          feedback_reason: string | null
           id: string
           rating: string
           recommendation_title: string
           recommendation_type: string
           session_id: string
+          session_theme: string | null
           user_id: string
+          user_profile_context: Json | null
         }
         Insert: {
           created_at?: string
+          feedback_reason?: string | null
           id?: string
           rating: string
           recommendation_title: string
           recommendation_type: string
           session_id: string
+          session_theme?: string | null
           user_id: string
+          user_profile_context?: Json | null
         }
         Update: {
           created_at?: string
+          feedback_reason?: string | null
           id?: string
           rating?: string
           recommendation_title?: string
           recommendation_type?: string
           session_id?: string
+          session_theme?: string | null
           user_id?: string
+          user_profile_context?: Json | null
         }
         Relationships: []
       }
