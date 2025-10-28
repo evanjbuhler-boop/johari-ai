@@ -1115,7 +1115,56 @@ REMOVE THESE PHRASES:
 - NO questions in the fullExplanation
 - Citations at END only
 
+**The Theory Section - Pure Academic Teaching:**
+
+This NEW section goes BETWEEN "What's Happening" and "A Different Lens" sections.
+
+STRUCTURE:
+1. **Explain psychological/neurological mechanisms (3-5 paragraphs)**
+   - Each paragraph focuses on ONE theoretical concept
+   - Name specific theories, researchers, and studies where relevant
+   - Describe how the brain/mind operates in these situations
+   - Connect to broader patterns (developmental, social, cognitive)
+   - Use proper terminology (contingent self-worth, catastrophic thinking, confirmation bias, introjection, etc.)
+
+CONTENT GUIDELINES:
+- This is PURE academic teaching - no personal application yet
+- Reference research domains: cognitive psychology, neuroscience, developmental psychology, attachment theory, etc.
+- Include researchers by name when appropriate (e.g., "Researcher Jennifer Crocker's work...")
+- Explain mechanisms precisely (which brain regions, what neural pathways, how systems interact)
+- Draw from concepts like:
+  * Social comparison theory
+  * Confirmation bias & cognitive distortions
+  * Catastrophic thinking patterns
+  * Contingent self-worth
+  * Shame vs. guilt (neural pathways)
+  * Introjection & developmental internalization
+  * Positive feedback loops
+  * Threat-detection systems
+  * Identity-level threats
+  * Self-fulfilling prophecies
+  * Media psychology & social influence
+
+TONE GUIDELINES:
+- Educational and authoritative, but accessible
+- Like a psychology professor explaining to students
+- ✅ "Psychologists call this 'contingent self-worth' - the belief that your value as a person depends on meeting certain standards"
+- ✅ "Researcher Jennifer Crocker's work at the University of Michigan identified that when people base their self-worth on academic competence..."
+- ✅ "Neurologically, this activates the same threat-detection systems as social rejection. Brain imaging studies show that..."
+- ✅ "Developmental psychology research shows that children internalize parental values as their own, especially around achievement..."
+- ❌ "In YOUR case..." (save that for A Different Lens)
+- ❌ Questions (this is teaching, not exploration)
+
+REQUIREMENTS:
+- 3-5 full paragraphs
+- Each paragraph = one theoretical concept
+- Name theories and researchers
+- Explain mechanisms, not just observations
+- NO personal application here - that comes in A Different Lens
+
 **A Different Lens (Reframing) Section - Offer new perspective as invitation:**
+
+IMPORTANT: This section should now REFERENCE and APPLY the theory explained in THE THEORY section.
 
 STRUCTURE:
 1. **Name their current lens directly (1-2 sentences)**
@@ -1124,11 +1173,14 @@ STRUCTURE:
 
 2. **Offer the reframe as invitation (2-3 sentences)**
    - Present new perspective as something to try on
+   - Reference the mechanisms from THE THEORY section: "Given what you now understand about [theory], notice how..."
+   - Root reframes explicitly in theory: "Remember that [mechanism from THE THEORY] - that's what's happening when..."
    - Make it concrete and visceral
-   - Example: "What if that same anxiety was actually revealing how much you care about doing meaningful work? The voice that says 'this isn't good enough' is trying to protect you, but it's using outdated information - acting like mistakes will get you rejected when actually, they're how you learn."
+   - Example: "But what if, knowing how contingent self-worth works, you could see your anxiety differently? The voice that says 'this isn't good enough' is running that threat-detection system we discussed - acting like mistakes will get you rejected when actually, they're how you learn."
 
 3. **Make it practical and specific (2-3 sentences)**
    - Ground the reframe in something they can observe or try
+   - Apply the theoretical concepts to their actual situation
    - Connect to their actual situation
    - Example: "Think about someone you respect who's also struggling with something difficult. You probably wouldn't tell them they're failing—you'd help them see their effort, name the obstacles, remind them of their strengths. That same perspective shift isn't lowering your standards; it's seeing the whole picture instead of just the gaps."
 
@@ -1223,11 +1275,14 @@ Format as JSON with this EXACT structure:
       {"author": "Researcher Name", "year": 2020, "title": "Study Title"}
     ]
   },
+  "theTheory": {
+    "content": "MINIMUM 3-5 FULL PARAGRAPHS (5-7 sentences each). Pure academic teaching. Explain psychological/neurological mechanisms. Each paragraph = ONE theoretical concept. Name specific theories, researchers, and studies. Reference research domains (cognitive psychology, neuroscience, developmental psychology). Include researchers by name. Explain mechanisms precisely (brain regions, neural pathways, system interactions). Draw from: social comparison theory, confirmation bias, catastrophic thinking, contingent self-worth, shame vs guilt neural pathways, introjection, positive feedback loops, threat-detection systems, identity-level threats, self-fulfilling prophecies. Educational and authoritative but accessible tone. NO personal application. NO questions. This is PURE teaching that will be applied in the next section."
+  },
   "quotes": [
     {"text": "Direct quote from user", "sentiment": "positive|negative|neutral"}
   ],
   "reframing": {
-    "content": "MINIMUM 3-4 SUBSTANTIAL PARAGRAPHS offering different therapeutic lens. Apply THEORY OF MIND - when discussing others (ex, family, coworkers), acknowledge their struggles/fears/perspective, not just user's narrative. Gently challenge assumptions and expose logical fallacies. Use clinical frameworks. Be thorough. END with questions in this format:\n\n**Questions to consider:**\n• First question challenging their perspective\n• Second question inviting curiosity about blind spots\n• Optional third question expanding their Johari Window"
+    "content": "MINIMUM 3-4 SUBSTANTIAL PARAGRAPHS offering different therapeutic lens. REFERENCE and APPLY the theory from THE THEORY section. Use phrases like 'Given what you now understand about [theory]...' or 'Remember that [mechanism] - that's what's happening when...' Apply THEORY OF MIND - when discussing others (ex, family, coworkers), acknowledge their struggles/fears/perspective, not just user's narrative. Gently challenge assumptions and expose logical fallacies. Use clinical frameworks. Be thorough. END with questions in this format:\n\n**💭 Questions to consider:**\n• First question challenging their perspective\n• Second question inviting curiosity about blind spots\n• Optional third question expanding their Johari Window"
   },
   "podcast": {
     "title": "Real Podcast Name (research and recommend an actual podcast)",
@@ -1260,13 +1315,14 @@ Format as JSON with this EXACT structure:
 }
 
 REQUIREMENTS:
-- ALL fields must be present (podcast, book, exerciseTags, storyTags, storyWhyMatters)
+- ALL fields must be present (podcast, book, exerciseTags, storyTags, storyWhyMatters, theTheory)
 - Recommend REAL podcasts and books that exist
 - exerciseTags should be 1-3 relevant tags from: anxiety, depression, stress, worry, grounding, mindfulness, self-compassion, values, emotions, etc.
 - storyTags should be 2-3 CREATIVE and VARIED tags that capture deeper emotional/philosophical themes
 - storyWhyMatters must be 6-8 sentences with NO QUESTIONS following the 3-part structure
 - whatsHappening.fullExplanation: MINIMUM 3 PARAGRAPHS, NO "I" statements, NO questions, citations at END
-- reframing.content: MINIMUM 3-4 PARAGRAPHS, apply theory of mind, questions aggregated at END in bullet format
+- theTheory.content: MINIMUM 3-5 PARAGRAPHS of pure academic teaching, each paragraph = ONE theoretical concept, name theories/researchers/studies, NO personal application, NO questions
+- reframing.content: MINIMUM 3-4 PARAGRAPHS, REFERENCE and APPLY theory from theTheory section, apply theory of mind, questions aggregated at END in bullet format
 - DO NOT include a "story" object - only include "storyTags" and "storyWhyMatters"`;
 
     const conversationSummary = messages.map((m: any) =>

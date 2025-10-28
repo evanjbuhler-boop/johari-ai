@@ -104,6 +104,11 @@ export interface CheckInResults {
     }[];
   };
   
+  // Section 2.5: The Theory (Academic Teaching)
+  theTheory?: {
+    content: string;
+  };
+  
   // Section 3: Quotes from conversation
   quotes?: {
     text: string;

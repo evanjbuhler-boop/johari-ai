@@ -32,6 +32,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
   const navigate = useNavigate();
   const { user } = useAuth();
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(false);
+  const [theoryExpanded, setTheoryExpanded] = useState(false);
   const [storyExpanded, setStoryExpanded] = useState(false);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
@@ -88,9 +89,11 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
       if (!error && data) {
         const ratingsMap: Record<string, 'up' | 'down'> = {};
         data.forEach(item => {
-          // Use title-based keys for What's Happening and Different Lens
+          // Use title-based keys for What's Happening, The Theory, and Different Lens
           if (item.recommendation_title === "What's Happening") {
             ratingsMap['whats-happening'] = item.rating as 'up' | 'down';
+          } else if (item.recommendation_title === "The Theory") {
+            ratingsMap['the-theory'] = item.rating as 'up' | 'down';
           } else if (item.recommendation_title === "A Different Lens") {
             ratingsMap['reframing'] = item.rating as 'up' | 'down';
           } else {
@@ -144,6 +147,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
     let ratingKey: string = type;
     if (title === "What's Happening") {
       ratingKey = 'whats-happening';
+    } else if (title === "The Theory") {
+      ratingKey = 'the-theory';
     } else if (title === "A Different Lens") {
       ratingKey = 'reframing';
     }
@@ -254,6 +259,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
     } else if (type === 'story') {
       if (title === "What's Happening" && results.whatsHappening) {
         return results.whatsHappening.summary.slice(0, 200) + (results.whatsHappening.summary.length > 200 ? '...' : '');
+      } else if (title === "The Theory" && results.theTheory) {
+        return results.theTheory.content.slice(0, 200) + (results.theTheory.content.length > 200 ? '...' : '');
       } else if (title === "A Different Lens" && results.reframing) {
         return results.reframing.content.slice(0, 200) + (results.reframing.content.length > 200 ? '...' : '');
       } else if (results.story) {
@@ -603,6 +610,66 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
             </div>
           )}
         </Card>
+
+        {/* The Theory Section */}
+        {results.theTheory && (
+          <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg">
+            <div className="flex items-center justify-between gap-4 mb-6">
+              <button
+                onClick={() => setTheoryExpanded(!theoryExpanded)}
+                className="flex items-center gap-4 text-left"
+              >
+                <span className="text-2xl">🧠</span>
+                <h2 className="text-2xl md:text-3xl font-medium text-foreground">The Theory</h2>
+                {theoryExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+              </button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => toggleSave('the-theory', 'story', "The Theory", undefined, results.theTheory)}
+              >
+                {isSaved('the-theory') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+              </Button>
+            </div>
+
+            {!theoryExpanded && (
+              <button
+                onClick={() => setTheoryExpanded(true)}
+                className="text-primary font-medium hover:underline text-sm"
+              >
+                Read the academic explanation →
+              </button>
+            )}
+
+            {theoryExpanded && (
+              <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                <p className="text-base text-foreground/80 leading-relaxed whitespace-pre-line">
+                  {results.theTheory.content}
+                </p>
+
+                {/* Rating buttons */}
+                <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
+                  <Button
+                    variant={ratings['the-theory'] === 'up' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => handleRating('story', "The Theory", 'up')}
+                    className="gap-1"
+                  >
+                    <ThumbsUp className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={ratings['the-theory'] === 'down' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => handleRating('story', "The Theory", 'down')}
+                    className="gap-1"
+                  >
+                    <ThumbsDown className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Card>
+        )}
 
         {/* Quotes Section */}
         {results.quotes && results.quotes.length > 0 && (
