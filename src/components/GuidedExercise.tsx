@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, ArrowRight, X, Mail, Save } from 'lucide-react';
+import { ArrowLeft, ArrowRight, X, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Step {
@@ -41,18 +41,6 @@ const GuidedExercise = ({ open, onClose, title, steps }: GuidedExerciseProps) =>
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
-  };
-
-  const handleSaveToJournal = () => {
-    const journalEntries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
-    journalEntries.push({
-      title,
-      responses,
-      timestamp: new Date().toISOString(),
-    });
-    localStorage.setItem('journalEntries', JSON.stringify(journalEntries));
-    toast.success('Saved to your journal');
-    onClose();
   };
 
   const handleEmailToMe = () => {
@@ -124,18 +112,12 @@ const GuidedExercise = ({ open, onClose, title, steps }: GuidedExerciseProps) =>
         {isLastStep ? (
           <div className="border-t border-border pt-6 mt-6 space-y-4">
             <p className="text-sm text-muted-foreground">
-              Would you like to save these reflections?
+              Would you like to email these reflections to yourself?
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button onClick={handleSaveToJournal} className="flex-1 gap-2">
-                <Save className="w-4 h-4" />
-                Save to Journal
-              </Button>
-              <Button onClick={handleEmailToMe} variant="outline" className="flex-1 gap-2">
-                <Mail className="w-4 h-4" />
-                Email to Me
-              </Button>
-            </div>
+            <Button onClick={handleEmailToMe} className="w-full gap-2">
+              <Mail className="w-4 h-4" />
+              Email to Me
+            </Button>
             <Button onClick={onClose} variant="ghost" className="w-full">
               Close
             </Button>
