@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import GuidedExercise from '@/components/GuidedExercise';
 import RatingFeedbackDialog from '@/components/RatingFeedbackDialog';
+import ShareModal from '@/components/ShareModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import StageProgressBar from '@/components/StageProgressBar';
@@ -39,6 +40,17 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
     open: boolean;
     type: 'podcast' | 'book' | 'exercise' | 'story';
     title: string;
+  } | null>(null);
+  const [shareModal, setShareModal] = useState<{
+    open: boolean;
+    content: {
+      emoji: string;
+      title: string;
+      author?: string;
+      text: string;
+      link: string;
+      source: string;
+    };
   } | null>(null);
   
   // Generate a session ID if not provided (for testing)
@@ -447,18 +459,38 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
     return `https://books.google.com/books?isbn=${isbn}&printsec=frontcover&output=embed`;
   };
 
-  const handleShare = async (title: string) => {
-    if (navigator.share) {
-      try {
-        await navigator.share({ title, text: `Check out: ${title}` });
-      } catch (err) {
-        navigator.clipboard.writeText(window.location.href);
-        toast.success('Link copied!');
-      }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast.success('Link copied!');
+  const handleShare = (
+    type: 'podcast' | 'book' | 'exercise',
+    title: string,
+    content: {
+      author?: string;
+      text: string;
+      link: string;
     }
+  ) => {
+    const emojiMap = {
+      podcast: '🎙️',
+      book: '📚',
+      exercise: '✨',
+    };
+
+    const sourceMap = {
+      podcast: 'Listen section',
+      book: 'Read section',
+      exercise: 'Practice section',
+    };
+
+    setShareModal({
+      open: true,
+      content: {
+        emoji: emojiMap[type],
+        title,
+        author: content.author,
+        text: content.text,
+        link: content.link,
+        source: sourceMap[type],
+      },
+    });
   };
 
   return (
@@ -759,7 +791,15 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                 >
                   {isSaved('podcast-' + results.podcast.episode) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handleShare(results.podcast!.title)}>
+                <Button variant="outline" size="sm" onClick={() => handleShare(
+                  'podcast',
+                  results.podcast!.title,
+                  {
+                    author: results.podcast!.host,
+                    text: results.podcast!.description,
+                    link: VERIFIED_LINKS.podcast.spotify,
+                  }
+                )}>
                   <Share2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -851,7 +891,15 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                 >
                   {isSaved('book-' + results.book.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handleShare(results.book!.title)}>
+                <Button variant="outline" size="sm" onClick={() => handleShare(
+                  'book',
+                  results.book!.title,
+                  {
+                    author: results.book!.author,
+                    text: results.book!.description,
+                    link: VERIFIED_LINKS.book.bookshop,
+                  }
+                )}>
                   <Share2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -960,7 +1008,14 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
                 >
                   {isSaved('exercise-' + results.exercise.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handleShare(results.exercise!.title)}>
+                <Button variant="outline" size="sm" onClick={() => handleShare(
+                  'exercise',
+                  results.exercise!.title,
+                  {
+                    text: results.exercise!.description,
+                    link: window.location.href,
+                  }
+                )}>
                   <Share2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -1051,6 +1106,15 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
           onSubmit={handleFeedbackSubmit}
           recommendationType={feedbackDialog.type}
           recommendationTitle={feedbackDialog.title}
+        />
+      )}
+
+      {/* Share Modal */}
+      {shareModal && (
+        <ShareModal
+          open={shareModal.open}
+          onClose={() => setShareModal(null)}
+          content={shareModal.content}
         />
       )}
       
