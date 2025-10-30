@@ -194,14 +194,26 @@ const Index = () => {
     }
     
     if (!isPreviewMode && !activeChat) {
-      const savedResults = localStorage.getItem('currentResults');
-      if (savedResults) {
+      const savedCheckIn = localStorage.getItem('lastCheckIn');
+      if (savedCheckIn) {
         try {
-          const parsedResults = JSON.parse(savedResults);
-          setResults(parsedResults);
-          setState('results');
+          const parsedCheckIn = JSON.parse(savedCheckIn);
+          // Restore the complete check-in state including messages
+          if (parsedCheckIn.results) {
+            setResults(parsedCheckIn.results);
+            setState('results');
+          }
+          // Restore messages so they're available if results need regeneration
+          if (parsedCheckIn.messages && parsedCheckIn.messages.length > 0) {
+            setMessages(parsedCheckIn.messages);
+          }
+          // Restore validation data
+          if (parsedCheckIn.validationData) {
+            setValidationData(parsedCheckIn.validationData);
+          }
         } catch (e) {
-          console.error('Error parsing saved results:', e);
+          console.error('Error parsing saved check-in:', e);
+          localStorage.removeItem('lastCheckIn');
           localStorage.removeItem('currentResults');
         }
       }
@@ -687,7 +699,6 @@ const Index = () => {
       console.log('🧘 Has exercise?', !!resultsData?.exercise);
       
       setResults(resultsData);
-      localStorage.setItem('currentResults', JSON.stringify(resultsData));
       setIsLoading(false);
       setState('results');
       
@@ -715,7 +726,6 @@ const Index = () => {
       // Fallback to mock results
       const mockResults = generateMockResults(messages);
       setResults(mockResults);
-      localStorage.setItem('currentResults', JSON.stringify(mockResults));
       setIsLoading(false);
       setState('results');
       
