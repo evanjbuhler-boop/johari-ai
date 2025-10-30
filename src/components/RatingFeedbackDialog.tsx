@@ -45,6 +45,13 @@ const RatingFeedbackDialog = ({
       "Prefer different approach",
       "Seems too difficult/complex"
     ],
+    research: [
+      "Doesn't apply to my situation",
+      "Too academic/technical",
+      "Disagree with the theory",
+      "Looking for different perspective",
+      "Citations are outdated"
+    ],
     story: [
       "Doesn't relate to my situation",
       "Cultural context unclear",

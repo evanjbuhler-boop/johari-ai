@@ -57,7 +57,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [feedbackDialog, setFeedbackDialog] = useState<{
     open: boolean;
-    type: 'podcast' | 'book' | 'exercise' | 'story';
+    type: 'podcast' | 'book' | 'exercise' | 'story' | 'research';
     title: string;
   } | null>(null);
   const [shareModal, setShareModal] = useState<{
@@ -165,7 +165,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
   // Rating functionality
   const handleRating = async (
-    type: 'podcast' | 'book' | 'exercise' | 'story',
+    type: 'podcast' | 'book' | 'exercise' | 'story' | 'research',
     title: string,
     rating: 'up' | 'down'
   ) => {
@@ -189,7 +189,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   };
 
   const submitRating = async (
-    type: 'podcast' | 'book' | 'exercise' | 'story',
+    type: 'podcast' | 'book' | 'exercise' | 'story' | 'research',
     title: string,
     rating: 'up' | 'down' | null,
     feedbackReason?: string,
@@ -295,7 +295,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     setFeedbackDialog(null);
   };
 
-  const generatePreview = (type: 'podcast' | 'book' | 'exercise' | 'story', title: string, content: any): string => {
+  const generatePreview = (type: 'podcast' | 'book' | 'exercise' | 'story' | 'research', title: string, content: any): string => {
     if (type === 'podcast' && results.podcast) {
       const desc = results.podcast.description.slice(0, 120);
       const why = results.podcast.whyThisHelps.slice(0, 120);
@@ -325,7 +325,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     return '';
   };
 
-  const toggleSave = async (id: string, type: 'podcast' | 'book' | 'exercise' | 'story', title: string, subtitle: string | undefined, content: any) => {
+  const toggleSave = async (id: string, type: 'podcast' | 'book' | 'exercise' | 'story' | 'research', title: string, subtitle: string | undefined, content: any) => {
     if (!user) {
       toast.error('Please sign in to save items');
       navigate('/auth');
@@ -688,7 +688,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => toggleSave('the-theory', 'story', "What the Research Says", undefined, results.theTheory)}
+                onClick={() => toggleSave('the-theory', 'research', "What the Research Says", undefined, results.theTheory)}
               >
                 {isSaved('the-theory') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
               </Button>
@@ -746,7 +746,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   <Button
                     variant={ratings['the-theory'] === 'up' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => handleRating('story', "What the Research Says", 'up')}
+                    onClick={() => handleRating('research', "What the Research Says", 'up')}
                     className="gap-1"
                   >
                     <ThumbsUp className="w-4 h-4" />
@@ -754,7 +754,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   <Button
                     variant={ratings['the-theory'] === 'down' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => handleRating('story', "What the Research Says", 'down')}
+                    onClick={() => handleRating('research', "What the Research Says", 'down')}
                     className="gap-1"
                   >
                     <ThumbsDown className="w-4 h-4" />
