@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Brain, MessageSquare, Target, Heart, Baby } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   Sheet,
   SheetContent,
@@ -325,45 +325,64 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
           </div>
 
           {/* Default Insight Tone */}
-          <div className="space-y-2">
-            <Label htmlFor="insight-tone">Default Insight Tone</Label>
-            <Select value={insightTone} onValueChange={handleInsightToneChange}>
-              <SelectTrigger id="insight-tone" className="bg-background/50">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="clinical">
-                  <div className="flex flex-col items-start">
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Default Insight Tone</Label>
+            <RadioGroup value={insightTone} onValueChange={handleInsightToneChange} className="space-y-2">
+              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="clinical" id="tone-clinical" className="mt-1" />
+                <label htmlFor="tone-clinical" className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Brain className="h-4 w-4 text-primary" />
                     <span className="font-medium">Clinical</span>
-                    <span className="text-xs text-muted-foreground">Research-based & objective</span>
                   </div>
-                </SelectItem>
-                <SelectItem value="direct">
-                  <div className="flex flex-col items-start">
+                  <p className="text-xs text-muted-foreground">Research-based & objective insights</p>
+                </label>
+              </div>
+
+              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="direct" id="tone-direct" className="mt-1" />
+                <label htmlFor="tone-direct" className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-2 mb-1">
+                    <MessageSquare className="h-4 w-4 text-primary" />
                     <span className="font-medium">Direct</span>
-                    <span className="text-xs text-muted-foreground">Clear & straightforward</span>
                   </div>
-                </SelectItem>
-                <SelectItem value="coaching">
-                  <div className="flex flex-col items-start">
+                  <p className="text-xs text-muted-foreground">Clear & straightforward guidance</p>
+                </label>
+              </div>
+
+              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="coaching" id="tone-coaching" className="mt-1" />
+                <label htmlFor="tone-coaching" className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Target className="h-4 w-4 text-primary" />
                     <span className="font-medium">Coaching</span>
-                    <span className="text-xs text-muted-foreground">Action-oriented guidance</span>
                   </div>
-                </SelectItem>
-                <SelectItem value="compassionate">
-                  <div className="flex flex-col items-start">
+                  <p className="text-xs text-muted-foreground">Action-oriented with practical steps</p>
+                </label>
+              </div>
+
+              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="compassionate" id="tone-compassionate" className="mt-1" />
+                <label htmlFor="tone-compassionate" className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Heart className="h-4 w-4 text-primary" />
                     <span className="font-medium">Compassionate</span>
-                    <span className="text-xs text-muted-foreground">Warm & empathetic</span>
                   </div>
-                </SelectItem>
-                <SelectItem value="children">
-                  <div className="flex flex-col items-start">
+                  <p className="text-xs text-muted-foreground">Warm & empathetic support</p>
+                </label>
+              </div>
+
+              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="children" id="tone-children" className="mt-1" />
+                <label htmlFor="tone-children" className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Baby className="h-4 w-4 text-primary" />
                     <span className="font-medium">For Children</span>
-                    <span className="text-xs text-muted-foreground">Simple & age-appropriate</span>
                   </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
+                  <p className="text-xs text-muted-foreground">Simple & age-appropriate language</p>
+                </label>
+              </div>
+            </RadioGroup>
             <p className="text-xs text-muted-foreground">
               This will be your default tone for all new insights
             </p>
