@@ -626,7 +626,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                 {results.whatsHappening.themes.map((theme, idx) => (
                   <span 
                     key={idx}
-                    className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20"
+                    className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20 capitalize"
                   >
                     {theme}
                   </span>
@@ -705,7 +705,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   {results.theTheory.tags.map((tag, idx) => (
                     <span 
                       key={idx}
-                      className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20"
+                      className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20 capitalize"
                     >
                       {tag}
                     </span>
