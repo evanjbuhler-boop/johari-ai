@@ -648,9 +648,15 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
           {whatsHappeningExpanded && (
             <div className="mt-6 pt-6 border-t border-border space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-              <p className="text-base text-foreground/80 leading-relaxed whitespace-pre-line">
-                {renderBoldText(results.whatsHappening.fullExplanation)}
-              </p>
+              <div className="text-base text-foreground/80 leading-relaxed space-y-4">
+                {results.whatsHappening.fullExplanation
+                  .split(/\n{2,}/)
+                  .map((para, idx) => (
+                    <p key={idx} className="leading-relaxed">
+                      {renderBoldText(para.trim())}
+                    </p>
+                  ))}
+              </div>
 
               {/* Rating buttons */}
               <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
@@ -857,7 +863,13 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     
                     return (
                       <>
-                        <div className="whitespace-pre-line">{renderBoldText(mainContent)}</div>
+                        <div className="space-y-4">
+                          {mainContent.split(/\n{2,}/).map((para, idx) => (
+                            <p key={idx} className="leading-relaxed">
+                              {renderBoldText(para.trim())}
+                            </p>
+                          ))}
+                        </div>
                         
                         {questions.length > 0 && (
                           <div className="mt-8 pt-6 border-t border-border/50">
@@ -879,7 +891,15 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     );
                   }
                   
-                  return <div className="whitespace-pre-line">{renderBoldText(content)}</div>;
+                  return (
+                    <div className="space-y-4">
+                      {content.split(/\n{2,}/).map((para, idx) => (
+                        <p key={idx} className="leading-relaxed">
+                          {renderBoldText(para.trim())}
+                        </p>
+                      ))}
+                    </div>
+                  );
                 })()}
               </div>
                 </div>
