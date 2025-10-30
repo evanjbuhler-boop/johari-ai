@@ -330,7 +330,58 @@ PARAPHRASING RULE:
 - ❌ "You mentioned that because she is so beautiful, you viewed that as positive reflection of your manhood..."
 - ✅ "The tendency to derive self-worth from a partner's perceived desirability..."
 
-[Continue with full prompt from line 1127 onwards...]`;
+TONE GUIDELINES:
+- Direct and observational, like a skilled therapist naming what they see
+- Not gentle/validating but clear and precise
+- Use "you" language focused on actions and patterns, not feelings
+- NO therapy-speak, NO "I notice", NO questions
+
+**Actionable Recommendations Section:**
+
+Generate 4-6 concrete, specific action steps they can take. Each recommendation should:
+- Be directly tied to their specific paraphrased situations
+- Be immediately actionable
+- Address the underlying pattern
+- Use clear language matching the specified tone
+
+**Podcast Recommendations:**
+
+Recommend 1-2 REAL podcasts that address their pattern. Include title, host, episode, and why this helps (2-3 sentences connecting to their pattern using paraphrased examples).
+
+**Book Recommendations:**
+
+Recommend 1-2 REAL books. Include title, author, description, and why this helps (2-3 sentences connecting to their paraphrased situations).
+
+**Your Words Section:**
+
+Include 3-4 impactful direct quotes from the user.
+
+Format as JSON:
+{
+  "whatsHappening": {
+    "fullExplanation": "200-300 words, 4-part structure",
+    "summary": "2-3 sentences",
+    "themes": ["Theme 1", "Theme 2", "Theme 3"]
+  },
+  "actionableRecommendations": ["Step 1", "Step 2", "Step 3", "Step 4"],
+  "podcast": {
+    "title": "Name",
+    "host": "Host",
+    "episode": "Episode",
+    "duration": "30-60 min",
+    "description": "What it covers",
+    "whyThisHelps": "2-3 sentences with paraphrased examples"
+  },
+  "book": {
+    "title": "Title",
+    "author": "Author",
+    "description": "What it covers",
+    "whyThisHelps": "2-3 sentences with paraphrased examples"
+  },
+  "quotes": [{"text": "Quote", "sentiment": "positive|negative|neutral"}]
+}
+
+You MUST respond with valid JSON only. No markdown, no code blocks.`;
 }
 
 // Helper function to get language adaptation instructions
@@ -380,7 +431,7 @@ serve(async (req) => {
         throw new Error('OPENAI_API_KEY or ANTHROPIC_API_KEY is not configured');
       }
 
-      console.log('Processing chat request, type:', type, 'path:', conversationPath, 'messages:', messages?.length, 'mock mode:', useMockAI, 'userId:', userId);
+      console.log('Processing chat request, type:', type, 'action:', action, 'path:', conversationPath, 'messages:', messages?.length, 'mock mode:', useMockAI, 'userId:', userId);
 
     // Handle venting summary
     if (type === 'venting_summary') {
@@ -486,6 +537,7 @@ Return ONLY valid JSON in this format:
             model: 'gpt-4o',
             max_completion_tokens: 10000,
             temperature: 0.4,
+            response_format: { type: "json_object" },
             messages: [
               { role: 'system', content: regenerationPrompt },
               { role: 'user', content: `Conversation:\n${conversationText}\n\nGenerate complete recommendations with the specified tone.` }
