@@ -1263,25 +1263,39 @@ ${getToneInstructions(insightTone || 'clinical')}
 BYLINE REQUIREMENTS:
 
 **What's Happening Byline:**
-Generate a compelling 1-2 sentence byline that captures the core pattern while adapting to the tone setting:
+⚠️ MINIMUM LENGTH: 2-3 FULL sentences (30-50 words). Short generic statements like "You're stuck in a cycle of comparison" are NOT acceptable.
 
-- CLINICAL: Direct pattern statement with mechanism. "Your self-concept is entangled with external stability markers. When job security or geographic rootedness fluctuates, you experience it as personal failure rather than circumstantial challenge."
+Generate a compelling byline that captures the SPECIFIC core pattern from THEIR conversation while adapting to the tone setting:
 
-- COMPASSIONATE: Empathetic framing with validation. "It makes sense that you're feeling inadequate—when everything around you feels unstable (job, location, others' opinions), it's easy to believe the problem is you. But what if the instability is just... instability, not evidence of your worth?"
+- CLINICAL: Direct pattern statement with mechanism, USING THEIR SPECIFIC SITUATIONS (paraphrased). Example: "Your self-concept is entangled with external stability markers. When job security or geographic rootedness fluctuates, you experience it as personal failure rather than circumstantial challenge."
 
-- DIRECT: No-BS clarity about the trap. "You're treating external chaos (job instability, moving, negative feedback) as proof that you're inadequate. That's the trap: you've made your self-worth dependent on things you can't fully control."
+- COMPASSIONATE: Empathetic framing with validation, REFERENCING THEIR ACTUAL CIRCUMSTANCES. Example: "It makes sense that you're feeling inadequate—when everything around you feels unstable (job, location, others' opinions), it's easy to believe the problem is you. But what if the instability is just... instability, not evidence of your worth?"
 
-- COACHING: Growth-focused with possibility. "You've developed a pattern where external circumstances (job stability, location, feedback) become measures of personal worth. There's an opportunity here to separate what you can control from what you can't—and reclaim your sense of adequacy."
+- DIRECT: No-BS clarity about the trap, NAMING THEIR SPECIFIC SITUATIONS. Example: "You're treating external chaos (job instability, moving, negative feedback) as proof that you're inadequate. That's the trap: you've made your self-worth dependent on things you can't fully control."
+
+- COACHING: Growth-focused with possibility, GROUNDED IN THEIR EXAMPLES. Example: "You've developed a pattern where external circumstances (job stability, location, feedback) become measures of personal worth. There's an opportunity here to separate what you can control from what you can't—and reclaim your sense of adequacy."
+
+QUALITY CHECK: Does the byline include SPECIFIC references to their situation? If not, rewrite with specifics.
 
 **What the Research Says Byline:**  
+⚠️ MINIMUM LENGTH: 2 FULL sentences (25-40 words). One-liners like "Self-Determination Theory explains why" are NOT acceptable.
+
 Generate an engaging, accessible byline that hooks the reader while previewing the theory:
 
 Style: "Feel great after praise, terrible after criticism? That emotional volatility has a name: **contingent self-worth**—and decades of research show it's a major driver of anxiety and depression."
 
-- Make it relatable first (question or bold statement)
+REQUIRED ELEMENTS:
+- Make it relatable first (question or bold statement referencing their pattern)
 - Introduce the theory name in bold
-- Preview the research-backed consequence
+- Preview the research-backed consequence or mechanism
 - Keep it conversational, not academic
+- Must be AT LEAST 2 complete sentences
+
+EXAMPLES:
+✅ "Ever feel like your worth rises and falls with job performance? That's **contingent self-worth**—when self-esteem depends on external markers. Research shows it's linked to chronic anxiety and burnout."
+✅ "Notice how feedback from others completely shifts your mood? **Social baseline theory** explains why—your brain literally uses others' opinions as a compass for self-worth, making you hypersensitive to judgment."
+❌ "Self-Determination Theory explains why." (TOO SHORT)
+❌ "Research shows this is common." (TOO VAGUE)
 
 TONE & STYLE REQUIREMENTS:
 
