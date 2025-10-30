@@ -617,7 +617,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
           <div className="mt-6 space-y-4">
             <p className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-3xl">
-              {results.whatsHappening.summary}
+              {renderBoldText(results.whatsHappening.summary)}
             </p>
             
             {/* Theme badges */}
@@ -696,7 +696,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
             <div className="mt-6 space-y-4">
               <p className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-3xl">
-                {results.theTheory.content.split('.').slice(0, 2).join('.') + '.'}
+                {renderBoldText(results.theTheory.content.split('.').slice(0, 2).join('.') + '.')}
               </p>
               
               {/* Theory tags - specific psychological concepts */}
