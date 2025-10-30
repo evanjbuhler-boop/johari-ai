@@ -514,6 +514,47 @@ Return ONLY valid JSON in this format:
         }
 
         console.log('Recommendations regenerated successfully with tone:', insightTone);
+
+        // Enforce byline minimum lengths for regeneration as well
+        try {
+          const wc = (s: string) => (s ? s.trim().split(/\s+/).filter(Boolean).length : 0);
+          const sentencesFrom = (src: string) => {
+            const cleaned = (src || '').replace(/\s+/g, ' ').trim();
+            if (!cleaned) return [] as string[];
+            const matches = cleaned.match(/[^.!?]+[.!?]/g);
+            return matches ? matches.map((m) => m.trim()) : [cleaned];
+          };
+          const expandFrom = (src: string, minWords: number, maxSentences = 3) => {
+            if (!src) return '';
+            const sentences = sentencesFrom(src);
+            let out = '';
+            for (let i = 0; i < sentences.length && wc(out) < minWords && i < maxSentences; i++) {
+              out += (out ? ' ' : '') + sentences[i];
+            }
+            if (wc(out) < minWords) {
+              const words = (src || '').replace(/\s+/g, ' ').trim().split(/\s+/);
+              out = words.slice(0, Math.min(words.length, minWords + 5)).join(' ');
+              if (!/[.!?]$/.test(out)) out += '.';
+            }
+            return out.trim();
+          };
+
+          if (regeneratedData) {
+            if (typeof regeneratedData.whatsHappeningByline === 'string' && wc(regeneratedData.whatsHappeningByline) < 30) {
+              const src = (regeneratedData.whatsHappening || '').toString();
+              const expanded = expandFrom(src, 30, 3);
+              if (expanded) regeneratedData.whatsHappeningByline = expanded;
+            }
+            if (typeof regeneratedData.theTheoryByline === 'string' && wc(regeneratedData.theTheoryByline) < 25) {
+              const src = (regeneratedData.theTheory || '').toString();
+              const expanded = expandFrom(src, 25, 2);
+              if (expanded) regeneratedData.theTheoryByline = expanded;
+            }
+          }
+        } catch (e) {
+          console.warn('Regeneration byline enforcement failed (non-fatal):', e);
+        }
+
         return new Response(
           JSON.stringify(regeneratedData),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -1752,12 +1793,24 @@ REQUIREMENTS:
 
       // Enforce byline minimum lengths even in simple/children modes
       const wc = (s: string) => (s ? s.trim().split(/\s+/).filter(Boolean).length : 0);
-      const expandFrom = (src: string, min: number, maxSentences = 3) => {
+      const sentencesFrom = (src: string) => {
+        const cleaned = (src || '').replace(/\s+/g, ' ').trim();
+        if (!cleaned) return [] as string[];
+        const matches = cleaned.match(/[^.!?]+[.!?]/g);
+        return matches ? matches.map((m) => m.trim()) : [cleaned];
+      };
+      const expandFrom = (src: string, minWords: number, maxSentences = 3) => {
         if (!src) return '';
-        const sentences = src.replace(/\n+/g, ' ').split(/(?<=[.!?])\s+/);
+        const sentences = sentencesFrom(src);
         let out = '';
-        for (let i = 0; i < sentences.length && wc(out) < min && i < maxSentences; i++) {
+        for (let i = 0; i < sentences.length && wc(out) < minWords && i < maxSentences; i++) {
           out += (out ? ' ' : '') + sentences[i];
+        }
+        // Fallback: if still too short, take the first N+5 words and add a period
+        if (wc(out) < minWords) {
+          const words = (src || '').replace(/\s+/g, ' ').trim().split(/\s+/);
+          out = words.slice(0, Math.min(words.length, minWords + 5)).join(' ');
+          if (!/[.!?]$/.test(out)) out += '.';
         }
         return out.trim();
       };
