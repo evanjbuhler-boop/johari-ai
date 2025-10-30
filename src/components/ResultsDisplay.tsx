@@ -35,6 +35,18 @@ interface ResultsDisplayProps {
 const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messages = [], userProfile, onResultsUpdate }: ResultsDisplayProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  
+  // Helper function to convert markdown bold syntax to HTML
+  const renderBoldText = (text: string) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        const boldText = part.slice(2, -2);
+        return <strong key={index} className="font-semibold">{boldText}</strong>;
+      }
+      return part;
+    });
+  };
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(false);
   const [theoryExpanded, setTheoryExpanded] = useState(false);
   const [reframingExpanded, setReframingExpanded] = useState(false);
@@ -635,7 +647,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
           {whatsHappeningExpanded && (
             <div className="mt-6 pt-6 border-t border-border space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <p className="text-base text-foreground/80 leading-relaxed whitespace-pre-line">
-                {results.whatsHappening.fullExplanation}
+                {renderBoldText(results.whatsHappening.fullExplanation)}
               </p>
 
               {/* Rating buttons */}
@@ -714,7 +726,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
             {theoryExpanded && (
               <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                 <p className="text-base text-foreground/80 leading-relaxed whitespace-pre-line">
-                  {results.theTheory.content}
+                  {renderBoldText(results.theTheory.content)}
                 </p>
 
                 {results.whatsHappening.citations && results.whatsHappening.citations.length > 0 && (
@@ -848,7 +860,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     
                     return (
                       <>
-                        <div className="whitespace-pre-line">{mainContent}</div>
+                        <div className="whitespace-pre-line">{renderBoldText(mainContent)}</div>
                         
                         {questions.length > 0 && (
                           <div className="mt-8 pt-6 border-t border-border/50">
@@ -870,7 +882,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     );
                   }
                   
-                  return <div className="whitespace-pre-line">{content}</div>;
+                  return <div className="whitespace-pre-line">{renderBoldText(content)}</div>;
                 })()}
               </div>
                 </div>
@@ -935,7 +947,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   <h3 className="text-xl font-medium text-foreground mb-2">{results.story.title}</h3>
                   <p className="text-sm text-muted-foreground italic mb-4">{results.story.culturalOrigin}</p>
                   <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-line font-serif">
-                    {results.story.content}
+                    {renderBoldText(results.story.content)}
                   </p>
                 </div>
 
@@ -944,7 +956,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     <span>💭</span> Why this speaks to {sessionTheme ? sessionTheme : 'your experience'}:
                   </p>
                   <p className="text-base text-foreground/80 leading-relaxed">
-                    {results.story.whyThisMatters}
+                    {renderBoldText(results.story.whyThisMatters)}
                   </p>
                 </div>
 
