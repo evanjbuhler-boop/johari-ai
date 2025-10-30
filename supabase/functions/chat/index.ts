@@ -290,19 +290,34 @@ This applies to ALL bylines, explanations, and content you generate.
 ${toneInstructions}
 
 BYLINE GENERATION:
+⚠️ STRICT REQUIREMENTS - Your response will be REJECTED if bylines don't meet minimum lengths:
+- "whatsHappeningByline": MUST be 30-50 words (2-3 full sentences with specific details from their conversation)
+- "theTheoryByline": MUST be 25-40 words (2 full sentences with relatable hook + theory name in bold)
+
+❌ UNACCEPTABLE EXAMPLES (TOO SHORT):
+- "You're feeling lost and unsure." (5 words - REJECTED)
+- "Ever feel you're not measuring up? Social Comparison Theory can help." (11 words - REJECTED)
+
+✅ ACCEPTABLE EXAMPLES (MEET MINIMUM):
+- "Your self-concept is entangled with external stability markers—job security, geographic location, others' perceptions. When these factors fluctuate, you experience it as personal failure rather than circumstantial challenge." (30 words ✓)
+- "Feel great after praise, terrible after criticism? That emotional volatility has a name: **contingent self-worth**—and decades of research show it's a major driver of anxiety and depression." (29 words ✓)
+
 Generate tone-adaptive bylines for both sections:
 
-**What's Happening Byline** - adapt to tone:
-- CLINICAL: Direct pattern + mechanism statement
-- COMPASSIONATE: Empathetic framing with validation
-- DIRECT: No-BS clarity about the trap
-- COACHING: Growth-focused with possibility framing
+**What's Happening Byline** - adapt to tone (30-50 words MINIMUM):
+- CLINICAL: Direct pattern + mechanism statement with specific paraphrased situations
+- COMPASSIONATE: Empathetic framing with validation referencing their circumstances
+- DIRECT: No-BS clarity about the trap naming their specific situations
+- COACHING: Growth-focused with possibility framing grounded in their examples
 
-**What the Research Says Byline**:
-- Relatable hook (question or statement)
-- Theory name in bold
-- Research-backed consequence
+**What the Research Says Byline** (25-40 words MINIMUM):
+- Relatable hook (question or statement referencing their pattern)
+- Theory name in **bold**
+- Research-backed consequence or mechanism
 - Keep conversational, not academic
+- Must be 2 complete sentences minimum
+
+⚠️ BEFORE SUBMITTING: Count the words in both bylines. If either is under the minimum, rewrite it longer with more specific details.
 
 Based on the conversation provided, regenerate the insights using the specified tone. Keep all content specific to their actual situations using paraphrased language (never quote them directly).
 
@@ -515,9 +530,15 @@ Return ONLY valid JSON in this format:
 
         console.log('Recommendations regenerated successfully with tone:', insightTone);
 
+        // Log original byline lengths
+        const wc = (s: string) => (s ? s.trim().split(/\s+/).filter(Boolean).length : 0);
+        console.log('📏 Original byline lengths:', {
+          whatsHappening: wc(regeneratedData.whatsHappeningByline),
+          theTheory: wc(regeneratedData.theTheoryByline)
+        });
+
         // Enforce byline minimum lengths for regeneration as well
         try {
-          const wc = (s: string) => (s ? s.trim().split(/\s+/).filter(Boolean).length : 0);
           const sentencesFrom = (src: string) => {
             const cleaned = (src || '').replace(/\s+/g, ' ').trim();
             if (!cleaned) return [] as string[];
@@ -540,15 +561,27 @@ Return ONLY valid JSON in this format:
           };
 
           if (regeneratedData) {
+            let expanded = false;
             if (typeof regeneratedData.whatsHappeningByline === 'string' && wc(regeneratedData.whatsHappeningByline) < 30) {
               const src = (regeneratedData.whatsHappening || '').toString();
-              const expanded = expandFrom(src, 30, 3);
-              if (expanded) regeneratedData.whatsHappeningByline = expanded;
+              const expandedByline = expandFrom(src, 30, 3);
+              if (expandedByline) {
+                regeneratedData.whatsHappeningByline = expandedByline;
+                expanded = true;
+                console.log('✅ Expanded whatsHappeningByline to', wc(expandedByline), 'words');
+              }
             }
             if (typeof regeneratedData.theTheoryByline === 'string' && wc(regeneratedData.theTheoryByline) < 25) {
               const src = (regeneratedData.theTheory || '').toString();
-              const expanded = expandFrom(src, 25, 2);
-              if (expanded) regeneratedData.theTheoryByline = expanded;
+              const expandedByline = expandFrom(src, 25, 2);
+              if (expandedByline) {
+                regeneratedData.theTheoryByline = expandedByline;
+                expanded = true;
+                console.log('✅ Expanded theTheoryByline to', wc(expandedByline), 'words');
+              }
+            }
+            if (!expanded) {
+              console.log('✅ All bylines meet minimum length requirements');
             }
           }
         } catch (e) {
