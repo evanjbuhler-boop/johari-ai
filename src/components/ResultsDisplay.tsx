@@ -65,29 +65,34 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
   // Handle regenerated recommendations
   const handleRegenerated = (newRecommendations: any) => {
+    console.log('Received regenerated data:', newRecommendations);
+    
     const updatedResults: CheckInResults = {
       ...results,
-      byline: newRecommendations.byline || results.byline,
       whatsHappening: {
-        summary: newRecommendations.byline || results.whatsHappening.summary,
-        themes: results.whatsHappening.themes,
-        fullExplanation: newRecommendations.whatIsHappening || results.whatsHappening.fullExplanation,
-        citations: results.whatsHappening.citations
+        ...results.whatsHappening,
+        fullExplanation: newRecommendations.whatsHappening || results.whatsHappening.fullExplanation,
       },
-      theTheory: {
-        content: newRecommendations.theTheory || results.theTheory?.content || '',
-        tags: results.theTheory?.tags
-      },
+      theTheory: results.theTheory ? {
+        ...results.theTheory,
+        content: newRecommendations.theTheory || results.theTheory.content
+      } : undefined,
       reframing: {
-        content: newRecommendations.reframe || results.reframing?.content || ''
+        content: newRecommendations.reframing || results.reframing?.content || ''
       },
       story: results.story ? {
         ...results.story,
         whyThisMatters: newRecommendations.storyWhyMatters || results.story.whyThisMatters
       } : undefined,
       podcast: newRecommendations.podcast || results.podcast,
-      book: newRecommendations.book || results.book
+      book: newRecommendations.book || results.book,
+      cbt: results.cbt,
+      reflection: results.reflection,
+      patterns: results.patterns,
+      quotes: results.quotes
     };
+    
+    console.log('Updated results:', updatedResults);
     
     if (onResultsUpdate) {
       onResultsUpdate(updatedResults);
