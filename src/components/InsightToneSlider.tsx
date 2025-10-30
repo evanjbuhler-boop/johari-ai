@@ -134,15 +134,15 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
     <div className="w-full mb-6 p-6 rounded-lg bg-card/50 backdrop-blur-sm border border-border/50">
       <div className="mb-4">
         <h3 className="text-sm font-medium text-muted-foreground mb-1">
-          Insight Tone: How should insights be delivered?
+          How should insights be delivered?
         </h3>
       </div>
 
       {/* Desktop/Tablet View */}
       <div className="hidden sm:block">
-        <div className="relative px-8">
-          {/* Position markers */}
-          <div className="flex justify-between items-center mb-2">
+        <div className="relative">
+          {/* Grid container for icons and slider alignment */}
+          <div className="grid grid-cols-5 gap-2 mb-2">
             {TONE_OPTIONS.map((option, index) => (
               <button
                 key={option.value}
@@ -163,8 +163,8 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
             ))}
           </div>
 
-          {/* Slider track */}
-          <div className="relative py-4">
+          {/* Slider track with matching grid */}
+          <div className="relative py-4 px-[10%]">
             <Slider
               value={[toneToIndex(selectedTone)]}
               onValueChange={([newValue]) => handleToneChange(newValue)}
