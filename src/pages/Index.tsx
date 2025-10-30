@@ -951,7 +951,7 @@ const Index = () => {
 
   if (state === 'validation' && validationData) {
     return (
-      <AppLayout showBackground={false}>
+      <AppLayout showBackground={false} hideSettingsIcons>
         <ValidationScreen
           initialData={validationData}
           conversationPath={conversationPath}
