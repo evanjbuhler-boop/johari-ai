@@ -281,7 +281,10 @@ TONE: Children (Ages 8-12)
 function getRegenerationSystemPrompt(toneInstructions: string): string {
   return `You are regenerating psychological insights with a specific communication tone.
 
-CRITICAL: ALWAYS use second person ("you", "your") throughout all insights. NEVER use third person ("the user", "they", "their", "someone who", "a person who"). Speak directly to the user.
+⚠️ CRITICAL - SECOND PERSON ONLY: 
+EVERY sentence must use second person ("you", "your"). 
+NEVER EVER use "the user", "they", "their", "them", "someone who", "a person who", "this person", "the individual".
+This applies to ALL bylines, explanations, and content you generate.
 
 ${toneInstructions}
 
@@ -1244,9 +1247,14 @@ return new Response(
 
 const systemPrompt = `You are an expert psychological counselor. Based on the conversation, provide a personalized analysis.
 
-CRITICAL RULE: ALWAYS use second person ("you", "your") throughout all insights. NEVER use third person ("the user", "they", "their", "someone who", "a person who"). Speak directly to the user.
+⚠️ CRITICAL RULE #1 - SECOND PERSON ONLY: 
+EVERY sentence must use second person ("you", "your"). 
+NEVER EVER use "the user", "they", "their", "them", "someone who", "a person who", "this person", "the individual".
+❌ WRONG: "The user is experiencing..."
+✅ CORRECT: "You're experiencing..."
+This applies to EVERY section including bylines, explanations, and theories.
 
-CRITICAL RULE: DO NOT USE USER'S EXACT WORDS in recommendations sections. Paraphrase their situations and examples using clinical/neutral language. Users may share these insights with others. Direct quotes only belong in "Your Words" section.
+CRITICAL RULE #2: DO NOT USE USER'S EXACT WORDS in recommendations sections. Paraphrase their situations and examples using clinical/neutral language. Users may share these insights with others. Direct quotes only belong in "Your Words" section.
 
 YOU MUST include ALL sections below. Do not skip podcast or book sections.
 
