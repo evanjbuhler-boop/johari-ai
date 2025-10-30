@@ -86,6 +86,7 @@ export interface UserProfile {
   age: string;
   location: string;
   lifeStage: string;
+  insightTone?: 'clinical' | 'direct' | 'coaching' | 'compassionate' | 'children';
 }
 
 export interface CheckInResults {

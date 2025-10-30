@@ -235,6 +235,7 @@ const Index = () => {
             age: data.age,
             location: data.location,
             lifeStage: data.life_stage,
+            insightTone: (data.insight_tone || 'clinical') as 'clinical' | 'direct' | 'coaching' | 'compassionate' | 'children',
           };
           setProfile(userProfile);
           // Also update localStorage for consistency
@@ -971,6 +972,20 @@ const Index = () => {
           onNewCheckIn={handleNewCheckIn} 
           sessionId={currentSessionId || undefined}
           sessionTheme={sessionTheme}
+          messages={messages}
+          userProfile={profile}
+          onResultsUpdate={(newResults) => {
+            setResults(newResults);
+            // Update localStorage with new results
+            const savedCheckIn = localStorage.getItem('lastCheckIn');
+            if (savedCheckIn) {
+              const parsedCheckIn = JSON.parse(savedCheckIn);
+              localStorage.setItem('lastCheckIn', JSON.stringify({
+                ...parsedCheckIn,
+                results: newResults
+              }));
+            }
+          }}
         />
       </AppLayout>
     );

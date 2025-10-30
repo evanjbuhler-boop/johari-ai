@@ -218,6 +218,121 @@ function analyzeComplexity(userMessages: any[]): 'simple' | 'moderate' | 'comple
   return 'moderate';
 }
 
+// Helper function to get tone-specific instructions
+function getToneInstructions(tone: string): string {
+  const instructions = {
+    clinical: `
+TONE: Clinical
+- Direct, no softening language
+- Pattern recognition without moral framing
+- "You've built a system that..." not "You might be..."
+- End with choice points, never prescriptive advice
+- Zero therapy-speak ("journey," "navigate," "gentle")
+- Maximum precision, minimum warmth
+`,
+
+    direct: `
+TONE: Direct
+- Straightforward truth without academic distance
+- Clear language, no jargon or therapy-speak
+- "Here's what you're doing. Here's why it's not working."
+- Honest but not cold - conversational analytical
+- No BS, no sugar coating, but accessible
+`,
+
+    coaching: `
+TONE: Coaching
+- Business/performance language, zero therapy-speak
+- "Strategy" not "coping mechanism"
+- "Optimization" not "healing"
+- "Here's the pattern. Here's the ROI of changing it."
+- Action-oriented, results-focused
+- Frame insights as competitive advantage
+`,
+
+    compassionate: `
+TONE: Compassionate
+- Warm, validating delivery while maintaining accuracy
+- "This makes sense given what you've experienced..."
+- Acknowledge difficulty of patterns with empathy
+- Still show the mechanism, just gentler language
+- "You might find it helpful to..." vs "You've built a system that..."
+- Trauma-informed framing
+`,
+
+    children: `
+TONE: Children (Ages 8-12)
+- Age-appropriate language (avoid complex psychological terms)
+- Shorter sentences, simpler explanations
+- Encouraging and warm tone
+- "Sometimes our brains do this thing where..."
+- Emphasize learning and growth ("Your brain is learning...")
+- Avoid: diagnosis language, adult relationship concepts, technical jargon
+- Include: concrete examples, hope-focused framing, developmentally normal
+- Keep theory section very basic or omit complex mechanisms
+`
+  };
+
+  return instructions[tone as keyof typeof instructions] || instructions.clinical;
+}
+
+// Helper function to get regeneration system prompt
+function getRegenerationSystemPrompt(toneInstructions: string): string {
+  return `You are an expert psychological counselor. Based on the conversation, provide a personalized analysis.
+
+CRITICAL RULE: DO NOT USE USER'S EXACT WORDS in recommendations sections. Paraphrase their situations and examples using clinical/neutral language. Users may share these insights with others. Direct quotes only belong in "Your Words" section.
+
+YOU MUST include ALL sections below. Do not skip podcast or book sections.
+
+${toneInstructions}
+
+TONE & STYLE REQUIREMENTS:
+
+**What's Happening Section - Pattern Recognition & Full Synthesis:**
+
+LENGTH: 200-300 words (15-20 sentences) - this is the core insight, don't shortchange it.
+
+CRITICAL: This is PATTERN RECOGNITION, not emotional validation. Map the complete territory they showed you.
+
+STRUCTURE:
+1. **Map the full territory (4-5 sentences)**
+   - Identify EVERY instance where this pattern appeared in the conversation (romantic relationship, business partnership, meeting new people, etc.)
+   - Don't cherry-pick - show the complete scope across all domains they mentioned
+   - Synthesize: "This pattern is showing up in [domain], in [domain], and in [domain]"
+
+2. **Name the system (4-5 sentences)**
+   - What's the underlying mechanism driving all these instances?
+   - Not "you feel insecure" but "you've built a self-worth system that requires constant external validation through X mechanism"
+   - Be specific about HOW the system operates
+   - Example: "You've built a self-worth system where your value is measured by how others perceive and respond to you"
+
+3. **Show the pattern in action (4-5 sentences)**
+   - Use their situations (paraphrased) to demonstrate how this plays out
+   - Connect specific examples: "This appeared when [situation], and when [situation], and when [situation]"
+   - Make the connections between domains explicit
+   - Show the pattern, don't just describe it
+
+4. **Identify the cost (3-4 sentences)**
+   - What is this pattern preventing or making harder for them?
+   - Be specific to their examples and goals
+   - Focus on what they can't do or decide clearly because of this pattern
+   - Example: "The cost is that you can't make clear decisions about [specific situation] because you're trying to extract self-worth data from situations that are actually about [actual issue]"
+
+QUALITY TESTS:
+- Could this be written about someone else? → Too generic, rewrite
+- Did you use their actual situations (paraphrased)? → If no, rewrite  
+- Does it name what they're DOING not just feeling? → If no, rewrite
+- Is it 200-300 words? → If no, expand
+
+PARAPHRASING RULE:
+- ❌ "When you said 'I think being replaced makes me less than'..."
+- ✅ "The belief that a former partner moving on diminishes your worth..."
+- ❌ "You mentioned that because she is so beautiful, you viewed that as positive reflection of your manhood..."
+- ✅ "The tendency to derive self-worth from a partner's perceived desirability..."
+
+[Continue with full prompt from line 1127 onwards...]`;
+}
+
 // Helper function to get language adaptation instructions
 function getLanguageInstructions(complexity: 'simple' | 'moderate' | 'complex'): string {
   switch (complexity) {
@@ -255,7 +370,7 @@ serve(async (req) => {
   }
 
   try {
-      const { messages, type, conversationPath, validationData, neurodiveritySettings, ventText, therapyApproach, userId } = await req.json();
+      const { messages, type, conversationPath, validationData, neurodiveritySettings, ventText, therapyApproach, userId, action, insightTone } = await req.json();
       const truthy = (v: unknown) => typeof v === 'string' ? ['true','1','yes','y','on'].includes(v.toLowerCase().trim()) : !!v;
       const useMockAI = truthy(Deno.env.get('USE_MOCK_AI')) || truthy(messages?.[0]?.mock);
       const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
@@ -343,6 +458,69 @@ Return ONLY valid JSON in this format:
         console.error('Error generating venting summary:', error);
         return new Response(
           JSON.stringify({ error: 'Failed to generate venting summary' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
+    // Handle recommendation regeneration with new tone
+    if (action === 'regenerate') {
+      console.log('Regenerating recommendations with tone:', insightTone);
+      
+      // Extract user context from conversation
+      const conversationText = messages.map((m: any) => `${m.role}: ${m.content}`).join('\n');
+      
+      // Build the system prompt with tone-specific instructions
+      const toneInstructions = getToneInstructions(insightTone || 'clinical');
+      const regenerationPrompt = getRegenerationSystemPrompt(toneInstructions);
+      
+      // Use OpenAI to regenerate
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            max_completion_tokens: 10000,
+            temperature: 0.4,
+            messages: [
+              { role: 'system', content: regenerationPrompt },
+              { role: 'user', content: `Conversation:\n${conversationText}\n\nGenerate complete recommendations with the specified tone.` }
+            ],
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.text();
+          console.error('OpenAI API error during regeneration:', response.status, error);
+          throw new Error(`OpenAI API error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        const responseText = result.choices[0].message.content.trim();
+        
+        // Parse JSON from response
+        let regeneratedData;
+        try {
+          const jsonText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+          regeneratedData = JSON.parse(jsonText);
+        } catch (parseError) {
+          console.error('Failed to parse regenerated JSON:', responseText);
+          throw new Error('Failed to parse regenerated recommendations');
+        }
+
+        console.log('Recommendations regenerated successfully with tone:', insightTone);
+        return new Response(
+          JSON.stringify(regeneratedData),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } catch (error) {
+        console.error('Error regenerating recommendations:', error);
+        return new Response(
+          JSON.stringify({ error: 'Failed to regenerate recommendations' }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }

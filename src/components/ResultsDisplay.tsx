@@ -20,15 +20,19 @@ import StageProgressBar from '@/components/StageProgressBar';
 import podcastPlaceholder from '@/assets/podcast-placeholder.png';
 import bookPlaceholder from '@/assets/book-placeholder.png';
 import exercisePlaceholder from '@/assets/exercise-placeholder.png';
+import InsightToneSlider from '@/components/InsightToneSlider';
 
 interface ResultsDisplayProps {
   results: CheckInResults;
   onNewCheckIn: () => void;
   sessionId?: string; // Add sessionId for rating tracking
   sessionTheme?: string; // Add session theme for personalization
+  messages?: any[]; // Add messages for regeneration
+  userProfile?: any; // Add user profile for tone preference
+  onResultsUpdate?: (newResults: CheckInResults) => void; // Add callback for updated results
 }
 
-const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: ResultsDisplayProps) => {
+const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messages = [], userProfile, onResultsUpdate }: ResultsDisplayProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(false);
@@ -38,6 +42,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
   const [ratings, setRatings] = useState<Record<string, 'up' | 'down'>>({});
+  const [isRegenerating, setIsRegenerating] = useState(false);
   const [feedbackDialog, setFeedbackDialog] = useState<{
     open: boolean;
     type: 'podcast' | 'book' | 'exercise' | 'story';
@@ -57,6 +62,37 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
   
   // Generate a session ID if not provided (for testing)
   const currentSessionId = sessionId || `session-${Date.now()}`;
+
+  // Handle regenerated recommendations
+  const handleRegenerated = (newRecommendations: any) => {
+    const updatedResults: CheckInResults = {
+      ...results,
+      byline: newRecommendations.byline || results.byline,
+      whatsHappening: {
+        summary: newRecommendations.byline || results.whatsHappening.summary,
+        themes: results.whatsHappening.themes,
+        fullExplanation: newRecommendations.whatIsHappening || results.whatsHappening.fullExplanation,
+        citations: results.whatsHappening.citations
+      },
+      theTheory: {
+        content: newRecommendations.theTheory || results.theTheory?.content || '',
+        tags: results.theTheory?.tags
+      },
+      reframing: {
+        content: newRecommendations.reframe || results.reframing?.content || ''
+      },
+      story: results.story ? {
+        ...results.story,
+        whyThisMatters: newRecommendations.storyWhyMatters || results.story.whyThisMatters
+      } : undefined,
+      podcast: newRecommendations.podcast || results.podcast,
+      book: newRecommendations.book || results.book
+    };
+    
+    if (onResultsUpdate) {
+      onResultsUpdate(updatedResults);
+    }
+  };
 
   // Fetch saved items from database
   useEffect(() => {
@@ -521,6 +557,26 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
       </header>
 
       <div className="max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6">
+        
+        {/* Insight Tone Slider - Only show if user is authenticated and messages are available */}
+        {user && messages.length > 0 && (
+          <InsightToneSlider
+            value={userProfile?.insightTone || 'clinical'}
+            onRegenerating={setIsRegenerating}
+            onRegenerated={handleRegenerated}
+            messages={messages}
+          />
+        )}
+
+        {/* Loading overlay for regeneration */}
+        {isRegenerating && (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="bg-card p-8 rounded-lg shadow-lg text-center space-y-4">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto"></div>
+              <p className="text-lg font-medium">Regenerating insights...</p>
+            </div>
+          </div>
+        )}
         
         {/* What's Happening Section */}
         <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg">
