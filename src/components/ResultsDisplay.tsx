@@ -841,11 +841,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="prose prose-lg dark:prose-invert max-w-none">
               <div className="text-base md:text-lg text-foreground/90 leading-relaxed space-y-6">
-                {sessionTheme && (
-                  <p>
-                    <span className="font-medium">For your {sessionTheme}:</span>
-                  </p>
-                )}
                 {/* Split content to handle questions section specially */}
                 {(() => {
                   const content = results.reframing.content;
@@ -866,7 +861,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                           <div className="mt-8 pt-6 border-t border-border/50">
                             <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                               <span className="text-primary">💭</span>
-                              Questions to consider:
+                              Questions for Reflection
                             </h3>
                             <ul className="space-y-3">
                               {questions.map((question, idx) => (
