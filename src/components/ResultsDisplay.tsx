@@ -695,7 +695,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme }: Resu
         {/* Quotes Section */}
         {results.quotes && results.quotes.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-white px-2 mb-8 drop-shadow-lg">Your Words</h2>
+            <h2 className="text-2xl font-semibold text-white px-2 mb-8 drop-shadow-lg">In Your Own Words</h2>
             <div className="grid gap-8">
               {results.quotes.map((quote, idx) => (
                 <Card 
