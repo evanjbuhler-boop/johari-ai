@@ -20,6 +20,7 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
     age: '',
     location: '',
     lifeStage: '',
+    insightTone: 'clinical',
   });
   const [loading, setLoading] = useState(false);
 
@@ -43,6 +44,7 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
         age: profile.age,
         location: profile.location,
         life_stage: profile.lifeStage,
+        insight_tone: profile.insightTone || 'clinical',
       });
 
     if (error) {
@@ -127,6 +129,50 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="insightTone">Preferred Insight Tone</Label>
+            <Select value={profile.insightTone} onValueChange={(value) => setProfile({ ...profile, insightTone: value as 'clinical' | 'direct' | 'coaching' | 'compassionate' | 'children' })}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose your preferred tone" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="clinical">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Clinical</span>
+                    <span className="text-xs text-muted-foreground">Research-based & objective</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="direct">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Direct</span>
+                    <span className="text-xs text-muted-foreground">Clear & straightforward</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="coaching">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Coaching</span>
+                    <span className="text-xs text-muted-foreground">Action-oriented guidance</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="compassionate">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Compassionate</span>
+                    <span className="text-xs text-muted-foreground">Warm & empathetic</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="children">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">For Children</span>
+                    <span className="text-xs text-muted-foreground">Simple & age-appropriate</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              You can change this anytime in your profile
+            </p>
           </div>
 
           <Button type="submit" size="lg" className="w-full" disabled={loading}>

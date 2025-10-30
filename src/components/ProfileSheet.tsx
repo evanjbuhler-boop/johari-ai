@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Sheet,
   SheetContent,
@@ -44,6 +45,7 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
+  const [insightTone, setInsightTone] = useState('clinical');
   const [isUpdatingName, setIsUpdatingName] = useState(false);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
@@ -65,7 +67,7 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('name')
+      .select('name, insight_tone')
       .eq('id', user.id)
       .single();
 
@@ -76,6 +78,7 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
 
     if (data) {
       setName(data.name || '');
+      setInsightTone(data.insight_tone || 'clinical');
     }
   };
 
@@ -100,6 +103,30 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
     }
 
     setIsUpdatingName(false);
+  };
+
+  const handleInsightToneChange = async (newTone: string) => {
+    setInsightTone(newTone);
+    
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ insight_tone: newTone })
+      .eq('id', user.id);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update insight tone',
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Saved',
+        description: 'Default insight tone updated',
+      });
+    }
   };
 
   const handleChangePassword = async () => {
@@ -295,6 +322,51 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
               disabled
               className="bg-muted/50 text-muted-foreground cursor-not-allowed"
             />
+          </div>
+
+          {/* Default Insight Tone */}
+          <div className="space-y-2">
+            <Label htmlFor="insight-tone">Default Insight Tone</Label>
+            <Select value={insightTone} onValueChange={handleInsightToneChange}>
+              <SelectTrigger id="insight-tone" className="bg-background/50">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="clinical">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Clinical</span>
+                    <span className="text-xs text-muted-foreground">Research-based & objective</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="direct">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Direct</span>
+                    <span className="text-xs text-muted-foreground">Clear & straightforward</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="coaching">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Coaching</span>
+                    <span className="text-xs text-muted-foreground">Action-oriented guidance</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="compassionate">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Compassionate</span>
+                    <span className="text-xs text-muted-foreground">Warm & empathetic</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="children">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">For Children</span>
+                    <span className="text-xs text-muted-foreground">Simple & age-appropriate</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              This will be your default tone for all new insights
+            </p>
           </div>
 
           {/* Change Password button */}
