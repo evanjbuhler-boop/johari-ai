@@ -133,70 +133,70 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
             </Select>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             <Label className="text-sm font-medium">Preferred Insight Tone</Label>
             <RadioGroup 
-              value={profile.insightTone} 
+              value={profile.insightTone || 'clinical'} 
               onValueChange={(value) => setProfile({ ...profile, insightTone: value as 'clinical' | 'direct' | 'coaching' | 'compassionate' | 'children' })}
-              className="space-y-2"
+              className="space-y-1.5"
             >
-              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="clinical" id="profile-tone-clinical" className="mt-1" />
+              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="clinical" id="profile-tone-clinical" className="mt-0.5" />
                 <label htmlFor="profile-tone-clinical" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Brain className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Clinical</span>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <Brain className="h-3.5 w-3.5 text-primary" />
+                    <span className="font-medium text-sm">Clinical</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Research-based & objective insights</p>
+                  <p className="text-xs text-muted-foreground">Research-based & objective</p>
                 </label>
               </div>
 
-              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="direct" id="profile-tone-direct" className="mt-1" />
+              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="direct" id="profile-tone-direct" className="mt-0.5" />
                 <label htmlFor="profile-tone-direct" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-2 mb-1">
-                    <MessageSquare className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Direct</span>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <MessageSquare className="h-3.5 w-3.5 text-primary" />
+                    <span className="font-medium text-sm">Direct</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Clear & straightforward guidance</p>
+                  <p className="text-xs text-muted-foreground">Clear & straightforward</p>
                 </label>
               </div>
 
-              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="coaching" id="profile-tone-coaching" className="mt-1" />
+              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="coaching" id="profile-tone-coaching" className="mt-0.5" />
                 <label htmlFor="profile-tone-coaching" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Target className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Coaching</span>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <Target className="h-3.5 w-3.5 text-primary" />
+                    <span className="font-medium text-sm">Coaching</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Action-oriented with practical steps</p>
+                  <p className="text-xs text-muted-foreground">Action-oriented</p>
                 </label>
               </div>
 
-              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="compassionate" id="profile-tone-compassionate" className="mt-1" />
+              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="compassionate" id="profile-tone-compassionate" className="mt-0.5" />
                 <label htmlFor="profile-tone-compassionate" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Heart className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Compassionate</span>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <Heart className="h-3.5 w-3.5 text-primary" />
+                    <span className="font-medium text-sm">Compassionate</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Warm & empathetic support</p>
+                  <p className="text-xs text-muted-foreground">Warm & empathetic</p>
                 </label>
               </div>
 
-              <div className="flex items-start space-x-3 rounded-lg border border-border/50 p-3 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="children" id="profile-tone-children" className="mt-1" />
+              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="children" id="profile-tone-children" className="mt-0.5" />
                 <label htmlFor="profile-tone-children" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Baby className="h-4 w-4 text-primary" />
-                    <span className="font-medium">For Children</span>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <Baby className="h-3.5 w-3.5 text-primary" />
+                    <span className="font-medium text-sm">For Children</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Simple & age-appropriate language</p>
+                  <p className="text-xs text-muted-foreground">Simple & age-appropriate</p>
                 </label>
               </div>
             </RadioGroup>
-            <p className="text-xs text-muted-foreground">
-              You can change this anytime in your profile settings
+            <p className="text-xs text-muted-foreground mt-1">
+              Change this anytime in your profile settings
             </p>
           </div>
 
