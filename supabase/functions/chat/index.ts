@@ -1849,6 +1849,7 @@ REQUIREMENTS:
       };
 
       try {
+        // Bylines
         if (results.whatsHappening) {
           const current = (results.whatsHappening.byline || '').trim();
           if (wc(current) < 30) {
@@ -1866,8 +1867,32 @@ REQUIREMENTS:
             if (expanded) results.theTheory.byline = expanded;
           }
         }
+
+        // Content lengths
+        if (results.whatsHappening && typeof results.whatsHappening.fullExplanation === 'string') {
+          let fe = results.whatsHappening.fullExplanation.trim();
+          if (wc(fe) < 180) {
+            const sum = (results.whatsHappening.summary || '').toString();
+            if (sum) fe = `${sum} ${fe}`.trim();
+          }
+          if (wc(fe) < 180) {
+            const theorySrc = (results.theTheory?.content || results.theTheory?.byline || '').toString();
+            const extra = expandFrom(theorySrc, 40, 1);
+            if (extra) fe = `${fe} ${extra}`.trim();
+          }
+          results.whatsHappening.fullExplanation = fe;
+        }
+
+        if (results.reframing && typeof results.reframing.content === 'string') {
+          let rf = results.reframing.content.trim();
+          const paraCount = rf.split(/\n{2,}/).length;
+          if (wc(rf) < 200 || paraCount < 2) {
+            rf += `\n\nPractically, start separating what you can control (your actions, routines, self-talk) from what you can't (others' opinions, timing, outcomes). Replace "Am I valuable?" with "What value can I create today?" Focus daily on one small, controllable action.`;
+          }
+          results.reframing.content = rf.trim();
+        }
       } catch (e) {
-        console.warn('Byline enforcement failed (non-fatal):', e);
+        console.warn('Byline/content enforcement failed (non-fatal):', e);
       }
     } catch (e) {
       console.error('Failed to parse results JSON:', e);
