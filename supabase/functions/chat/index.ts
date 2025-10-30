@@ -264,7 +264,8 @@ TONE: Compassionate
     children: `
 TONE: Children (Ages 8-12)
 - Age-appropriate language (avoid complex psychological terms)
-- Shorter sentences, simpler explanations
+- Shorter sentences, simpler explanations (for main sections)
+- EXCEPTION: Bylines must still be 2–3 sentences and meet minimum word counts (What's Happening 30–50 words; Research 25–40 words). Use simple vocabulary but do not shorten bylines.
 - Encouraging and warm tone
 - "Sometimes our brains do this thing where..."
 - Emphasize learning and growth ("Your brain is learning...")
@@ -338,6 +339,7 @@ function getLanguageInstructions(complexity: 'simple' | 'moderate' | 'complex'):
       return `LANGUAGE ADAPTATION:
 - Use simple, everyday words
 - Short sentences (8 words or less when possible)
+- EXCEPTION: Bylines must still meet minimum lengths (What's Happening 30–50 words; Research 25–40 words). Keep words simple but do not shorten bylines.
 - Avoid jargon, clinical terms, or complex vocabulary
 - Example: "That sounds hard" NOT "That sounds challenging"
 - Example: "What happened?" NOT "What about that situation stands out to you?"`;
@@ -1747,6 +1749,40 @@ REQUIREMENTS:
         hasStory: !!results.story,
         hasPatterns: !!results.patterns
       });
+
+      // Enforce byline minimum lengths even in simple/children modes
+      const wc = (s: string) => (s ? s.trim().split(/\s+/).filter(Boolean).length : 0);
+      const expandFrom = (src: string, min: number, maxSentences = 3) => {
+        if (!src) return '';
+        const sentences = src.replace(/\n+/g, ' ').split(/(?<=[.!?])\s+/);
+        let out = '';
+        for (let i = 0; i < sentences.length && wc(out) < min && i < maxSentences; i++) {
+          out += (out ? ' ' : '') + sentences[i];
+        }
+        return out.trim();
+      };
+
+      try {
+        if (results.whatsHappening) {
+          const current = (results.whatsHappening.byline || '').trim();
+          if (wc(current) < 30) {
+            const src = (results.whatsHappening.fullExplanation || results.whatsHappening.summary || '').toString();
+            const expanded = expandFrom(src, 30, 3);
+            if (expanded) results.whatsHappening.byline = expanded;
+          }
+        }
+
+        if (results.theTheory) {
+          const current = (results.theTheory.byline || '').trim();
+          if (wc(current) < 25) {
+            const src = (results.theTheory.content || '').toString();
+            const expanded = expandFrom(src, 25, 2);
+            if (expanded) results.theTheory.byline = expanded;
+          }
+        }
+      } catch (e) {
+        console.warn('Byline enforcement failed (non-fatal):', e);
+      }
     } catch (e) {
       console.error('Failed to parse results JSON:', e);
       console.error('Full response text:', resultsText);
