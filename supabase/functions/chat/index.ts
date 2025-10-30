@@ -1262,40 +1262,51 @@ ${getToneInstructions(insightTone || 'clinical')}
 
 BYLINE REQUIREMENTS:
 
+⚠️ WARNING: Your response will be REJECTED if bylines don't meet these requirements. Review carefully before responding.
+
 **What's Happening Byline:**
-⚠️ MINIMUM LENGTH: 2-3 FULL sentences (30-50 words). Short generic statements like "You're stuck in a cycle of comparison" are NOT acceptable.
+⚠️ STRICT REQUIREMENT: MUST be 2-3 COMPLETE sentences totaling 30-50 words minimum. Count your words.
 
-Generate a compelling byline that captures the SPECIFIC core pattern from THEIR conversation while adapting to the tone setting:
+This byline must capture the SPECIFIC pattern from the user's conversation (using paraphrased situations).
 
-- CLINICAL: Direct pattern statement with mechanism, USING THEIR SPECIFIC SITUATIONS (paraphrased). Example: "Your self-concept is entangled with external stability markers. When job security or geographic rootedness fluctuates, you experience it as personal failure rather than circumstantial challenge."
+❌ EXAMPLES OF UNACCEPTABLE BYLINES (TOO SHORT/GENERIC):
+- "You're feeling a bit lost and unsure about where you stand in life." (13 words - TOO SHORT)
+- "You're stuck in a cycle of comparison and self-doubt." (9 words - TOO SHORT)
+- "You're experiencing anxiety about your relationships." (6 words - TOO SHORT)
 
-- COMPASSIONATE: Empathetic framing with validation, REFERENCING THEIR ACTUAL CIRCUMSTANCES. Example: "It makes sense that you're feeling inadequate—when everything around you feels unstable (job, location, others' opinions), it's easy to believe the problem is you. But what if the instability is just... instability, not evidence of your worth?"
+✅ EXAMPLES OF ACCEPTABLE BYLINES (MEET LENGTH + SPECIFICITY):
 
-- DIRECT: No-BS clarity about the trap, NAMING THEIR SPECIFIC SITUATIONS. Example: "You're treating external chaos (job instability, moving, negative feedback) as proof that you're inadequate. That's the trap: you've made your self-worth dependent on things you can't fully control."
+CLINICAL TONE (43 words): "Your self-concept is entangled with external stability markers—job security, geographic location, others' perceptions. When these factors fluctuate, you experience it as personal failure rather than circumstantial challenge, creating a feedback loop where instability becomes evidence of inadequacy."
 
-- COACHING: Growth-focused with possibility, GROUNDED IN THEIR EXAMPLES. Example: "You've developed a pattern where external circumstances (job stability, location, feedback) become measures of personal worth. There's an opportunity here to separate what you can control from what you can't—and reclaim your sense of adequacy."
+COMPASSIONATE TONE (46 words): "It makes sense you're feeling inadequate—when everything around you feels unstable (your job situation, where you live, how others see you), it's easy to believe the problem is you. But what if the instability is just... instability, not evidence of your worth?"
 
-QUALITY CHECK: Does the byline include SPECIFIC references to their situation? If not, rewrite with specifics.
+DIRECT TONE (40 words): "You're treating external chaos—job uncertainty, relocating, critical feedback—as proof that you're inadequate. That's the trap: you've made your self-worth dependent on things you can't fully control, so every external shift feels like personal failure."
+
+COACHING TONE (42 words): "You've developed a pattern where external circumstances—job stability, living situation, others' feedback—become measures of personal worth. There's an opportunity here to separate what you can control from what you can't, and reclaim your sense of adequacy regardless of circumstance."
+
+RULE: Adapt the tone setting BUT maintain the 30-50 word length and include specific paraphrased situations from their conversation.
 
 **What the Research Says Byline:**  
-⚠️ MINIMUM LENGTH: 2 FULL sentences (25-40 words). One-liners like "Self-Determination Theory explains why" are NOT acceptable.
+⚠️ STRICT REQUIREMENT: MUST be 2 COMPLETE sentences totaling 25-40 words minimum. Count your words.
 
-Generate an engaging, accessible byline that hooks the reader while previewing the theory:
+❌ EXAMPLES OF UNACCEPTABLE BYLINES (TOO SHORT/VAGUE):
+- "Ever feel like you're just not measuring up? Social Comparison Theory can make it tough." (14 words - TOO SHORT, TOO VAGUE)
+- "Self-Determination Theory explains why." (4 words - COMPLETELY UNACCEPTABLE)
+- "Research shows this is common." (5 words - COMPLETELY UNACCEPTABLE)
 
-Style: "Feel great after praise, terrible after criticism? That emotional volatility has a name: **contingent self-worth**—and decades of research show it's a major driver of anxiety and depression."
+✅ EXAMPLES OF ACCEPTABLE BYLINES (MEET LENGTH + HOOK + THEORY):
+- "Feel great after praise, terrible after criticism? That emotional volatility has a name: **contingent self-worth**—and decades of research show it's a major driver of anxiety and depression." (29 words ✓)
+- "Ever notice how your mood completely hinges on others' opinions? That's **approval-based contingent self-worth**—research shows it creates a psychological treadmill where validation never sticks, requiring constant external confirmation." (29 words ✓)
+- "Why does uncertainty about your job feel like a personal crisis? **Self-determination theory** reveals that when core psychological needs (competence, autonomy) are threatened, the brain processes it similarly to physical pain." (32 words ✓)
 
 REQUIRED ELEMENTS:
-- Make it relatable first (question or bold statement referencing their pattern)
-- Introduce the theory name in bold
-- Preview the research-backed consequence or mechanism
-- Keep it conversational, not academic
-- Must be AT LEAST 2 complete sentences
+1. Relatable hook (question or statement referencing their pattern)
+2. Theory name in **bold**
+3. Research-backed consequence or mechanism
+4. Conversational tone, not academic
+5. 25-40 words MINIMUM
 
-EXAMPLES:
-✅ "Ever feel like your worth rises and falls with job performance? That's **contingent self-worth**—when self-esteem depends on external markers. Research shows it's linked to chronic anxiety and burnout."
-✅ "Notice how feedback from others completely shifts your mood? **Social baseline theory** explains why—your brain literally uses others' opinions as a compass for self-worth, making you hypersensitive to judgment."
-❌ "Self-Determination Theory explains why." (TOO SHORT)
-❌ "Research shows this is common." (TOO VAGUE)
+⚠️ FINAL WARNING: Before submitting your response, count the words in each byline. If What's Happening is under 30 words or The Research Says is under 25 words, REWRITE them longer.
 
 TONE & STYLE REQUIREMENTS:
 
