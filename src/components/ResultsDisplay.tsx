@@ -638,19 +638,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                 {results.whatsHappening.fullExplanation}
               </p>
 
-              {results.whatsHappening.citations && results.whatsHappening.citations.length > 0 && (
-                <div className="mt-6 pt-4 border-t border-border">
-                  <p className="text-sm font-semibold text-foreground/90 mb-2">📚 Related Research:</p>
-                  <ul className="space-y-1">
-                    {results.whatsHappening.citations.map((citation, idx) => (
-                      <li key={idx} className="text-sm text-muted-foreground">
-                        • {citation.author} ({citation.year}). {citation.title}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
               {/* Rating buttons */}
               <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
                 <Button
@@ -729,6 +716,19 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                 <p className="text-base text-foreground/80 leading-relaxed whitespace-pre-line">
                   {results.theTheory.content}
                 </p>
+
+                {results.whatsHappening.citations && results.whatsHappening.citations.length > 0 && (
+                  <div className="mt-6 pt-4 border-t border-border">
+                    <p className="text-sm font-semibold text-foreground/90 mb-2">📚 Related Research:</p>
+                    <ul className="space-y-1">
+                      {results.whatsHappening.citations.map((citation, idx) => (
+                        <li key={idx} className="text-sm text-muted-foreground">
+                          • {citation.author} ({citation.year}). {citation.title}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
                   <Button
