@@ -280,6 +280,8 @@ TONE: Children (Ages 8-12)
 function getRegenerationSystemPrompt(toneInstructions: string): string {
   return `You are regenerating psychological insights with a specific communication tone.
 
+CRITICAL: ALWAYS use second person ("you", "your") throughout all insights. NEVER use third person ("the user", "they", "their", "someone who", "a person who"). Speak directly to the user.
+
 ${toneInstructions}
 
 Based on the conversation provided, regenerate the insights using the specified tone. Keep all content specific to their actual situations using paraphrased language (never quote them directly).
@@ -1224,6 +1226,8 @@ return new Response(
 
 const systemPrompt = `You are an expert psychological counselor. Based on the conversation, provide a personalized analysis.
 
+CRITICAL RULE: ALWAYS use second person ("you", "your") throughout all insights. NEVER use third person ("the user", "they", "their", "someone who", "a person who"). Speak directly to the user.
+
 CRITICAL RULE: DO NOT USE USER'S EXACT WORDS in recommendations sections. Paraphrase their situations and examples using clinical/neutral language. Users may share these insights with others. Direct quotes only belong in "Your Words" section.
 
 YOU MUST include ALL sections below. Do not skip podcast or book sections.
@@ -1268,9 +1272,9 @@ QUALITY TESTS:
 
 PARAPHRASING RULE:
 - ❌ "When you said 'I think being replaced makes me less than'..."
-- ✅ "The belief that a former partner moving on diminishes your worth..."
+- ✅ "The belief that your former partner moving on diminishes your worth..."
 - ❌ "You mentioned that because she is so beautiful, you viewed that as positive reflection of your manhood..."
-- ✅ "The tendency to derive self-worth from a partner's perceived desirability..."
+- ✅ "Your tendency to derive self-worth from your partner's perceived desirability..."
 
 TONE GUIDELINES:
 - Direct and observational, like a skilled therapist naming what they see
@@ -1321,7 +1325,7 @@ Each paragraph should END by explicitly connecting back to their pattern using t
 PARAPHRASING RULE APPLIES:
 - Reference their situations but use clinical/neutral language
 - ❌ "This explains why your ex-girlfriend's request for friendship felt like proof of inadequacy"
-- ✅ "This explains why a former partner's desire for friendship might feel like evidence of inadequacy rather than information about compatibility"
+- ✅ "This explains why your former partner's desire for friendship might feel like evidence of inadequacy rather than information about compatibility"
 
 QUALITY TESTS:
 - Did you pick ONE theory that unlocks their pattern (not 5 that touch on it)? 
@@ -1431,7 +1435,7 @@ CRITICAL: If you can't make a specific bridge to their actual situations, the st
 - Use "In your [specific domain]..." to make the connection concrete
 - Create an honest, logical bridge between what the story teaches and what they're experiencing
 - Be specific about HOW the story's wisdom applies to THEIR challenge
-- Example: "In relationship conflicts where both people feel hurt, each person may be acting from their own unmet needs or past wounds. When someone pulls away, they're often trying to protect themselves from their own pain."
+- Example: "In your relationship conflicts where both people feel hurt, each person may be acting from their own unmet needs or past wounds. When someone pulls away, they're often trying to protect themselves from their own pain."
 
 **Part 3 - Actionable insight (2-3 sentences):**
 - End with something specific they can think about or do
@@ -1442,9 +1446,9 @@ CRITICAL: If you can't make a specific bridge to their actual situations, the st
 PARAPHRASING RULE APPLIES:
 - Reference their situations using neutral/clinical language
 - ❌ "When your ex talks about dating someone new..."
-- ✅ "When a former partner discusses new relationships..."
+- ✅ "When your former partner discusses new relationships..."
 - ❌ "Your business partner's lack of engagement..."
-- ✅ "A business partner's disengagement pattern..."
+- ✅ "Your business partner's disengagement pattern..."
 
 **AVOID THESE PHRASES ENTIRELY:**
 - "The exploration of identity"
@@ -1493,9 +1497,9 @@ CRITICAL: Every resource should feel hand-picked for their exact pattern, not ge
 
 **PARAPHRASING RULE APPLIES:**
 - ❌ "When you said 'I think being replaced makes me less than'..."
-- ✅ "For someone who experiences a former partner's new relationships as threatening to their self-worth..."
+- ✅ "For you experiencing your former partner's new relationships as threatening to your self-worth..."
 - ❌ "You mentioned that because she is so beautiful, you viewed that as positive reflection of your manhood..."
-- ✅ "For patterns where a partner's perceived desirability becomes entangled with self-worth..."
+- ✅ "For your patterns where your partner's perceived desirability becomes entangled with your self-worth..."
 
 **Quality Tests:**
 - Could this recommendation apply to anyone with "relationship issues"? → Too generic
