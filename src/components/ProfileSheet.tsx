@@ -296,102 +296,99 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
         {children}
       </SheetTrigger>
       <SheetContent side="left" className="w-80 bg-background/95 backdrop-blur-md border-r border-border/50 overflow-y-auto">
-        <SheetHeader>
+        <SheetHeader className="pb-3">
           <SheetTitle className="text-xl font-semibold">Profile</SheetTitle>
         </SheetHeader>
 
-        <div className="mt-6 space-y-4 pb-6">
+        <div className="space-y-3 pb-4">
           {/* Name field */}
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+          <div className="space-y-1">
+            <Label htmlFor="name" className="text-xs">Name</Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
               placeholder="Your name"
-              className="bg-background/50"
+              className="bg-background/50 h-9"
             />
           </div>
 
           {/* Email display */}
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+          <div className="space-y-1">
+            <Label htmlFor="email" className="text-xs">Email</Label>
             <Input
               id="email"
               value={user?.email || ''}
               disabled
-              className="bg-muted/50 text-muted-foreground cursor-not-allowed"
+              className="bg-muted/50 text-muted-foreground cursor-not-allowed h-9"
             />
           </div>
 
           {/* Default Insight Tone */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Default Insight Tone</Label>
-            <RadioGroup value={insightTone} onValueChange={handleInsightToneChange} className="space-y-1.5">
-              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="clinical" id="tone-clinical" className="mt-0.5" />
-                <label htmlFor="tone-clinical" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <Brain className="h-3.5 w-3.5 text-primary" />
-                    <span className="font-medium text-sm">Clinical</span>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-medium">Default Insight Tone</Label>
+            <RadioGroup value={insightTone} onValueChange={handleInsightToneChange} className="space-y-1">
+              <div className="flex items-center space-x-2 rounded border border-border/50 p-1.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="clinical" id="tone-clinical" />
+                <label htmlFor="tone-clinical" className="flex-1 cursor-pointer flex items-center gap-1.5">
+                  <Brain className="h-3 w-3 text-primary shrink-0" />
+                  <div className="min-w-0">
+                    <span className="font-medium text-xs">Clinical</span>
+                    <span className="text-[10px] text-muted-foreground ml-1">Research-based</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Research-based & objective</p>
                 </label>
               </div>
 
-              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="direct" id="tone-direct" className="mt-0.5" />
-                <label htmlFor="tone-direct" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <MessageSquare className="h-3.5 w-3.5 text-primary" />
-                    <span className="font-medium text-sm">Direct</span>
+              <div className="flex items-center space-x-2 rounded border border-border/50 p-1.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="direct" id="tone-direct" />
+                <label htmlFor="tone-direct" className="flex-1 cursor-pointer flex items-center gap-1.5">
+                  <MessageSquare className="h-3 w-3 text-primary shrink-0" />
+                  <div className="min-w-0">
+                    <span className="font-medium text-xs">Direct</span>
+                    <span className="text-[10px] text-muted-foreground ml-1">Straightforward</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Clear & straightforward</p>
                 </label>
               </div>
 
-              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="coaching" id="tone-coaching" className="mt-0.5" />
-                <label htmlFor="tone-coaching" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <Target className="h-3.5 w-3.5 text-primary" />
-                    <span className="font-medium text-sm">Coaching</span>
+              <div className="flex items-center space-x-2 rounded border border-border/50 p-1.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="coaching" id="tone-coaching" />
+                <label htmlFor="tone-coaching" className="flex-1 cursor-pointer flex items-center gap-1.5">
+                  <Target className="h-3 w-3 text-primary shrink-0" />
+                  <div className="min-w-0">
+                    <span className="font-medium text-xs">Coaching</span>
+                    <span className="text-[10px] text-muted-foreground ml-1">Action-oriented</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Action-oriented</p>
                 </label>
               </div>
 
-              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="compassionate" id="tone-compassionate" className="mt-0.5" />
-                <label htmlFor="tone-compassionate" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <Heart className="h-3.5 w-3.5 text-primary" />
-                    <span className="font-medium text-sm">Compassionate</span>
+              <div className="flex items-center space-x-2 rounded border border-border/50 p-1.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="compassionate" id="tone-compassionate" />
+                <label htmlFor="tone-compassionate" className="flex-1 cursor-pointer flex items-center gap-1.5">
+                  <Heart className="h-3 w-3 text-primary shrink-0" />
+                  <div className="min-w-0">
+                    <span className="font-medium text-xs">Compassionate</span>
+                    <span className="text-[10px] text-muted-foreground ml-1">Empathetic</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Warm & empathetic</p>
                 </label>
               </div>
 
-              <div className="flex items-start space-x-2 rounded-lg border border-border/50 p-2.5 hover:bg-accent/50 transition-colors cursor-pointer">
-                <RadioGroupItem value="children" id="tone-children" className="mt-0.5" />
-                <label htmlFor="tone-children" className="flex-1 cursor-pointer">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <Baby className="h-3.5 w-3.5 text-primary" />
-                    <span className="font-medium text-sm">For Children</span>
+              <div className="flex items-center space-x-2 rounded border border-border/50 p-1.5 hover:bg-accent/50 transition-colors cursor-pointer">
+                <RadioGroupItem value="children" id="tone-children" />
+                <label htmlFor="tone-children" className="flex-1 cursor-pointer flex items-center gap-1.5">
+                  <Baby className="h-3 w-3 text-primary shrink-0" />
+                  <div className="min-w-0">
+                    <span className="font-medium text-xs">For Children</span>
+                    <span className="text-[10px] text-muted-foreground ml-1">Age-appropriate</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">Simple & age-appropriate</p>
                 </label>
               </div>
             </RadioGroup>
-            <p className="text-xs text-muted-foreground mt-1">
-              Default tone for all new insights
-            </p>
           </div>
 
           {/* Change Password button */}
           <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full h-9" size="sm">
                 Change Password
               </Button>
             </DialogTrigger>
@@ -447,7 +444,7 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
           {/* Logout button */}
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive" className="w-full">
+              <Button variant="destructive" className="w-full h-9" size="sm">
                 Log Out
               </Button>
             </AlertDialogTrigger>
@@ -468,12 +465,13 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
           </AlertDialog>
 
           {/* Delete Account Section */}
-          <div className="pt-6 border-t border-border/50">
+          <div className="pt-2 border-t border-border/50">
             <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
               <DialogTrigger asChild>
                 <Button 
                   variant="outline" 
-                  className="w-full border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  size="sm"
+                  className="w-full h-9 border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
                   Delete Account
                 </Button>
