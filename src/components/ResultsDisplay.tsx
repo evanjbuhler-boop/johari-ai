@@ -83,10 +83,12 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
       ...results,
       whatsHappening: {
         ...results.whatsHappening,
+        byline: newRecommendations.whatsHappeningByline || results.whatsHappening.byline,
         fullExplanation: newRecommendations.whatsHappening || results.whatsHappening.fullExplanation,
       },
       theTheory: results.theTheory ? {
         ...results.theTheory,
+        byline: newRecommendations.theTheoryByline || results.theTheory.byline,
         content: newRecommendations.theTheory || results.theTheory.content
       } : undefined,
       reframing: {
@@ -617,7 +619,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
           <div className="mt-6 space-y-4">
             <p className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-3xl">
-              {renderBoldText(results.whatsHappening.summary)}
+              {renderBoldText(results.whatsHappening.byline || results.whatsHappening.summary)}
             </p>
             
             {/* Theme badges */}
@@ -696,7 +698,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
             <div className="mt-6 space-y-4">
               <p className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-3xl">
-                {renderBoldText(results.theTheory.content.split('.').slice(0, 2).join('.') + '.')}
+                {renderBoldText(results.theTheory.byline || results.theTheory.content.split('.').slice(0, 2).join('.') + '.')}
               </p>
               
               {/* Theory tags - specific psychological concepts */}

@@ -95,6 +95,7 @@ export interface CheckInResults {
   
   // Section 2: What's Happening
   whatsHappening: {
+    byline?: string; // Dynamic byline that adapts to tone setting
     summary: string;
     themes: string[];
     fullExplanation: string;
@@ -107,6 +108,7 @@ export interface CheckInResults {
   
   // Section 2.5: The Theory (Academic Teaching)
   theTheory?: {
+    byline?: string; // Engaging hook for the research section
     content: string;
     tags?: string[]; // Specific psychological concepts like "catastrophizing", "anxious attachment", etc.
   };

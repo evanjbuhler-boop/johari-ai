@@ -241,13 +241,14 @@ TONE: Direct
 `,
 
     coaching: `
-TONE: Coaching
-- Business/performance language, zero therapy-speak
-- "Strategy" not "coping mechanism"
-- "Optimization" not "healing"
-- "Here's the pattern. Here's the ROI of changing it."
-- Action-oriented, results-focused
-- Frame insights as competitive advantage
+TONE: Coaching (Positive Psychology Oriented)
+- Growth-focused, strengths-based language
+- "Opportunity" not "problem", "pattern" not "flaw"  
+- "What's possible when..." framing
+- Acknowledge current reality, but emphasize agency and potential
+- "You have the capacity to..." vs "You're stuck in..."
+- Positive psychology principles: resilience, meaning-making, values alignment
+- Action-oriented with optimistic reframing
 `,
 
     compassionate: `
@@ -284,11 +285,28 @@ CRITICAL: ALWAYS use second person ("you", "your") throughout all insights. NEVE
 
 ${toneInstructions}
 
+BYLINE GENERATION:
+Generate tone-adaptive bylines for both sections:
+
+**What's Happening Byline** - adapt to tone:
+- CLINICAL: Direct pattern + mechanism statement
+- COMPASSIONATE: Empathetic framing with validation
+- DIRECT: No-BS clarity about the trap
+- COACHING: Growth-focused with possibility framing
+
+**What the Research Says Byline**:
+- Relatable hook (question or statement)
+- Theory name in bold
+- Research-backed consequence
+- Keep conversational, not academic
+
 Based on the conversation provided, regenerate the insights using the specified tone. Keep all content specific to their actual situations using paraphrased language (never quote them directly).
 
 Respond with ONLY this JSON structure (no markdown, no explanations):
 {
+  "whatsHappeningByline": "1-2 sentences adapted to the tone setting",
   "whatsHappening": "200-300 word analysis mapping their pattern across all domains mentioned, naming the underlying system, showing it in action with paraphrased examples, and identifying the cost to their goals",
+  "theTheoryByline": "Engaging, relatable hook that introduces the theory",
   "reframing": "4 paragraphs reframing their pattern: (1) Name current lens explicitly; (2) Offer new perspective with specific language they can use; (3) Make it actionable to their situations; (4) End with 2 bold provocative questions",
   "storyWhyMatters": "6-8 sentences: (1) What the story teaches; (2) Bridge to their specific situations; (3) Actionable insight",
   "podcast": {
@@ -1232,6 +1250,31 @@ CRITICAL RULE: DO NOT USE USER'S EXACT WORDS in recommendations sections. Paraph
 
 YOU MUST include ALL sections below. Do not skip podcast or book sections.
 
+${getToneInstructions(insightTone || 'clinical')}
+
+BYLINE REQUIREMENTS:
+
+**What's Happening Byline:**
+Generate a compelling 1-2 sentence byline that captures the core pattern while adapting to the tone setting:
+
+- CLINICAL: Direct pattern statement with mechanism. "Your self-concept is entangled with external stability markers. When job security or geographic rootedness fluctuates, you experience it as personal failure rather than circumstantial challenge."
+
+- COMPASSIONATE: Empathetic framing with validation. "It makes sense that you're feeling inadequate—when everything around you feels unstable (job, location, others' opinions), it's easy to believe the problem is you. But what if the instability is just... instability, not evidence of your worth?"
+
+- DIRECT: No-BS clarity about the trap. "You're treating external chaos (job instability, moving, negative feedback) as proof that you're inadequate. That's the trap: you've made your self-worth dependent on things you can't fully control."
+
+- COACHING: Growth-focused with possibility. "You've developed a pattern where external circumstances (job stability, location, feedback) become measures of personal worth. There's an opportunity here to separate what you can control from what you can't—and reclaim your sense of adequacy."
+
+**What the Research Says Byline:**  
+Generate an engaging, accessible byline that hooks the reader while previewing the theory:
+
+Style: "Feel great after praise, terrible after criticism? That emotional volatility has a name: **contingent self-worth**—and decades of research show it's a major driver of anxiety and depression."
+
+- Make it relatable first (question or bold statement)
+- Introduce the theory name in bold
+- Preview the research-backed consequence
+- Keep it conversational, not academic
+
 TONE & STYLE REQUIREMENTS:
 
 **What's Happening Section - Pattern Recognition & Full Synthesis:**
@@ -1518,6 +1561,7 @@ Format as JSON with this EXACT structure:
 {
   "byline": "One compelling sentence capturing their core challenge (paraphrased, not their exact words)",
   "whatsHappening": {
+    "byline": "1-2 sentences adapted to the tone setting (clinical/compassionate/direct/coaching) - see BYLINE REQUIREMENTS above",
     "summary": "2-3 sentence summary (paraphrased)",
     "themes": ["Theme 1", "Theme 2", "Theme 3"],
     "fullExplanation": "200-300 WORDS (15-20 sentences) organized in 4 paragraphs: (1) Map full territory showing pattern across ALL domains mentioned; (2) Name the underlying mechanism/system; (3) Show pattern in action using paraphrased situations; (4) Identify the cost to their goals/values. CRITICAL: Use paraphrased examples throughout, not direct quotes. NO 'I' statements. NO questions. Focus on what they're DOING not just feeling. This is pattern recognition, not emotional validation.",
@@ -1526,6 +1570,7 @@ Format as JSON with this EXACT structure:
     ]
   },
   "theTheory": {
+    "byline": "Engaging, relatable hook that introduces the theory - see BYLINE REQUIREMENTS above",
     "content": "2-3 FULL PARAGRAPHS (5-7 sentences each). Pick ONE theory that unlocks their pattern - go deep, not wide. Each paragraph must include: (1) Theory/concept name in bold; (2) Researcher(s) + year + institution; (3) Specific study with sample size and quantitative findings; (4) Mechanism explanation (psychological/neurological how and why); (5) Why this creates problems/maintains cycle; (6) Connection to user's paraphrased pattern. Example: 'Crocker & Wolfe's 2001 study of 600 college students found that approval-contingent self-worth created 3x more mood fluctuations...' Educational tone. NO personal application (that's for A Different Lens). NO questions.",
     "tags": ["2-4 specific psychological concepts from the list that are MOST relevant to their situation"]
   },
