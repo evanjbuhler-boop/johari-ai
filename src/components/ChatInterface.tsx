@@ -138,7 +138,7 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
     if (recentUserMessages.length > 0) {
       const lastUserMessage = recentUserMessages[recentUserMessages.length - 1].content.toLowerCase();
       
-      // Finish intent keywords
+      // Finish intent keywords - removed generic "yes" and "ok" which were too broad
       const finishKeywords = [
         'show me recommendations',
         'see my recommendations',
@@ -152,22 +152,20 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
         'i am done',
         'done chatting',
         'ready to finish',
-        'move on',
+        'move on to recommendations',
         'next step',
         'ready to move on',
         'over this chat',
         'done with this',
         'wrap up',
         'wrap this up',
-        'let\'s do it',
-        'ok',
-        'yes'
+        'let\'s wrap up'
       ];
       
       const hasFinishIntent = finishKeywords.some(keyword => lastUserMessage.includes(keyword));
       
-      if (hasFinishIntent && exchangeCount >= 3) {
-        // Ensure we have at least 3 exchanges for meaningful conversation
+      if (hasFinishIntent && exchangeCount >= 8) {
+        // Require at least 8 exchanges (more meaningful conversation) before allowing keyword-based early finish
         setShowFinishButton(true);
       }
     }
@@ -192,7 +190,8 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       
       const hasClosingStatement = closingPhrases.some(phrase => recentAIText.includes(phrase));
       
-      if (hasClosingStatement && exchangeCount >= 3) {
+      if (hasClosingStatement && exchangeCount >= 8) {
+        // Require at least 8 exchanges before AI can trigger finish button
         setShowFinishButton(true);
       }
     }
