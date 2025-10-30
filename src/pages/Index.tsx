@@ -198,18 +198,28 @@ const Index = () => {
       if (savedCheckIn) {
         try {
           const parsedCheckIn = JSON.parse(savedCheckIn);
-          // Restore the complete check-in state including messages
-          if (parsedCheckIn.results) {
-            setResults(parsedCheckIn.results);
-            setState('results');
-          }
-          // Restore messages so they're available if results need regeneration
-          if (parsedCheckIn.messages && parsedCheckIn.messages.length > 0) {
-            setMessages(parsedCheckIn.messages);
-          }
-          // Restore validation data
-          if (parsedCheckIn.validationData) {
-            setValidationData(parsedCheckIn.validationData);
+          // Only restore if it's from today (within last 24 hours)
+          const savedTimestamp = parsedCheckIn.timestamp ? new Date(parsedCheckIn.timestamp).getTime() : 0;
+          const isRecent = Date.now() - savedTimestamp < 24 * 60 * 60 * 1000;
+          
+          if (isRecent) {
+            // Restore the complete check-in state including messages
+            if (parsedCheckIn.results) {
+              setResults(parsedCheckIn.results);
+              setState('results');
+            }
+            // Restore messages so they're available if results need regeneration
+            if (parsedCheckIn.messages && parsedCheckIn.messages.length > 0) {
+              setMessages(parsedCheckIn.messages);
+            }
+            // Restore validation data
+            if (parsedCheckIn.validationData) {
+              setValidationData(parsedCheckIn.validationData);
+            }
+          } else {
+            // Clear old data
+            localStorage.removeItem('lastCheckIn');
+            localStorage.removeItem('currentResults');
           }
         } catch (e) {
           console.error('Error parsing saved check-in:', e);
@@ -769,6 +779,7 @@ const Index = () => {
     // Clear any saved conversation and results
     localStorage.removeItem('savedConversation');
     localStorage.removeItem('currentResults');
+    localStorage.removeItem('lastCheckIn'); // Also clear lastCheckIn to prevent showing old results
     sessionStorage.removeItem('activeChatState'); // Clear active chat state
     setHasSavedConversation(false);
   };
