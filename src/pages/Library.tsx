@@ -296,7 +296,7 @@ const Library = () => {
             <div className="bg-white/95 backdrop-blur-md rounded-2xl p-16 text-center shadow-xl">
               <div className="text-6xl mb-6">📚</div>
               <h3 className="text-2xl font-semibold text-foreground mb-3">
-                {filter === 'all' ? 'Your library is empty' : `No ${filter}s saved yet`}
+                {filter === 'all' ? 'Your library is empty' : `No ${filter === 'research' ? 'research' : filter + 's'} saved yet`}
               </h3>
               <p className="text-muted-foreground text-lg max-w-md mx-auto">
                 As you log more sessions, you'll generate more recommendations for you to save.
