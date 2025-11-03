@@ -489,6 +489,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const handlePodcastPlay = async (platform: 'spotify' | 'apple' | 'universal' = 'spotify') => {
     if (!results.podcast) return;
     
+    console.log('🎧 Opening podcast:', platform, results.podcast.urls);
+    
     let primaryUrl: string;
     let fallbackUrl: string = results.podcast.urls?.spotify || results.podcast.urls?.direct || '';
     let linkName = '';
@@ -505,6 +507,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
       linkName = 'Podcast link';
     }
     
+    console.log('🎧 Using URL:', primaryUrl);
     await openLinkWithFallback(primaryUrl, fallbackUrl, linkName);
   };
 
@@ -517,10 +520,30 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const handleBookPurchase = async (store: 'bookshop' | 'bn' | 'amazon' = 'bookshop') => {
     if (!results.book) return;
     
-    let primaryUrl: string = results.book.purchaseUrl || '';
-    let storeName = store === 'bookshop' ? 'Bookshop.org' : store === 'bn' ? 'Barnes & Noble' : 'Amazon';
+    console.log('📚 Opening book:', store, results.book.urls);
     
-    await openLinkWithFallback(primaryUrl, results.book.purchaseUrl || '', `${storeName} link`);
+    let primaryUrl: string = '';
+    let storeName = '';
+    
+    // Use the specific store URL from urls object if available
+    if (store === 'bookshop') {
+      primaryUrl = results.book.urls?.bookshop || results.book.purchaseUrl || '';
+      storeName = 'Bookshop.org';
+    } else if (store === 'bn') {
+      primaryUrl = results.book.urls?.barnesNoble || results.book.purchaseUrl || '';
+      storeName = 'Barnes & Noble';
+    } else if (store === 'amazon') {
+      primaryUrl = results.book.urls?.amazon || results.book.purchaseUrl || '';
+      storeName = 'Amazon';
+    }
+    
+    if (!primaryUrl) {
+      console.error(`❌ No ${storeName} link available for book`);
+      return;
+    }
+    
+    console.log('📚 Using URL:', primaryUrl);
+    await openLinkWithFallback(primaryUrl, results.book.purchaseUrl || primaryUrl, `${storeName} link`);
   };
 
   const getSpotifyEmbedUrl = (spotifyUrl: string | undefined): string | null => {

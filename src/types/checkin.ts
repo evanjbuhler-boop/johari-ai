@@ -154,6 +154,12 @@ export interface CheckInResults {
     coverImage: string;
     sampleUrl?: string;
     purchaseUrl?: string;
+    urls?: {
+      bookshop?: string;
+      barnesNoble?: string;
+      amazon?: string;
+      library?: string;
+    };
   };
   
   // Section 7: Try This Tonight (Exercise)

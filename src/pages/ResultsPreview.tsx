@@ -138,6 +138,11 @@ export default function ResultsPreview() {
         : selectedPodcast.links.alternatives.find((alt: any) => alt.label.includes('Apple'))?.url 
         || selectedPodcast.links.primary.url;
 
+    // Find book store links
+    const bookshopLink = selectedBook.links.primary.url;
+    const amazonLink = selectedBook.links.alternatives.find((alt: any) => alt.label.includes('Amazon'))?.url || '';
+    const libraryLink = selectedBook.links.alternatives.find((alt: any) => alt.label.includes('Library'))?.url || '';
+
     return {
       ...mockResults,
       podcast: {
@@ -161,7 +166,12 @@ export default function ResultsPreview() {
         length: selectedBook.readTime,
         whyThisHelps: selectedBook.whyThisHelps,
         coverImage: selectedBook.coverImage,
-        purchaseUrl: selectedBook.links.primary.url,
+        purchaseUrl: bookshopLink,
+        urls: {
+          bookshop: bookshopLink,
+          amazon: amazonLink,
+          library: libraryLink,
+        },
       },
     };
   }, []);
