@@ -467,44 +467,21 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     return url.includes('?') ? `${url}&${utmParams}` : `${url}?${utmParams}`;
   };
 
-  // Verified hardcoded links for testing
-  // TODO: Replace with dynamic session data when API provides episodeID, ISBN, etc.
-  const VERIFIED_LINKS = {
-    podcast: {
-      // Example: "Treating the Pain of a Broken Heart" from The Happiness Lab
-      spotify: 'https://open.spotify.com/episode/6wxSMYOmM6ZjpiuJt5d9Rh',
-      apple: 'https://podcasts.apple.com/us/podcast/treating-the-pain-of-a-broken-heart/id1474245040?i=1000531508628',
-      universal: 'https://podcastindex.org/universal-link?feed=https://feeds.simplecast.com/2z9hQ7jT&episode=6wxSMYOmM6ZjpiuJt5d9Rh',
-    },
-    book: {
-      // Example: "Attached" by Amir Levine
-      bookshop: 'https://bookshop.org/p/books/attached-the-new-science-of-adult-attachment-and-how-it-can-help-you-find-and-keep-love-amir-levine/9781585429134',
-      barnesNoble: 'https://www.barnesandnoble.com/w/attached-amir-levine/1102355415?ean=9781585429134',
-      amazon: 'https://amazon.com/dp/1585429139',
-    }
-  };
 
-  // Error handling for link navigation
-  const openLinkWithFallback = async (
-    primaryUrl: string,
-    fallbackUrl?: string,
-    linkName: string = 'this link'
-  ) => {
-    const urlWithUTM = addUTMParams(primaryUrl);
-    
+  // Helper function to open external links with fallback
+  const openLinkWithFallback = async (primaryUrl: string, fallbackUrl: string, linkName: string) => {
     try {
-      // Test if link is accessible (HEAD request)
-      const response = await fetch(urlWithUTM, { method: 'HEAD', mode: 'no-cors' });
-      window.open(urlWithUTM, '_blank', 'noopener,noreferrer');
+      const url = addUTMParams(primaryUrl);
+      window.open(url, '_blank', 'noopener noreferrer');
     } catch (error) {
       console.error(`Failed to open ${linkName}:`, error);
-      
-      if (fallbackUrl) {
-        toast.error(`${linkName} unavailable—trying alternative`);
-        const fallbackWithUTM = addUTMParams(fallbackUrl);
-        window.open(fallbackWithUTM, '_blank', 'noopener,noreferrer');
-      } else {
-        toast.error(`${linkName} is currently unavailable. Please try again later.`);
+      if (fallbackUrl && fallbackUrl !== primaryUrl) {
+        try {
+          const url = addUTMParams(fallbackUrl);
+          window.open(url, '_blank', 'noopener noreferrer');
+        } catch (fallbackError) {
+          console.error('Fallback link also failed:', fallbackError);
+        }
       }
     }
   };
@@ -512,22 +489,19 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const handlePodcastPlay = async (platform: 'spotify' | 'apple' | 'universal' = 'spotify') => {
     if (!results.podcast) return;
     
-    // Use verified hardcoded links for testing
-    // TODO: Replace with dynamic links from results.podcast.urls when API provides episodeID
-    let primaryUrl = '';
-    let fallbackUrl = '';
+    let primaryUrl: string;
+    let fallbackUrl: string = results.podcast.urls?.spotify || results.podcast.urls?.direct || '';
     let linkName = '';
     
     if (platform === 'spotify') {
-      primaryUrl = VERIFIED_LINKS.podcast.spotify;
-      fallbackUrl = VERIFIED_LINKS.podcast.universal;
+      primaryUrl = results.podcast.urls?.spotify || '';
       linkName = 'Spotify link';
     } else if (platform === 'apple') {
-      primaryUrl = VERIFIED_LINKS.podcast.apple;
-      fallbackUrl = VERIFIED_LINKS.podcast.universal;
+      primaryUrl = results.podcast.urls?.applePodcasts || '';
+      fallbackUrl = results.podcast.urls?.spotify || results.podcast.urls?.direct || '';
       linkName = 'Apple Podcasts link';
     } else {
-      primaryUrl = VERIFIED_LINKS.podcast.universal;
+      primaryUrl = results.podcast.urls?.direct || results.podcast.urls?.spotify || '';
       linkName = 'Podcast link';
     }
     
@@ -543,23 +517,10 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const handleBookPurchase = async (store: 'bookshop' | 'bn' | 'amazon' = 'bookshop') => {
     if (!results.book) return;
     
-    // Use verified hardcoded links for testing
-    // TODO: Replace with dynamic links based on ISBN from results.book when API provides it
-    let primaryUrl = '';
-    let storeName = '';
+    let primaryUrl: string = results.book.purchaseUrl || '';
+    let storeName = store === 'bookshop' ? 'Bookshop.org' : store === 'bn' ? 'Barnes & Noble' : 'Amazon';
     
-    if (store === 'bookshop') {
-      primaryUrl = VERIFIED_LINKS.book.bookshop;
-      storeName = 'Bookshop.org';
-    } else if (store === 'bn') {
-      primaryUrl = VERIFIED_LINKS.book.barnesNoble;
-      storeName = 'Barnes & Noble';
-    } else {
-      primaryUrl = VERIFIED_LINKS.book.amazon;
-      storeName = 'Amazon';
-    }
-    
-    await openLinkWithFallback(primaryUrl, VERIFIED_LINKS.book.bookshop, `${storeName} link`);
+    await openLinkWithFallback(primaryUrl, results.book.purchaseUrl || '', `${storeName} link`);
   };
 
   const getSpotifyEmbedUrl = (spotifyUrl: string | undefined): string | null => {
@@ -885,6 +846,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
         {/* Reframing Section */}
         {results.reframing && (
+          <ErrorBoundary>
           <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-none shadow-lg">
             <div className="flex items-center justify-between gap-3 mb-6">
               <button
@@ -1060,7 +1022,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   {
                     author: results.podcast!.host,
                     text: results.podcast!.description,
-                    link: VERIFIED_LINKS.podcast.spotify,
+                    link: results.podcast!.urls?.spotify || results.podcast!.urls?.direct || window.location.href,
                   }
                 )}>
                   <Share2 className="w-4 h-4" />
@@ -1162,7 +1124,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   {
                     author: results.book!.author,
                     text: results.book!.description,
-                    link: VERIFIED_LINKS.book.bookshop,
+                    link: results.book!.purchaseUrl || window.location.href,
                   }
                 )}>
                   <Share2 className="w-4 h-4" />
@@ -1255,10 +1217,12 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               </div>
             </div>
           </Card>
+          </ErrorBoundary>
         )}
 
         {/* Exercise Card */}
         {results.exercise && (
+          <ErrorBoundary>
           <Card className="p-6 md:p-8 bg-gradient-to-br from-accent/10 to-primary/10 border-accent/20 shadow-lg">
             <div className="flex items-center justify-between mb-4 pb-2 border-b-2 border-border">
               <div className="flex items-center gap-2">
@@ -1339,6 +1303,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               </div>
             </div>
           </Card>
+          </ErrorBoundary>
         )}
 
 
