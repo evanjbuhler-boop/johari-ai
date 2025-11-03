@@ -1,7 +1,9 @@
 import { CheckInResults, SavedItem } from '@/types/checkin';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, BookOpen, Share2, Library, ExternalLink, Music, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, BookOpen, Share2, Library, ExternalLink, Music, ThumbsUp, ThumbsDown, Maximize2, Minimize2, Star } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -47,7 +49,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
       return part;
     });
   };
-  const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(false);
+  
+  const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(true); // Auto-expand first section
   const [theoryExpanded, setTheoryExpanded] = useState(false);
   const [reframingExpanded, setReframingExpanded] = useState(false);
   const [storyExpanded, setStoryExpanded] = useState(false);
@@ -72,8 +75,66 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     };
   } | null>(null);
   
+  const [finalFeedbackOpen, setFinalFeedbackOpen] = useState(false);
+  const [overallRating, setOverallRating] = useState<number | null>(null);
+  
   // Generate a session ID if not provided (for testing)
   const currentSessionId = sessionId || `session-${Date.now()}`;
+
+  // Expand/collapse all functionality
+  const allExpanded = whatsHappeningExpanded && theoryExpanded && reframingExpanded && storyExpanded;
+  
+  const handleExpandAll = () => {
+    const shouldExpand = !allExpanded;
+    setWhatsHappeningExpanded(shouldExpand);
+    setTheoryExpanded(shouldExpand);
+    setReframingExpanded(shouldExpand);
+    setStoryExpanded(shouldExpand);
+  };
+
+  // Confetti effect for high ratings
+  const triggerConfetti = () => {
+    const count = 50;
+    const defaults = {
+      origin: { y: 0.7 },
+      zIndex: 999,
+    };
+
+    function fire(particleRatio: number, opts: any) {
+      confetti({
+        ...defaults,
+        ...opts,
+        particleCount: Math.floor(count * particleRatio),
+      });
+    }
+
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
+    });
+
+    fire(0.2, {
+      spread: 60,
+    });
+
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8,
+    });
+
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2,
+    });
+
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    });
+  };
 
   // Handle regenerated recommendations
   const handleRegenerated = (newRecommendations: any) => {
@@ -577,6 +638,28 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
       <div className="max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6">
         
+        {/* Expand/Collapse All Button */}
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExpandAll}
+            className="gap-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
+          >
+            {allExpanded ? (
+              <>
+                <Minimize2 className="w-4 h-4" />
+                Collapse All
+              </>
+            ) : (
+              <>
+                <Maximize2 className="w-4 h-4" />
+                Expand All
+              </>
+            )}
+          </Button>
+        </div>
+
         {/* Insight Tone Slider - Only show if user is authenticated and messages are available */}
         {user && messages.length > 0 && (
           <InsightToneSlider
@@ -598,7 +681,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
         )}
         
         {/* What's Happening Section */}
-        <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg">
+        <ErrorBoundary>
+        <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
           <div className="flex items-center justify-between gap-4 mb-6">
             <button
               onClick={() => setWhatsHappeningExpanded(!whatsHappeningExpanded)}
@@ -658,32 +742,15 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   ))}
               </div>
 
-              {/* Rating buttons */}
-              <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
-                <Button
-                  variant={ratings['whats-happening'] === 'up' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => handleRating('story', "What's Happening", 'up')}
-                  className="gap-1"
-                >
-                  <ThumbsUp className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant={ratings['whats-happening'] === 'down' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => handleRating('story', "What's Happening", 'down')}
-                  className="gap-1"
-                >
-                  <ThumbsDown className="w-4 h-4" />
-                </Button>
-              </div>
             </div>
           )}
         </Card>
+        </ErrorBoundary>
 
         {/* What the Research Says Section */}
         {results.theTheory && (
-          <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg">
+          <ErrorBoundary>
+          <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
             <div className="flex items-center justify-between gap-4 mb-6">
               <button
                 onClick={() => setTheoryExpanded(!theoryExpanded)}
@@ -771,6 +838,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               </div>
             )}
           </Card>
+          </ErrorBoundary>
         )}
 
         {/* Quotes Section */}
@@ -903,34 +971,16 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                 })()}
               </div>
                 </div>
-
-                {/* Rating buttons */}
-                <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
-                  <Button
-                    variant={ratings['reframing'] === 'up' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('story', "A Different Lens", 'up')}
-                    className="gap-1"
-                  >
-                    <ThumbsUp className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={ratings['reframing'] === 'down' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('story', "A Different Lens", 'down')}
-                    className="gap-1"
-                  >
-                    <ThumbsDown className="w-4 h-4" />
-                  </Button>
-                </div>
               </div>
             )}
           </Card>
+          </ErrorBoundary>
         )}
 
         {/* Story Card */}
         {results.story && (
-          <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg">
+          <ErrorBoundary>
+          <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg transition-all duration-300 hover:shadow-xl">
             <div className="flex items-center justify-between gap-3 mb-6">
               <button
                 onClick={() => setStoryExpanded(!storyExpanded)}
@@ -976,29 +1026,10 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     {renderBoldText(results.story.whyThisMatters)}
                   </p>
                 </div>
-
-                {/* Rating buttons */}
-                <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-border">
-                  <Button
-                    variant={ratings.story === 'up' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('story', results.story!.title, 'up')}
-                    className="gap-1"
-                  >
-                    <ThumbsUp className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={ratings.story === 'down' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('story', results.story!.title, 'down')}
-                    className="gap-1"
-                  >
-                    <ThumbsDown className="w-4 h-4" />
-                  </Button>
-                </div>
               </div>
             )}
           </Card>
+          </ErrorBoundary>
         )}
 
         {/* Resources Header */}
@@ -1008,7 +1039,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
         {/* Podcast Recommendation */}
         {results.podcast && (
-          <Card className="p-6 md:p-8 bg-card border border-border rounded-xl shadow-lg">
+          <ErrorBoundary>
+          <Card className="p-6 md:p-8 bg-card border border-border rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
             <div className="flex items-center justify-between pb-2 mb-4 border-b-2 border-border">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">🎧</span>
@@ -1104,11 +1136,13 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               </div>
             </div>
           </Card>
+          </ErrorBoundary>
         )}
 
         {/* Book Recommendation */}
         {results.book && (
-          <Card className="p-6 md:p-8 bg-card border border-border rounded-xl shadow-lg">
+          <ErrorBoundary>
+          <Card className="p-6 md:p-8 bg-card border border-border rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
             <div className="flex items-center justify-between pb-2 mb-4 border-b-2 border-border">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📚</span>
