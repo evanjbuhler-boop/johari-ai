@@ -698,7 +698,8 @@ const Index = () => {
           messages, 
           validationData: data, 
           type: 'results',
-          userId: user?.id  // Pass user ID for exercise selection
+          userId: user?.id,  // Pass user ID for exercise selection
+          insightTone: profile?.insightTone || 'clinical'  // Pass insight tone preference
         }
       });
 

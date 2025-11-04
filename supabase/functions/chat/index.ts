@@ -222,56 +222,67 @@ function analyzeComplexity(userMessages: any[]): 'simple' | 'moderate' | 'comple
 function getToneInstructions(tone: string): string {
   const instructions = {
     clinical: `
-TONE: Clinical
-- Direct, no softening language
-- Pattern recognition without moral framing
-- "You've built a system that..." not "You might be..."
-- End with choice points, never prescriptive advice
-- Zero therapy-speak ("journey," "navigate," "gentle")
-- Maximum precision, minimum warmth
+TONE: Clinical (Analytical & Precise)
+⚠️ CRITICAL DIFFERENTIATION:
+- Use technical psychological terminology extensively
+- Write like a clinical psychologist's assessment - analytical, diagnostic
+- "You've constructed a self-worth system dependent on external validation metrics" NOT "You're seeking approval"
+- Reference psychological mechanisms: "threat-detection system", "contingent self-worth architecture", "cognitive schema"
+- Zero warmth or softening - pure analysis
+- Example: "The pattern reflects high-functioning anxiety where achievement-based self-worth creates a feedback loop of escalating standards and diminishing satisfaction"
+- NO emotional validation phrases
+- End with analytical observations, not encouragement
 `,
 
     direct: `
-TONE: Direct
-- Straightforward truth without academic distance
-- Clear language, no jargon or therapy-speak
-- "Here's what you're doing. Here's why it's not working."
-- Honest but not cold - conversational analytical
-- No BS, no sugar coating, but accessible
+TONE: Direct (No-BS Straight Talk)
+⚠️ CRITICAL DIFFERENTIATION:
+- Blunt, conversational language - like a friend who tells it straight
+- "Here's what you're doing. Here's why it's fucking you over."
+- NO academic jargon - explain it like you're talking to a friend at a bar
+- Short, punchy sentences
+- Example: "You're looking for proof you're not good enough. And guess what? When you look for something, you find it."
+- Call out patterns without sugarcoating: "This isn't helping you. Let's talk about what actually would."
+- Respectfully blunt, not mean - honest but not harsh
 `,
 
     coaching: `
-TONE: Coaching (Positive Psychology Oriented)
-- Growth-focused, strengths-based language
-- "Opportunity" not "problem", "pattern" not "flaw"  
-- "What's possible when..." framing
-- Acknowledge current reality, but emphasize agency and potential
-- "You have the capacity to..." vs "You're stuck in..."
-- Positive psychology principles: resilience, meaning-making, values alignment
-- Action-oriented with optimistic reframing
+TONE: Coaching (Growth-Focused & Empowering)
+⚠️ CRITICAL DIFFERENTIATION:
+- Emphasize strengths, capability, and growth potential throughout
+- "What's possible when..." framing dominates
+- Reframe challenges as opportunities: "This pattern shows you're already aware - awareness is the foundation for change"
+- Use action-oriented, forward-looking language: "What if you could...", "Imagine when you..."
+- Celebrate existing strengths: "You've already demonstrated the capacity to..."
+- Example: "The fact that you're noticing this pattern means you're ready to shift it. That awareness? That's your competitive advantage."
+- Positive psychology approach - find the growth edge in every challenge
+- Future-focused questions that assume progress
 `,
 
     compassionate: `
-TONE: Compassionate
-- Warm, validating delivery while maintaining accuracy
-- "This makes sense given what you've experienced..."
-- Acknowledge difficulty of patterns with empathy
-- Still show the mechanism, just gentler language
-- "You might find it helpful to..." vs "You've built a system that..."
-- Trauma-informed framing
+TONE: Compassionate (Warm & Trauma-Informed)
+⚠️ CRITICAL DIFFERENTIATION:
+- Lead with validation and normalizing before any analysis
+- "This makes complete sense given..." precedes every insight
+- Acknowledge the pain/difficulty explicitly: "That must feel exhausting", "It's understandable why this feels so hard"
+- Gentle, supportive language: "You might find", "It's okay to feel", "You're not broken - you're responding"
+- Trauma-informed: assume past wounds, speak to the protector parts
+- Example: "Your nervous system learned this as a way to keep you safe. It makes sense that approval-seeking became a survival strategy."
+- Use soft sentence structures: "It sounds like...", "Perhaps...", "You might notice..."
+- Hold space for difficulty without rushing to solutions
 `,
 
     children: `
 TONE: Children (Ages 8-12)
-- Age-appropriate language (avoid complex psychological terms)
-- Shorter sentences, simpler explanations (for main sections)
+⚠️ CRITICAL DIFFERENTIATION:
+- Extremely simple vocabulary - explain like talking to a smart 10-year-old
+- Use metaphors kids understand: "like when...", "imagine your brain is like..."
+- Short sentences (8-10 words max in explanations)
 - EXCEPTION: Bylines must still be 2–3 sentences and meet minimum word counts (What's Happening 30–50 words; Research 25–40 words). Use simple vocabulary but do not shorten bylines.
-- Encouraging and warm tone
-- "Sometimes our brains do this thing where..."
-- Emphasize learning and growth ("Your brain is learning...")
-- Avoid: diagnosis language, adult relationship concepts, technical jargon
-- Include: concrete examples, hope-focused framing, developmentally normal
-- Keep theory section very basic or omit complex mechanisms
+- Encouraging and normalizing: "Your brain is still learning how to...", "Lots of kids feel this way"
+- NO psychology terms - translate everything: "worry thoughts" not "anxiety", "big feelings" not "emotional dysregulation"
+- Example: "Sometimes our brains learn patterns that used to help but don't anymore. Like training wheels - they helped you learn to ride, but now they might slow you down."
+- Focus on growth and learning, not problems or fixing
 `
   };
 
