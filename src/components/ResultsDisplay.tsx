@@ -468,6 +468,10 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   };
 
   const addUTMParams = (url: string, source: string = 'johari', medium: string = 'recs') => {
+    // Do not append UTM params to Spotify or Apple Podcasts links to avoid redirect quirks
+    if (/open\.spotify\.com|podcasts\.apple\.com/.test(url)) {
+      return url;
+    }
     const utmParams = `utm_source=${source}&utm_medium=${medium}&utm_campaign=${currentSessionId}`;
     return url.includes('?') ? `${url}&${utmParams}` : `${url}?${utmParams}`;
   };

@@ -123,10 +123,12 @@ const mockResults: CheckInResults = {
 export default function ResultsPreview() {
   // Randomly select a podcast and book from recommendations on each render
   const dynamicResults = useMemo(() => {
-    // Prefer a deterministic podcast for testing (Love Me That); fallback to random
-    const preferredPodcast = recommendationsData.podcasts.find((p: any) => p.id === 'love-me-that-podcast-attachment');
+    // Prefer a deterministic podcast for testing (Mental Illness Happy Hour); fallback to random
+    const preferredPodcast = recommendationsData.podcasts.find((p: any) => p.id === 'mental-illness-happy-hour-shame');
     const selectedPodcast = preferredPodcast || getRandomItem(recommendationsData.podcasts);
-    const selectedBook = getRandomItem(recommendationsData.books);
+    // Prefer a deterministic book for testing (Sacks); fallback to random
+    const preferredBook = recommendationsData.books.find((b: any) => b.id === 'man-who-mistook-wife-for-hat-sacks');
+    const selectedBook = preferredBook || getRandomItem(recommendationsData.books);
 
     console.log('🎵 Selected podcast:', selectedPodcast.show, selectedPodcast.links);
 
@@ -145,8 +147,12 @@ export default function ResultsPreview() {
 
     console.log('🎧 Podcast URLs extracted:', { 
       spotify: spotifyLink, 
-      applePodcasts: applePodcastsLink 
+      applePodcasts: applePodcastsLink,
+      // Direct/website fallback will be added below
     });
+
+    // Optional direct/website fallback
+    const directLink = selectedPodcast.links.alternatives.find((alt: any) => /(Website|NPR|NYTimes|YouTube)/i.test(alt.label))?.url || '';
 
     // Find book store links
     const bookshopLink = selectedBook.links.primary.url;
@@ -164,6 +170,7 @@ export default function ResultsPreview() {
       urls: {
         spotify: spotifyLink,
         applePodcasts: applePodcastsLink,
+        direct: directLink,
       },
     };
 
