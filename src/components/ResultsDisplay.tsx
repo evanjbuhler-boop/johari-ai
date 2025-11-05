@@ -488,17 +488,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     }
   };
 
-  // URL validation helper
-  const isValidExternalUrl = (url?: string): boolean => {
-    if (!url) return false;
-    try {
-      const u = new URL(url);
-      return u.protocol === 'http:' || u.protocol === 'https:';
-    } catch {
-      return false;
-    }
-  };
-
   const buildPodcastSearchUrl = (platform: 'spotify' | 'apple') => {
     const q = encodeURIComponent(`${results.podcast?.title || ''} ${results.podcast?.host || ''} ${results.podcast?.episode || ''}`.trim());
     return platform === 'apple'
@@ -577,27 +566,26 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     console.log('📚 Opening book:', store, results.book.urls);
     
     let primaryUrl: string = '';
+    let fallbackUrl: string = '';
     let storeName = '';
     
     // Use the specific store URL from urls object if available
     if (store === 'bookshop') {
       primaryUrl = results.book.urls?.bookshop || results.book.purchaseUrl || '';
+      fallbackUrl = buildBookSearchUrl('bookshop');
       storeName = 'Bookshop.org';
     } else if (store === 'bn') {
       primaryUrl = results.book.urls?.barnesNoble || results.book.purchaseUrl || '';
+      fallbackUrl = results.book.urls?.bookshop || buildBookSearchUrl('bookshop');
       storeName = 'Barnes & Noble';
     } else if (store === 'amazon') {
       primaryUrl = results.book.urls?.amazon || results.book.purchaseUrl || '';
+      fallbackUrl = buildBookSearchUrl('amazon');
       storeName = 'Amazon';
     }
     
-    if (!primaryUrl) {
-      console.error(`❌ No ${storeName} link available for book`);
-      return;
-    }
-    
-    console.log('📚 Using URL:', primaryUrl);
-    await openLinkWithFallback(primaryUrl, results.book.purchaseUrl || primaryUrl, `${storeName} link`);
+    console.log('📚 Using URL:', primaryUrl, 'fallback:', fallbackUrl);
+    await openLinkWithFallback(primaryUrl, fallbackUrl, `${storeName} link`);
   };
 
   const getSpotifyEmbedUrl = (spotifyUrl: string | undefined): string | null => {
@@ -1246,7 +1234,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     <Button 
                       onClick={() => handleBookPurchase('bookshop')} 
                       className="gap-2"
-                      disabled={!isValidExternalUrl(results.book?.urls?.bookshop || results.book?.purchaseUrl)}
                     >
                       <BookOpen className="w-4 h-4" />
                       Bookshop.org
@@ -1256,7 +1243,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                       onClick={() => handleBookPurchase('amazon')} 
                       variant="outline" 
                       className="gap-2"
-                      disabled={!isValidExternalUrl(results.book?.urls?.amazon || results.book?.purchaseUrl)}
                     >
                       <ExternalLink className="w-4 h-4" />
                       Amazon
