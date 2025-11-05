@@ -115,8 +115,8 @@ export default function InsightsSidebar({
         <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-accent/10 to-transparent pointer-events-none" />
 
         {/* Sidebar content */}
-        <div className="relative h-full flex flex-col p-6 pt-20">
-          <div className="flex-1 overflow-y-auto">
+        <div className="relative h-full flex flex-col justify-center p-6">
+          <div className="flex-shrink-0">
             <InsightToneSlider
               value={insightTone}
               onRegenerating={onRegenerating}
