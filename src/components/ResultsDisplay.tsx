@@ -38,6 +38,11 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const navigate = useNavigate();
   const { user } = useAuth();
   
+  // Debug: Log what ResultsDisplay receives
+  console.log('🔍 ResultsDisplay received results:', results);
+  console.log('🔍 Podcast URLs received:', results.podcast?.urls);
+  console.log('🔍 Book URLs received:', results.book?.urls);
+  
   // Helper function to convert markdown bold syntax to HTML
   const renderBoldText = (text: string) => {
     const parts = text.split(/(\*\*.*?\*\*)/g);

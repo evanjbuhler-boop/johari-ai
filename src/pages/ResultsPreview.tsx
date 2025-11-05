@@ -167,25 +167,36 @@ export default function ResultsPreview() {
 
     console.log('📻 Final podcast object:', podcastData);
 
-    return {
-      ...mockResults,
-      podcast: podcastData,
-      book: {
-        title: selectedBook.title,
-        author: selectedBook.author,
-        byline: selectedBook.helpsWith.slice(0, 3).join(', '),
-        description: selectedBook.description,
-        length: selectedBook.readTime,
-        whyThisHelps: selectedBook.whyThisHelps,
-        coverImage: selectedBook.coverImage,
-        purchaseUrl: bookshopLink,
-        urls: {
-          bookshop: bookshopLink,
-          amazon: amazonLink,
-          library: libraryLink,
-        },
+    const bookData = {
+      title: selectedBook.title,
+      author: selectedBook.author,
+      byline: selectedBook.helpsWith.slice(0, 3).join(', '),
+      description: selectedBook.description,
+      length: selectedBook.readTime,
+      whyThisHelps: selectedBook.whyThisHelps,
+      coverImage: selectedBook.coverImage,
+      purchaseUrl: bookshopLink,
+      urls: {
+        bookshop: bookshopLink,
+        amazon: amazonLink,
+        library: libraryLink,
       },
     };
+
+    console.log('📚 Final book object:', bookData);
+    console.log('📚 Book URLs specifically:', bookData.urls);
+
+    const finalResults = {
+      ...mockResults,
+      podcast: podcastData,
+      book: bookData,
+    };
+
+    console.log('✅ FINAL RESULTS OBJECT:', finalResults);
+    console.log('✅ Podcast in final:', finalResults.podcast?.urls);
+    console.log('✅ Book in final:', finalResults.book?.urls);
+
+    return finalResults;
   }, []);
 
   return (
