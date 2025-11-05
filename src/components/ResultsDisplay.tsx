@@ -494,7 +494,11 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const handlePodcastPlay = async (platform: 'spotify' | 'apple' | 'universal' = 'spotify') => {
     if (!results.podcast) return;
     
-    console.log('🎧 Opening podcast:', platform, results.podcast.urls);
+    console.log('🎧 Opening podcast:', platform);
+    console.log('🎧 Full podcast object:', results.podcast);
+    console.log('🎧 Podcast urls object:', results.podcast.urls);
+    console.log('🎧 Spotify URL:', results.podcast.urls?.spotify);
+    console.log('🎧 Apple URL:', results.podcast.urls?.applePodcasts);
     
     let primaryUrl: string;
     let fallbackUrl: string = results.podcast.urls?.spotify || results.podcast.urls?.direct || '';
