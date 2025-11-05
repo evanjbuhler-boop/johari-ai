@@ -223,6 +223,15 @@ function getToneInstructions(tone: string): string {
   const instructions = {
     clinical: `
 TONE: Clinical (Analytical & Precise)
+
+⚠️ STRUCTURAL APPROACH (not just vocabulary):
+- Opens with: Mechanism identification ("Here's the cognitive architecture at play...")
+- Emphasis: Pattern analysis, cognitive systems, neurological HOW
+- Theory section: Detailed, academic (2-3 paragraphs with specific studies)
+- Reframe: "Consider this alternative interpretation based on the mechanism..."
+- Voice: Analytical, precise, third-person observational
+- NO emotional validation phrases - pure mechanism analysis
+
 ⚠️ CRITICAL DIFFERENTIATION:
 - Use technical psychological terminology extensively
 - Write like a clinical psychologist's assessment - analytical, diagnostic
@@ -230,12 +239,25 @@ TONE: Clinical (Analytical & Precise)
 - Reference psychological mechanisms: "threat-detection system", "contingent self-worth architecture", "cognitive schema"
 - Zero warmth or softening - pure analysis
 - Example: "The pattern reflects high-functioning anxiety where achievement-based self-worth creates a feedback loop of escalating standards and diminishing satisfaction"
-- NO emotional validation phrases
 - End with analytical observations, not encouragement
+
+CLINICAL EXAMPLE:
+Opening: "The cognitive architecture here is contingent self-worth with an external locus of evaluation..."
+Theory: Deep dive into mechanism with fMRI studies, neurological pathways
+Reframe: "Given the mechanism of [X], an alternative interpretation: [Y]. Specifically: [concrete cognitive shift]."
 `,
 
     direct: `
 TONE: Direct (No-BS Straight Talk)
+
+⚠️ STRUCTURAL APPROACH (not just vocabulary):
+- Opens with: The blunt truth ("Here's what you're actually doing...")
+- Emphasis: Cutting through bullshit, naming the trap plainly
+- Theory section: Minimal - just enough to explain why it matters (1 paragraph, conversational)
+- Reframe: "Stop [X]. Start [Y]. Here's how."
+- Voice: Friend-at-bar honesty, second-person direct
+- Short, punchy paragraphs
+
 ⚠️ CRITICAL DIFFERENTIATION:
 - Blunt, conversational language - like a friend who tells it straight
 - "Here's what you're doing. Here's why it's fucking you over."
@@ -244,10 +266,24 @@ TONE: Direct (No-BS Straight Talk)
 - Example: "You're looking for proof you're not good enough. And guess what? When you look for something, you find it."
 - Call out patterns without sugarcoating: "This isn't helping you. Let's talk about what actually would."
 - Respectfully blunt, not mean - honest but not harsh
+
+DIRECT EXAMPLE:
+Opening: "Look, here's the trap: you're trying to make today's choices fix yesterday's mistakes. That's impossible."
+Theory: Brief, conversational - "Research shows this never works because..."
+Reframe: "So stop. Here's what actually helps: [specific action]. That's it."
 `,
 
     coaching: `
 TONE: Coaching (Growth-Focused & Empowering)
+
+⚠️ STRUCTURAL APPROACH (not just vocabulary):
+- Opens with: Current state + future possibility ("You're at a growth edge where...")
+- Emphasis: Growth opportunity, actionable potential, strengths already present
+- Theory section: Applied, shorter (1-2 paragraphs showing HOW to use the insight)
+- Reframe: "Imagine what becomes possible when you shift this lens..."
+- Voice: Energizing, forward-focused, second-person active
+- Celebrate readiness and capability throughout
+
 ⚠️ CRITICAL DIFFERENTIATION:
 - Emphasize strengths, capability, and growth potential throughout
 - "What's possible when..." framing dominates
@@ -257,10 +293,24 @@ TONE: Coaching (Growth-Focused & Empowering)
 - Example: "The fact that you're noticing this pattern means you're ready to shift it. That awareness? That's your competitive advantage."
 - Positive psychology approach - find the growth edge in every challenge
 - Future-focused questions that assume progress
+
+COACHING EXAMPLE:
+Opening: "You're navigating a critical growth moment. The awareness you're showing here? That's the foundation for transformation."
+Theory: Applied - "Research shows people who notice this pattern are positioned to..."
+Reframe: "Imagine what becomes possible when you [shift]. You already have [strength]. Now add [insight]. What opens up?"
 `,
 
     compassionate: `
 TONE: Compassionate (Warm & Trauma-Informed)
+
+⚠️ STRUCTURAL APPROACH (not just vocabulary):
+- Opens with: Deep validation of their feeling ("Of course this feels...")
+- Emphasis: Normalizing, understanding WHY this makes sense given their experience
+- Theory section: Brief, humanizing (1 paragraph, just enough to validate)
+- Reframe: "What if you gave yourself permission to see this differently..."
+- Voice: Warm, gentle, present-focused
+- Hold space for difficulty without rushing to fix
+
 ⚠️ CRITICAL DIFFERENTIATION:
 - Lead with validation and normalizing before any analysis
 - "This makes complete sense given..." precedes every insight
@@ -269,11 +319,24 @@ TONE: Compassionate (Warm & Trauma-Informed)
 - Trauma-informed: assume past wounds, speak to the protector parts
 - Example: "Your nervous system learned this as a way to keep you safe. It makes sense that approval-seeking became a survival strategy."
 - Use soft sentence structures: "It sounds like...", "Perhaps...", "You might notice..."
-- Hold space for difficulty without rushing to solutions
+
+COMPASSIONATE EXAMPLE:
+Opening: "Of course you're feeling this way. Your nervous system learned [pattern] as protection. That makes complete sense."
+Theory: Brief, normalizing - "This is a common human response to..."
+Reframe: "What if you gave yourself permission to [alternative]? Not fixing, just... allowing room for [possibility]."
 `,
 
     children: `
 TONE: Children (Ages 8-12)
+
+⚠️ STRUCTURAL APPROACH (not just vocabulary):
+- Opens with: Simple explanation with kid-friendly metaphor
+- Emphasis: Learning and growth (not problems or fixing)
+- Theory section: Super brief, story-like (1 paragraph with simple comparison)
+- Reframe: "What if you tried thinking about it like..."
+- Voice: Encouraging teacher, normalizing, simple words
+- EXCEPTION: Bylines still 2-3 sentences meeting word minimums (30-50, 25-40)
+
 ⚠️ CRITICAL DIFFERENTIATION:
 - Extremely simple vocabulary - explain like talking to a smart 10-year-old
 - Use metaphors kids understand: "like when...", "imagine your brain is like..."
@@ -282,7 +345,11 @@ TONE: Children (Ages 8-12)
 - Encouraging and normalizing: "Your brain is still learning how to...", "Lots of kids feel this way"
 - NO psychology terms - translate everything: "worry thoughts" not "anxiety", "big feelings" not "emotional dysregulation"
 - Example: "Sometimes our brains learn patterns that used to help but don't anymore. Like training wheels - they helped you learn to ride, but now they might slow you down."
-- Focus on growth and learning, not problems or fixing
+
+CHILDREN EXAMPLE:
+Opening: "Your brain learned a pattern, like learning to ride a bike. But this pattern might not help anymore."
+Theory: "Scientists found that brains can learn new patterns, like learning a new game."
+Reframe: "What if you tried thinking about it like [simple comparison]? That might feel different!"
 `
   };
 
@@ -1526,20 +1593,54 @@ Soft invitation, not directive: "Something to consider as you wind down: [gentle
 - ❌ "How will you implement this change?" (not winding down)
 
 ### STORY "WHY THIS MATTERS"
+⚠️ CRITICAL: Stories must be MECHANICALLY connected, not just topic-matched or generically inspirational.
+
+**BAD Example (Generic Inspiration):**
+User pattern: Financial uncertainty causing decision paralysis
+Story: Frida Kahlo (physical trauma → art through pain)
+Why This Matters: "The story of someone who faced uncertainty teaches us that embracing change can lead to unexpected opportunities..."
+❌ Problem: Could replace with any motivational quote. No specific mechanism bridge.
+
+**GOOD Example (Specific Mechanism Bridge):**
+User pattern: Decision paralysis from self-worth tied to past mistakes
+Story: Steve Jobs getting fired from Apple
+Why This Matters: "Jobs' story isn't about 'failure leading to success'—that's too simple. It's about what happens when your identity is fused with external validation (Apple's success = his worth), and then that validation is suddenly removed. After being fired, Jobs didn't immediately bounce back. He went through intense self-doubt, questioning past decisions, wondering if he'd 'ruined' his legacy. Sound familiar?
+
+But here's what shifted: He stopped trying to make decisions that would 'undo' the past, and started making decisions based on curiosity (what interests me now?) rather than reputation repair (what will prove I was right all along?). NeXT and Pixar weren't strategic career moves—they were experiments driven by interest, not identity restoration.
+
+Your current paralysis around [their specific situation] has the same architecture: you're trying to make a decision that will 'prove' your past choices weren't mistakes. But that's an impossible standard. Every decision becomes a referendum on your self-worth. Jobs' path suggests a different question: not 'what decision will validate my past?' but 'what decision am I genuinely curious about right now, independent of proving anything?'"
+
+**Requirements:**
 - 6-8 sentences, 3-part structure:
-  1. What this specific story teaches (1-2 sentences)
-  2. Bridge to their paraphrased situation (2-3 sentences)
-  3. Actionable insight for tonight (2-3 sentences)
+  1. What this specific story teaches about THE MECHANISM (not generic inspiration)
+  2. Specific bridge showing how story's core pattern matches user's core pattern
+  3. Actionable insight for tonight based on mechanism connection
 - NO QUESTIONS
 - NO repetition of mechanism already explained
 - Evening frame: "As you wind down tonight...", "Something to sit with...", "Let this settle..."
+- Create SPECIFIC mechanism connection, not generic "embracing change" platitudes
 
 ### RESOURCES
-- Match to SPECIFIC mechanism (not general topic)
-- Podcast: Real episode from Hidden Brain or similar, directly relevant
-- Book: Prefer lesser-known if more precisely relevant
-- Exercise: Match to mechanism (values work for distinctiveness-worth, self-compassion for approval-seeking, grounding for threat-detection)
-- "Why This Helps": 2-3 sentences connecting to their exact paraphrased pattern
+⚠️ CRITICAL: Resources must be MECHANISM-matched, not just topic-matched.
+
+**BAD Example (Topic-Matched):**
+User pattern: Decision paralysis from self-worth tied to past mistakes
+Book: "The Gifts of Imperfection" by Brené Brown
+Why: "cultivate self-compassion and resilience"
+❌ Problem: Topic match ✓ (self-worth), Mechanism match ✗ (doesn't address decision paralysis, self-worth fusion, or past-mistake rumination specifically). Could recommend for 50 different patterns.
+
+**GOOD Example (Mechanism-Matched):**
+User pattern: Decision paralysis from self-worth tied to past mistakes (specifically: trying to make decisions that "undo" past errors)
+Theory identified: Self-discrepancy theory (Higgins, 1987) - gap between actual self and "should have been" self
+Book: "The Antidote: Happiness for People Who Can't Stand Positive Thinking" by Oliver Burkhart
+Why This Helps: "Burkhart specifically addresses the trap you're in: trying to make present decisions that will retroactively 'fix' past ones. Chapter 4 ('Goal Crazy') deconstructs why decision paralysis intensifies when we're trying to prove something about our past rather than simply choosing based on present values. He introduces the concept of 'negative capability'—the ability to make decisions without needing them to resolve past uncertainty. This directly targets your mechanism: you're not just indecisive, you're trying to make decisions carry too much weight (they must prove past-you wasn't wrong). Burkhart offers a framework for separating 'What do I want now?' from 'What would vindicate my past?'"
+
+**Requirements:**
+- Match to SPECIFIC MECHANISM from Theory section (not general topic)
+- Podcast: Real episode that addresses the exact mechanism identified
+- Book: Prefer lesser-known if more mechanism-specific. Include specific chapters/concepts that target their pattern
+- Exercise: Match to mechanism (values work for distinctiveness-worth, self-compassion for approval-seeking, grounding for threat-detection, etc.)
+- "Why This Helps": 2-3 sentences showing HOW resource targets their EXACT mechanism using paraphrased situations. Must explain the specific connection, not generic benefits.
 
 ---
 
