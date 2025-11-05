@@ -413,15 +413,15 @@ Respond with ONLY this JSON structure (no markdown, no explanations):
     "duration": "30-60 min",
     "description": "Brief description",
     "whyThisHelps": "2-3 sentences connecting to their pattern",
-    "urls": {"spotify": "URL", "applePodcasts": "URL"}
+    "urls": {"spotify": "https://open.spotify.com/episode/...", "applePodcasts": "https://podcasts.apple.com/..."}
   },
   "book": {
     "title": "Real Book Title",
     "author": "Author",
     "description": "Brief description",
     "whyThisHelps": "2-3 sentences connecting to their pattern",
-    "purchaseUrl": "URL (Bookshop.org preferred)",
-    "urls": {"bookshop": "URL", "amazon": "URL"}
+    "purchaseUrl": "https://bookshop.org/... (Bookshop.org preferred)",
+    "urls": {"bookshop": "https://bookshop.org/...", "amazon": "https://www.amazon.com/dp/...", "library": "https://www.worldcat.org/isbn/..."}
   }
 }
 
@@ -1869,8 +1869,8 @@ Why This Helps: "Burkhart specifically addresses the trap you're in: trying to m
     "duration": "30-60 min",
     "description": "What it covers",
     "whyThisHelps": "2-3 sentences about THEIR mechanism using paraphrased situations",
-    "thumbnail": "URL",
-    "urls": {"spotify": "URL", "applePodcasts": "URL"}
+    "thumbnail": "https://...",
+    "urls": {"spotify": "https://open.spotify.com/episode/...", "applePodcasts": "https://podcasts.apple.com/..."}
   },
   "book": {
     "title": "Real Book (prefer lesser-known if more relevant)",
@@ -1879,10 +1879,10 @@ Why This Helps: "Burkhart specifically addresses the trap you're in: trying to m
     "length": "pages / hours",
     "description": "What it covers",
     "whyThisHelps": "2-3 sentences about THEIR mechanism",
-    "coverImage": "URL",
-    "sampleUrl": "URL",
-    "purchaseUrl": "URL (Bookshop.org preferred)",
-    "urls": {"bookshop": "URL", "amazon": "URL", "library": "URL (optional)"}
+    "coverImage": "https://...",
+    "sampleUrl": "https://...",
+    "purchaseUrl": "https://bookshop.org/... (Bookshop.org preferred)",
+    "urls": {"bookshop": "https://bookshop.org/...", "amazon": "https://www.amazon.com/dp/...", "library": "https://www.worldcat.org/isbn/... (optional)"}
   },
   "exerciseTags": ["Match to mechanism, not just emotion"],
   "storyTags": ["2-3 creative tags for deeper themes"],
