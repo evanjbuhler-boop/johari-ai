@@ -502,6 +502,14 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
       : `https://bookshop.org/search?keywords=${q}`;
   };
 
+  // Get validated image source with fallback to placeholder
+  const getValidatedImageSrc = (aiUrl: string | undefined, placeholder: string): string => {
+    if (isValidExternalUrl(aiUrl)) {
+      return aiUrl!;
+    }
+    return placeholder;
+  };
+
   // Helper function to open external links with fallback
   const openLinkWithFallback = async (primaryUrl: string, fallbackUrl: string, linkName: string) => {
     if (isValidExternalUrl(primaryUrl)) {
@@ -1104,9 +1112,13 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               {/* Podcast artwork */}
               <div className="flex-shrink-0">
                 <img
-                  src={podcastPlaceholder}
+                  src={getValidatedImageSrc(results.podcast.thumbnail, podcastPlaceholder)}
                   alt={`${results.podcast.title} artwork`}
                   className="w-full sm:w-[200px] h-[300px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border"
+                  onError={(e) => {
+                    // Fallback to placeholder if image fails to load
+                    e.currentTarget.src = podcastPlaceholder;
+                  }}
                 />
               </div>
 
@@ -1206,9 +1218,13 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               {/* Book cover or Google Books preview */}
               <div className="flex-shrink-0">
                 <img
-                  src={bookPlaceholder}
+                  src={getValidatedImageSrc(results.book.coverImage, bookPlaceholder)}
                   alt={`${results.book.title} cover`}
                   className="w-full sm:w-[200px] h-[300px] object-cover rounded-md shadow-lg border border-gray-200 dark:border-border"
+                  onError={(e) => {
+                    // Fallback to placeholder if image fails to load
+                    e.currentTarget.src = bookPlaceholder;
+                  }}
                 />
               </div>
 
