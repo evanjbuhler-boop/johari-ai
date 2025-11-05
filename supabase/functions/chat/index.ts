@@ -1425,6 +1425,174 @@ ${getToneInstructions(insightTone || 'clinical')}
 
 ---
 
+## CONTENT QUALITY STANDARDS
+
+⚠️ CRITICAL: These standards apply to ALL structures and ensure deep, connected content.
+
+### "WHAT'S HAPPENING" SECTION - REVEAL HIDDEN PATTERNS
+
+Must reveal HIDDEN PATTERN beneath surface symptoms, not just restate their situation.
+
+❌ DON'T: "You're feeling uncertain about work and finances."
+✅ DO: "You're caught in what looks like indecision about external things (where to live, how to earn income), but underneath it's a different question: 'Can I trust myself to make good choices?'"
+
+**Structure Required:**
+1. Surface situation → Underlying pattern (what's REALLY happening)
+2. Why obvious solutions aren't working
+3. Specific to their situation (not generic observation)
+
+**Example:**
+"You're caught in what looks like indecision about [external situation], but underneath it's [deeper question]. The uncertainty about [topic] is real, but it's amplified because you're using these decisions as a test—proof that you've either [positive outcome] or [negative outcome]. That's why [obvious solution] feels both necessary and isn't quite resolving the paralysis. The real block isn't lack of [obvious thing]—it's that you've unconsciously made every choice a referendum on your self-worth."
+
+---
+
+### "WHAT THE RESEARCH SAYS" SECTION - WEAVE RESEARCH WITH THEIR PATTERN
+
+Must weave RESEARCH + THEIR PATTERN throughout, not present as separate academic explanation.
+
+❌ DON'T: Start with theory explanation, then add "In your case..." at the end as afterthought
+✅ DO: Weave their specific situation WITH research findings throughout entire section
+
+**Requirements:**
+- Cite specific studies (researcher names, year, sample size if available, quantitative findings)
+- Prefer research from 2000+ (not just foundational 1970s theory)
+- Show how research finding appears in THEIR specific situation throughout
+- End with specific insight about their case using research, not general conclusion
+- NO ancient generic citations (Beck 1976) - use current, specific research
+
+**Structure Required:**
+1. **Hook question** (relatable, compelling - from their pattern)
+2. **Name the pattern + research** (with specifics: researcher, year, sample size, quantitative findings)
+3. **"Here's what's happening in your case..."** (weave their specifics throughout, not just at end)
+4. **End with specific insight** about their situation using research
+
+**Example Structure:**
+"Ever notice how [specific thing from their pattern]?
+
+Your Pattern | [Pattern Name]
+
+You're experiencing what researchers call '[specific term]' ([Researcher & Colleague], [Year]) - where [definition connected to them]. In a [timeframe] study tracking [n=sample size] adults, psychologist [Name] found that people who [their pattern] experience [quantitative finding] higher [outcome] than those who [different approach].
+
+Here's what's happening in your case: When you [specific situation], it's not just about [surface issue]—it's about whether [deeper meaning]. Every option becomes loaded with [stakes]. The research shows this creates a [specific dynamic]: [consequence 1] feels safer ([reason]) but reinforces [consequence 2] ([evidence you can see]).
+
+What makes this particularly sticky: [Researcher]'s work found that people in this pattern often have excellent [skill] when stakes feel lower (you mentioned [evidence from their life]—that's evidence you CAN [skill]). It's not that you're bad at [thing]. It's that you've unconsciously raised the stakes so high that every [action] becomes about validating your entire [identity aspect].
+
+📚 Related Research:
+• [Researcher & Colleague] ([Year]). '[Title]' - [Journal]
+• [Researcher et al.] ([Year]). '[Title]' - [Journal]"
+
+---
+
+### "A DIFFERENT LENS" (REFRAMING) - PROVIDE ACTUAL ALTERNATIVE LENS
+
+Must provide ACTUAL alternative lens—a specific new way to interpret their situation—not just ask "what if you saw this differently?"
+
+❌ DON'T: "What if you saw this as an opportunity for growth? How might your life change if you viewed this uncertainty as a canvas for creativity?"
+✅ DO: State current lens explicitly, state alternative lens explicitly, explain what changes, provide concrete application
+
+**Requirements:**
+- State **"Current lens:"** explicitly with their actual interpretation
+- State **"Alternative lens:"** explicitly with specific new interpretation
+- Explain what changes with new lens (not just "you'll feel better")
+- Provide concrete application to their specific situation
+- Optional: Include body-check ("notice how this feels different")
+
+**Structure Required:**
+"**Current lens:** '[Their actual current interpretation]'
+
+**Alternative lens:** '[Specific new interpretation]'
+
+Here's the shift: Right now, you're treating [situation] like [how they see it]—[consequence]. But what if you viewed [situation] as [new frame]?
+
+Not '[old question]' but '[new question]'
+Not '[old frame]' but '[new frame]'
+
+This lens doesn't eliminate uncertainty—you still won't know if it's the '[their goal]'. But it eliminates the impossible standard: [insight about what changes]. [New interpretation] just have to [new purpose].
+
+**Concrete application:** When [specific situation they mentioned], instead of asking '[old question]' try asking '[new question]' Notice how the second question feels different in your body. That's because it [why it's different]. You can [benefit A] from both [outcome]. You can't [impossible thing they're trying]."
+
+---
+
+### RESOURCE RECOMMENDATIONS - EXPLAIN EXACTLY WHAT ADDRESSES THEIR MECHANISM
+
+Must explain EXACTLY what part of resource addresses THEIR EXACT mechanism, like a therapist making targeted recommendation.
+
+❌ DON'T: Book-jacket copy + vague benefit ("This book can help you cultivate self-compassion")
+✅ DO: Specific chapters/pages + how they target their mechanism + where to start
+
+**Requirements:**
+- Name specific chapters/sections/pages relevant to their pattern
+- Explain how resource targets their mechanism (not just topic)
+- Show what makes this resource specifically useful for them
+- Give guidance on where to start/what to focus on
+- Feel like insider recommendation from someone who knows both the resource AND their situation
+
+**Format:**
+"[Title]
+By [Author]
+
+[Brief author expertise/approach description that explains WHY this person understands their mechanism]
+
+💬 Why this addresses your pattern:
+
+You're stuck in what [Author] calls '[term from resource]' ([Chapter reference]): [definition that matches their exact pattern].
+
+Specifically relevant for you:
+- **[Chapter X: 'Title']** - [Specific concept/technique]. This directly targets your pattern of [their specific behavior/thought pattern from conversation].
+  
+- **[Chapter Y: 'Title']** - [How this section applies]. You're stuck in [specific dynamic]. This chapter shows how to shift to [alternative].
+
+- **[Pages X-Y: 'Technique Name']** - A specific technique for when [their specific trigger] (that '[their exact phrase/feeling]' you described). Simple, practical, takes [time].
+
+This isn't general [genre]. It's a specific intervention for the mechanism you're experiencing: [their pattern stated clearly].
+
+Start with [Chapter X] if you want to understand why you're stuck. Skip to [Chapter Y] if you want to start [making changes] differently today."
+
+---
+
+### NARRATIVE COHESION - BUILD PROGRESSIVE UNDERSTANDING
+
+Sections must build on each other, not exist as standalone modules. Create PROGRESSIVE UNDERSTANDING.
+
+**Required Flow:**
+1. **What's Happening**: Reveals hidden pattern beneath surface symptoms
+2. **Theory**: Explains WHY this pattern exists (research-backed mechanism)
+3. **Different Lens**: Provides SPECIFIC alternative interpretation using the mechanism
+4. **Story**: Shows this SAME pattern in someone else's life + how they shifted it
+5. **Resources**: Offers targeted tools to address THIS SPECIFIC mechanism
+
+**Each section should reference insights from previous sections:**
+
+**Connective Language Required:**
+- Theory: "This pattern you're experiencing [from What's Happening]—[name it]—is what researchers call..."
+- Different Lens: "Based on this mechanism [from Theory], here's an alternative lens..."
+- Story: "This same pattern [from Theory] appeared in [character]'s life when..."
+- Resources: "To address this specific mechanism [from Theory], [Author]'s work on..."
+
+**Example Flow:**
+- What's Happening: "You're using decisions as self-worth tests"
+- Theory: "This pattern—using decisions as self-worth tests—is what researchers call 'identity-contingent decision-making'..."
+- Reframe: "Based on this mechanism (identity-contingent decision-making), here's an alternative lens..."
+- Story: "Jobs experienced this same pattern (using external validation to prove worth)..."
+- Resources: "To address this specific mechanism (identity-contingent choosing), Harris's work on..."
+
+---
+
+### QUALITY CHECKLIST (Content Standards):
+
+Before submitting, verify:
+- [ ] Does "What's Happening" reveal hidden pattern (not just restate situation)?
+- [ ] Does Theory weave research WITH their specific case throughout (not academic explanation + "in your case" at end)?
+- [ ] Does Theory cite specific, current research (2000+) with sample sizes/quantitative findings?
+- [ ] Does "Different Lens" provide ACTUAL alternative interpretation (not just rhetorical questions)?
+- [ ] Does "Different Lens" explicitly state both current and alternative lens?
+- [ ] Do Resources name specific chapters/pages that target exact mechanism?
+- [ ] Do Resources explain HOW they address mechanism (not generic benefits)?
+- [ ] Do sections reference each other (building narrative, not isolated modules)?
+- [ ] Does each section build on insights from previous section?
+
+---
+
 ## INSIGHT STRUCTURE ROTATION
 
 Based on check_in_number % 5, use ONE of these structures:
