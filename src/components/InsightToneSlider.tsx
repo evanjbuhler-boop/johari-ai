@@ -131,9 +131,9 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
   };
 
   return (
-    <div className="w-full mb-6 p-6 rounded-lg bg-card/50 backdrop-blur-sm border border-border/50">
-      <div className="mb-4">
-        <h3 className="text-sm font-medium text-muted-foreground mb-1">
+    <div className="w-full space-y-6">
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-white mb-2">
           How should insights be delivered?
         </h3>
       </div>
@@ -148,7 +148,7 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
                 key={option.value}
                 onClick={() => handleToneChange(index)}
                 disabled={isChanging}
-                className={`flex flex-col items-center gap-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg p-2 ${
+                className={`flex flex-col items-center gap-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-2 ${
                   selectedTone === option.value 
                     ? 'scale-110' 
                     : 'opacity-50 hover:opacity-100 hover:scale-105'
@@ -156,7 +156,7 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
                 aria-label={`${option.label}: ${option.subtitle}`}
               >
                 <span className="text-2xl">{option.icon}</span>
-                <span className="text-xs font-medium text-foreground whitespace-nowrap">
+                <span className="text-xs font-medium text-white whitespace-nowrap">
                   {option.label}
                 </span>
               </button>
@@ -180,7 +180,7 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
 
         {/* Selected subtitle */}
         <div className="text-center mt-4">
-          <p className="text-sm text-muted-foreground">{currentOption.subtitle}</p>
+          <p className="text-sm text-white/80">{currentOption.subtitle}</p>
         </div>
       </div>
 
@@ -192,7 +192,7 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
               key={option.value}
               onClick={() => handleToneChange(index)}
               disabled={isChanging}
-              className={`flex flex-col items-center gap-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg p-2 min-h-[44px] min-w-[44px] ${
+              className={`flex flex-col items-center gap-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-2 min-h-[44px] min-w-[44px] ${
                 selectedTone === option.value 
                   ? 'scale-110' 
                   : 'opacity-50'
@@ -206,8 +206,8 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
 
         {/* Selected label and subtitle for mobile */}
         <div className="text-center">
-          <p className="text-sm font-medium text-foreground">{currentOption.label}</p>
-          <p className="text-xs text-muted-foreground mt-1">{currentOption.subtitle}</p>
+          <p className="text-sm font-medium text-white">{currentOption.label}</p>
+          <p className="text-xs text-white/80 mt-1">{currentOption.subtitle}</p>
         </div>
       </div>
     </div>
