@@ -123,7 +123,9 @@ const mockResults: CheckInResults = {
 export default function ResultsPreview() {
   // Randomly select a podcast and book from recommendations on each render
   const dynamicResults = useMemo(() => {
-    const selectedPodcast = getRandomItem(recommendationsData.podcasts);
+    // Prefer a deterministic podcast for testing (Love Me That); fallback to random
+    const preferredPodcast = recommendationsData.podcasts.find((p: any) => p.id === 'love-me-that-podcast-attachment');
+    const selectedPodcast = preferredPodcast || getRandomItem(recommendationsData.podcasts);
     const selectedBook = getRandomItem(recommendationsData.books);
 
     console.log('🎵 Selected podcast:', selectedPodcast.show, selectedPodcast.links);
