@@ -477,22 +477,58 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   };
 
 
+  // URL validation helper
+  const isValidExternalUrl = (url?: string): boolean => {
+    if (!url) return false;
+    try {
+      const u = new URL(url);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
+  // URL validation helper
+  const isValidExternalUrl = (url?: string): boolean => {
+    if (!url) return false;
+    try {
+      const u = new URL(url);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
+  const buildPodcastSearchUrl = (platform: 'spotify' | 'apple') => {
+    const q = encodeURIComponent(`${results.podcast?.title || ''} ${results.podcast?.host || ''} ${results.podcast?.episode || ''}`.trim());
+    return platform === 'apple'
+      ? `https://podcasts.apple.com/us/search?term=${q}`
+      : `https://open.spotify.com/search/${q}`;
+  };
+
+  const buildBookSearchUrl = (store: 'bookshop' | 'amazon') => {
+    const q = encodeURIComponent(`${results.book?.title || ''} ${results.book?.author || ''}`.trim());
+    return store === 'amazon'
+      ? `https://www.amazon.com/s?k=${q}`
+      : `https://bookshop.org/search?keywords=${q}`;
+  };
+
   // Helper function to open external links with fallback
   const openLinkWithFallback = async (primaryUrl: string, fallbackUrl: string, linkName: string) => {
-    try {
+    if (isValidExternalUrl(primaryUrl)) {
       const url = addUTMParams(primaryUrl);
       window.open(url, '_blank', 'noopener noreferrer');
-    } catch (error) {
-      console.error(`Failed to open ${linkName}:`, error);
-      if (fallbackUrl && fallbackUrl !== primaryUrl) {
-        try {
-          const url = addUTMParams(fallbackUrl);
-          window.open(url, '_blank', 'noopener noreferrer');
-        } catch (fallbackError) {
-          console.error('Fallback link also failed:', fallbackError);
-        }
-      }
+      return;
     }
+
+    if (isValidExternalUrl(fallbackUrl) && fallbackUrl !== primaryUrl) {
+      const url = addUTMParams(fallbackUrl);
+      window.open(url, '_blank', 'noopener noreferrer');
+      return;
+    }
+
+    console.warn(`Invalid ${linkName}. primary="${primaryUrl}" fallback="${fallbackUrl}"`);
+    toast.error(`${linkName} isn't available yet. We'll fix the link soon.`);
   };
 
   const handlePodcastPlay = async (platform: 'spotify' | 'apple' | 'universal' = 'spotify') => {
@@ -504,29 +540,34 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     console.log('🎧 Spotify URL:', results.podcast.urls?.spotify);
     console.log('🎧 Apple URL:', results.podcast.urls?.applePodcasts);
     
-    let primaryUrl: string;
-    let fallbackUrl: string = results.podcast.urls?.spotify || results.podcast.urls?.direct || '';
+    let primaryUrl: string = '';
+    let fallbackUrl: string = '';
     let linkName = '';
     
     if (platform === 'spotify') {
       primaryUrl = results.podcast.urls?.spotify || '';
+      fallbackUrl = results.podcast.urls?.direct || buildPodcastSearchUrl('spotify');
       linkName = 'Spotify link';
     } else if (platform === 'apple') {
       primaryUrl = results.podcast.urls?.applePodcasts || '';
-      fallbackUrl = results.podcast.urls?.spotify || results.podcast.urls?.direct || '';
+      fallbackUrl = results.podcast.urls?.spotify || results.podcast.urls?.direct || buildPodcastSearchUrl('apple');
       linkName = 'Apple Podcasts link';
     } else {
       primaryUrl = results.podcast.urls?.direct || results.podcast.urls?.spotify || '';
+      fallbackUrl = results.podcast.urls?.spotify || buildPodcastSearchUrl('spotify');
       linkName = 'Podcast link';
     }
     
-    console.log('🎧 Using URL:', primaryUrl);
+    console.log('🎧 Using URL:', primaryUrl, 'fallback:', fallbackUrl);
     await openLinkWithFallback(primaryUrl, fallbackUrl, linkName);
   };
 
   const handleBookRead = () => {
-    if (results.book?.sampleUrl) {
-      window.open(addUTMParams(results.book.sampleUrl), '_blank', 'noopener noreferrer');
+    const url = results.book?.sampleUrl;
+    if (isValidExternalUrl(url)) {
+      window.open(addUTMParams(url!), '_blank', 'noopener noreferrer');
+    } else {
+      toast.error('Sample link is not available yet.');
     }
   };
 
@@ -1205,6 +1246,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     <Button 
                       onClick={() => handleBookPurchase('bookshop')} 
                       className="gap-2"
+                      disabled={!isValidExternalUrl(results.book?.urls?.bookshop || results.book?.purchaseUrl)}
                     >
                       <BookOpen className="w-4 h-4" />
                       Bookshop.org
@@ -1214,6 +1256,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                       onClick={() => handleBookPurchase('amazon')} 
                       variant="outline" 
                       className="gap-2"
+                      disabled={!isValidExternalUrl(results.book?.urls?.amazon || results.book?.purchaseUrl)}
                     >
                       <ExternalLink className="w-4 h-4" />
                       Amazon
