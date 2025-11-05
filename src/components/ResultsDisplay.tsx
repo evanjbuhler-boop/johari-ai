@@ -1194,27 +1194,17 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                       className="gap-2"
                     >
                       <BookOpen className="w-4 h-4" />
-                      Get on Bookshop.org
+                      Bookshop.org
                     </Button>
                     
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="gap-2">
-                          Alternatives
-                          <ChevronDown className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48 bg-popover z-50">
-                        <DropdownMenuItem onClick={() => handleBookPurchase('bn')}>
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Barnes & Noble
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleBookPurchase('amazon')}>
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Amazon
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Button 
+                      onClick={() => handleBookPurchase('amazon')} 
+                      variant="outline" 
+                      className="gap-2"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Amazon
+                    </Button>
                   </div>
 
                   {/* Rating buttons */}
