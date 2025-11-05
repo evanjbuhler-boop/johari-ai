@@ -535,15 +535,19 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     
     if (platform === 'spotify') {
       primaryUrl = results.podcast.urls?.spotify || '';
-      fallbackUrl = results.podcast.urls?.direct || buildPodcastSearchUrl('spotify');
+      const directUrl = results.podcast.urls?.direct || '';
+      fallbackUrl = isValidExternalUrl(directUrl) ? directUrl : buildPodcastSearchUrl('spotify');
       linkName = 'Spotify link';
     } else if (platform === 'apple') {
       primaryUrl = results.podcast.urls?.applePodcasts || '';
-      fallbackUrl = results.podcast.urls?.spotify || results.podcast.urls?.direct || buildPodcastSearchUrl('apple');
+      const spotifyUrl = results.podcast.urls?.spotify || '';
+      const directUrl = results.podcast.urls?.direct || '';
+      fallbackUrl = isValidExternalUrl(spotifyUrl) ? spotifyUrl : (isValidExternalUrl(directUrl) ? directUrl : buildPodcastSearchUrl('apple'));
       linkName = 'Apple Podcasts link';
     } else {
       primaryUrl = results.podcast.urls?.direct || results.podcast.urls?.spotify || '';
-      fallbackUrl = results.podcast.urls?.spotify || buildPodcastSearchUrl('spotify');
+      const spotifyUrl = results.podcast.urls?.spotify || '';
+      fallbackUrl = isValidExternalUrl(spotifyUrl) ? spotifyUrl : buildPodcastSearchUrl('spotify');
       linkName = 'Podcast link';
     }
     
@@ -576,7 +580,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
       storeName = 'Bookshop.org';
     } else if (store === 'bn') {
       primaryUrl = results.book.urls?.barnesNoble || results.book.purchaseUrl || '';
-      fallbackUrl = results.book.urls?.bookshop || buildBookSearchUrl('bookshop');
+      const bookshopUrl = results.book.urls?.bookshop || '';
+      fallbackUrl = isValidExternalUrl(bookshopUrl) ? bookshopUrl : buildBookSearchUrl('bookshop');
       storeName = 'Barnes & Noble';
     } else if (store === 'amazon') {
       primaryUrl = results.book.urls?.amazon || results.book.purchaseUrl || '';
