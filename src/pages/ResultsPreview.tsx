@@ -126,6 +126,8 @@ export default function ResultsPreview() {
     const selectedPodcast = getRandomItem(recommendationsData.podcasts);
     const selectedBook = getRandomItem(recommendationsData.books);
 
+    console.log('🎵 Selected podcast:', selectedPodcast.show, selectedPodcast.links);
+
     // Find Spotify and Apple Podcasts links
     const spotifyLink = 
       selectedPodcast.links.primary.label.includes('Spotify') 
@@ -139,26 +141,35 @@ export default function ResultsPreview() {
         : selectedPodcast.links.alternatives.find((alt: any) => alt.label.includes('Apple'))?.url 
         || selectedPodcast.links.primary.url;
 
+    console.log('🎧 Podcast URLs extracted:', { 
+      spotify: spotifyLink, 
+      applePodcasts: applePodcastsLink 
+    });
+
     // Find book store links
     const bookshopLink = selectedBook.links.primary.url;
     const amazonLink = selectedBook.links.alternatives.find((alt: any) => alt.label.includes('Amazon'))?.url || '';
     const libraryLink = selectedBook.links.alternatives.find((alt: any) => alt.label.includes('Library'))?.url || '';
 
+    const podcastData = {
+      title: selectedPodcast.show,
+      host: selectedPodcast.host,
+      episode: selectedPodcast.title,
+      duration: selectedPodcast.duration,
+      description: selectedPodcast.description,
+      whyThisHelps: selectedPodcast.whyThisHelps,
+      thumbnail: selectedPodcast.coverImage,
+      urls: {
+        spotify: spotifyLink,
+        applePodcasts: applePodcastsLink,
+      },
+    };
+
+    console.log('📻 Final podcast object:', podcastData);
+
     return {
       ...mockResults,
-      podcast: {
-        title: selectedPodcast.show,
-        host: selectedPodcast.host,
-        episode: selectedPodcast.title,
-        duration: selectedPodcast.duration,
-        description: selectedPodcast.description,
-        whyThisHelps: selectedPodcast.whyThisHelps,
-        thumbnail: selectedPodcast.coverImage,
-        urls: {
-          spotify: spotifyLink,
-          applePodcasts: applePodcastsLink,
-        },
-      },
+      podcast: podcastData,
       book: {
         title: selectedBook.title,
         author: selectedBook.author,
