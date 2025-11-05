@@ -480,14 +480,21 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   // URL validation helper
   const isValidExternalUrl = (url?: string): boolean => {
     if (!url) return false;
+    const raw = String(url).trim().toLowerCase();
+    // Guard against AI placeholders
+    if (raw === 'url' || raw === 'link' || raw.includes('...')) return false;
     try {
       const u = new URL(url);
-      return u.protocol === 'http:' || u.protocol === 'https:';
+      const isHttp = u.protocol === 'http:' || u.protocol === 'https:';
+      if (!isHttp) return false;
+      // Treat obvious path placeholders as invalid (e.g., /episode/... or /dp/...)
+      const path = u.pathname || '';
+      if (path.includes('/...') || path.endsWith('...')) return false;
+      return true;
     } catch {
       return false;
     }
   };
-
   const buildPodcastSearchUrl = (platform: 'spotify' | 'apple') => {
     const q = encodeURIComponent(`${results.podcast?.title || ''} ${results.podcast?.host || ''} ${results.podcast?.episode || ''}`.trim());
     return platform === 'apple'
