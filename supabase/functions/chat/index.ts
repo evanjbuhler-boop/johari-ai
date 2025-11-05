@@ -412,13 +412,16 @@ Respond with ONLY this JSON structure (no markdown, no explanations):
     "episode": "Episode",
     "duration": "30-60 min",
     "description": "Brief description",
-    "whyThisHelps": "2-3 sentences connecting to their pattern"
+    "whyThisHelps": "2-3 sentences connecting to their pattern",
+    "urls": {"spotify": "URL", "applePodcasts": "URL"}
   },
   "book": {
     "title": "Real Book Title",
     "author": "Author",
     "description": "Brief description",
-    "whyThisHelps": "2-3 sentences connecting to their pattern"
+    "whyThisHelps": "2-3 sentences connecting to their pattern",
+    "purchaseUrl": "URL (Bookshop.org preferred)",
+    "urls": {"bookshop": "URL", "amazon": "URL"}
   }
 }
 
@@ -1358,7 +1361,12 @@ return new Response(
           whyThisHelps: "This book will help you reframe promotion stress",
           coverImage: "https://via.placeholder.com/300x450?text=Book",
           sampleUrl: "https://www.amazon.com/...",
-          purchaseUrl: "https://www.amazon.com/..."
+          purchaseUrl: "https://bookshop.org/...",
+          urls: {
+            bookshop: "https://bookshop.org/book/9780399563829",
+            amazon: "https://www.amazon.com/dp/1101982934",
+            library: "https://www.worldcat.org/isbn/9780399563829"
+          }
         },
         exercise: {
           title: "Box Breathing for Sleep",
@@ -1705,7 +1713,8 @@ Why This Helps: "Burkhart specifically addresses the trap you're in: trying to m
     "whyThisHelps": "2-3 sentences about THEIR mechanism",
     "coverImage": "URL",
     "sampleUrl": "URL",
-    "purchaseUrl": "URL"
+    "purchaseUrl": "URL (Bookshop.org preferred)",
+    "urls": {"bookshop": "URL", "amazon": "URL", "library": "URL (optional)"}
   },
   "exerciseTags": ["Match to mechanism, not just emotion"],
   "storyTags": ["2-3 creative tags for deeper themes"],
