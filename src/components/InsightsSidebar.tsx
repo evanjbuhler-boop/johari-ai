@@ -24,45 +24,95 @@ export default function InsightsSidebar({
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen bg-gradient-to-br from-purple-600/20 via-pink-500/20 to-indigo-600/20 backdrop-blur-xl border-r border-white/10 transition-all duration-300 z-20 ${
-          isCollapsed ? 'w-0 -translate-x-full' : 'w-80'
+        className={`fixed left-0 top-0 h-screen bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/25 backdrop-blur-2xl border-r border-primary/20 transition-all duration-500 z-20 shadow-2xl ${
+          isCollapsed ? 'w-0 -translate-x-full opacity-0' : 'w-80 opacity-100'
         }`}
+        style={{
+          background: 'linear-gradient(135deg, hsl(var(--primary) / 0.25), hsl(var(--secondary) / 0.15), hsl(var(--accent) / 0.2))',
+        }}
       >
-        {/* Geometric decorations */}
+        {/* Animated background gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-background/20 pointer-events-none" />
+        
+        {/* Geometric decorations - More prominent and animated */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Triangle 1 */}
+          {/* Large Triangle - Top */}
           <div
-            className="absolute top-20 -left-10 w-40 h-40 bg-gradient-to-br from-purple-500/10 to-transparent"
+            className="absolute -top-20 -left-20 w-80 h-80 opacity-30 animate-pulse"
             style={{
+              background: 'linear-gradient(135deg, hsl(var(--primary) / 0.4), transparent)',
               clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
               transform: 'rotate(15deg)',
+              animation: 'pulse 4s ease-in-out infinite',
             }}
           />
-          {/* Triangle 2 */}
+          
+          {/* Medium Triangle - Middle overlapping */}
           <div
-            className="absolute bottom-40 -right-10 w-32 h-32 bg-gradient-to-tl from-pink-500/10 to-transparent"
+            className="absolute top-1/3 -right-16 w-64 h-64 opacity-25"
             style={{
+              background: 'linear-gradient(225deg, hsl(var(--accent) / 0.5), transparent)',
               clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
-              transform: 'rotate(-25deg)',
+              transform: 'rotate(-35deg)',
+              animation: 'float 6s ease-in-out infinite',
             }}
           />
-          {/* Diamond */}
+
+          {/* Diamond - Large and prominent */}
           <div
-            className="absolute top-1/2 left-10 w-24 h-24 bg-gradient-to-br from-indigo-500/10 to-transparent"
+            className="absolute top-1/2 left-1/4 w-40 h-40 opacity-20"
             style={{
+              background: 'linear-gradient(45deg, hsl(var(--primary) / 0.4), hsl(var(--accent) / 0.3))',
               clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
               transform: 'rotate(45deg)',
+              animation: 'spin 20s linear infinite',
             }}
           />
-          {/* Pentagon */}
+
+          {/* Hexagon - Bottom */}
           <div
-            className="absolute bottom-20 left-1/2 w-28 h-28 bg-gradient-to-br from-violet-500/10 to-transparent"
+            className="absolute bottom-32 left-12 w-36 h-36 opacity-25"
             style={{
+              background: 'linear-gradient(90deg, hsl(var(--secondary) / 0.4), transparent)',
+              clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
+              transform: 'rotate(20deg)',
+              animation: 'float 8s ease-in-out infinite reverse',
+            }}
+          />
+
+          {/* Pentagon overlapping */}
+          <div
+            className="absolute bottom-1/4 right-8 w-32 h-32 opacity-30"
+            style={{
+              background: 'linear-gradient(180deg, hsl(var(--accent) / 0.5), transparent)',
               clipPath: 'polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)',
-              transform: 'rotate(10deg)',
+              transform: 'rotate(-10deg)',
+              animation: 'pulse 5s ease-in-out infinite',
+            }}
+          />
+
+          {/* Small accent triangles */}
+          <div
+            className="absolute top-1/4 left-1/3 w-20 h-20 opacity-20"
+            style={{
+              background: 'hsl(var(--primary) / 0.6)',
+              clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
+              transform: 'rotate(60deg)',
+            }}
+          />
+          <div
+            className="absolute bottom-1/3 right-1/4 w-16 h-16 opacity-15"
+            style={{
+              background: 'hsl(var(--accent) / 0.7)',
+              clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
+              transform: 'rotate(-45deg)',
             }}
           />
         </div>
+
+        {/* Glow effects */}
+        <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-accent/10 to-transparent pointer-events-none" />
 
         {/* Sidebar content */}
         <div className="relative h-full flex flex-col p-6 pt-20">

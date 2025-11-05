@@ -252,3 +252,22 @@ All colors MUST be HSL.
 .vignette {
   box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.3);
 }
+
+/* Geometric shape animations for sidebar */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(var(--rotate-start, 0deg));
+  }
+  50% {
+    transform: translateY(-20px) rotate(var(--rotate-end, 10deg));
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
