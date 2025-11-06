@@ -69,7 +69,7 @@ export default function InsightsSidebar({
           onClick={() => handleToggle(false)}
           variant="ghost"
           size="icon"
-          className="fixed left-6 top-20 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
+          className="fixed left-6 top-20 z-30 bg-white/20 dark:bg-gray-900/20 backdrop-blur-sm hover:bg-white/30 dark:hover:bg-gray-900/30 shadow-md hover:shadow-lg transition-all duration-300"
         >
           <ChevronRight className="w-5 h-5" />
         </Button>
