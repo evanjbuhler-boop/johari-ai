@@ -901,10 +901,10 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
         {/* Reframing Section - Two-Column Perspective Design */}
         {results.reframing && (
           <ErrorBoundary>
-          <Card className="relative overflow-hidden p-8 md:p-10 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 backdrop-blur-md border-2 border-purple-400/30 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <Card className="relative overflow-hidden p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300">
             {/* Ambient background effects */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-orange-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl"></div>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-3xl"></div>
             
             <div className="relative z-10">
               {/* Header */}
@@ -914,11 +914,11 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   className="flex items-center gap-3 text-left flex-1 group"
                 >
                   <div className="relative flex items-center justify-center w-14 h-14">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400/20 to-pink-400/20 group-hover:scale-110 transition-transform"></div>
+                    <div className="absolute inset-0 rounded-full bg-primary/20 group-hover:scale-110 transition-transform"></div>
                     <span className="relative text-3xl">🔄</span>
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground">
                       A Different Lens
                     </h2>
                     <p className="text-sm text-muted-foreground">Reframing the situation</p>
@@ -936,8 +936,8 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
               {/* Featured intro - always visible */}
               <div className="mb-6">
-                <div className="relative p-6 md:p-8 bg-white/70 dark:bg-gray-800/70 rounded-xl border-l-4 border-purple-500 shadow-lg">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-purple-400/20 to-pink-400/20 rounded-bl-full"></div>
+                <div className="relative p-6 md:p-8 bg-primary/5 rounded-xl border-l-4 border-primary shadow-lg">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-primary/20 to-accent/20 rounded-bl-full"></div>
                   <p className="text-lg md:text-xl text-foreground font-medium leading-relaxed">
                     {renderBoldText(results.reframing.content.split('\n\n')[0])}
                   </p>
@@ -947,7 +947,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               {!reframingExpanded && (
                 <button
                   onClick={() => setReframingExpanded(true)}
-                  className="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-semibold hover:gap-3 transition-all group"
+                  className="flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all group"
                 >
                   Explore this new perspective
                   <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
@@ -984,15 +984,15 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                               
                               {/* Questions section */}
                               {questions.length > 0 && (
-                                <div className="mt-10 p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-2xl border-2 border-purple-400/20">
+                                <div className="mt-10 p-8 bg-muted/50 rounded-2xl border-2 border-border">
                                   <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3">
                                     <span className="text-2xl">💭</span>
                                     Questions to Consider
                                   </h3>
                                   <div className="grid md:grid-cols-2 gap-4">
                                     {questions.map((question, idx) => (
-                                      <div key={idx} className="flex items-start gap-3 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl border border-purple-400/20">
-                                        <div className="flex-shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-sm font-bold">
+                                      <div key={idx} className="flex items-start gap-3 p-5 bg-background/60 rounded-xl border border-border">
+                                        <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
                                           {idx + 1}
                                         </div>
                                         <p className="text-foreground/90 leading-relaxed text-base">{question}</p>
