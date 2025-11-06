@@ -133,15 +133,15 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
   return (
     <div className="w-full space-y-4">
       <div className="mb-4">
-        <h3 className="text-base font-semibold text-white mb-2">
+        <h3 className="text-lg font-semibold text-white mb-2">
           How should insights be delivered?
         </h3>
       </div>
 
       {/* Vertical slider layout */}
-      <div className="flex gap-6 items-center">
+      <div className="flex gap-4 items-center">
         {/* Vertical slider track */}
-        <div className="h-80 py-4">
+        <div className="h-96 py-4">
           <Slider
             value={[toneToIndex(selectedTone)]}
             onValueChange={([newValue]) => handleToneChange(newValue)}
@@ -156,25 +156,25 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
         </div>
 
         {/* Vertical stack of tone options */}
-        <div className="flex flex-col gap-3 flex-1">
+        <div className="flex flex-col gap-4 flex-1">
           {TONE_OPTIONS.map((option, index) => (
             <button
               key={option.value}
               onClick={() => handleToneChange(index)}
               disabled={isChanging}
-              className={`flex items-center gap-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-2 ${
+              className={`flex items-center gap-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-3 ${
                 selectedTone === option.value 
                   ? 'scale-105 bg-white/10' 
                   : 'opacity-60 hover:opacity-100 hover:bg-white/5'
               }`}
               aria-label={`${option.label}: ${option.subtitle}`}
             >
-              <span className="text-2xl flex-shrink-0">{option.icon}</span>
+              <span className="text-3xl flex-shrink-0">{option.icon}</span>
               <div className="text-left flex-1">
-                <p className="text-sm font-medium text-white leading-tight">
+                <p className="text-base font-semibold text-white leading-tight">
                   {option.label}
                 </p>
-                <p className="text-xs text-white/70 leading-tight mt-0.5">
+                <p className="text-xs text-white/80 leading-snug mt-1">
                   {option.subtitle}
                 </p>
               </div>
