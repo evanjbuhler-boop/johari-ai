@@ -898,178 +898,151 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
           </div>
         )}
 
-        {/* Reframing Section - Perspective Shift Design */}
+        {/* Reframing Section - Two-Column Perspective Design */}
         {results.reframing && (
           <ErrorBoundary>
-          <div className="relative">
-            {/* Header Bar */}
-            <div className="flex items-center justify-between mb-4 px-4">
-              <button
-                onClick={() => setReframingExpanded(!reframingExpanded)}
-                className="flex items-center gap-3 group"
-              >
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-md group-hover:blur-lg transition-all"></div>
-                  <span className="relative text-3xl">🔄</span>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-foreground bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-                    A Different Lens
-                  </h2>
-                  <p className="text-xs text-muted-foreground">Perspective shift</p>
-                </div>
-                {reframingExpanded ? <ChevronUp className="w-5 h-5 ml-2" /> : <ChevronDown className="w-5 h-5 ml-2" />}
-              </button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleSave('reframing', 'story', "A Different Lens", undefined, results.reframing)}
-              >
-                {isSaved('reframing') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
-            </div>
-
-            {!reframingExpanded ? (
-              /* Collapsed: Teaser View */
-              <Card className="relative overflow-hidden bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 backdrop-blur-md border-2 border-purple-400/30 shadow-xl hover:shadow-2xl transition-all duration-300 p-6">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-purple-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl"></div>
-                <div className="relative z-10">
-                  <p className="text-base text-foreground/80 leading-relaxed line-clamp-4">
-                    {results.reframing.content.split('\n\n')[0].slice(0, 280)}...
-                  </p>
-                  <button
-                    onClick={() => setReframingExpanded(true)}
-                    className="mt-4 flex items-center gap-2 text-purple-600 dark:text-purple-400 font-semibold hover:gap-3 transition-all group"
-                  >
-                    See the full perspective
-                    <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
-                  </button>
-                </div>
-              </Card>
-            ) : (
-              /* Expanded: Split Panel Layout */
-              <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-500">
-                {/* Main Content Area - Magazine Style */}
-                <Card className="relative overflow-hidden bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 backdrop-blur-md border-2 border-purple-400/30 shadow-2xl">
-                  {/* Ambient background effects */}
-                  <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl"></div>
-                  <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-orange-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl"></div>
-                  
-                  <div className="relative z-10 p-8 md:p-12">
-                    {/* Content Grid */}
-                    <div className="grid md:grid-cols-12 gap-8">
-                      {/* Left accent column */}
-                      <div className="md:col-span-1 hidden md:flex flex-col items-center gap-4">
-                        <div className="w-1 flex-1 bg-gradient-to-b from-purple-400 via-pink-400 to-orange-400 rounded-full"></div>
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-xs font-bold">
-                          ↻
-                        </div>
-                        <div className="w-1 flex-1 bg-gradient-to-b from-orange-400 via-pink-400 to-purple-400 rounded-full"></div>
-                      </div>
-                      
-                      {/* Main content */}
-                      <div className="md:col-span-11 space-y-8">
-                        {/* Intro callout */}
-                        <div className="relative p-6 bg-white/60 dark:bg-gray-800/60 rounded-2xl border-l-4 border-purple-500 shadow-lg">
-                          <div className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-purple-500"></div>
-                          <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-pink-500"></div>
-                          <p className="text-lg font-medium text-foreground leading-relaxed">
-                            {renderBoldText(results.reframing.content.split('\n\n')[0])}
-                          </p>
-                        </div>
-
-                        {/* Rest of content */}
-                        <div className="prose prose-lg dark:prose-invert max-w-none">
-                          <div className="text-base md:text-lg text-foreground/90 leading-relaxed space-y-6">
-                            {(() => {
-                              const content = results.reframing.content;
-                              const paragraphs = content.split(/\n{2,}/);
-                              const questionsMatch = content.match(/\*\*Questions to consider:\*\*\s*([\s\S]*?)$/);
-                              
-                              // Skip first paragraph (already shown in callout)
-                              const mainParagraphs = paragraphs.slice(1);
-                              
-                              if (questionsMatch) {
-                                const mainContent = content.substring(0, questionsMatch.index).trim();
-                                const mainParas = mainContent.split(/\n{2,}/).slice(1);
-                                const questions = questionsMatch[1]
-                                  .split('\n')
-                                  .filter(q => q.trim().startsWith('•'))
-                                  .map(q => q.replace(/^•\s*/, '').trim());
-                                
-                                return (
-                                  <>
-                                    <div className="space-y-4">
-                                      {mainParas.map((para, idx) => (
-                                        <p key={idx} className="leading-relaxed">
-                                          {renderBoldText(para.trim())}
-                                        </p>
-                                      ))}
-                                    </div>
-                                    
-                                    {questions.length > 0 && (
-                                      <div className="mt-10 p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-2xl border-2 border-purple-400/20">
-                                        <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3">
-                                          <span className="text-2xl">💭</span>
-                                          <span className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-                                            Questions for Reflection
-                                          </span>
-                                        </h3>
-                                        <div className="space-y-4">
-                                          {questions.map((question, idx) => (
-                                            <div key={idx} className="flex items-start gap-4 p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl">
-                                              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-sm font-bold">
-                                                {idx + 1}
-                                              </div>
-                                              <p className="text-foreground/90 leading-relaxed pt-1">{question}</p>
-                                            </div>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    )}
-                                  </>
-                                );
-                              }
-                              
-                              return (
-                                <div className="space-y-4">
-                                  {mainParagraphs.map((para, idx) => (
-                                    <p key={idx} className="leading-relaxed">
-                                      {renderBoldText(para.trim())}
-                                    </p>
-                                  ))}
-                                </div>
-                              );
-                            })()}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+          <Card className="relative overflow-hidden p-8 md:p-10 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 backdrop-blur-md border-2 border-purple-400/30 shadow-xl hover:shadow-2xl transition-all duration-300">
+            {/* Ambient background effects */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-orange-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl"></div>
+            
+            <div className="relative z-10">
+              {/* Header */}
+              <div className="flex items-center justify-between gap-3 mb-8">
+                <button
+                  onClick={() => setReframingExpanded(!reframingExpanded)}
+                  className="flex items-center gap-3 text-left flex-1 group"
+                >
+                  <div className="relative flex items-center justify-center w-14 h-14">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400/20 to-pink-400/20 group-hover:scale-110 transition-transform"></div>
+                    <span className="relative text-3xl">🔄</span>
                   </div>
-                </Card>
+                  <div className="flex-1">
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                      A Different Lens
+                    </h2>
+                    <p className="text-sm text-muted-foreground">Reframing the situation</p>
+                  </div>
+                  {reframingExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleSave('reframing', 'story', "A Different Lens", undefined, results.reframing)}
+                >
+                  {isSaved('reframing') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                </Button>
+              </div>
 
-                {/* Rating Bar */}
-                <div className="flex justify-end gap-2 px-4">
-                  <Button
-                    variant={ratings['reframing'] === 'up' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('story', "A Different Lens", 'up')}
-                    className="gap-1"
-                  >
-                    <ThumbsUp className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={ratings['reframing'] === 'down' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('story', "A Different Lens", 'down')}
-                    className="gap-1"
-                  >
-                    <ThumbsDown className="w-4 h-4" />
-                  </Button>
+              {/* Featured intro - always visible */}
+              <div className="mb-6">
+                <div className="relative p-6 md:p-8 bg-white/70 dark:bg-gray-800/70 rounded-xl border-l-4 border-purple-500 shadow-lg">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-purple-400/20 to-pink-400/20 rounded-bl-full"></div>
+                  <p className="text-lg md:text-xl text-foreground font-medium leading-relaxed">
+                    {renderBoldText(results.reframing.content.split('\n\n')[0])}
+                  </p>
                 </div>
               </div>
-            )}
-          </div>
+
+              {!reframingExpanded && (
+                <button
+                  onClick={() => setReframingExpanded(true)}
+                  className="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-semibold hover:gap-3 transition-all group"
+                >
+                  Explore this new perspective
+                  <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+                </button>
+              )}
+
+              {reframingExpanded && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                  {/* Main content in two-column flow on desktop */}
+                  <div className="prose prose-lg dark:prose-invert max-w-none">
+                    <div className="text-base md:text-lg text-foreground/90 leading-relaxed">
+                      {(() => {
+                        const content = results.reframing.content;
+                        const questionsMatch = content.match(/\*\*Questions to consider:\*\*\s*([\s\S]*?)$/);
+                        
+                        if (questionsMatch) {
+                          const mainContent = content.substring(0, questionsMatch.index).trim();
+                          const paragraphs = mainContent.split(/\n{2,}/).slice(1); // Skip first (already shown above)
+                          const questions = questionsMatch[1]
+                            .split('\n')
+                            .filter(q => q.trim().startsWith('•'))
+                            .map(q => q.replace(/^•\s*/, '').trim());
+                          
+                          return (
+                            <>
+                              {/* Content paragraphs in columns */}
+                              <div className="md:columns-2 md:gap-8 space-y-4">
+                                {paragraphs.map((para, idx) => (
+                                  <p key={idx} className="break-inside-avoid leading-relaxed mb-4">
+                                    {renderBoldText(para.trim())}
+                                  </p>
+                                ))}
+                              </div>
+                              
+                              {/* Questions section */}
+                              {questions.length > 0 && (
+                                <div className="mt-10 p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-2xl border-2 border-purple-400/20">
+                                  <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3">
+                                    <span className="text-2xl">💭</span>
+                                    Questions to Consider
+                                  </h3>
+                                  <div className="grid md:grid-cols-2 gap-4">
+                                    {questions.map((question, idx) => (
+                                      <div key={idx} className="flex items-start gap-3 p-5 bg-white/60 dark:bg-gray-800/60 rounded-xl border border-purple-400/20">
+                                        <div className="flex-shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-sm font-bold">
+                                          {idx + 1}
+                                        </div>
+                                        <p className="text-foreground/90 leading-relaxed text-base">{question}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          );
+                        }
+                        
+                        // No questions section
+                        const paragraphs = content.split(/\n{2,}/).slice(1);
+                        return (
+                          <div className="md:columns-2 md:gap-8 space-y-4">
+                            {paragraphs.map((para, idx) => (
+                              <p key={idx} className="break-inside-avoid leading-relaxed mb-4">
+                                {renderBoldText(para.trim())}
+                              </p>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Rating buttons */}
+              <div className="flex justify-end gap-2 mt-6 pt-6 border-t border-border/50">
+                <Button
+                  variant={ratings['reframing'] === 'up' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => handleRating('story', "A Different Lens", 'up')}
+                  className="gap-1"
+                >
+                  <ThumbsUp className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={ratings['reframing'] === 'down' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => handleRating('story', "A Different Lens", 'down')}
+                  className="gap-1"
+                >
+                  <ThumbsDown className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </Card>
           </ErrorBoundary>
         )}
 
