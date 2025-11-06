@@ -132,14 +132,14 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
 
   return (
     <div className="w-full space-y-4">
-      <div className="mb-4">
+      <div className="mb-4 text-center">
         <h3 className="text-lg font-semibold text-white mb-2">
           How should insights be delivered?
         </h3>
       </div>
 
       {/* Vertical slider layout */}
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center justify-center">
         {/* Vertical slider track */}
         <div className="h-96 py-4">
           <Slider
