@@ -131,83 +131,55 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
   };
 
   return (
-    <div className="w-full space-y-6">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-white mb-2">
+    <div className="w-full space-y-4">
+      <div className="mb-4">
+        <h3 className="text-base font-semibold text-white mb-2">
           How should insights be delivered?
         </h3>
       </div>
 
-      {/* Desktop/Tablet View */}
-      <div className="hidden sm:block">
-        <div className="relative">
-          {/* Grid container for icons and slider alignment */}
-          <div className="grid grid-cols-5 gap-2 mb-2">
-            {TONE_OPTIONS.map((option, index) => (
-              <button
-                key={option.value}
-                onClick={() => handleToneChange(index)}
-                disabled={isChanging}
-                className={`flex flex-col items-center gap-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-2 ${
-                  selectedTone === option.value 
-                    ? 'scale-110' 
-                    : 'opacity-50 hover:opacity-100 hover:scale-105'
-                }`}
-                aria-label={`${option.label}: ${option.subtitle}`}
-              >
-                <span className="text-2xl">{option.icon}</span>
-                <span className="text-xs font-medium text-white whitespace-nowrap">
-                  {option.label}
-                </span>
-              </button>
-            ))}
-          </div>
-
-          {/* Slider track with matching grid */}
-          <div className="relative py-4 px-[10%]">
-            <Slider
-              value={[toneToIndex(selectedTone)]}
-              onValueChange={([newValue]) => handleToneChange(newValue)}
-              min={0}
-              max={4}
-              step={1}
-              disabled={isChanging}
-              className="w-full"
-              aria-label="Insight tone selector"
-            />
-          </div>
+      {/* Vertical slider layout */}
+      <div className="flex gap-6 items-center">
+        {/* Vertical slider track */}
+        <div className="h-80 py-4">
+          <Slider
+            value={[toneToIndex(selectedTone)]}
+            onValueChange={([newValue]) => handleToneChange(newValue)}
+            min={0}
+            max={4}
+            step={1}
+            disabled={isChanging}
+            orientation="vertical"
+            className="h-full"
+            aria-label="Insight tone selector"
+          />
         </div>
 
-        {/* Selected subtitle */}
-        <div className="text-center mt-4">
-          <p className="text-sm text-white/80">{currentOption.subtitle}</p>
-        </div>
-      </div>
-
-      {/* Mobile View */}
-      <div className="block sm:hidden">
-        <div className="flex justify-between items-start mb-4">
+        {/* Vertical stack of tone options */}
+        <div className="flex flex-col gap-3 flex-1">
           {TONE_OPTIONS.map((option, index) => (
             <button
               key={option.value}
               onClick={() => handleToneChange(index)}
               disabled={isChanging}
-              className={`flex flex-col items-center gap-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-2 min-h-[44px] min-w-[44px] ${
+              className={`flex items-center gap-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-2 ${
                 selectedTone === option.value 
-                  ? 'scale-110' 
-                  : 'opacity-50'
+                  ? 'scale-105 bg-white/10' 
+                  : 'opacity-60 hover:opacity-100 hover:bg-white/5'
               }`}
               aria-label={`${option.label}: ${option.subtitle}`}
             >
-              <span className="text-xl">{option.icon}</span>
+              <span className="text-2xl flex-shrink-0">{option.icon}</span>
+              <div className="text-left flex-1">
+                <p className="text-sm font-medium text-white leading-tight">
+                  {option.label}
+                </p>
+                <p className="text-xs text-white/70 leading-tight mt-0.5">
+                  {option.subtitle}
+                </p>
+              </div>
             </button>
           ))}
-        </div>
-
-        {/* Selected label and subtitle for mobile */}
-        <div className="text-center">
-          <p className="text-sm font-medium text-white">{currentOption.label}</p>
-          <p className="text-xs text-white/80 mt-1">{currentOption.subtitle}</p>
         </div>
       </div>
     </div>
