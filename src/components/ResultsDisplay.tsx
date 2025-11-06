@@ -474,15 +474,22 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const isValidExternalUrl = (url?: string): boolean => {
     if (!url) return false;
     const raw = String(url).trim().toLowerCase();
-    // Guard against AI placeholders
-    if (raw === 'url' || raw === 'link' || raw.includes('...')) return false;
+    // Guard against AI placeholders and common placeholder patterns
+    const placeholderPatterns = [
+      'url', 'link', '...', 'example', 'placeholder', 'test',
+      '/episode/example', '/dp/example', 'your-', 'insert-'
+    ];
+    if (placeholderPatterns.some(pattern => raw.includes(pattern))) return false;
+    
     try {
       const u = new URL(url);
       const isHttp = u.protocol === 'http:' || u.protocol === 'https:';
       if (!isHttp) return false;
-      // Treat obvious path placeholders as invalid (e.g., /episode/... or /dp/...)
+      // Treat obvious path placeholders as invalid
       const path = u.pathname || '';
-      if (path.includes('/...') || path.endsWith('...')) return false;
+      if (path.includes('/...') || path.endsWith('...') || path.includes('/example')) return false;
+      // Check if hostname is just "example.com" or similar
+      if (u.hostname.includes('example.')) return false;
       return true;
     } catch {
       return false;

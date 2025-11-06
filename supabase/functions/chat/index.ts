@@ -480,15 +480,17 @@ Respond with ONLY this JSON structure (no markdown, no explanations):
     "duration": "30-60 min",
     "description": "Brief description",
     "whyThisHelps": "2-3 sentences connecting to their pattern",
-    "urls": {"spotify": "https://open.spotify.com/episode/...", "applePodcasts": "https://podcasts.apple.com/..."}
+    "urls": {"spotify": "", "applePodcasts": "", "direct": ""}
+    // IMPORTANT: Use empty string "" if you don't have real URLs. Never use placeholders.
   },
   "book": {
     "title": "Real Book Title",
     "author": "Author",
     "description": "Brief description",
     "whyThisHelps": "2-3 sentences connecting to their pattern",
-    "purchaseUrl": "https://bookshop.org/... (Bookshop.org preferred)",
-    "urls": {"bookshop": "https://bookshop.org/...", "amazon": "https://www.amazon.com/dp/...", "library": "https://www.worldcat.org/isbn/..."}
+    "purchaseUrl": "",
+    "urls": {"bookshop": "", "amazon": "", "library": ""}
+    // IMPORTANT: Use empty string "" if you don't have real URLs. Never use placeholders.
   }
 }
 
@@ -1944,7 +1946,10 @@ Why This Helps: "Burkhart specifically addresses the trap you're in: trying to m
     "description": "What it covers",
     "whyThisHelps": "2-3 sentences about THEIR mechanism using paraphrased situations",
     "thumbnail": "https://...",
-    "urls": {"spotify": "https://open.spotify.com/episode/...", "applePodcasts": "https://podcasts.apple.com/..."}
+    "urls": {"spotify": "", "applePodcasts": "", "direct": ""}
+    // CRITICAL: Only provide REAL, WORKING URLs. If you cannot provide a real URL, use empty string "". 
+    // NEVER use placeholder URLs like "example", "...", or fake URLs.
+    // Empty strings will trigger smart fallback search functionality.
   },
   "book": {
     "title": "Real Book (prefer lesser-known if more relevant)",
@@ -1953,10 +1958,13 @@ Why This Helps: "Burkhart specifically addresses the trap you're in: trying to m
     "length": "pages / hours",
     "description": "What it covers",
     "whyThisHelps": "2-3 sentences about THEIR mechanism",
-    "coverImage": "https://...",
-    "sampleUrl": "https://...",
-    "purchaseUrl": "https://bookshop.org/... (Bookshop.org preferred)",
-    "urls": {"bookshop": "https://bookshop.org/...", "amazon": "https://www.amazon.com/dp/...", "library": "https://www.worldcat.org/isbn/... (optional)"}
+    "coverImage": "",
+    "sampleUrl": "",
+    "purchaseUrl": "",
+    "urls": {"bookshop": "", "amazon": "", "library": ""}
+    // CRITICAL: Only provide REAL, WORKING URLs. If you cannot provide a real URL, use empty string "". 
+    // NEVER use placeholder URLs like "example", "...", or fake URLs.
+    // Empty strings will trigger smart fallback search functionality.
   },
   "exerciseTags": ["Match to mechanism, not just emotion"],
   "storyTags": ["2-3 creative tags for deeper themes"],
