@@ -150,7 +150,7 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
             step={1}
             disabled={isChanging}
             orientation="vertical"
-            className="h-full"
+            className="h-full [&_[role=slider]]:opacity-0"
             aria-label="Insight tone selector"
           />
         </div>
