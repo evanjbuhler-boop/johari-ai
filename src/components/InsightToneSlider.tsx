@@ -1,53 +1,76 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 
-type ToneValue = 'clinical' | 'direct' | 'coaching' | 'compassionate' | 'children';
-
-interface ToneOption {
-  value: ToneValue;
-  icon: string;
-  label: string;
-  subtitle: string;
+interface DimensionalTone {
+  directness: number;      // 0-100: Exploratory → Direct
+  warmth: number;          // 0-100: Analytical → Compassionate
+  orientation: number;     // 0-100: Reflective → Coaching
+  language: number;        // 0-100: Accessible → Technical
+  citations: boolean;
+  ageAppropriate: boolean;
 }
 
-const TONE_OPTIONS: ToneOption[] = [
-  {
-    value: 'clinical',
-    icon: '🔬',
-    label: 'Clinical',
-    subtitle: 'Direct, analytical pattern recognition'
+// Preset mappings for backward compatibility
+const PRESETS: Record<string, DimensionalTone> = {
+  clinical: {
+    directness: 75,
+    warmth: 25,
+    orientation: 50,
+    language: 90,
+    citations: true,
+    ageAppropriate: false,
   },
-  {
-    value: 'direct',
-    icon: '⚡',
-    label: 'Direct',
-    subtitle: 'Clear, no-BS clarity'
+  direct: {
+    directness: 90,
+    warmth: 40,
+    orientation: 60,
+    language: 30,
+    citations: false,
+    ageAppropriate: false,
   },
-  {
-    value: 'coaching',
-    icon: '🎯',
-    label: 'Coaching',
-    subtitle: 'Performance-focused, action-oriented'
+  coaching: {
+    directness: 70,
+    warmth: 65,
+    orientation: 85,
+    language: 25,
+    citations: false,
+    ageAppropriate: false,
   },
-  {
-    value: 'compassionate',
-    icon: '💙',
-    label: 'Compassionate',
-    subtitle: 'Warm, trauma-informed support'
+  compassionate: {
+    directness: 35,
+    warmth: 90,
+    orientation: 40,
+    language: 20,
+    citations: false,
+    ageAppropriate: false,
   },
-  {
-    value: 'children',
-    icon: '🧸',
-    label: 'Children',
-    subtitle: 'Age-appropriate for ages 8-12'
-  }
-];
+  children: {
+    directness: 50,
+    warmth: 80,
+    orientation: 60,
+    language: 10,
+    citations: false,
+    ageAppropriate: true,
+  },
+};
+
+const DEFAULT_TONE: DimensionalTone = {
+  directness: 60,
+  warmth: 55,
+  orientation: 50,
+  language: 35,
+  citations: false,
+  ageAppropriate: false,
+};
 
 interface InsightToneSliderProps {
-  value: ToneValue;
+  value: any; // Legacy tone or dimensional tone
   onRegenerating: (isRegenerating: boolean) => void;
   onRegenerated: (newRecommendations: any) => void;
   messages: any[];
@@ -55,46 +78,47 @@ interface InsightToneSliderProps {
 
 const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: InsightToneSliderProps) => {
   const { user } = useAuth();
-  const [selectedTone, setSelectedTone] = useState<ToneValue>(value);
+  
+  // Parse incoming value - handle both legacy and dimensional formats
+  const parseDimensionalTone = (val: any): DimensionalTone => {
+    if (typeof val === 'string' && PRESETS[val]) {
+      return PRESETS[val];
+    }
+    if (typeof val === 'object' && val.directness !== undefined) {
+      return val as DimensionalTone;
+    }
+    return DEFAULT_TONE;
+  };
+
+  const [tone, setTone] = useState<DimensionalTone>(parseDimensionalTone(value));
   const [isChanging, setIsChanging] = useState(false);
 
-  // Convert tone value to slider position (0-4)
-  const toneToIndex = (tone: ToneValue): number => {
-    return TONE_OPTIONS.findIndex(opt => opt.value === tone);
+  const handleDimensionChange = (dimension: keyof DimensionalTone, newValue: number | boolean) => {
+    const updatedTone = { ...tone, [dimension]: newValue };
+    setTone(updatedTone);
   };
 
-  // Convert slider position to tone value
-  const indexToTone = (index: number): ToneValue => {
-    return TONE_OPTIONS[index].value;
-  };
-
-  const currentOption = TONE_OPTIONS[toneToIndex(selectedTone)];
-
-  const handleToneChange = async (newIndex: number) => {
+  const handleApplyChanges = async () => {
     if (!user) {
       toast.error('Please sign in to change insight tone');
       return;
     }
 
-    const newTone = indexToTone(newIndex);
-    if (newTone === selectedTone || isChanging) return;
+    if (isChanging) return;
 
     try {
       setIsChanging(true);
-      setSelectedTone(newTone);
       onRegenerating(true);
 
-      // Save to database
+      // Save to database - store as JSON
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ insight_tone: newTone })
+        .update({ insight_tone: JSON.stringify(tone) })
         .eq('id', user.id);
 
       if (updateError) throw updateError;
 
-      // Show toast that regeneration is starting
-      const toneLabel = TONE_OPTIONS.find(t => t.value === newTone)?.label || newTone;
-      toast.loading(`Regenerating insights with ${toneLabel} tone...`, {
+      toast.loading('Regenerating insights with new settings...', {
         id: 'tone-regeneration',
         duration: Infinity
       });
@@ -104,7 +128,7 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
         body: {
           action: 'regenerate',
           messages,
-          insightTone: newTone
+          insightTone: tone
         }
       });
 
@@ -116,72 +140,162 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
       onRegenerated(data);
       onRegenerating(false);
       
-      toast.success(`Insights updated to ${toneLabel}`);
+      toast.success('Insights updated');
     } catch (error) {
       console.error('Error regenerating with new tone:', error);
       toast.dismiss('tone-regeneration');
       toast.error('Failed to regenerate insights. Please try again.');
       
-      // Revert to previous tone
-      setSelectedTone(value);
+      setTone(parseDimensionalTone(value));
       onRegenerating(false);
     } finally {
       setIsChanging(false);
     }
   };
 
+  const loadPreset = (presetName: string) => {
+    if (PRESETS[presetName]) {
+      setTone(PRESETS[presetName]);
+    }
+  };
+
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full space-y-6">
       <div className="mb-4 text-center">
-        <h3 className="text-lg font-semibold text-white mb-2">
+        <h3 className="text-base font-semibold text-white mb-2">
           How should insights be delivered?
         </h3>
       </div>
 
-      {/* Vertical slider layout */}
-      <div className="flex gap-4 items-center justify-center">
-        {/* Vertical slider track */}
-        <div className="h-96 py-4">
+      {/* Dimensional Sliders */}
+      <div className="space-y-5">
+        {/* Directness */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-xs text-white/70">
+            <span>Exploratory</span>
+            <span>Direct</span>
+          </div>
           <Slider
-            value={[toneToIndex(selectedTone)]}
-            onValueChange={([newValue]) => handleToneChange(newValue)}
+            value={[tone.directness]}
+            onValueChange={([val]) => handleDimensionChange('directness', val)}
             min={0}
-            max={4}
+            max={100}
             step={1}
             disabled={isChanging}
-            orientation="vertical"
-            className="h-full [&_[role=slider]]:opacity-0"
-            aria-label="Insight tone selector"
+            className="w-full"
+          />
+          <p className="text-xs text-white/60 text-center">Directness</p>
+        </div>
+
+        {/* Warmth */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-xs text-white/70">
+            <span>Analytical</span>
+            <span>Compassionate</span>
+          </div>
+          <Slider
+            value={[tone.warmth]}
+            onValueChange={([val]) => handleDimensionChange('warmth', val)}
+            min={0}
+            max={100}
+            step={1}
+            disabled={isChanging}
+            className="w-full"
+          />
+          <p className="text-xs text-white/60 text-center">Warmth</p>
+        </div>
+
+        {/* Orientation */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-xs text-white/70">
+            <span>Reflective</span>
+            <span>Coaching</span>
+          </div>
+          <Slider
+            value={[tone.orientation]}
+            onValueChange={([val]) => handleDimensionChange('orientation', val)}
+            min={0}
+            max={100}
+            step={1}
+            disabled={isChanging}
+            className="w-full"
+          />
+          <p className="text-xs text-white/60 text-center">Orientation</p>
+        </div>
+
+        {/* Language */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-xs text-white/70">
+            <span>Accessible</span>
+            <span>Technical</span>
+          </div>
+          <Slider
+            value={[tone.language]}
+            onValueChange={([val]) => handleDimensionChange('language', val)}
+            min={0}
+            max={100}
+            step={1}
+            disabled={isChanging}
+            className="w-full"
+          />
+          <p className="text-xs text-white/60 text-center">Language</p>
+        </div>
+      </div>
+
+      {/* Toggles */}
+      <div className="space-y-3 pt-4 border-t border-white/10">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="citations" className="text-sm text-white cursor-pointer">
+            Include research citations
+          </Label>
+          <Switch
+            id="citations"
+            checked={tone.citations}
+            onCheckedChange={(checked) => handleDimensionChange('citations', checked)}
+            disabled={isChanging}
           />
         </div>
 
-        {/* Vertical stack of tone options */}
-        <div className="flex flex-col gap-4 flex-1">
-          {TONE_OPTIONS.map((option, index) => (
-            <button
-              key={option.value}
-              onClick={() => handleToneChange(index)}
+        <div className="flex items-center justify-between">
+          <Label htmlFor="ageAppropriate" className="text-sm text-white cursor-pointer">
+            Age-appropriate (8-12)
+          </Label>
+          <Switch
+            id="ageAppropriate"
+            checked={tone.ageAppropriate}
+            onCheckedChange={(checked) => handleDimensionChange('ageAppropriate', checked)}
+            disabled={isChanging}
+          />
+        </div>
+      </div>
+
+      {/* Quick Presets */}
+      <div className="pt-4 border-t border-white/10">
+        <p className="text-xs text-white/70 mb-2">Quick presets:</p>
+        <div className="flex flex-wrap gap-2">
+          {Object.keys(PRESETS).map((presetName) => (
+            <Button
+              key={presetName}
+              onClick={() => loadPreset(presetName)}
               disabled={isChanging}
-              className={`flex items-center gap-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-3 ${
-                selectedTone === option.value 
-                  ? 'scale-105 bg-white/10' 
-                  : 'opacity-60 hover:opacity-100 hover:bg-white/5'
-              }`}
-              aria-label={`${option.label}: ${option.subtitle}`}
+              variant="outline"
+              size="sm"
+              className="text-xs bg-white/5 hover:bg-white/10 border-white/20 text-white"
             >
-              <span className="text-3xl flex-shrink-0">{option.icon}</span>
-              <div className="text-left flex-1">
-                <p className="text-base font-semibold text-white leading-tight">
-                  {option.label}
-                </p>
-                <p className="text-xs text-white/80 leading-snug mt-1">
-                  {option.subtitle}
-                </p>
-              </div>
-            </button>
+              {presetName.charAt(0).toUpperCase() + presetName.slice(1)}
+            </Button>
           ))}
         </div>
       </div>
+
+      {/* Apply Button */}
+      <Button
+        onClick={handleApplyChanges}
+        disabled={isChanging}
+        className="w-full bg-white/10 hover:bg-white/20 text-white"
+      >
+        {isChanging ? 'Applying...' : 'Apply Changes'}
+      </Button>
     </div>
   );
 };

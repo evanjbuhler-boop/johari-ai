@@ -695,7 +695,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
       </header>
 
       <div className={`max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6 transition-all duration-500 ${
-        user && messages.length > 0 && !sidebarCollapsed ? 'lg:ml-80' : ''
+        user && messages.length > 0 && !sidebarCollapsed ? 'lg:ml-96' : ''
       }`}>
         
         {/* Expand/Collapse All Button */}
