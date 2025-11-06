@@ -153,17 +153,45 @@ const Library = () => {
     setItemToDelete(null);
   };
 
+  const isValidUrl = (url: string | undefined): boolean => {
+    if (!url) return false;
+    if (url === 'URL') return false;
+    try {
+      const u = new URL(url);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
+  const buildPodcastSearchUrl = (title: string, host: string, episode: string) => {
+    const query = encodeURIComponent(`${title} ${host} ${episode}`.trim());
+    return `https://open.spotify.com/search/${query}`;
+  };
+
+  const buildBookSearchUrl = (title: string, author: string) => {
+    const query = encodeURIComponent(`${title} ${author}`.trim());
+    return `https://bookshop.org/search?keywords=${query}`;
+  };
+
   const handleAction = (item: DbSavedItem) => {
     if (item.item_type === 'podcast') {
       if (item.podcast_urls) {
         const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
         const url = isIOS ? item.podcast_urls.applePodcasts : item.podcast_urls.spotify;
         
-        // Check if URL is valid (not placeholder text)
-        if (url && url !== 'URL' && url.startsWith('http')) {
+        // If URL is valid, open it
+        if (isValidUrl(url)) {
           window.open(url, '_blank', 'noopener,noreferrer');
         } else {
-          toast.error('Podcast link not available. Please try searching for this episode directly on Spotify or Apple Podcasts.');
+          // Fall back to search URL
+          const searchUrl = buildPodcastSearchUrl(
+            item.title, 
+            item.podcast_host || '', 
+            item.podcast_episode || ''
+          );
+          window.open(searchUrl, '_blank', 'noopener,noreferrer');
+          toast.info('Opening podcast search - link not available');
         }
       } else {
         toast.error('Podcast link not available');
@@ -172,11 +200,14 @@ const Library = () => {
       // Try book_sample_url first, then book_purchase_url
       const url = item.book_sample_url || item.book_purchase_url;
       
-      // Check if URL is valid (not placeholder text)
-      if (url && url !== 'URL' && url.startsWith('http')) {
+      // If URL is valid, open it
+      if (isValidUrl(url)) {
         window.open(url, '_blank', 'noopener,noreferrer');
       } else {
-        toast.error('Book link not available. Please search for this book on Bookshop.org or your preferred bookstore.');
+        // Fall back to search URL
+        const searchUrl = buildBookSearchUrl(item.title, item.book_author || '');
+        window.open(searchUrl, '_blank', 'noopener,noreferrer');
+        toast.info('Opening book search - link not available');
       }
     } else if (item.item_type === 'exercise') {
       toast.info('Exercise flow will open here');
