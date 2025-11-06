@@ -36,6 +36,53 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
 
     setLoading(true);
 
+    // Convert preset to dimensional tone object
+    const PRESETS: Record<string, any> = {
+      clinical: {
+        directness: 75,
+        warmth: 25,
+        orientation: 50,
+        language: 90,
+        citations: true,
+        ageAppropriate: false,
+      },
+      direct: {
+        directness: 90,
+        warmth: 40,
+        orientation: 60,
+        language: 30,
+        citations: false,
+        ageAppropriate: false,
+      },
+      coaching: {
+        directness: 70,
+        warmth: 65,
+        orientation: 85,
+        language: 25,
+        citations: false,
+        ageAppropriate: false,
+      },
+      compassionate: {
+        directness: 35,
+        warmth: 90,
+        orientation: 40,
+        language: 20,
+        citations: false,
+        ageAppropriate: false,
+      },
+      children: {
+        directness: 50,
+        warmth: 80,
+        orientation: 60,
+        language: 10,
+        citations: false,
+        ageAppropriate: true,
+      },
+    };
+
+    const selectedTone = profile.insightTone || 'clinical';
+    const dimensionalTone = PRESETS[selectedTone] || PRESETS.clinical;
+
     // Save to database
     const { error } = await supabase
       .from('profiles')
@@ -46,7 +93,7 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
         age: profile.age,
         location: profile.location,
         life_stage: profile.lifeStage,
-        insight_tone: profile.insightTone || 'clinical',
+        insight_tone: JSON.stringify(dimensionalTone),
       });
 
     if (error) {
