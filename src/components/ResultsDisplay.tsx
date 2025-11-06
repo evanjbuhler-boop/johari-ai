@@ -918,7 +918,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     <span className="relative text-3xl">🔄</span>
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                    <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                       A Different Lens
                     </h2>
                     <p className="text-sm text-muted-foreground">Reframing the situation</p>
