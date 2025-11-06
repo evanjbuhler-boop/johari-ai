@@ -305,14 +305,11 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
                 disabled={isChanging}
                 variant="outline"
                 size="sm"
-                className={`text-xs transition-all duration-300 ${
+                className={`text-xs transition-all duration-200 ${
                   isActive
-                    ? 'bg-primary/20 hover:bg-primary/30 border-primary/50 text-white font-semibold animate-scale-in'
-                    : 'bg-white/5 hover:bg-white/10 border-white/20 text-white hover:scale-105'
+                    ? 'bg-primary/15 hover:bg-primary/25 border-primary/40 text-white font-medium'
+                    : 'bg-white/5 hover:bg-white/10 border-white/20 text-white'
                 }`}
-                style={isActive ? {
-                  boxShadow: '0 0 20px hsl(var(--primary) / 0.6), 0 0 40px hsl(var(--primary) / 0.3)'
-                } : undefined}
               >
                 {presetName.charAt(0).toUpperCase() + presetName.slice(1)}
               </Button>
