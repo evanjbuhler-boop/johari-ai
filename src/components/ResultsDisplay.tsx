@@ -22,7 +22,7 @@ import StageProgressBar from '@/components/StageProgressBar';
 import podcastPlaceholder from '@/assets/podcast-placeholder.png';
 import bookPlaceholder from '@/assets/book-placeholder.png';
 import exercisePlaceholder from '@/assets/exercise-placeholder.png';
-import InsightsSidebar from '@/components/InsightsSidebar';
+import InsightControls from '@/components/InsightControls';
 
 interface ResultsDisplayProps {
   results: CheckInResults;
@@ -62,7 +62,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
   const [ratings, setRatings] = useState<Record<string, 'up' | 'down'>>({});
   const [isRegenerating, setIsRegenerating] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [feedbackDialog, setFeedbackDialog] = useState<{
     open: boolean;
     type: 'podcast' | 'book' | 'exercise' | 'story' | 'research';
@@ -668,17 +667,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
       {/* Soft blur orbs */}
       <div className="fixed top-0 right-0 w-96 h-96 rounded-full bg-violet-400 blur-3xl opacity-20 -z-10"></div>
       <div className="fixed bottom-0 left-0 w-80 h-80 rounded-full bg-pink-400 blur-3xl opacity-15 -z-10"></div>
-
-      {/* Insights Sidebar */}
-      {user && messages.length > 0 && (
-        <InsightsSidebar
-          insightTone={(userProfile?.insight_tone as any) || 'clinical'}
-          onRegenerating={setIsRegenerating}
-          onRegenerated={handleRegenerated}
-          messages={messages}
-          onCollapsedChange={setSidebarCollapsed}
-        />
-      )}
       
       {/* Header */}
       <header className="border-b border-white/10 bg-white/10 backdrop-blur-sm sticky top-0 z-10">
@@ -686,12 +674,21 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
         </div>
       </header>
 
-      <div className={`max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6 transition-all duration-500 ${
-        user && messages.length > 0 && !sidebarCollapsed ? 'ml-80 lg:ml-96' : ''
-      }`}>
+      <div className={`max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6 transition-all duration-500`}>
         
-        {/* Expand/Collapse All Button */}
-        <div className="flex justify-end mb-2">
+        {/* Controls Row */}
+        <div className="flex justify-between items-center mb-2 gap-3">
+          {/* Insight Controls Button (Left) */}
+          {user && messages.length > 0 && (
+            <InsightControls
+              value={(userProfile?.insight_tone as any) || 'clinical'}
+              onRegenerating={setIsRegenerating}
+              onRegenerated={handleRegenerated}
+              messages={messages}
+            />
+          )}
+          
+          {/* Expand/Collapse All Button (Right) */}
           <Button
             variant="ghost"
             size="sm"
