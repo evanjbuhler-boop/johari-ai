@@ -20,7 +20,7 @@ export default function InsightsSidebar({
   messages,
   onCollapsedChange,
 }: InsightsSidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const handleToggle = (collapsed: boolean) => {
     setIsCollapsed(collapsed);
