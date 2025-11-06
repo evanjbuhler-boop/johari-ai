@@ -209,6 +209,9 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
         title: 'Saved',
         description: 'Default insight tone updated',
       });
+      
+      // Notify other components that profile was updated
+      window.dispatchEvent(new Event('profileUpdated'));
     }
   };
 

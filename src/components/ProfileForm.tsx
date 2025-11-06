@@ -106,6 +106,9 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
     // Also save to localStorage for backward compatibility
     localStorage.setItem('userProfile', JSON.stringify(profile));
     
+    // Notify other components that profile was updated
+    window.dispatchEvent(new Event('profileUpdated'));
+    
     setLoading(false);
     onSubmit(profile);
   };

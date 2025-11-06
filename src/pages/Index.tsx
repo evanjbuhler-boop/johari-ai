@@ -278,6 +278,17 @@ const Index = () => {
     };
 
     loadProfile();
+    
+    // Listen for profile updates
+    const handleProfileUpdate = () => {
+      loadProfile();
+    };
+    
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+    
+    return () => {
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
+    };
   }, [user, toast]);
 
   // Persist active chat state whenever messages change during a chat session
