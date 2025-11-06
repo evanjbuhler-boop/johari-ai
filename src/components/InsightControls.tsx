@@ -288,7 +288,7 @@ export default function InsightControls({
           </div>
 
           {/* Presets */}
-          <div className="pt-4 border-t border-white/10 mb-4">
+          <div className="pt-4 border-t border-white/10 mb-6">
             <p className="text-xs text-white/70 mb-2 text-center">Quick presets:</p>
             <div className="flex flex-wrap gap-2 justify-center">
               {Object.keys(PRESETS).map((presetName) => {
@@ -314,19 +314,19 @@ export default function InsightControls({
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-3">
+          <div className="space-y-4 pt-6">
             <Button
               onClick={handleSaveSettings}
               disabled={isChanging}
-              variant="outline"
-              className="w-full bg-white/5 hover:bg-white/10 text-white border-white/20"
+              variant="ghost"
+              className="w-full text-white/80 hover:text-white hover:bg-white/5 border border-white/10 font-normal text-sm h-9"
             >
               Save for Future Sessions
             </Button>
             <Button
               onClick={handleApplyChanges}
               disabled={isChanging}
-              className="w-full bg-primary/80 hover:bg-primary text-white"
+              className="w-full bg-primary/70 hover:bg-primary/80 text-white font-medium text-sm h-10 shadow-sm"
             >
               {isChanging ? 'Applying...' : 'Apply Changes'}
             </Button>
