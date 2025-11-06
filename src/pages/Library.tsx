@@ -169,46 +169,60 @@ const Library = () => {
     return `https://open.spotify.com/search/${query}`;
   };
 
-  const buildBookSearchUrl = (title: string, author: string) => {
+  const buildApplePodcastSearchUrl = (title: string, host: string, episode: string) => {
+    const query = encodeURIComponent(`${title} ${host} ${episode}`.trim());
+    return `https://podcasts.apple.com/us/search?term=${query}`;
+  };
+
+  const buildBookSearchUrl = (title: string, author: string, store: 'bookshop' | 'amazon' = 'bookshop') => {
     const query = encodeURIComponent(`${title} ${author}`.trim());
-    return `https://bookshop.org/search?keywords=${query}`;
+    return store === 'amazon'
+      ? `https://www.amazon.com/s?k=${query}`
+      : `https://bookshop.org/search?keywords=${query}`;
+  };
+
+  const handlePodcastAction = (item: DbSavedItem, platform: 'spotify' | 'apple') => {
+    if (item.item_type !== 'podcast') return;
+    
+    const url = platform === 'apple' 
+      ? item.podcast_urls?.applePodcasts 
+      : item.podcast_urls?.spotify;
+    
+    // If URL is valid, open it
+    if (isValidUrl(url)) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      // Fall back to search URL
+      const searchUrl = platform === 'apple'
+        ? buildApplePodcastSearchUrl(item.title, item.podcast_host || '', item.podcast_episode || '')
+        : buildPodcastSearchUrl(item.title, item.podcast_host || '', item.podcast_episode || '');
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+      toast.info('Opening podcast search - link not available');
+    }
+  };
+
+  const handleBookAction = (item: DbSavedItem, store: 'bookshop' | 'amazon') => {
+    if (item.item_type !== 'book') return;
+    
+    // Try to get the URL from saved data
+    let url = item.book_purchase_url;
+    
+    // If URL is valid, open it
+    if (isValidUrl(url)) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      // Fall back to search URL
+      const searchUrl = buildBookSearchUrl(item.title, item.book_author || '', store);
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+      toast.info(`Opening ${store === 'amazon' ? 'Amazon' : 'Bookshop.org'} search - link not available`);
+    }
   };
 
   const handleAction = (item: DbSavedItem) => {
     if (item.item_type === 'podcast') {
-      if (item.podcast_urls) {
-        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-        const url = isIOS ? item.podcast_urls.applePodcasts : item.podcast_urls.spotify;
-        
-        // If URL is valid, open it
-        if (isValidUrl(url)) {
-          window.open(url, '_blank', 'noopener,noreferrer');
-        } else {
-          // Fall back to search URL
-          const searchUrl = buildPodcastSearchUrl(
-            item.title, 
-            item.podcast_host || '', 
-            item.podcast_episode || ''
-          );
-          window.open(searchUrl, '_blank', 'noopener,noreferrer');
-          toast.info('Opening podcast search - link not available');
-        }
-      } else {
-        toast.error('Podcast link not available');
-      }
+      handlePodcastAction(item, 'spotify');
     } else if (item.item_type === 'book') {
-      // Try book_sample_url first, then book_purchase_url
-      const url = item.book_sample_url || item.book_purchase_url;
-      
-      // If URL is valid, open it
-      if (isValidUrl(url)) {
-        window.open(url, '_blank', 'noopener,noreferrer');
-      } else {
-        // Fall back to search URL
-        const searchUrl = buildBookSearchUrl(item.title, item.book_author || '');
-        window.open(searchUrl, '_blank', 'noopener,noreferrer');
-        toast.info('Opening book search - link not available');
-      }
+      handleBookAction(item, 'bookshop');
     } else if (item.item_type === 'exercise') {
       toast.info('Exercise flow will open here');
     } else if (item.item_type === 'story') {
@@ -395,13 +409,51 @@ const Library = () => {
 
                       {/* Actions */}
                       <div className="flex gap-3 mt-4">
-                        <Button 
-                          onClick={() => handleAction(item)}
-                          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full px-6 shadow-md gap-2"
-                        >
-                          {getIcon(item.item_type)}
-                          {getActionLabel(item.item_type)}
-                        </Button>
+                        {item.item_type === 'podcast' ? (
+                          <>
+                            <Button 
+                              onClick={() => handlePodcastAction(item, 'spotify')}
+                              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full px-6 shadow-md gap-2"
+                            >
+                              <Play className="w-4 h-4" />
+                              Spotify
+                            </Button>
+                            <Button 
+                              onClick={() => handlePodcastAction(item, 'apple')}
+                              variant="outline"
+                              className="rounded-full px-6 gap-2"
+                            >
+                              <Play className="w-4 h-4" />
+                              Apple Podcasts
+                            </Button>
+                          </>
+                        ) : item.item_type === 'book' ? (
+                          <>
+                            <Button 
+                              onClick={() => handleBookAction(item, 'bookshop')}
+                              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full px-6 shadow-md gap-2"
+                            >
+                              <BookOpen className="w-4 h-4" />
+                              Bookshop.org
+                            </Button>
+                            <Button 
+                              onClick={() => handleBookAction(item, 'amazon')}
+                              variant="outline"
+                              className="rounded-full px-6 gap-2"
+                            >
+                              <BookOpen className="w-4 h-4" />
+                              Amazon
+                            </Button>
+                          </>
+                        ) : (
+                          <Button 
+                            onClick={() => handleAction(item)}
+                            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full px-6 shadow-md gap-2"
+                          >
+                            {getIcon(item.item_type)}
+                            {getActionLabel(item.item_type)}
+                          </Button>
+                        )}
                         <Button 
                           variant="ghost"
                           onClick={() => setItemToDelete(item)}
