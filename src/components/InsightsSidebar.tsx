@@ -31,6 +31,18 @@ export default function InsightsSidebar({
           background: 'linear-gradient(135deg, hsl(var(--primary) / 0.25), hsl(var(--secondary) / 0.15), hsl(var(--accent) / 0.2))',
         }}
       >
+        {/* Toggle button inside sidebar */}
+        {!isCollapsed && (
+          <Button
+            onClick={() => setIsCollapsed(true)}
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 z-10 text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+        )}
+
         {/* Animated background gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-background/20 pointer-events-none" />
         
@@ -127,21 +139,17 @@ export default function InsightsSidebar({
         </div>
       </aside>
 
-      {/* Toggle button */}
-      <Button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        variant="ghost"
-        size="icon"
-        className={`fixed top-[5.5rem] z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 ${
-          isCollapsed ? 'left-4' : 'left-64'
-        }`}
-      >
-        {isCollapsed ? (
+      {/* Toggle button - only visible when collapsed */}
+      {isCollapsed && (
+        <Button
+          onClick={() => setIsCollapsed(false)}
+          variant="ghost"
+          size="icon"
+          className="fixed left-4 top-[5.5rem] z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
+        >
           <ChevronRight className="w-5 h-5" />
-        ) : (
-          <ChevronLeft className="w-5 h-5" />
-        )}
-      </Button>
+        </Button>
+      )}
     </>
   );
 }
