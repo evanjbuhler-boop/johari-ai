@@ -704,7 +704,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
             variant="ghost"
             size="sm"
             onClick={handleExpandAll}
-            className="gap-2 group relative overflow-hidden bg-gradient-to-r from-primary/20 to-accent/20 hover:from-primary/30 hover:to-accent/30 border border-primary/30 text-foreground font-medium transition-all duration-300 hover:scale-105"
+            className="gap-2 group relative overflow-hidden bg-gradient-to-r from-primary/20 to-accent/20 hover:from-primary/30 hover:to-accent/30 border border-primary/30 text-white font-medium transition-all duration-300 hover:scale-105"
           >
             <div className={`transition-transform duration-300 ${allExpanded ? 'rotate-180' : ''}`}>
               {allExpanded ? (
