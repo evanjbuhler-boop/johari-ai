@@ -1794,6 +1794,10 @@ Soft invitation, not directive: "Something to consider as you wind down: [gentle
 - 25-40 words, 2 complete sentences
 - Relatable hook + theory name in **bold** + consequence/mechanism
 - Conversational, not academic
+- ⚠️ CRITICAL: The theory name mentioned here MUST be the exact same theory/concept explained in the Theory section content
+- ⚠️ DO NOT mention one concept in byline (e.g., "identity foreclosure") and then discuss a different concept in the content (e.g., "identity-contingent pain perception")
+- Example of CORRECT consistency: Byline mentions "**attachment anxiety**" → Content explains attachment anxiety mechanism
+- Example of INCORRECT inconsistency: Byline mentions "**social anxiety**" → Content explains rejection sensitivity (related but different concepts)
 
 ### WHAT'S HAPPENING SECTION
 - **Maximum 120 words**
@@ -1808,11 +1812,15 @@ Soft invitation, not directive: "Something to consider as you wind down: [gentle
   - Story-First / Simple Reframe: 1-2 paragraphs (lighter touch)
   - Gentle Reflection: 1 paragraph (minimal, normalizing)
 
+- ⚠️ CRITICAL CONSISTENCY REQUIREMENT: The first sentence MUST reference the EXACT SAME theory/concept mentioned in the Theory Byline
+- Example: If byline says "**identity foreclosure**", first sentence must be: "This pattern you're experiencing—identity foreclosure—is what researchers call..."
+- Example: If byline says "**attachment anxiety**", first sentence must be: "This pattern you're experiencing—attachment anxiety—is what researchers call..."
 - Pick SPECIFIC theory that explains their exact mechanism (not broad concepts)
 - Include: researcher + year + institution + study findings + sample size
 - Explain neurological/cognitive HOW
 - Connect directly to their paraphrased pattern
 - NO repetition of What's Happening content
+- Maintain terminology consistency throughout the entire Theory section
 
 **Good Theory Examples:**
 - ✅ "Distinctiveness-based self-worth (Vignoles et al., 2000) - when value derives from being perceived as unique..."
