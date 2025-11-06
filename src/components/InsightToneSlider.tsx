@@ -163,7 +163,7 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
     <div className="w-full space-y-6">
       <div className="mb-4 text-center">
         <h3 className="text-base font-semibold text-white mb-2">
-          How should insights be delivered?
+          Insight sliders
         </h3>
       </div>
 
