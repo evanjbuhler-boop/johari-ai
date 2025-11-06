@@ -289,7 +289,7 @@ export default function InsightControls({
           </div>
 
           {/* Presets */}
-          <div className="pt-4 border-t border-white/10 mb-6">
+          <div className="pt-4 border-t border-white/10 mb-4">
             <p className="text-xs text-white/70 mb-2 text-center">Quick presets:</p>
             <div className="flex flex-wrap gap-2 justify-center">
               {Object.keys(PRESETS).map((presetName) => {
@@ -315,7 +315,7 @@ export default function InsightControls({
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-3 mt-auto">
+          <div className="space-y-3">
             <Button
               onClick={handleSaveSettings}
               disabled={isChanging}
