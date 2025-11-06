@@ -43,7 +43,7 @@ const Library = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const [savedItems, setSavedItems] = useState<DbSavedItem[]>([]);
-  const [filter, setFilter] = useState<'all' | 'podcast' | 'book' | 'exercise' | 'story' | 'research'>('all');
+  const [filter, setFilter] = useState<'all' | 'podcast' | 'book' | 'exercise' | 'story'>('all');
   const [loading, setLoading] = useState(true);
   const [selectedStory, setSelectedStory] = useState<DbSavedItem | null>(null);
   const [itemToDelete, setItemToDelete] = useState<DbSavedItem | null>(null);
@@ -323,16 +323,6 @@ const Library = () => {
             >
               Perspectives
             </button>
-            <button
-              onClick={() => setFilter('research')}
-              className={`px-6 py-2.5 rounded-full font-medium transition-all ${
-                filter === 'research'
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                  : 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm'
-              }`}
-            >
-              Research
-            </button>
           </div>
 
           {/* Content */}
@@ -359,7 +349,7 @@ const Library = () => {
             <div className="bg-white/95 backdrop-blur-md rounded-2xl p-16 text-center shadow-xl">
               <div className="text-6xl mb-6">📚</div>
               <h3 className="text-2xl font-semibold text-foreground mb-3">
-                {filter === 'all' ? 'Your library is empty' : `No ${filter === 'research' ? 'research' : filter + 's'} saved yet`}
+                {filter === 'all' ? 'Your library is empty' : `No ${filter + 's'} saved yet`}
               </h3>
               <p className="text-muted-foreground text-lg max-w-md mx-auto">
                 As you log more sessions, you'll generate more recommendations for you to save.
@@ -380,7 +370,6 @@ const Library = () => {
                       {item.item_type === 'book' && '📖'}
                       {item.item_type === 'exercise' && '✨'}
                       {item.item_type === 'story' && '📚'}
-                      {item.item_type === 'research' && '🧠'}
                     </div>
 
                     {/* Content */}
@@ -388,7 +377,7 @@ const Library = () => {
                       <div className="flex items-start justify-between gap-4 mb-3">
                         <div className="flex-1">
                           <p className="text-xs font-semibold text-purple-600 uppercase tracking-wider mb-2">
-                            {item.title === "What's Happening" ? 'SUMMARY' : item.item_type === 'story' ? 'PERSPECTIVE' : item.item_type === 'research' ? 'RESEARCH' : getTypeLabel(item.item_type)}
+                            {item.title === "What's Happening" ? 'SUMMARY' : item.item_type === 'story' ? 'PERSPECTIVE' : getTypeLabel(item.item_type)}
                           </p>
                           <h3 className="text-xl font-bold text-foreground mb-2 leading-tight">
                             {item.title}
