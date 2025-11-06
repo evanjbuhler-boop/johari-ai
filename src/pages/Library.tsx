@@ -154,12 +154,30 @@ const Library = () => {
   };
 
   const handleAction = (item: DbSavedItem) => {
-    if (item.item_type === 'podcast' && item.podcast_urls) {
-      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-      const url = isIOS ? item.podcast_urls.applePodcasts : item.podcast_urls.spotify;
-      if (url) window.open(url, '_blank', 'noopener,noreferrer');
-    } else if (item.item_type === 'book' && item.book_sample_url) {
-      window.open(item.book_sample_url, '_blank', 'noopener,noreferrer');
+    if (item.item_type === 'podcast') {
+      if (item.podcast_urls) {
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        const url = isIOS ? item.podcast_urls.applePodcasts : item.podcast_urls.spotify;
+        
+        // Check if URL is valid (not placeholder text)
+        if (url && url !== 'URL' && url.startsWith('http')) {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        } else {
+          toast.error('Podcast link not available. Please try searching for this episode directly on Spotify or Apple Podcasts.');
+        }
+      } else {
+        toast.error('Podcast link not available');
+      }
+    } else if (item.item_type === 'book') {
+      // Try book_sample_url first, then book_purchase_url
+      const url = item.book_sample_url || item.book_purchase_url;
+      
+      // Check if URL is valid (not placeholder text)
+      if (url && url !== 'URL' && url.startsWith('http')) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        toast.error('Book link not available. Please search for this book on Bookshop.org or your preferred bookstore.');
+      }
     } else if (item.item_type === 'exercise') {
       toast.info('Exercise flow will open here');
     } else if (item.item_type === 'story') {
