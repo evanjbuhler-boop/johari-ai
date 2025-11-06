@@ -218,147 +218,217 @@ function analyzeComplexity(userMessages: any[]): 'simple' | 'moderate' | 'comple
   return 'moderate';
 }
 
-// Helper function to get tone-specific instructions
-function getToneInstructions(tone: string): string {
-  const instructions = {
-    clinical: `
-TONE: Clinical (Analytical & Precise)
+// Interface for dimensional tone settings
+interface DimensionalTone {
+  directness: number;     // 0-100: coaching (0) to direct (100)
+  warmth: number;         // 0-100: clinical (0) to compassionate (100)
+  orientation: number;    // 0-100: present/practical (0) to research/theory (100)
+  language: number;       // 0-100: simple (0) to sophisticated (100)
+  citations: boolean;
+  ageAppropriate: boolean;
+}
 
-⚠️ STRUCTURAL APPROACH (not just vocabulary):
-- Opens with: Mechanism identification ("Here's the cognitive architecture at play...")
-- Emphasis: Pattern analysis, cognitive systems, neurological HOW
-- Theory section: Detailed, academic (2-3 paragraphs with specific studies)
-- Reframe: "Consider this alternative interpretation based on the mechanism..."
-- Voice: Analytical, precise, third-person observational
-- NO emotional validation phrases - pure mechanism analysis
+// Helper function to interpret dimensional tone settings
+function interpretDimensionalTone(tone: string | DimensionalTone | undefined): DimensionalTone {
+  // Handle undefined or null
+  if (!tone) {
+    return {
+      directness: 30,
+      warmth: 50,
+      orientation: 50,
+      language: 50,
+      citations: true,
+      ageAppropriate: false
+    };
+  }
 
-⚠️ CRITICAL DIFFERENTIATION:
-- Use technical psychological terminology extensively
-- Write like a clinical psychologist's assessment - analytical, diagnostic
-- "You've constructed a self-worth system dependent on external validation metrics" NOT "You're seeking approval"
-- Reference psychological mechanisms: "threat-detection system", "contingent self-worth architecture", "cognitive schema"
-- Zero warmth or softening - pure analysis
-- Example: "The pattern reflects high-functioning anxiety where achievement-based self-worth creates a feedback loop of escalating standards and diminishing satisfaction"
-- End with analytical observations, not encouragement
+  // If it's a string (legacy preset), convert to dimensional
+  if (typeof tone === 'string') {
+    const presets: Record<string, DimensionalTone> = {
+      clinical: { directness: 40, warmth: 10, orientation: 80, language: 80, citations: true, ageAppropriate: false },
+      direct: { directness: 90, warmth: 40, orientation: 20, language: 40, citations: false, ageAppropriate: false },
+      coaching: { directness: 20, warmth: 70, orientation: 30, language: 60, citations: false, ageAppropriate: false },
+      compassionate: { directness: 10, warmth: 90, orientation: 40, language: 50, citations: false, ageAppropriate: false },
+      children: { directness: 30, warmth: 80, orientation: 10, language: 10, citations: false, ageAppropriate: true }
+    };
+    return presets[tone] || presets.clinical;
+  }
 
-CLINICAL EXAMPLE:
-Opening: "The cognitive architecture here is contingent self-worth with an external locus of evaluation..."
-Theory: Deep dive into mechanism with fMRI studies, neurological pathways
-Reframe: "Given the mechanism of [X], an alternative interpretation: [Y]. Specifically: [concrete cognitive shift]."
-`,
+  // It's already dimensional
+  return tone;
+}
 
-    direct: `
-TONE: Direct (No-BS Straight Talk)
+// Helper function to build dynamic tone instructions from dimensional settings
+function getDimensionalToneInstructions(dimensional: DimensionalTone): string {
+  const { directness, warmth, orientation, language, citations, ageAppropriate } = dimensional;
 
-⚠️ STRUCTURAL APPROACH (not just vocabulary):
-- Opens with: The blunt truth ("Here's what you're actually doing...")
-- Emphasis: Cutting through bullshit, naming the trap plainly
-- Theory section: Minimal - just enough to explain why it matters (1 paragraph, conversational)
-- Reframe: "Stop [X]. Start [Y]. Here's how."
-- Voice: Friend-at-bar honesty, second-person direct
-- Short, punchy paragraphs
-
-⚠️ CRITICAL DIFFERENTIATION:
-- Blunt, conversational language - like a friend who tells it straight
-- "Here's what you're doing. Here's why it's fucking you over."
-- NO academic jargon - explain it like you're talking to a friend at a bar
+  // Build directness instructions (coaching <-> direct)
+  let directnessInstructions = '';
+  if (directness < 30) {
+    directnessInstructions = `
+**DIRECTNESS: Coaching/Empowering**
+- Frame insights as growth opportunities and possibilities
+- Use questions that assume capability: "What becomes possible when...", "How might you..."
+- Celebrate awareness and readiness: "The fact that you're noticing this..."
+- Forward-looking, strength-based language
+- Example: "You're at a growth edge. This awareness is your foundation for change."`;
+  } else if (directness > 70) {
+    directnessInstructions = `
+**DIRECTNESS: Straight Talk**
+- Cut through the noise with clear, honest observations
+- Name the pattern directly without softening
 - Short, punchy sentences
-- Example: "You're looking for proof you're not good enough. And guess what? When you look for something, you find it."
-- Call out patterns without sugarcoating: "This isn't helping you. Let's talk about what actually would."
-- Respectfully blunt, not mean - honest but not harsh
+- Call it what it is: "Here's the trap: [pattern]"
+- Example: "You're looking for proof you're not good enough. And when you look for something, you find it."`;
+  } else {
+    directnessInstructions = `
+**DIRECTNESS: Balanced**
+- Clear observations with some empowering framing
+- Mix of direct naming and growth potential
+- Moderate sentence length
+- Example: "You're caught in [pattern]. Here's what's possible when you shift this."`;
+  }
 
-DIRECT EXAMPLE:
-Opening: "Look, here's the trap: you're trying to make today's choices fix yesterday's mistakes. That's impossible."
-Theory: Brief, conversational - "Research shows this never works because..."
-Reframe: "So stop. Here's what actually helps: [specific action]. That's it."
-`,
+  // Build warmth instructions (clinical <-> compassionate)
+  let warmthInstructions = '';
+  if (warmth < 30) {
+    warmthInstructions = `
+**WARMTH: Clinical/Analytical**
+- Lead with mechanism and pattern analysis
+- Minimize emotional validation phrases
+- Third-person observational tone
+- Technical psychological terminology
+- Zero softening - pure analysis
+- Example: "The pattern reflects contingent self-worth where achievement-based validation creates escalating standards."`;
+  } else if (warmth > 70) {
+    warmthInstructions = `
+**WARMTH: Compassionate/Validating**
+- Lead with validation before analysis
+- Normalize and contextualize their response
+- "This makes complete sense given..." framing
+- Gentle, supportive language: "You might find...", "It's okay to..."
+- Trauma-informed: speak to protector parts
+- Example: "Of course you're feeling this way. Your nervous system learned this as protection. That makes complete sense."`;
+  } else {
+    warmthInstructions = `
+**WARMTH: Balanced**
+- Mix validation with analysis
+- Some normalizing with clear observations
+- Empathetic but not overly soft
+- Example: "This pattern makes sense given your experience. Here's what's happening beneath the surface."`;
+  }
 
-    coaching: `
-TONE: Coaching (Growth-Focused & Empowering)
+  // Build orientation instructions (practical <-> theoretical)
+  let orientationInstructions = '';
+  if (orientation < 30) {
+    orientationInstructions = `
+**ORIENTATION: Present/Practical**
+- Focus on tonight's situation and immediate application
+- Theory section: Brief (1 paragraph), applied, focused on HOW to use insights
+- Minimal academic citations
+- Action-oriented language
+- Example: "Tonight, this means [specific application]. Try [concrete action]."`;
+  } else if (orientation > 70) {
+    orientationInstructions = `
+**ORIENTATION: Research/Theoretical**
+- Deep dive into psychological mechanisms and research
+- Theory section: Detailed (2-3 paragraphs) with academic rigor
+- Specific studies: researcher + year + institution + sample size + quantitative findings
+- Neurological/cognitive mechanisms (fMRI, brain regions)
+- Example: "In a 2019 study of 1,247 adults, researchers found [specific quantitative finding]..."`;
+  } else {
+    orientationInstructions = `
+**ORIENTATION: Balanced**
+- Mix of research insight and practical application
+- Theory section: 1-2 paragraphs with key research
+- Some academic grounding without overwhelming detail
+- Example: "Research shows [key finding]. For you tonight: [practical application]."`;
+  }
 
-⚠️ STRUCTURAL APPROACH (not just vocabulary):
-- Opens with: Current state + future possibility ("You're at a growth edge where...")
-- Emphasis: Growth opportunity, actionable potential, strengths already present
-- Theory section: Applied, shorter (1-2 paragraphs showing HOW to use the insight)
-- Reframe: "Imagine what becomes possible when you shift this lens..."
-- Voice: Energizing, forward-focused, second-person active
-- Celebrate readiness and capability throughout
+  // Build language instructions (simple <-> sophisticated)
+  let languageInstructions = '';
+  if (language < 30) {
+    languageInstructions = `
+**LANGUAGE: Simple/Accessible**
+- Short sentences (8-10 words when possible)
+- Everyday vocabulary, no jargon
+- Explain concepts simply: "worry thoughts" not "anxiety", "big feelings" not "emotional dysregulation"
+- EXCEPTION: Bylines must still meet minimum lengths (30-50 words, 25-40 words) - keep words simple but maintain length
+- Example: "Your brain learned a pattern. Sometimes patterns that helped before don't help now."`;
+  } else if (language > 70) {
+    languageInstructions = `
+**LANGUAGE: Sophisticated/Nuanced**
+- Complex sentence structures acceptable
+- Psychological and philosophical terminology
+- Nuanced vocabulary that matches intellectual complexity
+- Example: "You're navigating the dialectical tension between authenticity and belonging, oscillating between fusion with others' expectations and reactive independence."`;
+  } else {
+    languageInstructions = `
+**LANGUAGE: Clear/Conversational**
+- Moderate sentence length (10-15 words)
+- Balance accessibility with depth
+- Some psychological terms with clear context
+- Example: "You're experiencing cognitive dissonance - when your actions don't match your values, creating internal tension."`;
+  }
 
-⚠️ CRITICAL DIFFERENTIATION:
-- Emphasize strengths, capability, and growth potential throughout
-- "What's possible when..." framing dominates
-- Reframe challenges as opportunities: "This pattern shows you're already aware - awareness is the foundation for change"
-- Use action-oriented, forward-looking language: "What if you could...", "Imagine when you..."
-- Celebrate existing strengths: "You've already demonstrated the capacity to..."
-- Example: "The fact that you're noticing this pattern means you're ready to shift it. That awareness? That's your competitive advantage."
-- Positive psychology approach - find the growth edge in every challenge
-- Future-focused questions that assume progress
-
-COACHING EXAMPLE:
-Opening: "You're navigating a critical growth moment. The awareness you're showing here? That's the foundation for transformation."
-Theory: Applied - "Research shows people who notice this pattern are positioned to..."
-Reframe: "Imagine what becomes possible when you [shift]. You already have [strength]. Now add [insight]. What opens up?"
-`,
-
-    compassionate: `
-TONE: Compassionate (Warm & Trauma-Informed)
-
-⚠️ STRUCTURAL APPROACH (not just vocabulary):
-- Opens with: Deep validation of their feeling ("Of course this feels...")
-- Emphasis: Normalizing, understanding WHY this makes sense given their experience
-- Theory section: Brief, humanizing (1 paragraph, just enough to validate)
-- Reframe: "What if you gave yourself permission to see this differently..."
-- Voice: Warm, gentle, present-focused
-- Hold space for difficulty without rushing to fix
-
-⚠️ CRITICAL DIFFERENTIATION:
-- Lead with validation and normalizing before any analysis
-- "This makes complete sense given..." precedes every insight
-- Acknowledge the pain/difficulty explicitly: "That must feel exhausting", "It's understandable why this feels so hard"
-- Gentle, supportive language: "You might find", "It's okay to feel", "You're not broken - you're responding"
-- Trauma-informed: assume past wounds, speak to the protector parts
-- Example: "Your nervous system learned this as a way to keep you safe. It makes sense that approval-seeking became a survival strategy."
-- Use soft sentence structures: "It sounds like...", "Perhaps...", "You might notice..."
-
-COMPASSIONATE EXAMPLE:
-Opening: "Of course you're feeling this way. Your nervous system learned [pattern] as protection. That makes complete sense."
-Theory: Brief, normalizing - "This is a common human response to..."
-Reframe: "What if you gave yourself permission to [alternative]? Not fixing, just... allowing room for [possibility]."
-`,
-
-    children: `
-TONE: Children (Ages 8-12)
-
-⚠️ STRUCTURAL APPROACH (not just vocabulary):
-- Opens with: Simple explanation with kid-friendly metaphor
-- Emphasis: Learning and growth (not problems or fixing)
-- Theory section: Super brief, story-like (1 paragraph with simple comparison)
-- Reframe: "What if you tried thinking about it like..."
-- Voice: Encouraging teacher, normalizing, simple words
-- EXCEPTION: Bylines still 2-3 sentences meeting word minimums (30-50, 25-40)
-
-⚠️ CRITICAL DIFFERENTIATION:
-- Extremely simple vocabulary - explain like talking to a smart 10-year-old
+  // Age appropriate override
+  let ageOverride = '';
+  if (ageAppropriate) {
+    ageOverride = `
+⚠️ **AGE APPROPRIATE MODE: Ages 8-12**
+- Override language complexity: extremely simple vocabulary
 - Use metaphors kids understand: "like when...", "imagine your brain is like..."
 - Short sentences (8-10 words max in explanations)
-- EXCEPTION: Bylines must still be 2–3 sentences and meet minimum word counts (What's Happening 30–50 words; Research 25–40 words). Use simple vocabulary but do not shorten bylines.
-- Encouraging and normalizing: "Your brain is still learning how to...", "Lots of kids feel this way"
-- NO psychology terms - translate everything: "worry thoughts" not "anxiety", "big feelings" not "emotional dysregulation"
-- Example: "Sometimes our brains learn patterns that used to help but don't anymore. Like training wheels - they helped you learn to ride, but now they might slow you down."
+- NO psychology terms - translate everything
+- Encouraging and normalizing: "Your brain is still learning..."
+- EXCEPTION: Bylines must still be 2-3 sentences meeting word minimums (30-50, 25-40) but use simple vocabulary
+- Example: "Sometimes our brains learn patterns that used to help but don't anymore. Like training wheels - they helped you learn but now they might slow you down."`;
+  }
 
-CHILDREN EXAMPLE:
-Opening: "Your brain learned a pattern, like learning to ride a bike. But this pattern might not help anymore."
-Theory: "Scientists found that brains can learn new patterns, like learning a new game."
-Reframe: "What if you tried thinking about it like [simple comparison]? That might feel different!"
-`
-  };
+  // Citations
+  let citationInstructions = '';
+  if (citations) {
+    citationInstructions = `
+**CITATIONS: Include Research References**
+- Cite specific researchers, years, institutions
+- Include sample sizes and quantitative findings
+- Format: [Researcher & Colleague] ([Year]). '[Title]' - [Journal]`;
+  } else {
+    citationInstructions = `
+**CITATIONS: Minimal Research References**
+- Brief mentions of research without formal citations
+- Focus on insights rather than academic grounding`;
+  }
 
-  return instructions[tone as keyof typeof instructions] || instructions.clinical;
+  return `
+${ageOverride}
+
+${directnessInstructions}
+
+${warmthInstructions}
+
+${orientationInstructions}
+
+${languageInstructions}
+
+${citationInstructions}
+
+⚠️ CRITICAL: Apply these dimensional settings consistently across ALL sections (What's Happening, Theory, Reframing, Resources).
+`;
+}
+
+// Helper function to get tone-specific instructions (legacy support)
+function getToneInstructions(tone: string | DimensionalTone | undefined): string {
+  const dimensional = interpretDimensionalTone(tone);
+  return getDimensionalToneInstructions(dimensional);
 }
 
 // Helper function to get regeneration system prompt
-function getRegenerationSystemPrompt(toneInstructions: string): string {
-  return `You are regenerating psychological insights with a specific communication tone.
+function getRegenerationSystemPrompt(tone: string | DimensionalTone | undefined): string {
+  const dimensional = interpretDimensionalTone(tone);
+  const toneInstructions = getDimensionalToneInstructions(dimensional);
+  
+  return `You are regenerating psychological insights with specific communication tone.
 
 ⚠️ CRITICAL - SECOND PERSON ONLY: 
 EVERY sentence must use second person ("you", "your"). 
@@ -383,10 +453,9 @@ BYLINE GENERATION:
 Generate tone-adaptive bylines for both sections:
 
 **What's Happening Byline** - adapt to tone (30-50 words MINIMUM):
-- CLINICAL: Direct pattern + mechanism statement with specific paraphrased situations
-- COMPASSIONATE: Empathetic framing with validation referencing their circumstances
-- DIRECT: No-BS clarity about the trap naming their specific situations
-- COACHING: Growth-focused with possibility framing grounded in their examples
+- Adapt opening and framing based on dimensional settings
+- Reference their specific situations with paraphrased language
+- Match the directness and warmth levels
 
 **What the Research Says Byline** (25-40 words MINIMUM):
 - Relatable hook (question or statement referencing their pattern)
@@ -394,8 +463,6 @@ Generate tone-adaptive bylines for both sections:
 - Research-backed consequence or mechanism
 - Keep conversational, not academic
 - Must be 2 complete sentences minimum
-
-⚠️ BEFORE SUBMITTING: Count the words in both bylines. If either is under the minimum, rewrite it longer with more specific details.
 
 Based on the conversation provided, regenerate the insights using the specified tone. Keep all content specific to their actual situations using paraphrased language (never quote them directly).
 
@@ -566,9 +633,8 @@ Return ONLY valid JSON in this format:
       // Extract user context from conversation
       const conversationText = messages.map((m: any) => `${m.role}: ${m.content}`).join('\n');
       
-      // Build the system prompt with tone-specific instructions
-      const toneInstructions = getToneInstructions(insightTone || 'clinical');
-      const regenerationPrompt = getRegenerationSystemPrompt(toneInstructions);
+      // Build the system prompt with dimensional tone-specific instructions
+      const regenerationPrompt = getRegenerationSystemPrompt(insightTone);
       
       // Use OpenAI to regenerate
       try {
@@ -609,7 +675,7 @@ Return ONLY valid JSON in this format:
           throw new Error('Failed to parse regenerated recommendations');
         }
 
-        console.log('Recommendations regenerated successfully with tone:', insightTone);
+        console.log('Recommendations regenerated successfully with dimensional tone');
 
         // Log original byline lengths
         const wc = (s: string) => (s ? s.trim().split(/\s+/).filter(Boolean).length : 0);
