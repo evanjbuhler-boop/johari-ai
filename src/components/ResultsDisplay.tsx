@@ -56,7 +56,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   };
   
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(true); // Auto-expand first section
-  const [theoryExpanded, setTheoryExpanded] = useState(false);
   const [reframingExpanded, setReframingExpanded] = useState(false);
   const [storyExpanded, setStoryExpanded] = useState(false);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
@@ -88,12 +87,11 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const currentSessionId = sessionId || `session-${Date.now()}`;
 
   // Expand/collapse all functionality
-  const allExpanded = whatsHappeningExpanded && theoryExpanded && reframingExpanded && storyExpanded;
+  const allExpanded = whatsHappeningExpanded && reframingExpanded && storyExpanded;
   
   const handleExpandAll = () => {
     const shouldExpand = !allExpanded;
     setWhatsHappeningExpanded(shouldExpand);
-    setTheoryExpanded(shouldExpand);
     setReframingExpanded(shouldExpand);
     setStoryExpanded(shouldExpand);
   };
@@ -212,11 +210,9 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
       if (!error && data) {
         const ratingsMap: Record<string, 'up' | 'down'> = {};
         data.forEach(item => {
-          // Use title-based keys for What's Happening, The Theory, and Different Lens
+          // Use title-based keys for What's Happening and Different Lens
           if (item.recommendation_title === "What's Happening") {
             ratingsMap['whats-happening'] = item.rating as 'up' | 'down';
-          } else if (item.recommendation_title === "The Theory") {
-            ratingsMap['the-theory'] = item.rating as 'up' | 'down';
           } else if (item.recommendation_title === "A Different Lens") {
             ratingsMap['reframing'] = item.rating as 'up' | 'down';
           } else {
@@ -270,8 +266,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     let ratingKey: string = type;
     if (title === "What's Happening") {
       ratingKey = 'whats-happening';
-    } else if (title === "The Theory") {
-      ratingKey = 'the-theory';
     } else if (title === "A Different Lens") {
       ratingKey = 'reframing';
     }
@@ -382,8 +376,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
     } else if (type === 'story') {
       if (title === "What's Happening" && results.whatsHappening) {
         return results.whatsHappening.summary.slice(0, 200) + (results.whatsHappening.summary.length > 200 ? '...' : '');
-      } else if (title === "The Theory" && results.theTheory) {
-        return results.theTheory.content.slice(0, 200) + (results.theTheory.content.length > 200 ? '...' : '');
       } else if (title === "A Different Lens" && results.reframing) {
         return results.reframing.content.slice(0, 200) + (results.reframing.content.length > 200 ? '...' : '');
       } else if (results.story) {
@@ -781,7 +773,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
           )}
 
           {whatsHappeningExpanded && (
-            <div className="mt-6 pt-6 border-t border-border space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="mt-6 pt-6 border-t border-border space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="text-base text-foreground/80 leading-relaxed space-y-4">
                 {results.whatsHappening.fullExplanation
                   .split(/\n{2,}/)
@@ -792,104 +784,77 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   ))}
               </div>
 
+              {/* Research subsection - integrated within What's Happening */}
+              {results.theTheory && (
+                <div className="mt-8 pt-6 border-t border-border/50 space-y-4">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-2xl">🧠</span>
+                    <h3 className="text-xl font-medium text-foreground/90">What the Research Says</h3>
+                  </div>
+                  
+                  <p className="text-base text-foreground/80 leading-relaxed">
+                    {renderBoldText(results.theTheory.byline || results.theTheory.content.split('.').slice(0, 2).join('.') + '.')}
+                  </p>
+                  
+                  {/* Theory tags - specific psychological concepts */}
+                  {results.theTheory.tags && results.theTheory.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {results.theTheory.tags.map((tag, idx) => (
+                        <span 
+                          key={idx}
+                          className="px-3 py-1.5 bg-primary/10 text-primary text-xs rounded-full border border-primary/20 capitalize"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <div className="text-base text-foreground/75 leading-relaxed space-y-3 pl-4 border-l-2 border-primary/30">
+                    {results.theTheory.content.split(/\n{2,}/).map((para, idx) => (
+                      <p key={idx} className="leading-relaxed">
+                        {renderBoldText(para.trim())}
+                      </p>
+                    ))}
+                  </div>
+
+                  {results.whatsHappening.citations && results.whatsHappening.citations.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-border/50">
+                      <p className="text-sm font-semibold text-foreground/90 mb-2">📚 Related Research:</p>
+                      <ul className="space-y-1">
+                        {results.whatsHappening.citations.map((citation, idx) => (
+                          <li key={idx} className="text-sm text-muted-foreground">
+                            • {citation.author} ({citation.year}). {citation.title}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
+                <Button
+                  variant={ratings['whats-happening'] === 'up' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => handleRating('story', "What's Happening", 'up')}
+                  className="gap-1"
+                >
+                  <ThumbsUp className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={ratings['whats-happening'] === 'down' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => handleRating('story', "What's Happening", 'down')}
+                  className="gap-1"
+                >
+                  <ThumbsDown className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           )}
         </Card>
         </ErrorBoundary>
-
-        {/* What the Research Says Section */}
-        {results.theTheory && (
-          <ErrorBoundary>
-          <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
-            <div className="flex items-center justify-between gap-4 mb-6">
-              <button
-                onClick={() => setTheoryExpanded(!theoryExpanded)}
-                className="flex items-center gap-4 text-left"
-              >
-                <span className="text-3xl">🧠</span>
-                <h2 className="text-2xl md:text-3xl font-medium text-foreground">What the Research Says</h2>
-                {theoryExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-              </button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleSave('the-theory', 'research', "What the Research Says", undefined, results.theTheory)}
-              >
-                {isSaved('the-theory') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
-            </div>
-
-            <div className="mt-6 space-y-4">
-              <p className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-3xl">
-                {renderBoldText(results.theTheory.byline || results.theTheory.content.split('.').slice(0, 2).join('.') + '.')}
-              </p>
-              
-              {/* Theory tags - specific psychological concepts */}
-              {results.theTheory.tags && results.theTheory.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {results.theTheory.tags.map((tag, idx) => (
-                    <span 
-                      key={idx}
-                      className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full border border-primary/20 capitalize"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {!theoryExpanded && (
-              <button
-                onClick={() => setTheoryExpanded(true)}
-                className="text-primary font-medium hover:underline mt-4 text-sm"
-              >
-                Read the academic explanation →
-              </button>
-            )}
-
-            {theoryExpanded && (
-              <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                <p className="text-base text-foreground/80 leading-relaxed whitespace-pre-line">
-                  {renderBoldText(results.theTheory.content)}
-                </p>
-
-                {results.whatsHappening.citations && results.whatsHappening.citations.length > 0 && (
-                  <div className="mt-6 pt-4 border-t border-border">
-                    <p className="text-sm font-semibold text-foreground/90 mb-2">📚 Related Research:</p>
-                    <ul className="space-y-1">
-                      {results.whatsHappening.citations.map((citation, idx) => (
-                        <li key={idx} className="text-sm text-muted-foreground">
-                          • {citation.author} ({citation.year}). {citation.title}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
-                  <Button
-                    variant={ratings['the-theory'] === 'up' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('research', "What the Research Says", 'up')}
-                    className="gap-1"
-                  >
-                    <ThumbsUp className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={ratings['the-theory'] === 'down' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('research', "What the Research Says", 'down')}
-                    className="gap-1"
-                  >
-                    <ThumbsDown className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            )}
-          </Card>
-          </ErrorBoundary>
-        )}
 
         {/* Quotes Section */}
         {results.quotes && results.quotes.length > 0 && (
