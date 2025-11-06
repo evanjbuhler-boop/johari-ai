@@ -781,13 +781,24 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
           {whatsHappeningExpanded && (
             <div className="mt-6 pt-6 border-t border-border space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="text-base text-foreground/80 leading-relaxed space-y-4">
-                {results.whatsHappening.fullExplanation
-                  .split(/\n{2,}/)
-                  .map((para, idx) => (
-                    <p key={idx} className="leading-relaxed">
-                      {renderBoldText(para.trim())}
-                    </p>
-                  ))}
+                {(() => {
+                  const byline = results.whatsHappening.byline || results.whatsHappening.summary;
+                  const fullText = results.whatsHappening.fullExplanation;
+                  
+                  // Remove byline from start of fullExplanation if it's there
+                  let contentToShow = fullText;
+                  if (byline && fullText.trim().startsWith(byline.trim())) {
+                    contentToShow = fullText.slice(byline.length).trim();
+                  }
+                  
+                  return contentToShow
+                    .split(/\n{2,}/)
+                    .map((para, idx) => (
+                      <p key={idx} className="leading-relaxed">
+                        {renderBoldText(para.trim())}
+                      </p>
+                    ));
+                })()}
               </div>
 
               {/* Research subsection - integrated within What's Happening */}
