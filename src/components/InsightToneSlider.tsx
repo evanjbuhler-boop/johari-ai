@@ -159,12 +159,35 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
     }
   };
 
+  // Check if current tone matches a preset
+  const getMatchingPreset = (): string | null => {
+    for (const [presetName, presetValues] of Object.entries(PRESETS)) {
+      const matches = 
+        Math.abs(tone.directness - presetValues.directness) <= 5 &&
+        Math.abs(tone.warmth - presetValues.warmth) <= 5 &&
+        Math.abs(tone.orientation - presetValues.orientation) <= 5 &&
+        Math.abs(tone.language - presetValues.language) <= 5 &&
+        tone.citations === presetValues.citations &&
+        tone.ageAppropriate === presetValues.ageAppropriate;
+      
+      if (matches) return presetName;
+    }
+    return null;
+  };
+
+  const activePreset = getMatchingPreset();
+
   return (
     <div className="w-full space-y-6">
       <div className="mb-4 text-center">
         <h3 className="text-base font-semibold text-white mb-2">
           Insight Sliders
         </h3>
+        {activePreset && (
+          <p className="text-xs text-primary/90 animate-fade-in">
+            Preset: <span className="font-medium">{activePreset.charAt(0).toUpperCase() + activePreset.slice(1)}</span>
+          </p>
+        )}
       </div>
 
       {/* Dimensional Sliders */}
@@ -273,18 +296,28 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
       <div className="pt-4 border-t border-white/10">
         <p className="text-xs text-white/70 mb-2 text-center">Quick presets:</p>
         <div className="flex flex-wrap gap-2 justify-center">
-          {Object.keys(PRESETS).map((presetName) => (
-            <Button
-              key={presetName}
-              onClick={() => loadPreset(presetName)}
-              disabled={isChanging}
-              variant="outline"
-              size="sm"
-              className="text-xs bg-white/5 hover:bg-white/10 border-white/20 text-white"
-            >
-              {presetName.charAt(0).toUpperCase() + presetName.slice(1)}
-            </Button>
-          ))}
+          {Object.keys(PRESETS).map((presetName) => {
+            const isActive = activePreset === presetName;
+            return (
+              <Button
+                key={presetName}
+                onClick={() => loadPreset(presetName)}
+                disabled={isChanging}
+                variant="outline"
+                size="sm"
+                className={`text-xs transition-all duration-300 ${
+                  isActive
+                    ? 'bg-primary/20 hover:bg-primary/30 border-primary/50 text-white font-semibold animate-scale-in'
+                    : 'bg-white/5 hover:bg-white/10 border-white/20 text-white hover:scale-105'
+                }`}
+                style={isActive ? {
+                  boxShadow: '0 0 20px hsl(var(--primary) / 0.6), 0 0 40px hsl(var(--primary) / 0.3)'
+                } : undefined}
+              >
+                {presetName.charAt(0).toUpperCase() + presetName.slice(1)}
+              </Button>
+            );
+          })}
         </div>
       </div>
 
