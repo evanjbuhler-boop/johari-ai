@@ -71,7 +71,7 @@ export default function InsightsSidebar({
           size="icon"
           className="fixed left-6 top-20 z-30 bg-white/20 dark:bg-gray-900/20 backdrop-blur-sm hover:bg-white/30 dark:hover:bg-gray-900/30 shadow-md hover:shadow-lg transition-all duration-300"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-5 h-5 text-white" />
         </Button>
       )}
     </>
