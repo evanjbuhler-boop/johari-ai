@@ -37,67 +37,86 @@ export default function InsightsSidebar({
       >
         {/* Animated streaming gradient background */}
         <div 
-          className="absolute inset-0 opacity-40"
+          className="absolute inset-0 opacity-20"
           style={{
-            background: 'linear-gradient(45deg, hsl(var(--primary) / 0.6), hsl(var(--secondary) / 0.4), hsl(var(--accent) / 0.5), hsl(var(--primary) / 0.6))',
+            background: 'linear-gradient(45deg, hsl(var(--primary) / 0.3), hsl(var(--secondary) / 0.2), hsl(var(--accent) / 0.25), hsl(var(--primary) / 0.3))',
             backgroundSize: '400% 400%',
-            animation: 'gradient-flow 8s ease infinite',
+            animation: 'gradient-flow 12s ease infinite',
           }}
         />
         
-        {/* Flowing light streaks */}
+        {/* Scattered flowing light streaks */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Top diagonal streak */}
           <div
-            className="absolute w-full h-32 opacity-30"
+            className="absolute w-24 h-40 opacity-15 -rotate-12"
             style={{
-              background: 'linear-gradient(180deg, transparent, hsl(var(--primary) / 0.4), transparent)',
-              animation: 'flow-down 6s ease-in-out infinite',
+              top: '-20%',
+              left: '10%',
+              background: 'linear-gradient(180deg, transparent, hsl(var(--primary) / 0.3), transparent)',
+              animation: 'flow-diagonal-1 8s ease-in-out infinite',
             }}
           />
+          {/* Middle scattered streak */}
           <div
-            className="absolute w-full h-24 opacity-25"
+            className="absolute w-32 h-28 opacity-12 rotate-45"
             style={{
-              background: 'linear-gradient(180deg, transparent, hsl(var(--accent) / 0.5), transparent)',
-              animation: 'flow-down 4s ease-in-out infinite 2s',
+              top: '20%',
+              right: '5%',
+              background: 'linear-gradient(135deg, transparent, hsl(var(--accent) / 0.25), transparent)',
+              animation: 'flow-diagonal-2 10s ease-in-out infinite 3s',
             }}
           />
+          {/* Bottom left streak */}
           <div
-            className="absolute w-full h-20 opacity-20"
+            className="absolute w-20 h-36 opacity-10 -rotate-6"
             style={{
-              background: 'linear-gradient(180deg, transparent, hsl(var(--secondary) / 0.4), transparent)',
-              animation: 'flow-down 5s ease-in-out infinite 1s',
+              bottom: '10%',
+              left: '15%',
+              background: 'linear-gradient(180deg, transparent, hsl(var(--secondary) / 0.2), transparent)',
+              animation: 'flow-diagonal-3 7s ease-in-out infinite 1.5s',
+            }}
+          />
+          {/* Thin vertical accent */}
+          <div
+            className="absolute w-16 h-32 opacity-8"
+            style={{
+              top: '30%',
+              left: '60%',
+              background: 'linear-gradient(180deg, transparent, hsl(var(--primary) / 0.15), transparent)',
+              animation: 'flow-diagonal-1 9s ease-in-out infinite 2s',
             }}
           />
         </div>
 
-        {/* Pulsing orbs */}
+        {/* Subtle pulsing orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div
-            className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full opacity-20 blur-2xl"
+            className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full opacity-8 blur-3xl"
             style={{
-              background: 'radial-gradient(circle, hsl(var(--primary) / 0.6), transparent)',
-              animation: 'pulse-glow 4s ease-in-out infinite',
+              background: 'radial-gradient(circle, hsl(var(--primary) / 0.3), transparent)',
+              animation: 'pulse-glow 6s ease-in-out infinite',
             }}
           />
           <div
-            className="absolute bottom-1/3 right-1/4 w-24 h-24 rounded-full opacity-15 blur-xl"
+            className="absolute bottom-1/3 right-1/4 w-24 h-24 rounded-full opacity-6 blur-2xl"
             style={{
-              background: 'radial-gradient(circle, hsl(var(--accent) / 0.7), transparent)',
-              animation: 'pulse-glow 3s ease-in-out infinite 1.5s',
+              background: 'radial-gradient(circle, hsl(var(--accent) / 0.35), transparent)',
+              animation: 'pulse-glow 5s ease-in-out infinite 2s',
             }}
           />
         </div>
 
-        {/* Subtle grid pattern overlay */}
+        {/* Very subtle grid pattern overlay */}
         <div 
-          className="absolute inset-0 opacity-10 pointer-events-none"
+          className="absolute inset-0 opacity-5 pointer-events-none"
           style={{
             backgroundImage: `
-              linear-gradient(to right, hsl(var(--primary) / 0.3) 1px, transparent 1px),
-              linear-gradient(to bottom, hsl(var(--primary) / 0.3) 1px, transparent 1px)
+              linear-gradient(to right, hsl(var(--primary) / 0.2) 1px, transparent 1px),
+              linear-gradient(to bottom, hsl(var(--primary) / 0.2) 1px, transparent 1px)
             `,
-            backgroundSize: '20px 20px',
-            animation: 'grid-shift 20s linear infinite',
+            backgroundSize: '24px 24px',
+            animation: 'grid-shift 25s linear infinite',
           }}
         />
         {/* Toggle button inside sidebar */}
