@@ -24,7 +24,7 @@ export default function InsightsSidebar({
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-20 h-[calc(100vh-5rem)] overflow-hidden bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/25 backdrop-blur-2xl border-r border-primary/20 transition-all duration-500 z-20 shadow-2xl ${
+        className={`fixed left-0 top-0 h-screen overflow-hidden bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/25 backdrop-blur-2xl border-r border-primary/20 transition-all duration-500 z-20 shadow-2xl ${
           isCollapsed ? 'w-0 -translate-x-full opacity-0' : 'w-64 opacity-100'
         }`}
         style={{
@@ -127,7 +127,7 @@ export default function InsightsSidebar({
         <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-accent/10 to-transparent pointer-events-none" />
 
         {/* Sidebar content */}
-        <div className="relative h-full flex flex-col justify-center px-8 py-6">
+        <div className="relative h-full flex flex-col justify-center px-8 py-6 pt-24">
           <div className="flex-shrink-0">
             <InsightToneSlider
               value={insightTone}
