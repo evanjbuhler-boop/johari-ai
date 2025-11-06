@@ -828,11 +828,22 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   )}
                   
                   <div className="text-base text-foreground/75 leading-relaxed space-y-3 pl-4 border-l-2 border-primary/30">
-                    {results.theTheory.content.split(/\n{2,}/).map((para, idx) => (
-                      <p key={idx} className="leading-relaxed">
-                        {renderBoldText(para.trim())}
-                      </p>
-                    ))}
+                    {(() => {
+                      const byline = results.theTheory.byline || results.theTheory.content.split('.').slice(0, 2).join('.') + '.';
+                      const fullContent = results.theTheory.content;
+                      
+                      // Remove byline from start of content if it's there
+                      let contentToShow = fullContent;
+                      if (byline && fullContent.trim().startsWith(byline.trim())) {
+                        contentToShow = fullContent.slice(byline.length).trim();
+                      }
+                      
+                      return contentToShow.split(/\n{2,}/).map((para, idx) => (
+                        <p key={idx} className="leading-relaxed">
+                          {renderBoldText(para.trim())}
+                        </p>
+                      ));
+                    })()}
                   </div>
 
                   {results.whatsHappening.citations && results.whatsHappening.citations.length > 0 && (
