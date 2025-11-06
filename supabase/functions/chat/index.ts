@@ -471,7 +471,7 @@ Respond with ONLY this JSON structure (no markdown, no explanations):
   "whatsHappeningByline": "1-2 sentences adapted to the tone setting",
   "whatsHappening": "200-300 word analysis mapping their pattern across all domains mentioned, naming the underlying system, showing it in action with paraphrased examples, and identifying the cost to their goals",
   "theTheoryByline": "Engaging, relatable hook that introduces the theory",
-  "reframing": "4 paragraphs reframing their pattern: (1) Name current lens explicitly; (2) Offer new perspective with specific language they can use; (3) Make it actionable to their situations; (4) End with 2 bold provocative questions",
+  "reframing": "5-6 substantial paragraphs reframing their pattern: (1) Name current lens explicitly (this becomes the byline); (2-5) Deeply explore the new perspective with specific language they can use, make it actionable to their situations, connect to theory, provide rich perspective shifts; (6) End final paragraph with 2 bold provocative questions",
   "storyWhyMatters": "6-8 sentences: (1) What the story teaches; (2) Bridge to their specific situations; (3) Actionable insight",
   "podcast": {
     "title": "Real Podcast Name",
@@ -1936,7 +1936,7 @@ Why This Helps: "Burkhart specifically addresses the trap you're in: trying to m
     {"text": "Direct user quote", "sentiment": "positive|negative|neutral"}
   ],
   "reframing": {
-    "content": "4 paragraphs following structure-specific approach. Reference theory. End with 2 **bold questions** (evening-appropriate, settling). Use paraphrased situations."
+    "content": "5-6 substantial paragraphs following structure-specific approach. First paragraph is the byline (summary). Then 4-5 additional paragraphs that deeply explore the reframe, connect to theory, provide perspective shifts, and guide reflection. End final paragraph with 2 **bold questions** (evening-appropriate, settling). Use paraphrased situations throughout."
   },
   "podcast": {
     "title": "Real Podcast",
@@ -2159,7 +2159,7 @@ Generate insights that feel like a compassionate evening companion helping proce
         if (results.reframing && typeof results.reframing.content === 'string') {
           let rf = results.reframing.content.trim();
           const paraCount = rf.split(/\n{2,}/).length;
-          if (wc(rf) < 200 || paraCount < 2) {
+          if (wc(rf) < 300 || paraCount < 4) {
             rf += `\n\nPractically, start separating what you can control (your actions, routines, self-talk) from what you can't (others' opinions, timing, outcomes). Replace "Am I valuable?" with "What value can I create today?" Focus daily on one small, controllable action.`;
           }
           results.reframing.content = rf.trim();
