@@ -417,6 +417,24 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
   
   return (
     <div className="min-h-screen flex flex-col relative animate-in fade-in duration-700">
+      {/* Decorative margin art - left side */}
+      <div className="fixed left-0 top-0 bottom-0 w-32 pointer-events-none z-0 hidden lg:block opacity-20">
+        <img 
+          src={new URL('../assets/margin-bamboo.jpg', import.meta.url).href}
+          alt=""
+          className="absolute top-0 left-0 w-full h-full object-cover object-left"
+        />
+      </div>
+      
+      {/* Decorative margin art - right side */}
+      <div className="fixed right-0 top-0 bottom-0 w-32 pointer-events-none z-0 hidden lg:block opacity-20">
+        <img 
+          src={new URL('../assets/margin-cherry-blossom.jpg', import.meta.url).href}
+          alt=""
+          className="absolute top-0 right-0 w-full h-full object-cover object-right"
+        />
+      </div>
+      
       {/* Educational Sidebar */}
       {sidebar.visible && sidebar.phase && (
         <EducationalSidebar 
