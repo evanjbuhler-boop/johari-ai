@@ -133,7 +133,7 @@ export default function InsightsSidebar({
         variant="ghost"
         size="icon"
         className={`fixed top-[5.5rem] z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 ${
-          isCollapsed ? 'left-4' : 'left-[17rem]'
+          isCollapsed ? 'left-4' : 'left-64'
         }`}
       >
         {isCollapsed ? (
