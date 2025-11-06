@@ -15,14 +15,16 @@ interface DimensionalTone {
   language: number;
   citations: boolean;
   ageAppropriate: boolean;
+  contentStructure: string;
+  responseLength: string;
 }
 
 const PRESETS: Record<string, DimensionalTone> = {
-  clinical: { directness: 75, warmth: 25, orientation: 50, language: 90, citations: true, ageAppropriate: false },
-  direct: { directness: 90, warmth: 40, orientation: 60, language: 30, citations: false, ageAppropriate: false },
-  coaching: { directness: 70, warmth: 65, orientation: 85, language: 25, citations: false, ageAppropriate: false },
-  compassionate: { directness: 35, warmth: 90, orientation: 40, language: 20, citations: false, ageAppropriate: false },
-  children: { directness: 50, warmth: 80, orientation: 60, language: 10, citations: false, ageAppropriate: true },
+  clinical: { directness: 75, warmth: 25, orientation: 50, language: 90, citations: true, ageAppropriate: false, contentStructure: 'structured', responseLength: 'detailed' },
+  direct: { directness: 90, warmth: 40, orientation: 60, language: 30, citations: false, ageAppropriate: false, contentStructure: 'structured', responseLength: 'concise' },
+  coaching: { directness: 70, warmth: 65, orientation: 85, language: 25, citations: false, ageAppropriate: false, contentStructure: 'actionable', responseLength: 'balanced' },
+  compassionate: { directness: 35, warmth: 90, orientation: 40, language: 20, citations: false, ageAppropriate: false, contentStructure: 'narrative', responseLength: 'detailed' },
+  children: { directness: 50, warmth: 80, orientation: 60, language: 10, citations: false, ageAppropriate: true, contentStructure: 'simple', responseLength: 'concise' },
 };
 
 const DEFAULT_TONE: DimensionalTone = {
@@ -32,6 +34,8 @@ const DEFAULT_TONE: DimensionalTone = {
   language: 35,
   citations: false,
   ageAppropriate: false,
+  contentStructure: 'structured',
+  responseLength: 'balanced',
 };
 
 interface InsightControlsProps {
@@ -59,8 +63,29 @@ export default function InsightControls({
   const [tone, setTone] = useState<DimensionalTone>(parseDimensionalTone(value));
   const [isChanging, setIsChanging] = useState(false);
 
-  const handleDimensionChange = (dimension: keyof DimensionalTone, newValue: number | boolean) => {
+  const handleDimensionChange = (dimension: keyof DimensionalTone, newValue: number | boolean | string) => {
     setTone({ ...tone, [dimension]: newValue });
+  };
+
+  const handleSaveSettings = async () => {
+    if (!user) {
+      toast.error('Please sign in to save settings');
+      return;
+    }
+
+    try {
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ insight_tone: JSON.stringify(tone) })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      toast.success('Settings saved for future sessions');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      toast.error('Failed to save settings');
+    }
   };
 
   const handleApplyChanges = async () => {
@@ -128,7 +153,9 @@ export default function InsightControls({
         Math.abs(tone.orientation - presetValues.orientation) <= 5 &&
         Math.abs(tone.language - presetValues.language) <= 5 &&
         tone.citations === presetValues.citations &&
-        tone.ageAppropriate === presetValues.ageAppropriate;
+        tone.ageAppropriate === presetValues.ageAppropriate &&
+        tone.contentStructure === presetValues.contentStructure &&
+        tone.responseLength === presetValues.responseLength;
       
       if (matches) return presetName;
     }
@@ -279,14 +306,24 @@ export default function InsightControls({
             </div>
           </div>
 
-          {/* Apply Button */}
-          <Button
-            onClick={handleApplyChanges}
-            disabled={isChanging}
-            className="w-full bg-white/10 hover:bg-white/20 text-white mt-auto"
-          >
-            {isChanging ? 'Applying...' : 'Apply Changes'}
-          </Button>
+          {/* Action Buttons */}
+          <div className="space-y-3 mt-auto">
+            <Button
+              onClick={handleSaveSettings}
+              disabled={isChanging}
+              variant="outline"
+              className="w-full bg-white/5 hover:bg-white/10 text-white border-white/20"
+            >
+              Save for Future Sessions
+            </Button>
+            <Button
+              onClick={handleApplyChanges}
+              disabled={isChanging}
+              className="w-full bg-primary/80 hover:bg-primary text-white"
+            >
+              {isChanging ? 'Applying...' : 'Apply Changes'}
+            </Button>
+          </div>
         </div>
       </aside>
 
@@ -302,6 +339,7 @@ export default function InsightControls({
           <h3 className="text-lg font-semibold text-white mb-6">Options</h3>
 
           <div className="space-y-6">
+            {/* Citations Toggle */}
             <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
               <Label htmlFor="citations" className="text-sm text-white cursor-pointer">
                 Include research citations
@@ -314,6 +352,7 @@ export default function InsightControls({
               />
             </div>
 
+            {/* Age Appropriate Toggle */}
             <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
               <Label htmlFor="ageAppropriate" className="text-sm text-white cursor-pointer">
                 Age-appropriate (8-12)
@@ -324,6 +363,48 @@ export default function InsightControls({
                 onCheckedChange={(checked) => handleDimensionChange('ageAppropriate', checked)}
                 disabled={isChanging}
               />
+            </div>
+
+            {/* Content Structure */}
+            <div className="space-y-2 p-4 bg-white/5 rounded-lg border border-white/10">
+              <Label className="text-sm text-white">Content Structure</Label>
+              <div className="flex flex-col gap-2">
+                {['structured', 'narrative', 'actionable', 'simple'].map((structure) => (
+                  <button
+                    key={structure}
+                    onClick={() => handleDimensionChange('contentStructure', structure)}
+                    disabled={isChanging}
+                    className={`px-3 py-2 text-xs rounded transition-colors ${
+                      tone.contentStructure === structure
+                        ? 'bg-primary/40 text-white border border-primary/60'
+                        : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
+                    }`}
+                  >
+                    {structure.charAt(0).toUpperCase() + structure.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Response Length */}
+            <div className="space-y-2 p-4 bg-white/5 rounded-lg border border-white/10">
+              <Label className="text-sm text-white">Response Length</Label>
+              <div className="flex flex-col gap-2">
+                {['concise', 'balanced', 'detailed'].map((length) => (
+                  <button
+                    key={length}
+                    onClick={() => handleDimensionChange('responseLength', length)}
+                    disabled={isChanging}
+                    className={`px-3 py-2 text-xs rounded transition-colors ${
+                      tone.responseLength === length
+                        ? 'bg-primary/40 text-white border border-primary/60'
+                        : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
+                    }`}
+                  >
+                    {length.charAt(0).toUpperCase() + length.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
