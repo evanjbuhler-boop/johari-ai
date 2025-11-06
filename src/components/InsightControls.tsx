@@ -43,6 +43,7 @@ interface InsightControlsProps {
   onRegenerating: (isRegenerating: boolean) => void;
   onRegenerated: (newResults: any) => void;
   messages: any[];
+  onOpenChange?: (isOpen: boolean) => void;
 }
 
 export default function InsightControls({
@@ -50,9 +51,15 @@ export default function InsightControls({
   onRegenerating,
   onRegenerated,
   messages,
+  onOpenChange,
 }: InsightControlsProps) {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    onOpenChange?.(open);
+  };
   
   const parseDimensionalTone = (val: any): DimensionalTone => {
     if (typeof val === 'string' && PRESETS[val]) return PRESETS[val];
@@ -129,6 +136,7 @@ export default function InsightControls({
       
       toast.success('Insights updated');
       setIsOpen(false);
+      handleOpenChange(false);
     } catch (error) {
       console.error('Error regenerating with new tone:', error);
       toast.dismiss('tone-regeneration');
@@ -168,7 +176,7 @@ export default function InsightControls({
     <>
       {/* Trigger Button */}
       <Button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => handleOpenChange(!isOpen)}
         variant="ghost"
         size="sm"
         className="gap-2 group relative overflow-hidden bg-gradient-to-r from-primary/20 to-accent/20 hover:from-primary/30 hover:to-accent/30 border border-primary/30 text-white font-medium transition-all duration-300 hover:scale-105"
@@ -182,7 +190,7 @@ export default function InsightControls({
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-in fade-in duration-300"
-          onClick={() => setIsOpen(false)}
+          onClick={() => handleOpenChange(false)}
         />
       )}
 
@@ -198,7 +206,7 @@ export default function InsightControls({
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-white">Tone Sliders</h3>
             <Button
-              onClick={() => setIsOpen(false)}
+              onClick={() => handleOpenChange(false)}
               variant="ghost"
               size="icon"
               className="text-white/60 hover:text-white hover:bg-white/10"

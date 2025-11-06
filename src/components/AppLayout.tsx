@@ -41,43 +41,45 @@ const AppLayout = ({ children, showBackground = true, hideSettingsIcons = false 
       )}
 
       {/* Navigation buttons - Top Left */}
-      <div className="fixed top-6 left-6 z-50 flex gap-3 animate-in fade-in slide-in-from-left-5 duration-700">
-        {user ? (
-          <>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate(isLibraryPage ? '/' : '/library')}
-              className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm transition-all hover:scale-110 active:scale-95"
-            >
-              {isLibraryPage ? (
-                <Home className="h-5 w-5" />
-              ) : (
-                <Library className="h-5 w-5" />
-              )}
-            </Button>
-            <ProfileSheet>
+      {!hideSettingsIcons && (
+        <div className="fixed top-6 left-6 z-50 flex gap-3 animate-in fade-in slide-in-from-left-5 duration-700">
+          {user ? (
+            <>
               <Button
                 variant="ghost"
                 size="icon"
+                onClick={() => navigate(isLibraryPage ? '/' : '/library')}
                 className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm transition-all hover:scale-110 active:scale-95"
               >
-                <User className="h-5 w-5" />
+                {isLibraryPage ? (
+                  <Home className="h-5 w-5" />
+                ) : (
+                  <Library className="h-5 w-5" />
+                )}
               </Button>
-            </ProfileSheet>
-          </>
-        ) : (
-          <Link to="/auth">
-            <Button
-              variant="ghost"
-              className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm gap-2 transition-all hover:scale-105 active:scale-95"
-            >
-              <LogIn className="h-4 w-4" />
-              Sign In
-            </Button>
-          </Link>
-        )}
-      </div>
+              <ProfileSheet>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm transition-all hover:scale-110 active:scale-95"
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+              </ProfileSheet>
+            </>
+          ) : (
+            <Link to="/auth">
+              <Button
+                variant="ghost"
+                className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30 shadow-sm gap-2 transition-all hover:scale-105 active:scale-95"
+              >
+                <LogIn className="h-4 w-4" />
+                Sign In
+              </Button>
+            </Link>
+          )}
+        </div>
+      )}
 
       {/* Therapy Approach and Neurodiversity settings - Top Right */}
       {!hideSettingsIcons && (

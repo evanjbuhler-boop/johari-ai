@@ -32,9 +32,10 @@ interface ResultsDisplayProps {
   messages?: any[]; // Add messages for regeneration
   userProfile?: any; // Add user profile for tone preference
   onResultsUpdate?: (newResults: CheckInResults) => void; // Add callback for updated results
+  onControlsOpenChange?: (isOpen: boolean) => void; // Add callback for controls open state
 }
 
-const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messages = [], userProfile, onResultsUpdate }: ResultsDisplayProps) => {
+const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messages = [], userProfile, onResultsUpdate, onControlsOpenChange }: ResultsDisplayProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   
@@ -685,6 +686,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               onRegenerating={setIsRegenerating}
               onRegenerated={handleRegenerated}
               messages={messages}
+              onOpenChange={onControlsOpenChange}
             />
           )}
           

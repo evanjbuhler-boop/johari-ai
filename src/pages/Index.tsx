@@ -49,6 +49,7 @@ const Index = () => {
   const [showOverwriteDialog, setShowOverwriteDialog] = useState(false);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const [conversationStartTime, setConversationStartTime] = useState<number | null>(null);
+  const [insightControlsOpen, setInsightControlsOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -989,7 +990,7 @@ const Index = () => {
       || 'your reflections';
     
     return (
-      <AppLayout showBackground={false} hideSettingsIcons>
+      <AppLayout showBackground={false} hideSettingsIcons={insightControlsOpen}>
         <ResultsDisplay 
           results={results} 
           onNewCheckIn={handleNewCheckIn} 
@@ -997,6 +998,7 @@ const Index = () => {
           sessionTheme={sessionTheme}
           messages={messages}
           userProfile={profile}
+          onControlsOpenChange={setInsightControlsOpen}
           onResultsUpdate={(newResults) => {
             setResults(newResults);
             // Update localStorage with new results
