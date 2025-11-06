@@ -63,6 +63,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
   const [ratings, setRatings] = useState<Record<string, 'up' | 'down'>>({});
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [feedbackDialog, setFeedbackDialog] = useState<{
     open: boolean;
     type: 'podcast' | 'book' | 'exercise' | 'story' | 'research';
@@ -683,6 +684,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
           onRegenerating={setIsRegenerating}
           onRegenerated={handleRegenerated}
           messages={messages}
+          onCollapsedChange={setSidebarCollapsed}
         />
       )}
       
@@ -692,7 +694,9 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6 transition-all duration-300 lg:ml-80">
+      <div className={`max-w-4xl mx-auto p-4 md:p-6 py-8 space-y-6 transition-all duration-500 ${
+        user && messages.length > 0 && !sidebarCollapsed ? 'lg:ml-80' : ''
+      }`}>
         
         {/* Expand/Collapse All Button */}
         <div className="flex justify-end">

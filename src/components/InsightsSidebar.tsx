@@ -10,6 +10,7 @@ interface InsightsSidebarProps {
   onRegenerating: (isRegenerating: boolean) => void;
   onRegenerated: (newResults: any) => void;
   messages: any[];
+  onCollapsedChange?: (isCollapsed: boolean) => void;
 }
 
 export default function InsightsSidebar({
@@ -17,14 +18,20 @@ export default function InsightsSidebar({
   onRegenerating,
   onRegenerated,
   messages,
+  onCollapsedChange,
 }: InsightsSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const handleToggle = (collapsed: boolean) => {
+    setIsCollapsed(collapsed);
+    onCollapsedChange?.(collapsed);
+  };
 
   return (
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen overflow-hidden bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/25 backdrop-blur-2xl border-r border-primary/20 transition-all duration-500 z-20 shadow-2xl ${
+        className={`fixed left-0 top-20 h-[calc(100vh-5rem)] overflow-hidden bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/25 backdrop-blur-2xl border-r border-primary/20 transition-all duration-500 z-20 shadow-2xl ${
           isCollapsed ? 'w-0 -translate-x-full opacity-0' : 'w-64 opacity-100'
         }`}
         style={{
@@ -34,7 +41,7 @@ export default function InsightsSidebar({
         {/* Toggle button inside sidebar */}
         {!isCollapsed && (
           <Button
-            onClick={() => setIsCollapsed(true)}
+            onClick={() => handleToggle(true)}
             variant="ghost"
             size="icon"
             className="absolute top-4 right-4 z-10 text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
@@ -127,8 +134,8 @@ export default function InsightsSidebar({
         <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-accent/10 to-transparent pointer-events-none" />
 
         {/* Sidebar content */}
-        <div className="relative h-full flex flex-col justify-center px-8 py-6 pt-24">
-          <div className="flex-shrink-0">
+        <div className="relative h-full flex flex-col px-8 py-6 pt-12">
+          <div className="flex-1 flex flex-col justify-center">
             <InsightToneSlider
               value={insightTone}
               onRegenerating={onRegenerating}
@@ -142,7 +149,7 @@ export default function InsightsSidebar({
       {/* Toggle button - only visible when collapsed */}
       {isCollapsed && (
         <Button
-          onClick={() => setIsCollapsed(false)}
+          onClick={() => handleToggle(false)}
           variant="ghost"
           size="icon"
           className="fixed left-4 top-[5.5rem] z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
