@@ -164,34 +164,42 @@ const ChatInterface = ({ initialMessage, onComplete, messages, onSendMessage, on
       
       const hasFinishIntent = finishKeywords.some(keyword => lastUserMessage.includes(keyword));
       
-      if (hasFinishIntent && exchangeCount >= 8) {
-        // Require at least 8 exchanges (more meaningful conversation) before allowing keyword-based early finish
+      if (hasFinishIntent && exchangeCount >= 3) {
+        // Lower threshold to 3 exchanges minimum
         setShowFinishButton(true);
       }
     }
     
-    // Also check if AI is giving closing statements
+    // Also check if AI is giving closing statements or mentioning "Finish Chat"
     const lastAIMessages = messages.filter(m => m.role === 'assistant').slice(-2);
     if (lastAIMessages.length > 0) {
       const recentAIText = lastAIMessages.map(m => m.content.toLowerCase()).join(' ');
       
-      // AI closing statement patterns
+      // AI closing statement patterns - including mentions of the finish chat button
       const closingPhrases = [
+        'click "finish chat"',
+        'click \'finish chat\'',
+        'finish chat button',
+        'when you\'re ready, click',
+        'feel free to click',
         'thank you for the conversation',
         'thank you for sharing today',
+        'thank you for chatting',
         'it\'s been great to explore',
         'if you feel ready, we can wrap up',
         'when we finish this conversation',
-        'personalized insights for you to consider',
+        'personalized insights for you',
+        'personalized resources',
         'ready to reflect',
         'wrap up',
-        'ready to move forward'
+        'ready to move forward',
+        'take care'
       ];
       
       const hasClosingStatement = closingPhrases.some(phrase => recentAIText.includes(phrase));
       
-      if (hasClosingStatement && exchangeCount >= 8) {
-        // Require at least 8 exchanges before AI can trigger finish button
+      if (hasClosingStatement && exchangeCount >= 3) {
+        // Lower threshold - if AI is suggesting to finish, show the button
         setShowFinishButton(true);
       }
     }
