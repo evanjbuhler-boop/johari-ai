@@ -215,11 +215,10 @@ export default function InsightControls({
             </Button>
           </div>
 
-          {activePreset && (
-            <p className="text-xs text-primary/90 mb-4 text-center">
-              Preset: <span className="font-medium">{activePreset.charAt(0).toUpperCase() + activePreset.slice(1)}</span>
-            </p>
-          )}
+          {/* Preset Indicator */}
+          <p className="text-xs text-gray-400 mb-4 text-center">
+            Preset: <span className="font-medium">{activePreset ? activePreset.charAt(0).toUpperCase() + activePreset.slice(1) : 'Custom'}</span>
+          </p>
 
           {/* Sliders */}
           <div className="space-y-5 mb-6">
