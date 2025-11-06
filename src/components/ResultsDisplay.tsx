@@ -699,24 +699,24 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
       }`}>
         
         {/* Expand/Collapse All Button */}
-        <div className="flex justify-end">
+        <div className="flex justify-end mb-2">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={handleExpandAll}
-            className="gap-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
+            className="gap-2 group relative overflow-hidden bg-gradient-to-r from-primary/20 to-accent/20 hover:from-primary/30 hover:to-accent/30 border border-primary/30 text-foreground font-medium transition-all duration-300 hover:scale-105"
           >
-            {allExpanded ? (
-              <>
+            <div className={`transition-transform duration-300 ${allExpanded ? 'rotate-180' : ''}`}>
+              {allExpanded ? (
                 <Minimize2 className="w-4 h-4" />
-                Collapse All
-              </>
-            ) : (
-              <>
+              ) : (
                 <Maximize2 className="w-4 h-4" />
-                Expand All
-              </>
-            )}
+              )}
+            </div>
+            <span className="relative z-10">
+              {allExpanded ? 'Collapse All' : 'Expand All'}
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Button>
         </div>
 
