@@ -901,94 +901,131 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
         {/* Reframing Section */}
         {results.reframing && (
           <ErrorBoundary>
-          <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-none shadow-lg">
-            <div className="flex items-center justify-between gap-3 mb-6">
-              <button
-                onClick={() => setReframingExpanded(!reframingExpanded)}
-                className="flex items-center gap-3 text-left"
-              >
-                <span className="text-2xl">🔄</span>
-                <h2 className="text-2xl font-semibold text-foreground">A Different Lens</h2>
-                {reframingExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-              </button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleSave('reframing', 'story', "A Different Lens", undefined, results.reframing)}
-              >
-                {isSaved('reframing') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
-            </div>
+          <Card className="relative overflow-hidden p-8 md:p-10 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 backdrop-blur-md border-2 border-primary/20 shadow-xl hover:shadow-2xl transition-all duration-300">
+            {/* Decorative gradient overlay */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl"></div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center justify-between gap-3 mb-6">
+                <button
+                  onClick={() => setReframingExpanded(!reframingExpanded)}
+                  className="flex items-center gap-3 text-left flex-1 group"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <span className="text-2xl">🔄</span>
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-foreground mb-1">A Different Lens</h2>
+                    <p className="text-sm text-muted-foreground">Reframing your perspective</p>
+                  </div>
+                  {reframingExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleSave('reframing', 'story', "A Different Lens", undefined, results.reframing)}
+                >
+                  {isSaved('reframing') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                </Button>
+              </div>
 
-            {!reframingExpanded && (
-              <button
-                onClick={() => setReframingExpanded(true)}
-                className="text-primary font-medium hover:underline text-sm"
-              >
-                See a different perspective →
-              </button>
-            )}
+              {!reframingExpanded && (
+                <div className="space-y-4">
+                  <div className="p-6 bg-white/50 dark:bg-gray-800/50 rounded-lg border-l-4 border-primary">
+                    <p className="text-base text-foreground/80 leading-relaxed line-clamp-3">
+                      {results.reframing.content.split('\n\n')[0].slice(0, 250)}...
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setReframingExpanded(true)}
+                    className="flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all text-base"
+                  >
+                    See the full perspective
+                    <span className="text-lg">→</span>
+                  </button>
+                </div>
+              )}
 
-            {reframingExpanded && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                <div className="prose prose-lg dark:prose-invert max-w-none">
-              <div className="text-base md:text-lg text-foreground/90 leading-relaxed space-y-6">
-                {/* Split content to handle questions section specially */}
-                {(() => {
-                  const content = results.reframing.content;
-                  const questionsMatch = content.match(/\*\*Questions to consider:\*\*\s*([\s\S]*?)$/);
-                  
-                  if (questionsMatch) {
-                    const mainContent = content.substring(0, questionsMatch.index).trim();
-                    const questions = questionsMatch[1]
-                      .split('\n')
-                      .filter(q => q.trim().startsWith('•'))
-                      .map(q => q.replace(/^•\s*/, '').trim());
+              {reframingExpanded && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="prose prose-lg dark:prose-invert max-w-none">
+                <div className="text-base md:text-lg text-foreground/90 leading-relaxed space-y-6">
+                  {/* Split content to handle questions section specially */}
+                  {(() => {
+                    const content = results.reframing.content;
+                    const questionsMatch = content.match(/\*\*Questions to consider:\*\*\s*([\s\S]*?)$/);
+                    
+                    if (questionsMatch) {
+                      const mainContent = content.substring(0, questionsMatch.index).trim();
+                      const questions = questionsMatch[1]
+                        .split('\n')
+                        .filter(q => q.trim().startsWith('•'))
+                        .map(q => q.replace(/^•\s*/, '').trim());
+                      
+                      return (
+                        <>
+                          <div className="space-y-4">
+                            {mainContent.split(/\n{2,}/).map((para, idx) => (
+                              <p key={idx} className="leading-relaxed">
+                                {renderBoldText(para.trim())}
+                              </p>
+                            ))}
+                          </div>
+                          
+                          {questions.length > 0 && (
+                            <div className="mt-8 pt-6 border-t border-border/50">
+                              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                                <span className="text-primary">💭</span>
+                                Questions for Reflection
+                              </h3>
+                              <ul className="space-y-3">
+                                {questions.map((question, idx) => (
+                                  <li key={idx} className="flex items-start gap-3">
+                                    <span className="text-primary font-semibold mt-0.5">•</span>
+                                    <span className="text-foreground/90 leading-relaxed">{question}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </>
+                      );
+                    }
                     
                     return (
-                      <>
-                        <div className="space-y-4">
-                          {mainContent.split(/\n{2,}/).map((para, idx) => (
-                            <p key={idx} className="leading-relaxed">
-                              {renderBoldText(para.trim())}
-                            </p>
-                          ))}
-                        </div>
-                        
-                        {questions.length > 0 && (
-                          <div className="mt-8 pt-6 border-t border-border/50">
-                            <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                              <span className="text-primary">💭</span>
-                              Questions for Reflection
-                            </h3>
-                            <ul className="space-y-3">
-                              {questions.map((question, idx) => (
-                                <li key={idx} className="flex items-start gap-3">
-                                  <span className="text-primary font-semibold mt-0.5">•</span>
-                                  <span className="text-foreground/90 leading-relaxed">{question}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </>
+                      <div className="space-y-4">
+                        {content.split(/\n{2,}/).map((para, idx) => (
+                          <p key={idx} className="leading-relaxed">
+                            {renderBoldText(para.trim())}
+                          </p>
+                        ))}
+                      </div>
                     );
-                  }
-                  
-                  return (
-                    <div className="space-y-4">
-                      {content.split(/\n{2,}/).map((para, idx) => (
-                        <p key={idx} className="leading-relaxed">
-                          {renderBoldText(para.trim())}
-                        </p>
-                      ))}
-                    </div>
-                  );
-                })()}
-              </div>
+                  })()}
                 </div>
-              </div>
-            )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
+              <Button
+                variant={ratings['reframing'] === 'up' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleRating('story', "A Different Lens", 'up')}
+                className="gap-1"
+              >
+                <ThumbsUp className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={ratings['reframing'] === 'down' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleRating('story', "A Different Lens", 'down')}
+                className="gap-1"
+              >
+                <ThumbsDown className="w-4 h-4" />
+              </Button>
+            </div>
           </Card>
           </ErrorBoundary>
         )}
@@ -996,54 +1033,89 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
         {/* Story Card */}
         {results.story && (
           <ErrorBoundary>
-          <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg transition-all duration-300 hover:shadow-xl">
-            <div className="flex items-center justify-between gap-3 mb-6">
-              <button
-                onClick={() => setStoryExpanded(!storyExpanded)}
-                className="flex items-center gap-3 text-left"
-              >
-                <span className="text-3xl">📖</span>
-                <h2 className="text-2xl font-semibold text-foreground">A Story for You</h2>
-                {storyExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-              </button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
-              >
-                {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
+          <Card className="relative overflow-hidden p-8 md:p-10 bg-gradient-to-br from-accent/5 via-secondary/5 to-primary/5 backdrop-blur-md border-2 border-accent/20 shadow-xl hover:shadow-2xl transition-all duration-300">
+            {/* Decorative gradient overlay */}
+            <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl"></div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center justify-between gap-3 mb-6">
+                <button
+                  onClick={() => setStoryExpanded(!storyExpanded)}
+                  className="flex items-center gap-3 text-left flex-1 group"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-accent/10 group-hover:bg-accent/20 transition-colors">
+                    <span className="text-3xl">📖</span>
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-foreground mb-1">A Story for You</h2>
+                    <p className="text-sm text-muted-foreground italic">{results.story.title} • {results.story.culturalOrigin}</p>
+                  </div>
+                  {storyExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
+                >
+                  {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                </Button>
+              </div>
+
+              {!storyExpanded && (
+                <div className="space-y-4">
+                  <div className="p-6 bg-white/50 dark:bg-gray-800/50 rounded-lg border-l-4 border-accent">
+                    <p className="text-base text-foreground/80 leading-relaxed line-clamp-4 font-serif">
+                      {results.story.content.slice(0, 300)}...
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setStoryExpanded(true)}
+                    className="flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all text-base"
+                  >
+                    Read the full story
+                    <span className="text-lg">→</span>
+                  </button>
+                </div>
+              )}
+
+              {storyExpanded && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="bg-card/50 p-6 rounded-lg border border-border">
+                    <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-line font-serif">
+                      {renderBoldText(results.story.content)}
+                    </p>
+                  </div>
+
+                  <div className="p-6 bg-primary/5 rounded-lg border-l-4 border-primary">
+                    <p className="text-sm font-semibold text-foreground/90 mb-3 flex items-center gap-2">
+                      <span>💭</span> Why this speaks to {sessionTheme ? sessionTheme : 'your experience'}:
+                    </p>
+                    <p className="text-base text-foreground/80 leading-relaxed">
+                      {renderBoldText(results.story.whyThisMatters)}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {!storyExpanded && (
-              <button
-                onClick={() => setStoryExpanded(true)}
-                className="text-primary font-medium hover:underline text-sm"
+            <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
+              <Button
+                variant={ratings['story'] === 'up' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleRating('story', results.story!.title, 'up')}
+                className="gap-1"
               >
-                Read the story →
-              </button>
-            )}
-
-            {storyExpanded && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                <div className="bg-card/50 p-6 rounded-lg border border-border">
-                  <h3 className="text-xl font-medium text-foreground mb-2">{results.story.title}</h3>
-                  <p className="text-sm text-muted-foreground italic mb-4">{results.story.culturalOrigin}</p>
-                  <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-line font-serif">
-                    {renderBoldText(results.story.content)}
-                  </p>
-                </div>
-
-                <div className="pt-4">
-                  <p className="text-sm font-semibold text-foreground/90 mb-3 flex items-center gap-2">
-                    <span>💭</span> Why this speaks to {sessionTheme ? sessionTheme : 'your experience'}:
-                  </p>
-                  <p className="text-base text-foreground/80 leading-relaxed">
-                    {renderBoldText(results.story.whyThisMatters)}
-                  </p>
-                </div>
-              </div>
-            )}
+                <ThumbsUp className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={ratings['story'] === 'down' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleRating('story', results.story!.title, 'down')}
+                className="gap-1"
+              >
+                <ThumbsDown className="w-4 h-4" />
+              </Button>
+            </div>
           </Card>
           </ErrorBoundary>
         )}
