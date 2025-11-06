@@ -24,7 +24,7 @@ export default function InsightsSidebar({
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen overflow-hidden bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/25 backdrop-blur-2xl border-r border-primary/20 transition-all duration-500 z-20 shadow-2xl ${
+        className={`fixed left-0 top-20 h-[calc(100vh-5rem)] overflow-hidden bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/25 backdrop-blur-2xl border-r border-primary/20 transition-all duration-500 z-20 shadow-2xl ${
           isCollapsed ? 'w-0 -translate-x-full opacity-0' : 'w-64 opacity-100'
         }`}
         style={{
@@ -132,7 +132,7 @@ export default function InsightsSidebar({
         onClick={() => setIsCollapsed(!isCollapsed)}
         variant="ghost"
         size="icon"
-        className={`fixed top-4 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 ${
+        className={`fixed top-[5.5rem] z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 ${
           isCollapsed ? 'left-4' : 'left-[17rem]'
         }`}
       >
