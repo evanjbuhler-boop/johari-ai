@@ -34,17 +34,80 @@ export default function InsightsSidebar({
         className={`fixed left-0 top-20 h-[calc(100vh-5rem)] overflow-hidden bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/25 backdrop-blur-2xl border-r border-primary/20 transition-all duration-500 z-20 shadow-2xl ${
           isCollapsed ? 'w-0 -translate-x-full opacity-0' : 'w-64 opacity-100'
         }`}
-        style={{
-          background: 'linear-gradient(135deg, hsl(var(--primary) / 0.25), hsl(var(--secondary) / 0.15), hsl(var(--accent) / 0.2))',
-        }}
       >
+        {/* Animated streaming gradient background */}
+        <div 
+          className="absolute inset-0 opacity-40"
+          style={{
+            background: 'linear-gradient(45deg, hsl(var(--primary) / 0.6), hsl(var(--secondary) / 0.4), hsl(var(--accent) / 0.5), hsl(var(--primary) / 0.6))',
+            backgroundSize: '400% 400%',
+            animation: 'gradient-flow 8s ease infinite',
+          }}
+        />
+        
+        {/* Flowing light streaks */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div
+            className="absolute w-full h-32 opacity-30"
+            style={{
+              background: 'linear-gradient(180deg, transparent, hsl(var(--primary) / 0.4), transparent)',
+              animation: 'flow-down 6s ease-in-out infinite',
+            }}
+          />
+          <div
+            className="absolute w-full h-24 opacity-25"
+            style={{
+              background: 'linear-gradient(180deg, transparent, hsl(var(--accent) / 0.5), transparent)',
+              animation: 'flow-down 4s ease-in-out infinite 2s',
+            }}
+          />
+          <div
+            className="absolute w-full h-20 opacity-20"
+            style={{
+              background: 'linear-gradient(180deg, transparent, hsl(var(--secondary) / 0.4), transparent)',
+              animation: 'flow-down 5s ease-in-out infinite 1s',
+            }}
+          />
+        </div>
+
+        {/* Pulsing orbs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div
+            className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full opacity-20 blur-2xl"
+            style={{
+              background: 'radial-gradient(circle, hsl(var(--primary) / 0.6), transparent)',
+              animation: 'pulse-glow 4s ease-in-out infinite',
+            }}
+          />
+          <div
+            className="absolute bottom-1/3 right-1/4 w-24 h-24 rounded-full opacity-15 blur-xl"
+            style={{
+              background: 'radial-gradient(circle, hsl(var(--accent) / 0.7), transparent)',
+              animation: 'pulse-glow 3s ease-in-out infinite 1.5s',
+            }}
+          />
+        </div>
+
+        {/* Subtle grid pattern overlay */}
+        <div 
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, hsl(var(--primary) / 0.3) 1px, transparent 1px),
+              linear-gradient(to bottom, hsl(var(--primary) / 0.3) 1px, transparent 1px)
+            `,
+            backgroundSize: '20px 20px',
+            animation: 'grid-shift 20s linear infinite',
+          }}
+        />
+        {/* Toggle button inside sidebar */}
         {/* Toggle button inside sidebar */}
         {!isCollapsed && (
           <Button
             onClick={() => handleToggle(true)}
             variant="ghost"
             size="icon"
-            className="absolute top-4 right-4 z-10 text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
+            className="absolute top-4 right-4 z-50 text-white/60 hover:text-white hover:bg-white/10 transition-all duration-300"
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
