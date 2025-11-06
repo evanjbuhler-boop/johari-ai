@@ -901,9 +901,17 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
         {/* Reframing Section */}
         {results.reframing && (
           <ErrorBoundary>
-          <Card className="relative overflow-hidden p-8 md:p-10 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 backdrop-blur-md border-2 border-primary/20 shadow-xl hover:shadow-2xl transition-all duration-300">
-            {/* Decorative gradient overlay */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl"></div>
+          <Card className="relative overflow-hidden p-8 md:p-10 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 backdrop-blur-md border-2 border-purple-400/30 shadow-xl hover:shadow-2xl transition-all duration-300">
+            {/* Abstract geometric pattern overlay */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute top-10 left-10 w-32 h-32 border-4 border-purple-400 rotate-45"></div>
+              <div className="absolute top-20 right-20 w-24 h-24 border-4 border-pink-400 rotate-12"></div>
+              <div className="absolute bottom-10 left-1/3 w-40 h-40 border-4 border-orange-400 -rotate-12"></div>
+            </div>
+            
+            {/* Soft light effects */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-orange-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl"></div>
             
             <div className="relative z-10">
               <div className="flex items-center justify-between gap-3 mb-6">
@@ -911,12 +919,14 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                   onClick={() => setReframingExpanded(!reframingExpanded)}
                   className="flex items-center gap-3 text-left flex-1 group"
                 >
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                    <span className="text-2xl">🔄</span>
+                  <div className="relative flex items-center justify-center w-14 h-14">
+                    {/* Rotating circle backdrop */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400/20 to-pink-400/20 group-hover:scale-110 transition-transform"></div>
+                    <span className="relative text-3xl">🔄</span>
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-foreground mb-1">A Different Lens</h2>
-                    <p className="text-sm text-muted-foreground">Reframing your perspective</p>
+                    <h2 className="text-2xl font-bold text-foreground mb-1 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">A Different Lens</h2>
+                    <p className="text-sm text-muted-foreground">Shifting the frame</p>
                   </div>
                   {reframingExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                 </button>
@@ -931,17 +941,18 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
 
               {!reframingExpanded && (
                 <div className="space-y-4">
-                  <div className="p-6 bg-white/50 dark:bg-gray-800/50 rounded-lg border-l-4 border-primary">
+                  <div className="relative p-6 bg-white/60 dark:bg-gray-800/60 rounded-lg border-l-4 border-purple-500 shadow-md">
+                    <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-gradient-to-br from-purple-400/30 to-pink-400/30"></div>
                     <p className="text-base text-foreground/80 leading-relaxed line-clamp-3">
                       {results.reframing.content.split('\n\n')[0].slice(0, 250)}...
                     </p>
                   </div>
                   <button
                     onClick={() => setReframingExpanded(true)}
-                    className="flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all text-base"
+                    className="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-semibold hover:gap-3 transition-all text-base group"
                   >
-                    See the full perspective
-                    <span className="text-lg">→</span>
+                    Explore this perspective
+                    <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
                   </button>
                 </div>
               )}
@@ -1068,6 +1079,17 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                       {results.story.content.slice(0, 300)}...
                     </p>
                   </div>
+                  
+                  {/* Why it's relevant subsection */}
+                  <div className="p-4 bg-accent/5 rounded-lg border border-accent/20">
+                    <p className="text-sm font-semibold text-accent mb-2 flex items-center gap-2">
+                      <span>💭</span> Why this matters
+                    </p>
+                    <p className="text-sm text-foreground/70 leading-relaxed line-clamp-2">
+                      {results.story.whyThisMatters.slice(0, 150)}...
+                    </p>
+                  </div>
+                  
                   <button
                     onClick={() => setStoryExpanded(true)}
                     className="flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all text-base"
