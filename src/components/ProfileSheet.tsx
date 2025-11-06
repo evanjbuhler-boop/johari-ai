@@ -78,7 +78,43 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
 
     if (data) {
       setName(data.name || '');
-      setInsightTone(data.insight_tone || 'clinical');
+      
+      // Parse insight_tone - could be string preset or JSON dimensional
+      let toneValue = 'clinical';
+      if (data.insight_tone) {
+        try {
+          const parsed = JSON.parse(data.insight_tone);
+          // If it's a dimensional object, figure out which preset it matches
+          if (parsed.directness !== undefined) {
+            const PRESETS: Record<string, any> = {
+              clinical: { directness: 75, warmth: 25, orientation: 50, language: 90 },
+              direct: { directness: 90, warmth: 40, orientation: 60, language: 30 },
+              coaching: { directness: 70, warmth: 65, orientation: 85, language: 25 },
+              compassionate: { directness: 35, warmth: 90, orientation: 40, language: 20 },
+              children: { directness: 50, warmth: 80, orientation: 60, language: 10 },
+            };
+            
+            // Find matching preset
+            for (const [presetName, presetValues] of Object.entries(PRESETS)) {
+              const matches = 
+                Math.abs(parsed.directness - presetValues.directness) <= 5 &&
+                Math.abs(parsed.warmth - presetValues.warmth) <= 5 &&
+                Math.abs(parsed.orientation - presetValues.orientation) <= 5 &&
+                Math.abs(parsed.language - presetValues.language) <= 5;
+              
+              if (matches) {
+                toneValue = presetName;
+                break;
+              }
+            }
+          }
+        } catch {
+          // If not JSON, treat as legacy string preset
+          toneValue = data.insight_tone;
+        }
+      }
+      
+      setInsightTone(toneValue);
     }
   };
 
@@ -110,9 +146,56 @@ const ProfileSheet = ({ children }: ProfileSheetProps) => {
     
     if (!user) return;
 
+    // Convert preset string to dimensional tone object
+    const PRESETS: Record<string, any> = {
+      clinical: {
+        directness: 75,
+        warmth: 25,
+        orientation: 50,
+        language: 90,
+        citations: true,
+        ageAppropriate: false,
+      },
+      direct: {
+        directness: 90,
+        warmth: 40,
+        orientation: 60,
+        language: 30,
+        citations: false,
+        ageAppropriate: false,
+      },
+      coaching: {
+        directness: 70,
+        warmth: 65,
+        orientation: 85,
+        language: 25,
+        citations: false,
+        ageAppropriate: false,
+      },
+      compassionate: {
+        directness: 35,
+        warmth: 90,
+        orientation: 40,
+        language: 20,
+        citations: false,
+        ageAppropriate: false,
+      },
+      children: {
+        directness: 50,
+        warmth: 80,
+        orientation: 60,
+        language: 10,
+        citations: false,
+        ageAppropriate: true,
+      },
+    };
+
+    // Save as dimensional tone JSON
+    const dimensionalTone = PRESETS[newTone] || PRESETS.clinical;
+    
     const { error } = await supabase
       .from('profiles')
-      .update({ insight_tone: newTone })
+      .update({ insight_tone: JSON.stringify(dimensionalTone) })
       .eq('id', user.id);
 
     if (error) {
