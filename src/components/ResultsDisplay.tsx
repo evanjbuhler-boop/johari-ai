@@ -926,11 +926,13 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               </Button>
             </div>
 
-            <div className="mt-6 space-y-4">
-              <p className="text-lg md:text-xl text-foreground/90 leading-relaxed">
-                {renderBoldText(results.reframing.content.split('\n\n')[0])}
-              </p>
-            </div>
+            {!reframingExpanded && (
+              <div className="mt-6 space-y-4">
+                <p className="text-lg md:text-xl text-foreground/90 leading-relaxed">
+                  {renderBoldText(results.reframing.content.split('\n\n')[0])}
+                </p>
+              </div>
+            )}
 
             {!reframingExpanded && (
               <button
@@ -950,7 +952,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     
                     if (questionsMatch) {
                       const mainContent = content.substring(0, questionsMatch.index).trim();
-                      const paragraphs = mainContent.split(/\n{2,}/).slice(1);
+                      const paragraphs = mainContent.split(/\n{2,}/);
                       const questions = questionsMatch[1]
                         .split('\n')
                         .filter(q => q.trim().startsWith('•'))
@@ -986,7 +988,7 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
                     
                     return (
                       <>
-                        {content.split(/\n{2,}/).slice(1).map((para, idx) => (
+                        {content.split(/\n{2,}/).map((para, idx) => (
                           <p key={idx} className="leading-relaxed">
                             {renderBoldText(para.trim())}
                           </p>
