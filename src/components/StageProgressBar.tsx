@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MessageSquare, Check, Lightbulb } from 'lucide-react';
 
 interface StageProgressBarProps {
@@ -8,6 +8,20 @@ interface StageProgressBarProps {
 }
 
 const StageProgressBar = ({ currentStage, chatProgress = 0, estimatedMinutes }: StageProgressBarProps) => {
+  const [isVisible, setIsVisible] = useState(true);
+  
+  // Auto-hide on recommendations stage after 3 seconds
+  useEffect(() => {
+    if (currentStage === 'recommendations') {
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      setIsVisible(true);
+    }
+  }, [currentStage]);
+  
   // Calculate overall progress across all 3 stages
   const getOverallProgress = () => {
     if (currentStage === 'chat') {
@@ -51,7 +65,9 @@ const StageProgressBar = ({ currentStage, chatProgress = 0, estimatedMinutes }: 
   }, []);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[95]">
+    <div className={`fixed bottom-0 left-0 right-0 z-[95] transition-all duration-500 ${
+      isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+    }`}>
       {/* Stage Progress Indicator */}
       <div ref={containerRef} className="bg-gradient-to-r from-purple-900/95 to-pink-900/95 backdrop-blur-xl border-t border-white/20 shadow-2xl animate-in slide-in-from-bottom duration-500">
         <div className="max-w-4xl mx-auto px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
