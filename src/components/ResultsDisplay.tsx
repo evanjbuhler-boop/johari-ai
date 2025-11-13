@@ -58,7 +58,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(true); // Auto-expand first section
   const [reframingExpanded, setReframingExpanded] = useState(false);
-  const [storyExpanded, setStoryExpanded] = useState(false);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
   const [ratings, setRatings] = useState<Record<string, 'up' | 'down'>>({});
@@ -87,13 +86,12 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const currentSessionId = sessionId || `session-${Date.now()}`;
 
   // Expand/collapse all functionality
-  const allExpanded = whatsHappeningExpanded && reframingExpanded && storyExpanded;
+  const allExpanded = whatsHappeningExpanded && reframingExpanded;
   
   const handleExpandAll = () => {
     const shouldExpand = !allExpanded;
     setWhatsHappeningExpanded(shouldExpand);
     setReframingExpanded(shouldExpand);
-    setStoryExpanded(shouldExpand);
   };
 
   // Confetti effect for high ratings
@@ -1043,106 +1041,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
           </ErrorBoundary>
         )}
 
-        {/* Story Card */}
-        {results.story && (
-          <ErrorBoundary>
-          <Card className="relative overflow-hidden p-8 md:p-10 bg-gradient-to-br from-accent/5 via-secondary/5 to-primary/5 backdrop-blur-md border-2 border-accent/20 shadow-xl hover:shadow-2xl transition-all duration-300">
-            {/* Decorative gradient overlay */}
-            <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-accent/10 to-transparent rounded-full blur-3xl"></div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center justify-between gap-3 mb-6">
-                <button
-                  onClick={() => setStoryExpanded(!storyExpanded)}
-                  className="flex items-center gap-3 text-left flex-1 group"
-                >
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-accent/10 group-hover:bg-accent/20 transition-colors">
-                    <span className="text-3xl">📖</span>
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-foreground mb-1">A Story for You</h2>
-                    <p className="text-sm text-muted-foreground italic">{results.story.title} • {results.story.culturalOrigin}</p>
-                  </div>
-                  {storyExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                </button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => toggleSave('story-' + results.story!.title, 'story', results.story!.title, undefined, results.story)}
-                >
-                  {isSaved('story-' + results.story.title) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-                </Button>
-              </div>
-
-              {!storyExpanded && (
-                <div className="space-y-4">
-                  <div className="p-6 bg-white/50 dark:bg-gray-800/50 rounded-lg border-l-4 border-accent">
-                    <p className="text-base text-foreground/80 leading-relaxed line-clamp-4 font-serif">
-                      {results.story.content.slice(0, 300)}...
-                    </p>
-                  </div>
-                  
-                  {/* Why it's relevant subsection */}
-                  <div className="p-4 bg-accent/5 rounded-lg border border-accent/20">
-                    <p className="text-sm font-semibold text-accent mb-2 flex items-center gap-2">
-                      <span>💭</span> Why this matters
-                    </p>
-                    <p className="text-sm text-foreground/70 leading-relaxed line-clamp-2">
-                      {results.story.whyThisMatters.slice(0, 150)}...
-                    </p>
-                  </div>
-                  
-                  <button
-                    onClick={() => setStoryExpanded(true)}
-                    className="flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all text-base"
-                  >
-                    Read the full story
-                    <span className="text-lg">→</span>
-                  </button>
-                </div>
-              )}
-
-              {storyExpanded && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <div className="bg-card/50 p-6 rounded-lg border border-border">
-                    <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-line font-serif">
-                      {renderBoldText(results.story.content)}
-                    </p>
-                  </div>
-
-                  <div className="p-6 bg-primary/5 rounded-lg border-l-4 border-primary">
-                    <p className="text-sm font-semibold text-foreground/90 mb-3 flex items-center gap-2">
-                      <span>💭</span> Why this speaks to {sessionTheme ? sessionTheme : 'your experience'}:
-                    </p>
-                    <p className="text-base text-foreground/80 leading-relaxed">
-                      {renderBoldText(results.story.whyThisMatters)}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
-              <Button
-                variant={ratings['story'] === 'up' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => handleRating('story', results.story!.title, 'up')}
-                className="gap-1"
-              >
-                <ThumbsUp className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={ratings['story'] === 'down' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => handleRating('story', results.story!.title, 'down')}
-                className="gap-1"
-              >
-                <ThumbsDown className="w-4 h-4" />
-              </Button>
-            </div>
-          </Card>
-          </ErrorBoundary>
-        )}
 
         {/* Resources Header */}
         <div className="pt-8">
