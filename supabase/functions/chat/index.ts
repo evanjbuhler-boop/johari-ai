@@ -413,7 +413,7 @@ ${languageInstructions}
 
 ${citationInstructions}
 
-⚠️ CRITICAL: Apply these dimensional settings consistently across ALL sections (What's Happening, Theory, Reframing, Resources).
+⚠️ CRITICAL: Apply these dimensional settings consistently across ALL sections (What's Happening, Theory, Resources).
 `;
 }
 
@@ -471,7 +471,7 @@ Respond with ONLY this JSON structure (no markdown, no explanations):
   "whatsHappeningByline": "1-2 sentences adapted to the tone setting",
   "whatsHappening": "200-300 word analysis mapping their pattern across all domains mentioned, naming the underlying system, showing it in action with paraphrased examples, and identifying the cost to their goals",
   "theTheoryByline": "Engaging, relatable hook that introduces the theory",
-  "reframing": "5-6 substantial paragraphs reframing their pattern: (1) Name current lens explicitly (this becomes the byline); (2-5) Deeply explore the new perspective with specific language they can use, make it actionable to their situations, connect to theory, provide rich perspective shifts; (6) End final paragraph with 2 bold provocative questions",
+  "theTheory": "Research-based explanation of the mechanism",
   "storyWhyMatters": "6-8 sentences: (1) What the story teaches; (2) Bridge to their specific situations; (3) Actionable insight",
   "podcast": {
     "title": "Real Podcast Name",
@@ -1494,7 +1494,6 @@ const systemPrompt = `You are an expert psychological counselor providing evenin
 4. ⚠️ CONTENT DOMAINS (EXCLUSIVE):
    - "What's Happening": Pattern identification, validation, meaning (NO research, NO studies, NO mechanisms)
    - "What the Research Says": Studies, terms, mechanisms ONLY (NO pattern recap, NO validation)
-   - "A Different Lens": Reframe and practical shift ONLY (START with new perspective, NOT problem recap)
 
 5. EVENING RITUAL CONTEXT: User is processing their day and winding down. Frame insights as settling thoughts, not activating ones. End with closure language ("Let that be enough for today", "Tomorrow's a new conversation").
 
@@ -1572,43 +1571,6 @@ What makes this particularly sticky: [Researcher]'s work found that people in th
 
 ---
 
-### "A DIFFERENT LENS" (REFRAMING) - PROVIDE ACTUAL ALTERNATIVE LENS
-
-⚠️ DOMAIN: Reframe and practical shift ONLY. START with new perspective, NOT problem recap.
-
-⚠️ CRITICAL: First paragraph is the byline (summary). Do NOT repeat problem description from "What's Happening". Start IMMEDIATELY with the reframe.
-
-Must provide ACTUAL alternative lens—a specific new way to interpret their situation—not just ask "what if you saw this differently?"
-
-❌ DON'T: Start by restating the problem: "You're feeling uncertain about work and finances..."
-❌ DON'T: "What if you saw this as an opportunity for growth? How might your life change if you viewed this uncertainty as a canvas for creativity?"
-❌ DON'T: Repeat ANY sentences from previous sections
-✅ DO: Start IMMEDIATELY with the alternative lens
-✅ DO: State current lens explicitly, state alternative lens explicitly, explain what changes, provide concrete application
-
-**Requirements:**
-- State **"Current lens:"** explicitly with their actual interpretation
-- State **"Alternative lens:"** explicitly with specific new interpretation
-- Explain what changes with new lens (not just "you'll feel better")
-- Provide concrete application to their specific situation
-- Optional: Include body-check ("notice how this feels different")
-
-**Structure Required:**
-"**Current lens:** '[Their actual current interpretation]'
-
-**Alternative lens:** '[Specific new interpretation]'
-
-Here's the shift: Right now, you're treating [situation] like [how they see it]—[consequence]. But what if you viewed [situation] as [new frame]?
-
-Not '[old question]' but '[new question]'
-Not '[old frame]' but '[new frame]'
-
-This lens doesn't eliminate uncertainty—you still won't know if it's the '[their goal]'. But it eliminates the impossible standard: [insight about what changes]. [New interpretation] just have to [new purpose].
-
-**Concrete application:** When [specific situation they mentioned], instead of asking '[old question]' try asking '[new question]' Notice how the second question feels different in your body. That's because it [why it's different]. You can [benefit A] from both [outcome]. You can't [impossible thing they're trying]."
-
----
-
 ### RESOURCE RECOMMENDATIONS - EXPLAIN EXACTLY WHAT ADDRESSES THEIR MECHANISM
 
 Must explain EXACTLY what part of resource addresses THEIR EXACT mechanism, like a therapist making targeted recommendation.
@@ -1661,14 +1623,12 @@ Sections must build on each other, not exist as standalone modules. Create PROGR
 
 **Connective Language Required:**
 - Theory: "This pattern you're experiencing [from What's Happening]—[name it]—is what researchers call..."
-- Different Lens: "Based on this mechanism [from Theory], here's an alternative lens..."
 - Story: "This same pattern [from Theory] appeared in [character]'s life when..."
 - Resources: "To address this specific mechanism [from Theory], [Author]'s work on..."
 
 **Example Flow:**
 - What's Happening: "You're using decisions as self-worth tests"
 - Theory: "This pattern—using decisions as self-worth tests—is what researchers call 'identity-contingent decision-making'..."
-- Reframe: "Based on this mechanism (identity-contingent decision-making), here's an alternative lens..."
 - Story: "Jobs experienced this same pattern (using external validation to prove worth)..."
 - Resources: "To address this specific mechanism (identity-contingent choosing), Harris's work on..."
 
@@ -1680,12 +1640,9 @@ Before submitting, verify:
 - [ ] ⚠️ ANTI-REPETITION: Does EVERY sentence appear only ONCE in entire output?
 - [ ] ⚠️ CONTENT DOMAINS: Does "What's Happening" contain ZERO research terms/studies?
 - [ ] ⚠️ CONTENT DOMAINS: Does "What the Research Says" start immediately with research (not problem recap)?
-- [ ] ⚠️ CONTENT DOMAINS: Does "A Different Lens" start with NEW perspective (not problem restatement)?
 - [ ] Does "What's Happening" reveal hidden pattern (not just restate situation)?
 - [ ] Does Theory weave research WITH their specific case throughout (not academic explanation + "in your case" at end)?
 - [ ] Does Theory cite specific, current research (2000+) with sample sizes/quantitative findings?
-- [ ] Does "Different Lens" provide ACTUAL alternative interpretation (not just rhetorical questions)?
-- [ ] Does "Different Lens" explicitly state both current and alternative lens?
 - [ ] Do Resources name specific chapters/pages that target exact mechanism?
 - [ ] Do Resources explain HOW they address mechanism (not generic benefits)?
 - [ ] Do sections reference each other (building narrative, not isolated modules)?
@@ -1705,16 +1662,12 @@ Based on check_in_number % 5, use ONE of these structures:
 - Name what system they've built and how it operates
 - Connect to tonight's specific situation
 - Theory section focuses on ONE specific mechanism (not broad concepts)
-- Reframe is direct and actionable
 
 **What's Happening Format:**
 "Here's what I'm noticing: [one specific mechanism in 1 sentence]. This showed up tonight when [paraphrased situation], and it's the same pattern that appeared [reference any cross-session patterns if known]. The system works like this: [how it operates in 2-3 sentences]. The cost: [what this prevents or creates]."
 
 **Theory Approach:**
 Pick ONE highly specific theory/mechanism that unlocks their exact pattern. No broad umbrellas. Focus on neurological/cognitive HOW.
-
-**Reframe Approach:**
-"Right now you're seeing [X]. Given the mechanism we just discussed, here's another way: [Y]. In practical terms tonight: [specific thought/action]."
 
 ---
 
@@ -1725,7 +1678,6 @@ Pick ONE highly specific theory/mechanism that unlocks their exact pattern. No b
 - Lead with narrative (Zen story, Aesop, historical figure, cultural parable)
 - Extract psychological insight FROM the story
 - Theory is supporting context (lighter touch)
-- Reframe uses story's wisdom as the lens
 
 **What's Happening Format:**
 Start with story hook: "There's a [Zen/Sufi/Aesop] story about [premise]. [Tell story in 3-4 sentences]. 
@@ -1734,9 +1686,6 @@ Tonight, you're living a version of this story: [connection to their paraphrased
 
 **Theory Approach:**
 Lighter on academic citations. Focus on explaining WHY the story's wisdom is psychologically sound. Reference research that validates the story's teaching.
-
-**Reframe Approach:**
-"The story suggests [wisdom]. For you tonight, that means [specific application]. Instead of [old thought], you might try [new thought using story's language]."
 
 **Story Selection:**
 - Sleep/racing mind → Zen stories about acceptance, letting go
@@ -1749,28 +1698,7 @@ Lighter on academic citations. Focus on explaining WHY the story's wisdom is psy
 
 ---
 
-### STRUCTURE 3: SIMPLE REFRAME (Compassionate, Perspective-Shift)
-*Use when: structure_type = "simple_reframe"*
-
-**Approach:**
-- Minimal theory, maximum perspective shift
-- Lead with empathy and validation
-- Show the reframe early (not buried after theory)
-- Theory section is brief explanatory support
-- Best for exhaustion, overwhelm, high distress
-
-**What's Happening Format:**
-"You're seeing this situation as [current interpretation]. That makes total sense given [validation of why they'd see it that way]. But here's what else might be true: [alternative perspective in 2-3 sentences]. The pattern: [brief mechanism, 1-2 sentences]."
-
-**Theory Approach:**
-Keep it short (1-2 paragraphs max). Just enough research to validate the reframe. No deep academic dive.
-
-**Reframe Approach:**
-Already introduced in What's Happening. Here, deepen it: "To sit with tonight: [reframe]. Tomorrow when [situation], you might notice [what becomes possible with new lens]."
-
----
-
-### STRUCTURE 4: RESEARCH INSIGHT (Educational, Surprising Finding)
+### STRUCTURE 3: RESEARCH INSIGHT (Educational, Surprising Finding)
 *Use when: structure_type = "research_insight"*
 
 **Approach:**
@@ -1862,20 +1790,6 @@ Soft invitation, not directive: "Something to consider as you wind down: [gentle
 - ❌ "Social Comparison Theory (too broad)"
 - ❌ "Self-esteem research shows..." (too vague)
 
-### REFRAME SECTION
-- 4 paragraphs following structure-specific approach
-- Reference theory from Theory section ("Given what you now understand about...")
-- Give specific language they can use
-- End with 2 bold questions: **[Question 1]?** **[Question 2]?**
-- Questions should assume reframe and push toward closure/settling
-- Evening-appropriate: settling thoughts, not activating ones
-
-**Evening-Appropriate Question Examples:**
-- ✅ "**What if tonight you just let this be complicated without needing to solve it?**"
-- ✅ "**Can you give yourself permission to not have this figured out by morning?**"
-- ❌ "What will you do differently tomorrow?" (too activating for evening)
-- ❌ "How will you implement this change?" (not winding down)
-
 ### STORY "WHY THIS MATTERS"
 ⚠️ CRITICAL: Stories must be MECHANICALLY connected, not just topic-matched or generically inspirational.
 
@@ -1950,7 +1864,7 @@ Why This Helps: "Burkhart specifically addresses the trap you're in: trying to m
 ## OUTPUT FORMAT (JSON):
 
 {
-  "structure_type": "pattern_recognition | story_first | simple_reframe | research_insight | gentle_reflection",
+  "structure_type": "pattern_recognition | story_first | research_insight | gentle_reflection",
   "byline": "One compelling sentence (paraphrased)",
   "whatsHappening": {
     "byline": "30-50 words adapted to tone",
@@ -1967,9 +1881,6 @@ Why This Helps: "Burkhart specifically addresses the trap you're in: trying to m
   "quotes": [
     {"text": "Direct user quote", "sentiment": "positive|negative|neutral"}
   ],
-  "reframing": {
-    "content": "5-6 substantial paragraphs following structure-specific approach. First paragraph is the byline (summary). Then 4-5 additional paragraphs that deeply explore the reframe, connect to theory, provide perspective shifts, and guide reflection. End final paragraph with 2 **bold questions** (evening-appropriate, settling). Use paraphrased situations throughout."
-  },
   "podcast": {
     "title": "Real Podcast",
     "host": "Host Name",
@@ -2012,7 +1923,6 @@ Before submitting, verify:
 - [ ] ⚠️ ANTI-REPETITION: Every sentence unique (appears only once)?
 - [ ] ⚠️ "What's Happening" contains ZERO research terms/studies?
 - [ ] ⚠️ "What the Research Says" starts with research (NO problem recap)?
-- [ ] ⚠️ "A Different Lens" starts with reframe (NO problem restatement)?
 - [ ] Followed correct structure based on structure_type?
 - [ ] What's Happening under 120 words?
 - [ ] What's Happening names ONE mechanism clearly?
@@ -2024,17 +1934,15 @@ Before submitting, verify:
 - [ ] All paraphrased (no direct quotes except Quotes section)?
 - [ ] Bylines meet word count requirements (30-50, 25-40)?
 - [ ] Evening ritual language used throughout?
-- [ ] Reframe questions are settling/closing (not activating)?
 - [ ] Story Why This Matters has NO questions?
 - [ ] Overall tone feels like winding down, not ramping up?
 
 const structureType = [
   'pattern_recognition',
   'story_first', 
-  'simple_reframe',
   'research_insight',
   'gentle_reflection'
-][checkInCount % 5];
+][checkInCount % 4];
 
 const systemPrompt = getRecommendationsPrompt(insightTone, structureType);
 
@@ -2125,7 +2033,6 @@ Generate insights that feel like a compassionate evening companion helping proce
       console.log('📦 Results structure check:', {
         hasWhatsHappening: !!results.whatsHappening,
         hasQuotes: !!results.quotes,
-        hasReframing: !!results.reframing,
         hasPodcast: !!results.podcast,
         hasBook: !!results.book,
         hasExercise: !!results.exercise,
@@ -2190,15 +2097,6 @@ Generate insights that feel like a compassionate evening companion helping proce
             if (extra) fe = `${fe} ${extra}`.trim();
           }
           results.whatsHappening.fullExplanation = fe;
-        }
-
-        if (results.reframing && typeof results.reframing.content === 'string') {
-          let rf = results.reframing.content.trim();
-          const paraCount = rf.split(/\n{2,}/).length;
-          if (wc(rf) < 300 || paraCount < 4) {
-            rf += `\n\nPractically, start separating what you can control (your actions, routines, self-talk) from what you can't (others' opinions, timing, outcomes). Replace "Am I valuable?" with "What value can I create today?" Focus daily on one small, controllable action.`;
-          }
-          results.reframing.content = rf.trim();
         }
       } catch (e) {
         console.warn('Byline/content enforcement failed (non-fatal):', e);
