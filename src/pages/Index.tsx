@@ -249,39 +249,21 @@ const Index = () => {
             insightTone: (data.insight_tone || 'clinical') as 'clinical' | 'direct' | 'coaching' | 'compassionate' | 'children',
           };
           setProfile(userProfile);
-          // Also update localStorage for consistency
-          localStorage.setItem('userProfile', JSON.stringify(userProfile));
-        }
-        
-        // Check if there's a pending conversation to restore (from sign-in flow)
-        const pendingConversation = localStorage.getItem('pendingConversation');
-        if (pendingConversation) {
-          const { messages: savedMessages, timestamp } = JSON.parse(pendingConversation);
-          // Only restore if less than 30 minutes old
-          if (Date.now() - timestamp < 30 * 60 * 1000) {
-            setMessages(savedMessages);
-            setState('chat');
-            toast({
-              title: "Welcome back!",
-              description: "Continuing your conversation...",
-            });
-          }
-          // Clear the pending conversation
-          localStorage.removeItem('pendingConversation');
         }
       } else {
-        // Fallback to localStorage for non-authenticated users
+        // Load from localStorage for unauthenticated users
         const savedProfile = localStorage.getItem('userProfile');
         if (savedProfile) {
           setProfile(JSON.parse(savedProfile));
         }
       }
     };
-
+    
     loadProfile();
     
-    // Listen for profile updates
+    // Listen for profile updates from ProfileSheet
     const handleProfileUpdate = () => {
+      console.log('Profile updated event received, reloading profile');
       loadProfile();
     };
     
@@ -290,7 +272,7 @@ const Index = () => {
     return () => {
       window.removeEventListener('profileUpdated', handleProfileUpdate);
     };
-  }, [user, toast]);
+  }, [user]);
 
   // Persist active chat state whenever messages change during a chat session
   useEffect(() => {

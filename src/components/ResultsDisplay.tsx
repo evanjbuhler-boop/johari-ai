@@ -57,7 +57,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   };
   
   const [whatsHappeningExpanded, setWhatsHappeningExpanded] = useState(true); // Auto-expand first section
-  const [reframingExpanded, setReframingExpanded] = useState(false);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
   const [ratings, setRatings] = useState<Record<string, 'up' | 'down'>>({});
@@ -86,12 +85,10 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
   const currentSessionId = sessionId || `session-${Date.now()}`;
 
   // Expand/collapse all functionality
-  const allExpanded = whatsHappeningExpanded && reframingExpanded;
+  const allExpanded = whatsHappeningExpanded;
   
   const handleExpandAll = () => {
-    const shouldExpand = !allExpanded;
-    setWhatsHappeningExpanded(shouldExpand);
-    setReframingExpanded(shouldExpand);
+    setWhatsHappeningExpanded(!allExpanded);
   };
 
   // Confetti effect for high ratings
@@ -154,9 +151,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
         byline: newRecommendations.theTheoryByline || results.theTheory.byline,
         content: newRecommendations.theTheory || results.theTheory.content
       } : undefined,
-      reframing: {
-        content: newRecommendations.reframing || results.reframing?.content || ''
-      },
       story: results.story ? {
         ...results.story,
         whyThisMatters: newRecommendations.storyWhyMatters || results.story.whyThisMatters
@@ -922,123 +916,6 @@ const ResultsDisplay = ({ results, onNewCheckIn, sessionId, sessionTheme, messag
               ))}
             </div>
           </div>
-        )}
-
-        {/* Reframing Section */}
-        {results.reframing && (
-          <ErrorBoundary>
-          <Card className="p-8 md:p-10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
-            <div className="flex items-center justify-between gap-4 mb-6">
-              <button
-                onClick={() => setReframingExpanded(!reframingExpanded)}
-                className="flex items-center gap-4 text-left"
-              >
-                <span className="text-3xl">🔄</span>
-                <h2 className="text-2xl md:text-3xl font-medium text-foreground">A Different Lens</h2>
-                {reframingExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-              </button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleSave('reframing', 'story', "A Different Lens", undefined, results.reframing)}
-              >
-                {isSaved('reframing') ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
-            </div>
-
-            {/* Byline - always visible */}
-            <div className="mt-6 space-y-4">
-              <p className="text-lg md:text-xl text-foreground/90 leading-relaxed">
-                {renderBoldText(results.reframing.content.split('\n\n')[0])}
-              </p>
-            </div>
-
-            {!reframingExpanded && (
-              <button
-                onClick={() => setReframingExpanded(true)}
-                className="text-primary font-medium hover:underline mt-4 text-sm"
-              >
-                Read the full reframe →
-              </button>
-            )}
-
-            {reframingExpanded && (
-              <div className="mt-6 pt-6 border-t border-border space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                <div className="text-base text-foreground/80 leading-relaxed space-y-4">
-                  {(() => {
-                    const content = results.reframing.content;
-                    const questionsMatch = content.match(/\*\*Questions to consider:\*\*\s*([\s\S]*?)$/);
-                    
-                    if (questionsMatch) {
-                      const mainContent = content.substring(0, questionsMatch.index).trim();
-                      const paragraphs = mainContent.split(/\n{2,}/).slice(1); // Skip first paragraph (byline)
-                      const questions = questionsMatch[1]
-                        .split('\n')
-                        .filter(q => q.trim().startsWith('•'))
-                        .map(q => q.replace(/^•\s*/, '').trim());
-                      
-                      return (
-                        <>
-                          {paragraphs.map((para, idx) => (
-                            <p key={idx} className="leading-relaxed">
-                              {renderBoldText(para.trim())}
-                            </p>
-                          ))}
-                          
-                          {questions.length > 0 && (
-                            <div className="mt-8 pt-6 border-t border-border/50">
-                              <h3 className="text-lg font-medium text-foreground mb-4 flex items-center gap-2">
-                                <span className="text-primary">💭</span>
-                                Questions to Consider
-                              </h3>
-                              <ul className="space-y-3">
-                                {questions.map((question, idx) => (
-                                  <li key={idx} className="flex items-start gap-3">
-                                    <span className="text-primary font-semibold mt-0.5">•</span>
-                                    <span className="text-foreground/90 leading-relaxed">{question}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </>
-                      );
-                    }
-                    
-                    return (
-                      <>
-                        {content.split(/\n{2,}/).slice(1).map((para, idx) => (
-                          <p key={idx} className="leading-relaxed">
-                            {renderBoldText(para.trim())}
-                          </p>
-                        ))}
-                      </>
-                    );
-                  })()}
-                 </div>
-
-                <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-border">
-                  <Button
-                    variant={ratings['reframing'] === 'up' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('story', "A Different Lens", 'up')}
-                    className="gap-1"
-                  >
-                    <ThumbsUp className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={ratings['reframing'] === 'down' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleRating('story', "A Different Lens", 'down')}
-                    className="gap-1"
-                  >
-                    <ThumbsDown className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            )}
-          </Card>
-          </ErrorBoundary>
         )}
 
 
