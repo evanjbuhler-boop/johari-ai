@@ -110,17 +110,30 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
       setIsChanging(true);
       onRegenerating(true);
 
+      console.log('Starting insight regeneration with tone:', tone);
+      console.log('Messages count:', messages?.length);
+      console.log('User ID:', user.id);
+
       // Save to database - store as JSON
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ insight_tone: JSON.stringify(tone) })
         .eq('id', user.id);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('Failed to update profile:', updateError);
+        throw updateError;
+      }
 
       toast.loading('Regenerating insights with new settings...', {
         id: 'tone-regeneration',
         duration: Infinity
+      });
+
+      console.log('Calling edge function with body:', {
+        action: 'regenerate',
+        messagesCount: messages?.length,
+        insightTone: tone
       });
 
       // Regenerate recommendations
@@ -134,17 +147,30 @@ const InsightToneSlider = ({ value, onRegenerating, onRegenerated, messages }: I
 
       toast.dismiss('tone-regeneration');
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
 
-      // Update parent component with new recommendations
+      if (!data) {
+        console.error('No data returned from regeneration');
+        throw new Error('No data returned');
+      }
+
+      console.log('Regeneration successful, updating UI with:', data);
       onRegenerated(data);
       onRegenerating(false);
       
       toast.success('Insights updated');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error regenerating with new tone:', error);
+      console.error('Error details:', {
+        message: error?.message,
+        stack: error?.stack,
+        response: error?.response
+      });
       toast.dismiss('tone-regeneration');
-      toast.error('Failed to regenerate insights. Please try again.');
+      toast.error(`Failed to regenerate insights: ${error?.message || 'Please try again'}`);
       
       setTone(parseDimensionalTone(value));
       onRegenerating(false);
